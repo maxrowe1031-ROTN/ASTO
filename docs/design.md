@@ -1,0 +1,212 @@
+# ASTO — HTML Prototype Build Plan
+
+**Status: approved 2026-08-01** (planned in the Development Brain, executed here).
+Work the phases in order; each phase gate is a stop-and-playtest point. The GDD this
+plan implements is committed alongside at **`docs/asto-gdd.html`** (v0.13, standalone —
+open it in a browser). Deeper background (tech spec, architecture doc, design system
+sources) lives in the handbook repo: `maigd-course-handbook/projects/asto/`.
+
+## Context
+
+MAIGD coursework and the handbook's knowledge work have carried ASTO to the point where
+the actual game gets built. This repo houses the real game. This plan turns the GDD +
+tech spec + architecture doc into a phased build of the playable HTML prototype.
+
+The old crew boards and pipeline (handbook repo) are **test artifacts** — new boards
+will be authored in this repo's schema; the crew gets re-tooled later (out of scope).
+
+## Decisions locked with Max (2026-08-01)
+
+1. **Stack: vanilla HTML/CSS/JS ES modules. Zero dependencies. No build step.**
+   Tests via node's built-in `node:test` (engine is pure ESM node can import).
+2. **Canonical puzzle schema v1.0** — camelCase; pairs as single source of truth
+   (16 words derived, no `words[]`); `explanation` + per-set `id` required; **no `tier`
+   field** (derived from `difficulty` 1–4 → Green/Yellow/Red/Black); `date`/`baitTags`
+   optional. Exactly 4 sets, one per difficulty. Example:
+   ```json
+   {
+     "id": "asto-first-light", "title": "First Light", "date": "2026-08-01",
+     "sets": [{
+       "id": "set-growth",
+       "relationshipLabel": "Small origin becomes larger result",
+       "explanation": "A seed grows into a tree the way a spark grows into a fire.",
+       "pairs": [["Seed","Tree"],["Spark","Fire"]],
+       "difficulty": 1, "baitTags": ["nature"]
+     }]
+   }
+   ```
+3. **Scope: phased to full MVP** — every GDD Must-have, built in gated phases so Max can
+   stop/playtest at any gate.
+
+## Architecture (prescribed by asto-architecture.md — not re-decided)
+
+Headless **PuzzleEngine** (pure functions, no DOM/IO/globals) · read-only **View**
+components · thin **GameController** glue · **PuzzleSource** seam (`LocalJsonSource` now,
+`ApiSource` later; validates schema at the boundary). Build order: **engine + tests
+first**, then view, then controller, then source. Invariant: *the game must run
+correctly with the view turned off.*
+
+Engine API: `initGame(puzzle)` · `shuffle(state)` · `clearSelection(state)` ·
+selection ops · `submit(state, orderedTerms) → { state, outcome }`,
+outcome ∈ `solved` / `so-close` / `miss`. Reducer: guard → derive the 4 accepted orders
+per unsolved set from pairs (`[A,B,C,D] [C,D,A,B] [B,A,D,C] [D,C,B,A]`) → **ordered**
+comparison (never sort) → resolve → status. `MAX_MISTAKES = 4`.
+
+Key rules from the GDD: 4th tap fills the frame **without submitting**; Confirm only at
+4 filled; drag-to-reorder inside the frame; "So close!" (right words, wrong order)
+**costs a mistake** (single tunable); Clear free; Shuffle touches unsolved tiles only;
+solved sets animate to canonical order + reveal tier & label; lose on 4th mistake, loss
+screen reveals unsolved answers with explanations.
+
+Design system (GDD Appendix E): Cream `#F3ECDC` / Milk / Oat / Taupe / Ink palette,
+4 tier color triples, Bree Serif + Nunito, pill buttons (ink fill = primary only),
+coffee-bean mistake pips (never red), paper grain on tiles/cards only, motion 120–180ms
+ease-out, ±4px shake, **no confetti/particles/timers**.
+
+## Implementation plan
+
+### Repo layout
+
+```
+ASTO/
+├── package.json          # {type:"module", scripts:{test:"node --test", serve}} — ZERO deps
+├── index.html            # single page; screens are <section>s toggled by app.js
+├── styles/               # tokens.css (design tokens as CSS vars) · base.css · components.css
+├── src/
+│   ├── engine/           # PURE — no DOM, no fetch, no globals; RNG injected
+│   │   ├── engine.js         # initGame, select, deselect, reorderSelected,
+│   │   │                     #   clearSelection, shuffle, submit, MAX_MISTAKES
+│   │   ├── arrangements.js   # acceptedOrders(pairs), deriveWords(sets)
+│   │   ├── rng.js            # fisherYates(arr, rand)
+│   │   ├── tiers.js          # difficultyToTier(1..4) → green/yellow/red/black
+│   │   └── board-integrity.js# brute-force alternate-solution checker
+│   ├── source/
+│   │   ├── validate-puzzle.js    # pure schema v1.0 validator → {ok, errors[]}
+│   │   └── local-json-source.js  # fetch + validate at boundary (ApiSource later, same interface)
+│   ├── view/             # READ-ONLY renderers, emit intents via callbacks
+│   │   ├── header-view.js · board-view.js · frame-view.js · solved-sets-view.js
+│   │   ├── controls-view.js · end-view.js · tutorial-overlay.js · select-view.js
+│   ├── controller/
+│   │   ├── game-controller.js    # the ONLY writer: intents → engine → re-render
+│   │   └── tutorial-script.js    # coach-mark steps keyed to controller events (no DOM)
+│   ├── storage.js        # localStorage: per-puzzle results, tutorialSeen
+│   ├── share.js          # navigator.share → clipboard fallback
+│   └── app.js            # bootstrap, screen routing, first-run check
+├── puzzles/              # index.json manifest + first-light.json + tutorial.json + 10+
+├── tools/check-board.js  # CLI: validate + integrity-check a board file
+├── docs/design.md        # this design, committed
+└── test/                 # engine/ · source/ · content/ (node:test)
+```
+
+**Boundary law (goes in README):** `src/engine` + `validate-puzzle.js` import nothing
+outside themselves; views never import engine mutators; only `game-controller.js` calls
+engine functions.
+
+### Engine design (key decisions)
+
+- **GameState:** `{ puzzle, rules: {maxMistakes}, boardTerms, selectedTerms,
+  solvedSetIds, mistakes, status }`. **`boardTerms` = unsolved tiles only** — solving
+  removes the 4 words, so grid-shrink, shuffle-unsolved-only, and submit guards fall out
+  by construction.
+- **Selection order lives in the engine** (`selectedTerms`, ordered) and drag-reorder
+  commits via `reorderSelected(state, from, to)` — order decides so-close vs solved, so
+  it's game-semantic, not presentational ("game must run with the view off"). The view
+  owns only transient mid-drag visuals; on drop the controller commits the reorder.
+- **Submit reducer** (single synchronous pass): guards (playing, exactly 4, all on
+  board, no dups → `invalid` no-op) → ordered comparison against each unsolved set's
+  `acceptedOrders` (never sort) → resolve:
+  - `solved` — add setId, remove words, clear selection; 4 solved → `won`. Outcome
+    carries `{setId, canonicalOrder}` for the snap-to-canonical animation.
+  - `so-close` — same 4-word membership as an unsolved set, wrong order → mistake+1.
+    Outcome payload deliberately empty (no setId) so the view *can't* leak which set/tier.
+  - `miss` — otherwise → mistake+1. Both paths: 4th mistake → `lost`.
+  - **Per GDD §8: selection clears on so-close and miss** (deliberate playtest bet).
+    Tunable via `rules` (like `maxMistakes`) if playtesting revisits it.
+- **Tutorial no-lose without forking:** `initGame(puzzle, {maxMistakes: Infinity})` —
+  consulted at exactly one line in submit. Engine knows *rules*, not tutorials; mistakes
+  still increment (the "So close!" beat still teaches) but never trigger loss. Tested in
+  Phase 1 before any tutorial code exists.
+- **Immutability guard:** `Object.freeze` state in dev + a test asserting inputs
+  unchanged after each engine call.
+
+### Phases (each gate = stop/playtest point)
+
+**Phase 1 — Headless engine + validation + tests.** package.json, engine modules,
+`validate-puzzle.js` (all schema rules incl. loud rejection of old-schema `words[]`/
+`tier` boards), `board-integrity.js` (43,680 ordered 4-tuples — instant; asserts exactly
+16 accepted = 4 orders × 4 sets, reports collisions), `tools/check-board.js`,
+`puzzles/first-light.json` (from GDD Appendix B).
+*Gate:* `node --test` green incl. headless full win + full loss played through engine
+imports only; check-board passes First Light. **No index.html yet — that's the point.**
+
+**Phase 2 — Core play screen.** index.html + tokens/base CSS (GDD palette, Bree Serif/
+Nunito with fallback stacks), `local-json-source.js`, views (header+bean pips, 4×4
+board, frame with honey-glow next slot, controls with Confirm-gating, solved cards),
+`game-controller.js`, drag-to-reorder via Pointer Events + `setPointerCapture` +
+`touch-action:none` (**never HTML5 DnD** — broken on iOS; taps alone must fully suffice,
+drag is additive). Views own persistent keyed DOM nodes per term, updated in place —
+decided *now* because Phase 3's FLIP animations die under rebuild-from-state rendering.
+*Gate:* playable in mobile-emulation browser: win, lose, so-close costs a mistake +
+clears, Clear free, Shuffle unsolved-only, deselect compresses order.
+
+**Phase 3 — Win/loss screens + motion polish.** `end-view.js` (win: tier cards in order,
+Share, Next puzzle; loss: unsolved sets revealed in canonical order **with
+explanations**, REVEALED badges), motion pass per Appendix E (120–180ms ease-out, FLIP
+solve→canonical→card sequence, ±4px shake ×3, 1px press, `prefers-reduced-motion`
+support), paper grain (inline SVG feTurbulence data-URI, tiles/cards only).
+*Gate:* GDD §16 acceptance checklist for core loop + end states; solve animation
+glitch-free; the no-list held (no confetti/particles/timers, beans never red).
+
+**Phase 4 — First-run tutorial.** `puzzles/tutorial.json` (ordinary schema-v1.0 board,
+difficulty-1 set = Seed:Tree::Spark:Fire, same validator+integrity bar),
+`tutorial-script.js` (3 coach-marks: relationship-not-category · order matters · what
+`::` means, advance conditions keyed to controller events), `tutorial-overlay.js`,
+pips hidden via view flag, `storage.js` tutorialSeen + skip affordance.
+*Gate:* fresh profile lands in tutorial, cannot lose, coach-marks fire correctly,
+completion routes to First Light; returning visitor skips.
+
+**Phase 5 — Puzzle select + content.** Author 10+ boards (draft JSON →
+`tools/check-board.js` → fix reported collisions → commit; `board-integrity.test.js`
+globs `puzzles/*.json` so `npm test` regates all content forever), manifest,
+`select-view.js` with per-puzzle persisted results, routing + Next-puzzle chaining.
+*Gate:* all boards green, select state survives reload, full §16 acceptance pass.
+
+### Test layout (all `node:test`, Phase 1 unless noted)
+
+`arrangements` (the exact 4 orders) · `selection` (guards, order preservation,
+reorder) · `submit` (each accepted order solves; cross-pair `A:C::B:D` → so-close not
+solved; so-close = mistake + clears; guards; outcome payloads) · `shuffle` (seeded RNG,
+selection untouched) · `game-flow` (headless win/loss/mixed + `maxMistakes: Infinity`
+never loses) · `validate-puzzle` (each rule rejects distinctly; old-schema rejected) ·
+`board-integrity` (exactly 16 accepted tuples; grows with content in P4/P5).
+UI phases have **no automated browser tests** (deliberate at zero deps) — manual
+acceptance checklists compensate; everything decision-shaped is in the tested engine.
+
+### Key risks (from the design review)
+
+1. **Human-plausible-but-rejected analogies** — the integrity tool catches mechanical
+   collisions only; boards need playtest eyes in Phase 5.
+2. **`file://` fails** (ESM + fetch) — README line 1: use `npm run serve`.
+3. **Google Fonts = hidden network dep** — ship fallback stacks; self-host woff2 later.
+4. **iOS specifics** — `100dvh`, safe-area insets, `touch-action`; test on a real
+   iPhone at every gate.
+5. **Scope creep at polish** — the GDD's no-list is spec; keep Phase 3 checklist-driven.
+
+## Verification
+
+- **Phase gates:** each phase ends with its `node --test` suite green + the relevant
+  GDD §16 acceptance-checklist items passed manually in the browser (served via a
+  static server through the preview tools, mobile viewport).
+- **Engine correctness (Phase 1):** headless full win + full loss through engine
+  imports alone — the "view turned off" proof — plus the unit suites above.
+- **Board integrity:** `tools/check-board.js` on every board; the glob test regates all
+  shipped content on every `npm test`.
+- **End-to-end (final):** in the preview browser — fresh profile → tutorial →
+  First Light win → loss path → puzzle select persistence across reload.
+
+## Handbook touchpoint (post-build, separate small step)
+
+- GDD Appendix A now diverges from canonical schema v1.0 → **flag for Max** (human-owned
+  page; propose, don't rewrite): update Appendix A + `asto-tech-spec.md` to match.
+- Log the build session in `system/log.md` at wrapup; crew re-tooling to schema v1.0 is
+  a later session.
