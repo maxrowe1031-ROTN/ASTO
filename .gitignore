@@ -1,1 +1,16 @@
+# Secrets — never committed
+.env
+.env.*
+!.env.example
+
+# Dependencies & build output
+node_modules/
+dist/
+build/
+
+# OS junk
 .DS_Store
+Thumbs.db
+
+# Local-only files
+*.local

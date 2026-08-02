@@ -210,3 +210,54 @@ acceptance checklists compensate; everything decision-shaped is in the tested en
   page; propose, don't rewrite): update Appendix A + `asto-tech-spec.md` to match.
 - Log the build session in `system/log.md` at wrapup; crew re-tooling to schema v1.0 is
   a later session.
+
+## House-rule exceptions
+
+*Added 2026-08-02 during the project-template migration. These are places where ASTO
+deliberately departs from a `CLAUDE.md` house default. Each records the rule, the
+reason, and a concrete **reconsider-when** trigger — the exception holds until its
+trigger fires, and is never silently widened.*
+
+### HR-1 — Strict zero dependencies (stricter than the house default)
+
+**House default:** "Platform first; dependencies when earned" — add a dependency when
+the alternative would be unsafe, fragile, or disproportionately expensive, and never
+rebuild solved security, auth, parsing, storage, or accessibility problems just to stay
+dependency-free.
+
+**ASTO's rule:** zero dependencies, full stop. Vanilla HTML/CSS/JS ES modules, no build
+step, tests on node's built-in `node:test`. Locked with Max 2026-08-01 (Decision 1).
+
+**Why:** the game must run from any static server with no build and no supply chain, the
+whole surface is small and self-contained, and `node:test` already covers the testing
+need. The Studio's zero-dep constraint is what produced `schema-check.js` and the
+injected-transport design in `llm.js` — both of which turned out to make the pipeline
+more testable, not less.
+
+**Reconsider-when:** ASTO needs to solve a security, auth, parsing, storage, or
+accessibility problem where hand-rolling would be *less* safe than a well-maintained
+library. That is a conversation with Max, not a unilateral `npm install`.
+
+### HR-2 — Studio web surface deferred
+
+**House default:** every substantial project gives Max a local, web-based surface where
+he can see what's going on and functionally change things through the project's real
+public seams.
+
+**ASTO's current state:** `studio/` is a headless pipeline (Core A1 + A2 — contracts,
+storage, agents, transport). There is no Studio page yet.
+
+**Why:** the approved Studio design builds the Core first and the human surface second.
+The **Review Studio** in Part B of
+`docs/superpowers/specs/2026-08-02-asto-studio-design.md` is the planned surface, and
+the Core's seams (`run-store.js` as the only writer of run artifacts, pure agents,
+injected transport) were designed for it from the first file — which is what the house
+rule actually asks for.
+
+**Interim verification surface:** `npm test` (414 tests as of this entry, including the
+storage and agent suites) plus `node tools/check-board.js` for content, and the game
+itself in the preview browser.
+
+**Reconsider-when:** Review Studio Part B slips past the next phase gate, or the Core
+grows a capability Max cannot see or exercise without reading code. Either means the
+surface has waited too long.
