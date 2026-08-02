@@ -184,8 +184,16 @@ acceptance checklists compensate; everything decision-shaped is in the tested en
 
 ### Key risks (from the design review)
 
-1. **Human-plausible-but-rejected analogies** — the integrity tool catches mechanical
-   collisions only; boards need playtest eyes in Phase 5.
+1. **Human-plausible-but-rejected analogies** — boards need playtest eyes in Phase 5.
+   *Sharpened 2026-08-02 (Studio A3), with the fact verified in code:* the integrity
+   tool cannot reject a schema-valid board at all. With sixteen distinct words no two
+   sets can share an ordered 4-tuple, so the accepted count is always exactly sixteen
+   and `collisions` is always empty. `board-integrity.js` is therefore a **regression
+   guard on the engine** — it would catch a future change that sorted a submission or
+   widened acceptance — not a per-board content check. What actually rejects a board
+   mechanically is `validate-puzzle.js`. Nothing mechanical catches a board that is
+   merely *bad*; that is the Studio's Adversarial Solver (stage 06), its evaluation
+   pass (A5), and finally Max.
 2. **`file://` fails** (ESM + fetch) — README line 1: use `npm run serve`.
 3. **Google Fonts = hidden network dep** — ship fallback stacks; self-host woff2 later.
 4. **iOS specifics** — `100dvh`, safe-area insets, `touch-action`; test on a real
@@ -244,8 +252,9 @@ library. That is a conversation with Max, not a unilateral `npm install`.
 he can see what's going on and functionally change things through the project's real
 public seams.
 
-**ASTO's current state:** `studio/` is a headless pipeline (Core A1 + A2 — contracts,
-storage, agents, transport). There is no Studio page yet.
+**ASTO's current state:** `studio/` is a headless pipeline (Core A1 + A2 + A3 —
+contracts, storage, agents, transport, and now orchestration: blackboard, budget,
+mechanical gates, revisions and resume). There is no Studio *page* yet.
 
 **Why:** the approved Studio design builds the Core first and the human surface second.
 The **Review Studio** in Part B of
@@ -254,10 +263,17 @@ the Core's seams (`run-store.js` as the only writer of run artifacts, pure agent
 injected transport) were designed for it from the first file — which is what the house
 rule actually asks for.
 
-**Interim verification surface:** `npm test` (414 tests as of this entry, including the
-storage and agent suites) plus `node tools/check-board.js` for content, and the game
-itself in the preview browser.
+**Interim verification surface:** `npm test` (500 tests as of A3, including the storage,
+agent and pipeline suites) · `node tools/check-board.js` for content · the game itself in
+the preview browser · and, since A3, **`node studio/run.js --mock`** — a thin CLI adapter
+over the exported `runPipeline`, which starts, resumes and revises a run and prints where
+its artifacts landed.
+
+**Why the CLI exists (A3, 2026-08-02):** A3 is exactly the growth the reconsider-when
+trigger names — the Core stopped being readable-only. `run.js` was added a phase earlier
+than the spec's implementation order lists it so the trigger does not fire: Max can
+exercise the whole pipeline without reading code. It holds no pipeline logic and shells
+out to nothing. This is a stopgap for the Review Studio, not a replacement for it.
 
 **Reconsider-when:** Review Studio Part B slips past the next phase gate, or the Core
-grows a capability Max cannot see or exercise without reading code. Either means the
-surface has waited too long.
+grows a capability the CLI cannot exercise. Either means the surface has waited too long.

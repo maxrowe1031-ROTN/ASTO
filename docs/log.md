@@ -2,6 +2,115 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-02 — Studio Core A3: pipeline, blackboard, budget, mechanical gates
+
+Built on `work/studio-core-a3` (commit `a075ea0`), red-first throughout. **No game code
+touched** — `src/`, `styles/`, `index.html` and `puzzles/` are byte-identical to the entry
+below; `git diff main -- src/ styles/ index.html puzzles/` is empty. A1 built the contracts
+and storage, A2 the pure agents and injected transport; nothing connected them. A3 is what
+makes the Core actually run.
+
+- **New modules.** `blackboard.js` — in-memory artifact exchange for one attempt; a board
+  rebuilt from stage outputs alone is indistinguishable from the original, which is what
+  makes resume and revision deterministic rather than approximate, and `snapshot()` rolls
+  every stage up beside its original output (provenance kept, not replaced).
+  `budget.js` — request/token/cost/duration caps at stage, attempt and run scope; failed
+  calls count. `pipeline-config.js` — models, prices, retry limits and caps as pure frozen
+  data. `pipeline.js` — the orchestrator. `run.js` — the CLI adapter.
+- **`pipeline.js` holds the boundary line.** It imports no `fs` and calls no `fetch`
+  (verified by grep); every read and write goes through `run-store.js`, which is still the
+  only writer of run artifacts, and `llm.js` still owns the Studio's only `fetch`. A failed
+  stage is a recorded outcome — `failure.json`, a failed attempt, a returned result — never
+  an exception reaching the caller. Only non-`StudioFailure` errors (i.e. bugs) escape.
+- **Decisions made while building, all inside the approved spec:**
+  - **Two retry classes with separate bounds** — `transport: 3` (llm.js's own loop, which
+    already handles backoff and `retry-after`) and `validation: 2` (the pipeline's, the
+    only place that can send the model concise feedback about *why* its output was
+    rejected). Nesting one inside the other would have made the real bound 9.
+  - **Stage input wiring lives in `pipeline.js`**, not in the agents. Which output feeds
+    which input is orchestration knowledge; the agents' four-function contract is unchanged
+    and they remain unaware of each other.
+  - **`validation.json` is written last and only on success**, so a stage that has one is
+    genuinely finished — which is exactly what `findFirstIncompleteStage` asks. Rejected
+    rounds are kept as `response.rejected-N.txt` / `validation.rejected-N.json`; no failed
+    response is ever erased.
+  - **Model tiering is the spec's, not a fresh call** — Sonnet 5 for the five reasoning
+    agents, Haiku 4.5 for the three narrow checkers (spec §"Budget and execution limits").
+    Prices use Sonnet's **standard** $3/$15 rather than the introductory $2/$10, since a cap
+    computed from the cheaper price stops enforcing when the intro period ends. Recorded as
+    `pricingVersion: "2026-08-02"`.
+- **`run.js` — one bullet beyond A3's literal spec list, approved in the plan.** The spec
+  lists it in the repo layout but not in A3's implementation bullets. It went in now because
+  HR-2's reconsider-when trigger is *"the Core grows a capability Max cannot see or exercise
+  without reading code"* — and A3 is exactly that growth. HR-2 updated accordingly.
+- **Additive to `run-store.js` only:** `writeStageText`, `writeAttemptArtifact`,
+  `readAttemptArtifact`, `hasStageArtifact`, `listAttempts`, `recordStageStatus`,
+  `recordUsage`; plus `writeTextAtomic` extracted from `writeJsonAtomic` (behaviour-
+  preserving). **All 21 existing run-store tests and all 6 atomic-write tests unchanged and
+  green** — no existing test was edited to accommodate new code.
+- **Two things found while building, both fixed or recorded:**
+  - **Bug:** usage was persisted only at the *end* of a run, so a process killed mid-run
+    lost its spend record and every resume started the attempt's allowance over — the
+    attempt cap could never bite. Now persisted after each stage. Caught by the resume
+    suite, not by inspection.
+  - **Architectural fact, verified in code:** `checkBoard` **cannot reject a schema-valid
+    board**. With sixteen distinct words no two sets can share an ordered 4-tuple, so the
+    accepted count is always exactly sixteen and `collisions` is always empty. It is a
+    regression guard on the *engine*, not a per-board content check; `validate-puzzle.js` is
+    what actually rejects boards at `04a` — in practice catching pre-v1.0 drift (`words[]`,
+    a per-set `tier`) that the Board Builder's own semantic checks let past. **Nothing
+    mechanical catches a board that is merely bad.** `docs/design.md` risk 1 sharpened to
+    say so; a backlog line asks whether A5 should add a check that can.
+- **Verified:**
+  - `npm test` → **500 pass, 0 fail** (baseline 414 at the entry below; 86 new tests across
+    `test/studio/pipeline/`: blackboard, budget, config, pipeline, integrity-gate, failures,
+    revision, resume, run-cli).
+  - `node tools/check-board.js puzzles/first-light.json puzzles/tutorial.json` → both clean,
+    16/16 accepted tuples each. No board was added this session.
+  - **Boundary-law greps:** no `fs` import and no `fetch` in `pipeline.js`; only
+    `run-store.js` + `atomic-write.js` write run artifacts; only `llm.js` calls `fetch` in
+    `studio/`; engine + `validate-puzzle.js` still import nothing outside themselves.
+  - **Real CLI, not just tests.** `node studio/run.js --mock --theme "Lantern light"` →
+    `attempt 0001: complete`, board "First Light", 8 requests / 7,128 tokens / ~$0.0421, and
+    a 47-file run directory with per-stage `request.json` · `prompt.txt` · `response.txt` ·
+    `output.json` · `validation.json`, the gate's `integrity.json`, plus `blackboard.json`,
+    `board.json`, `manifest.json` (`awaiting-review`) and `decisions.jsonl`. Then
+    `--revise-from 04-board-builder` → attempt `0002` reused stages 01–03 and re-ran 04
+    onward in 5 requests, with `parent-attempt.json` naming the reused stages.
+  - **Failure, gate, revision and resume paths are covered by tests, not assertions:** each
+    of the three failure categories plus budget and integrity exhaustion recorded without
+    throwing; the parent attempt proved byte-identical across a revision by hashing its tree
+    before and after; the interrupted attempt produced by a real kill mid-write (a store
+    that throws on one write), then resumed at exactly that stage with the half-written
+    folder quarantined as `.partial-1` and cumulative spend carried forward.
+  - **No browser verification** — nothing player-visible changed. The Studio is headless by
+    HR-2; its surface is the CLI above.
+- **Phase status: Studio Core A3 built, and its gate is MET.** A3's gate is automated +
+  Claude-verifiable (tests, mock end-to-end run, artifact inspection) — there is no Max
+  acceptance item in it, so nothing here is being marked passed on Max's behalf. Game phases
+  are unchanged: **Phases 1–4 closed**, Phase 5a planned and not started.
+- **Drift check:** two `docs/design.md` updates, both recorded above — risk 1 sharpened with
+  the verified `checkBoard` fact, and **HR-2** updated (status now A1+A2+A3, interim
+  verification surface now 500 tests plus the CLI, and the reconsider-when trigger tightened
+  to "the Core grows a capability *the CLI* cannot exercise"). No locked decision touched:
+  schema v1.0 unchanged, zero dependencies held (Node built-ins and `node:test` only, incl.
+  `node:util`'s `parseArgs` and `structuredClone`), engine-first intact.
+- **Next:**
+  1. **Studio Phase A4 — initial corpus and variety.** **Blocked on Max:** he drafts
+     `studio/corpus/rubric.md`, the one input only he can write. The rest of A4 —
+     shipped-board examples, relationship taxonomy + index, machine-readable rubric, 5–8
+     annotated near-misses, holdout cases stored for A6b — follows from it.
+  2. Then A5 (evaluation — also where budget rates get calibrated against real spend and
+     where the "can anything mechanical catch a bad board?" backlog item is answered),
+     A6a (feedback capture, required for Core's Definition of Done), then Review Studio
+     B1–B3, which is what actually closes HR-2.
+  3. Independent and unblocked: **Phase 5a** — daily + archive + mid-puzzle persistence,
+     plan at `~/.claude/plans/keen-percolating-boot.md`.
+  4. Carried from before: First Light `explanation` editorial pass (Red set weakest) · GDD
+     drift to propose upstream (Appendix A pre-v1.0 schema, §8's missing `already-tried`
+     row, motion 187–281ms vs Appendix E's 120–180ms, §17.3 answered) · the tutorial board's
+     sets 2–4 wording is Max's to edit.
+
 ## 2026-08-02 — Migrated onto project-template (governance, recovery, house rules)
 
 Process-and-docs session on branch `work/template-migration`. **No product code touched**
