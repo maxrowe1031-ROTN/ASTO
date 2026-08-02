@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { initGame, select, submit } from '../../src/engine/engine.js';
-import { board, MISS } from '../fixtures/board.js';
+import { board, distinctMisses, MISS } from '../fixtures/board.js';
 
 const GROWTH = ['Seed', 'Tree', 'Spark', 'Fire'];
 
@@ -122,9 +122,8 @@ test('solving all four sets wins', () => {
 
 test('the fourth mistake loses, and submissions afterwards are inert', () => {
   let state = initGame(board);
-  for (let i = 0; i < 4; i += 1) {
-    const result = submit(state, MISS);
-    state = result.state;
+  for (const miss of distinctMisses(4)) {
+    state = submit(state, miss).state;
   }
   assert.equal(state.status, 'lost');
   assert.equal(state.mistakes, 4);
@@ -132,6 +131,67 @@ test('the fourth mistake loses, and submissions afterwards are inert', () => {
   const after = submit(state, GROWTH);
   assert.equal(after.outcome.type, 'invalid');
   assert.deepEqual(after.state, state);
+});
+
+test('repeating an identical miss is "already tried" — no second bean', () => {
+  const first = submit(initGame(board), MISS);
+  assert.equal(first.outcome.type, 'miss');
+  assert.equal(first.state.mistakes, 1);
+
+  const repeat = submit(first.state, MISS);
+  assert.equal(repeat.outcome.type, 'already-tried');
+  assert.equal(repeat.state.mistakes, 1, 'the same mistake must not cost twice');
+  assert.equal(repeat.state.status, 'playing');
+});
+
+test('repeating an identical so-close is also "already tried"', () => {
+  const crossPair = ['Seed', 'Spark', 'Tree', 'Fire'];
+  const first = submit(initGame(board), crossPair);
+  assert.equal(first.outcome.type, 'so-close');
+  assert.equal(first.state.mistakes, 1);
+
+  const repeat = submit(first.state, crossPair);
+  assert.equal(repeat.outcome.type, 'already-tried');
+  assert.equal(repeat.state.mistakes, 1);
+});
+
+test('"already tried" clears the selection, like any failed submission', () => {
+  let state = submit(initGame(board), MISS).state;
+  for (const term of MISS) state = select(state, term);
+  const repeat = submit(state, state.selectedTerms);
+  assert.equal(repeat.outcome.type, 'already-tried');
+  assert.deepEqual(repeat.state.selectedTerms, []);
+});
+
+test('the same four words in a DIFFERENT order is a fresh attempt and costs normally', () => {
+  const first = submit(initGame(board), MISS);
+  const reordered = [MISS[1], MISS[0], MISS[2], MISS[3]];
+  const second = submit(first.state, reordered);
+  assert.notEqual(second.outcome.type, 'already-tried');
+  assert.equal(second.state.mistakes, 2);
+});
+
+test('failed attempts are remembered across intervening solves', () => {
+  let state = submit(initGame(board), ['Nest', 'Bear', 'Den', 'Bird']).state; // so-close
+  state = submit(state, ['Seed', 'Tree', 'Spark', 'Fire']).state; // solve growth
+  const repeat = submit(state, ['Nest', 'Bear', 'Den', 'Bird']);
+  assert.equal(repeat.outcome.type, 'already-tried');
+  assert.equal(repeat.state.mistakes, 1);
+});
+
+test('invalid submissions are never recorded as attempts', () => {
+  const start = initGame(board);
+  const invalid = submit(start, ['Seed', 'Seed', 'Tree', 'Spark']);
+  assert.equal(invalid.outcome.type, 'invalid');
+  // A later real submission of overlapping words still evaluates normally.
+  const real = submit(invalid.state, ['Seed', 'Spark', 'Tree', 'Fire']);
+  assert.equal(real.outcome.type, 'so-close');
+});
+
+test('"already tried" outcome carries only its type — no hints', () => {
+  const first = submit(initGame(board), MISS);
+  const repeat = submit(first.state, MISS);
+  assert.deepEqual(Object.keys(repeat.outcome), ['type']);
 });
 
 test('rules.soCloseCostsMistake can be turned off without touching the engine', () => {

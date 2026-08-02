@@ -9,7 +9,8 @@
 const FEEDBACK = {
   solved: { text: 'Correct!', strong: true },
   'so-close': { text: 'So close! Right four words — check the order.', strong: true },
-  miss: { text: 'Not quite.', strong: false }
+  miss: { text: 'Not quite.', strong: false },
+  'already-tried': { text: 'Already tried that one.', strong: false }
 };
 
 export class StatusView {

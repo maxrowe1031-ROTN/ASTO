@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 
 import { clearSelection, initGame, select, shuffle, submit } from '../../src/engine/engine.js';
 import { mulberry32 } from '../../src/engine/rng.js';
-import { board, MISS } from '../fixtures/board.js';
+import { board, distinctMisses, MISS } from '../fixtures/board.js';
 
 /** Tap four tiles, then Confirm — exactly what the controller will do in Phase 2. */
 function play(state, terms) {
@@ -91,9 +91,11 @@ test('headless mixed run — mistakes and solves interleaved', () => {
 test('maxMistakes: Infinity counts mistakes but can never lose — the tutorial rule', () => {
   let state = initGame(board, { maxMistakes: Infinity });
 
-  for (let i = 0; i < 10; i += 1) {
-    state = play(state, MISS).state;
-    assert.equal(state.status, 'playing', `still playing after ${i + 1} mistakes`);
+  let charged = 0;
+  for (const miss of distinctMisses(10)) {
+    state = play(state, miss).state;
+    charged += 1;
+    assert.equal(state.status, 'playing', `still playing after ${charged} mistakes`);
   }
   assert.equal(state.mistakes, 10);
 

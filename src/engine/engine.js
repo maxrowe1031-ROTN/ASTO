@@ -41,6 +41,7 @@ export function initGame(puzzle, rules = {}) {
     boardTerms: deriveWords(puzzle?.sets),
     selectedTerms: [],
     solvedSetIds: [],
+    failedAttempts: [],
     mistakes: 0,
     status: 'playing'
   });
@@ -98,16 +99,31 @@ export function shuffle(state, rand) {
  * The one reducer. Guard, then ordered comparison, then resolve.
  *
  * Returns `{ state, outcome }` where outcome.type is one of:
- *   solved    — carries { setId, canonicalOrder } for the snap-to-canonical animation
- *   so-close  — right four words, wrong order. Carries NOTHING else, deliberately: a
- *               payload naming the set would let the view leak which tier the player
- *               nearly had.
- *   miss      — anything else
- *   invalid   — malformed submission. A true no-op: no mistake, same state back.
+ *   solved        — carries { setId, canonicalOrder } for the snap-to-canonical animation
+ *   so-close      — right four words, wrong order. Carries NOTHING else, deliberately: a
+ *                   payload naming the set would let the view leak which tier the player
+ *                   nearly had.
+ *   miss          — anything else
+ *   already-tried — the exact ordered submission of an earlier charged failure. Free:
+ *                   the same mistake never costs twice (2026-08-01 playtest rule). The
+ *                   same four words in a DIFFERENT order is a new claim and evaluates
+ *                   normally. Carries only its type, like so-close.
+ *   invalid       — malformed submission. A true no-op: no mistake, same state back.
  */
 export function submit(state, orderedTerms) {
   const reason = guard(state, orderedTerms);
   if (reason) return { state, outcome: { type: 'invalid', reason } };
+
+  // Accepted orders can never be in the history — they would have solved — so this
+  // check can safely come before the set comparison.
+  if (state.failedAttempts.some((attempt) => sameOrder(attempt, orderedTerms))) {
+    return {
+      state: nextState(state, {
+        selectedTerms: state.rules.clearSelectionOnFail ? [] : state.selectedTerms
+      }),
+      outcome: { type: 'already-tried' }
+    };
+  }
 
   const unsolved = state.puzzle.sets.filter((set) => !state.solvedSetIds.includes(set.id));
 
@@ -120,7 +136,7 @@ export function submit(state, orderedTerms) {
   }
 
   const rightWordsWrongOrder = unsolved.some((set) => sameMembers(set.pairs.flat(), orderedTerms));
-  return resolveFailure(state, rightWordsWrongOrder ? 'so-close' : 'miss');
+  return resolveFailure(state, rightWordsWrongOrder ? 'so-close' : 'miss', orderedTerms);
 }
 
 function guard(state, terms) {
@@ -145,13 +161,15 @@ function resolveSolved(state, set) {
   };
 }
 
-function resolveFailure(state, type) {
+function resolveFailure(state, type, orderedTerms) {
   const costsMistake = type === 'miss' || state.rules.soCloseCostsMistake;
   const mistakes = state.mistakes + (costsMistake ? 1 : 0);
   return {
     state: nextState(state, {
       mistakes,
       selectedTerms: state.rules.clearSelectionOnFail ? [] : state.selectedTerms,
+      // Detached copy: the history must not alias an array the caller can still mutate.
+      failedAttempts: [...state.failedAttempts, Object.freeze([...orderedTerms])],
       status: mistakes >= state.rules.maxMistakes ? 'lost' : state.status
     }),
     outcome: { type }
@@ -181,5 +199,6 @@ function freezeState(state) {
   Object.freeze(state.boardTerms);
   Object.freeze(state.selectedTerms);
   Object.freeze(state.solvedSetIds);
+  Object.freeze(state.failedAttempts);
   return Object.freeze(state);
 }

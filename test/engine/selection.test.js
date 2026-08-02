@@ -10,7 +10,7 @@ import {
   select,
   submit
 } from '../../src/engine/engine.js';
-import { board, MISS } from '../fixtures/board.js';
+import { board, distinctMisses } from '../fixtures/board.js';
 
 const selectAll = (state, terms) => terms.reduce((s, term) => select(s, term), state);
 
@@ -95,7 +95,7 @@ test('clearSelection empties the frame and costs nothing', () => {
 
 test('selection ops are inert once the game is over', () => {
   let state = initGame(board);
-  for (let i = 0; i < MAX_MISTAKES; i += 1) state = submit(state, MISS).state;
+  for (const miss of distinctMisses(MAX_MISTAKES)) state = submit(state, miss).state;
   assert.equal(state.status, 'lost');
 
   assert.deepEqual(select(state, 'Seed').selectedTerms, []);

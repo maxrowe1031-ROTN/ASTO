@@ -40,3 +40,22 @@ export const board = {
 
 /** Four words that belong to four different sets — always a plain miss. */
 export const MISS = ['Seed', 'Painter', 'Nest', 'Dough'];
+
+/**
+ * Distinct orderings of the MISS words — every one is a fresh miss that charges a
+ * mistake. Needed since the already-tried rule made repeating an identical order free.
+ */
+export function distinctMisses(count) {
+  const perms = [];
+  const build = (rest, chosen) => {
+    if (rest.length === 0) {
+      perms.push(chosen);
+      return;
+    }
+    for (let i = 0; i < rest.length && perms.length < count; i += 1) {
+      build(rest.toSpliced(i, 1), [...chosen, rest[i]]);
+    }
+  };
+  build(MISS, []);
+  return perms;
+}

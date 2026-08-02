@@ -48,6 +48,9 @@ Headless **PuzzleEngine** → read-only **views** → one thin **GameController*
 - The **4th tap fills the frame without submitting**; Confirm submits.
 - **"So close!"** (right four words, wrong order) **costs a mistake** and clears the
   selection — a deliberate playtest bet, tunable via `rules`, not a bug.
+- **Repeating an identical failed submission is free** — same four words, same order →
+  `already-tried` outcome, no mistake, selection clears (2026-08-01 playtest rule). The
+  same words in a *different* order is a new claim and charges normally.
 - Lose on the **4th** mistake. The loss screen reveals unsolved answers *with
   explanations*.
 - Tiers are **revealed on solve**, never shown on the board.
