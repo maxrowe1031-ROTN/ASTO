@@ -7,7 +7,9 @@
   "scripts": {
     "test": "node --test \"test/**/*.test.js\"",
     "serve": "node tools/serve.js",
-    "check-board": "node tools/check-board.js"
+    "check-board": "node tools/check-board.js",
+    "studio": "node studio/run.js",
+    "studio:review": "node studio/review/server.js"
   },
   "engines": {
     "node": ">=22"

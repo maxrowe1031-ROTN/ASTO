@@ -1,0 +1,140 @@
+// variety.js — variety as a pipeline property, not as Max's memory.
+//
+// Locked decision 6: with no theme, the pipeline picks an underused
+// relationship shape for itself before Pair Author runs. The important part of
+// the spec's phrasing is that the brief is POSITIVE — it asks for what is
+// underused rather than showing old boards and saying "be different", which
+// tends to produce work that is merely different rather than work that is new.
+//
+// Counts are recomputed on demand rather than stored. Thirty runs is nothing
+// to walk, and a stored count is a second source of truth that can drift from
+// the runs it claims to summarise.
+
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+
+const INDEX_PATH = fileURLToPath(new URL('./corpus/relationship-index.json', import.meta.url));
+const PUZZLES_DIR = fileURLToPath(new URL('../puzzles/', import.meta.url));
+
+const taxonomy = JSON.parse(readFileSync(INDEX_PATH, 'utf8'));
+
+export const SHAPES = Object.freeze(taxonomy.shapes);
+const SHAPE_IDS = new Set(SHAPES.map((shape) => shape.id));
+
+const REQUEST_COUNT = 3;
+const AVOID_COUNT = 2;
+
+/** The words of a set, lower-cased, for joining a board back to its pairs. */
+const wordsOf = (set) => set.pairs.flat().map((word) => word.trim().toLowerCase());
+
+/**
+ * Walks the shipped boards and every run, counting how often each shape has
+ * been used and remembering which were used most recently.
+ *
+ * A set whose shape cannot be determined counts as `unknown` — the board
+ * builder may have altered words after the pair author declared them, and a
+ * missed join must never block brief construction.
+ */
+export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {}) {
+  const counts = {};
+  const recent = [];
+  let unknown = 0;
+
+  const record = (shape) => {
+    if (shape && SHAPE_IDS.has(shape)) {
+      counts[shape] = (counts[shape] ?? 0) + 1;
+      recent.push(shape);
+    } else {
+      unknown += 1;
+    }
+  };
+
+  // Shipped boards: hand-labelled, since they predate the `shape` field.
+  if (existsSync(puzzlesDir)) {
+    for (const file of readdirSync(puzzlesDir).filter((name) => name.endsWith('.json')).sort()) {
+      let board;
+      try {
+        board = JSON.parse(readFileSync(join(puzzlesDir, file), 'utf8'));
+      } catch {
+        continue;
+      }
+      const labels = taxonomy.shippedLabels[board.id] ?? {};
+      for (const set of board.sets ?? []) record(labels[set.id]);
+    }
+  }
+
+  // Runs: joined from the board back to the pair author's declared shapes.
+  for (const runId of store?.listRuns() ?? []) {
+    for (const { board, shapeByWord } of attemptsOf(store, runId)) {
+      for (const set of board.sets ?? []) {
+        const shapes = wordsOf(set).map((word) => shapeByWord.get(word)).filter(Boolean);
+        record(shapes.length > 0 ? mostCommon(shapes) : null);
+      }
+    }
+  }
+
+  return { counts, recent, unknown, shapes: SHAPES };
+}
+
+function* attemptsOf(store, runId) {
+  let attemptIds;
+  try {
+    attemptIds = store.listAttempts(runId);
+  } catch {
+    return;
+  }
+  for (const attemptId of attemptIds) {
+    let board;
+    try {
+      board = store.readAttemptArtifact(runId, attemptId, 'board.json');
+    } catch {
+      continue; // no board: a run still working, or one that failed
+    }
+    const shapeByWord = new Map();
+    try {
+      const authored = store.readStageArtifact(runId, attemptId, '01-pair-author', 'output.json');
+      for (const pair of authored.pairs ?? []) {
+        for (const word of [pair.a, pair.b]) {
+          if (typeof word === 'string') shapeByWord.set(word.trim().toLowerCase(), pair.shape);
+        }
+      }
+    } catch {
+      // A revision reuses the parent's pair author, so its own folder has no
+      // output. The board still counts; its shapes just land as unknown.
+    }
+    yield { board, shapeByWord };
+  }
+}
+
+const mostCommon = (values) => {
+  const tally = new Map();
+  for (const value of values) tally.set(value, (tally.get(value) ?? 0) + 1);
+  return [...tally.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))[0][0];
+};
+
+/**
+ * Turns the index into a brief for Pair Author: the least-used shapes to ask
+ * for, and the most recently leaned-on ones to steer away from.
+ *
+ * Deterministic — ties break on name — so the same library always produces the
+ * same brief, and a run's conditions can be reconstructed later.
+ */
+export function buildVarietyBrief({ index, count = 8 } = {}) {
+  const counts = index?.counts ?? {};
+  const ranked = SHAPES.map((shape) => ({ id: shape.id, used: counts[shape.id] ?? 0 })).sort(
+    (a, b) => a.used - b.used || (a.id < b.id ? -1 : 1),
+  );
+
+  const relationshipShapes = ranked.slice(0, REQUEST_COUNT).map((shape) => shape.id);
+
+  // Recently used AND actually over-represented: avoiding a shape used once is
+  // just noise in the prompt.
+  const requested = new Set(relationshipShapes);
+  const recent = [...new Set([...(index?.recent ?? [])].reverse())];
+  const avoidShapes = recent
+    .filter((shape) => !requested.has(shape) && (counts[shape] ?? 0) > 1)
+    .slice(0, AVOID_COUNT);
+
+  return { count, relationshipShapes, avoidShapes };
+}

@@ -1,0 +1,214 @@
+// server.js — the wire. Binding, static files, body limits, dispatch.
+//
+// Deliberately thin: every rule about what a request MEANS lives in api.js.
+// This file owns only the things that exist because HTTP exists.
+//
+// Two security properties are structural rather than checked:
+//
+//   It binds 127.0.0.1 explicitly. tools/serve.js calls listen(PORT) with no
+//   host, which binds every interface — fine for a static game on a laptop,
+//   wrong for a surface that starts runs and spends money. Do not copy that
+//   line here.
+//
+//   Static serving is an ALLOWLIST, not a rooted tree. The UI directory is
+//   served whole; beyond it only the game's stylesheets and the three pure
+//   engine modules the board renderer imports are reachable. Nothing else in
+//   the repo is addressable, so `studio/runs/`, `.env`, and the rest are not
+//   protected by a traversal check — they are simply not mounted.
+
+import { createServer } from 'node:http';
+import { createReadStream, existsSync, statSync } from 'node:fs';
+import { join, normalize, resolve, sep, extname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { createApi } from './api.js';
+import { createRunner, defaultTransport } from './runner.js';
+import { createRunStore } from '../storage/run-store.js';
+import { loadEnv } from '../env.js';
+import { loadRules } from '../corpus/rules.js';
+
+const HERE = fileURLToPath(new URL('.', import.meta.url));
+const REPO = resolve(HERE, '../..');
+
+const UI_DIR = join(HERE, 'ui');
+const MAX_BODY_BYTES = 256 * 1024;
+
+const MIME = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.ico': 'image/x-icon',
+  '.woff2': 'font/woff2',
+};
+
+// URL prefix → directory on disk. Everything outside this list is unreachable.
+//
+// The prefixes mirror the repo layout on purpose: it lets the UI modules use
+// ordinary relative imports ('../../../src/engine/arrangements.js') that
+// resolve identically under node and in the browser, so board-html.js can be
+// unit-tested without an import map or a build step.
+const MOUNTS = [
+  ['/studio/review/ui/', UI_DIR],
+  ['/styles/', join(REPO, 'styles')],
+  // Only the pure modules the board renderer imports. The engine proper, the
+  // views and app.js are not part of the Studio and are not served.
+  ['/src/engine/', join(REPO, 'src', 'engine'), new Set(['arrangements.js', 'tiers.js', 'rng.js'])],
+];
+
+const send = (res, status, body, type = 'text/plain; charset=utf-8') => {
+  res.writeHead(status, {
+    'Content-Type': type,
+    'Cache-Control': 'no-cache',
+    'X-Content-Type-Options': 'nosniff',
+  });
+  res.end(body);
+};
+
+const sendJson = (res, status, value) =>
+  send(res, status, JSON.stringify(value), 'application/json; charset=utf-8');
+
+/** Resolves a URL path to a file, or null if it is not in the allowlist. */
+function resolveStatic(pathname) {
+  const decoded = safeDecode(pathname);
+  if (decoded === null) return null;
+
+  for (const [prefix, dir, allowedFiles] of MOUNTS) {
+    if (!decoded.startsWith(prefix)) continue;
+    const name = decoded.slice(prefix.length);
+    if (allowedFiles && !allowedFiles.has(name)) return null;
+    return within(dir, name);
+  }
+
+  const relative = decoded === '/' ? 'index.html' : decoded.replace(/^\/+/, '');
+  return within(UI_DIR, relative);
+}
+
+// normalize() collapses ../ so the startsWith check below sees the real target.
+function within(dir, relative) {
+  const target = normalize(join(dir, relative));
+  if (target !== dir && !target.startsWith(dir + sep)) return null;
+  return existsSync(target) && statSync(target).isFile() ? target : null;
+}
+
+function safeDecode(value) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return null; // a malformed escape is not a path we will guess at
+  }
+}
+
+const tooLarge = () => Object.assign(new Error('request body too large'), { status: 413 });
+
+function readBody(req) {
+  // Declared length is checked first, so an oversized body is refused before a
+  // byte of it is buffered.
+  const declared = Number(req.headers['content-length']);
+  if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) {
+    return Promise.reject(tooLarge());
+  }
+
+  return new Promise((resolveBody, rejectBody) => {
+    const chunks = [];
+    let bytes = 0;
+    req.on('data', (chunk) => {
+      bytes += chunk.length;
+      if (bytes > MAX_BODY_BYTES) {
+        // Stop accumulating, but keep the socket alive long enough to answer:
+        // destroying it here would show the client a connection reset instead
+        // of the 413 that explains what happened.
+        req.pause();
+        rejectBody(tooLarge());
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on('end', () => resolveBody(Buffer.concat(chunks).toString('utf8')));
+    req.on('error', rejectBody);
+  });
+}
+
+export async function createReviewServer({
+  store,
+  rootDir,
+  port = 4321,
+  host = '127.0.0.1',
+  makeTransport = defaultTransport,
+  loadContext,
+} = {}) {
+  const runStore = store ?? createRunStore({ rootDir: rootDir ?? join(REPO, 'studio', 'runs') });
+  const runner = createRunner({
+    store: runStore,
+    makeTransport,
+    loadContext: loadContext ?? (() => ({ rules: loadRules().map((rule) => rule.text) })),
+  });
+  const api = createApi({ store: runStore, runner });
+
+  const server = createServer(async (req, res) => {
+    const pathname = (req.url ?? '/').split('?')[0];
+
+    try {
+      if (pathname.startsWith('/api/')) {
+        let body = null;
+        if (req.method !== 'GET' && req.method !== 'HEAD') {
+          const raw = await readBody(req);
+          if (raw.trim().length > 0) {
+            try {
+              body = JSON.parse(raw);
+            } catch {
+              return sendJson(res, 400, { error: 'body must be valid JSON' });
+            }
+          } else {
+            body = {}; // an empty body is an empty object, not a parse failure
+          }
+        }
+        const result = await api.handle({ method: req.method, path: pathname, body });
+        return sendJson(res, result.status, result.body);
+      }
+
+      const file = resolveStatic(pathname);
+      if (file === null) return send(res, 404, 'not found');
+
+      res.writeHead(200, {
+        'Content-Type': MIME[extname(file)] ?? 'application/octet-stream',
+        'Content-Length': statSync(file).size,
+        'Cache-Control': 'no-cache',
+        'X-Content-Type-Options': 'nosniff',
+      });
+      return createReadStream(file).pipe(res);
+    } catch (error) {
+      if (error.status === 413) return sendJson(res, 413, { error: error.message });
+      return sendJson(res, 500, { error: error.message });
+    }
+  });
+
+  await new Promise((done) => server.listen(port, host, done));
+
+  const { port: boundPort } = server.address();
+  return {
+    server,
+    runner,
+    store: runStore,
+    url: `http://${host}:${boundPort}`,
+    async close() {
+      await runner.drain();
+      // Keep-alive sockets would otherwise hold close() open until they time
+      // out — a single-user local tool has no reason to wait for them.
+      server.closeAllConnections();
+      await new Promise((done) => server.close(done));
+    },
+  };
+}
+
+// Started as a script: load .env (quietly), then listen.
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  loadEnv();
+  const port = Number(process.argv[2] ?? process.env.PORT ?? 4321);
+  createReviewServer({ port }).then(({ url }) => {
+    console.log(`Review Studio on ${url}`);
+    console.log('Loopback only. Ctrl-C to stop.');
+  });
+}

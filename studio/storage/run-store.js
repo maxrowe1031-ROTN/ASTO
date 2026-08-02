@@ -27,6 +27,7 @@ import {
   MANIFEST_SCHEMA_VERSION,
   canTransition,
   validateAttempt,
+  validateFeedbackEvent,
   validateManifest,
 } from '../schemas.js';
 
@@ -88,10 +89,14 @@ export function createRunStore({ rootDir, clock = () => new Date().toISOString()
     }
   };
 
+  // Under the run lock: the pipeline writes decisions while the Review Studio
+  // writes decisions and feedback, so these logs have two writers.
   const appendEvent = (runId, file, event) => {
     const stamped = { ...event, at: clock() };
-    appendFileSync(join(runDir(runId), file), `${JSON.stringify(stamped)}\n`);
-    return stamped;
+    return withLock(runDir(runId), () => {
+      appendFileSync(join(runDir(runId), file), `${JSON.stringify(stamped)}\n`);
+      return stamped;
+    });
   };
 
   const readJsonl = (runId, file) => {
@@ -316,7 +321,18 @@ export function createRunStore({ rootDir, clock = () => new Date().toISOString()
     readDecisions(runId) {
       return readJsonl(runId, 'decisions.jsonl');
     },
+    // Validated on the way in, like the manifest. Feedback is the corpus the
+    // editorial rubric gets compiled from — a malformed event would sit in it
+    // looking like signal.
     appendFeedback(runId, event) {
+      const result = validateFeedbackEvent(event);
+      if (!result.ok) {
+        throw new Error(
+          `refusing to append invalid feedback to run ${runId}: ${result.errors
+            .map((error) => `${error.path ? `${error.path}: ` : ''}${error.message}`)
+            .join('; ')}`,
+        );
+      }
       return appendEvent(runId, 'feedback.jsonl', event);
     },
     readFeedback(runId) {

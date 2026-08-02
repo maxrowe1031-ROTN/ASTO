@@ -1,0 +1,222 @@
+/*
+  review.css — Studio chrome ONLY.
+
+  Everything that makes this look like ASTO comes from the game's own
+  tokens.css / base.css / components.css, which index.html links directly.
+  Nothing here restyles .board, .tile, .solved-card or any other game class —
+  if a board looks wrong on this page, the game looks wrong too, which is
+  exactly the signal a review surface should give.
+
+  The GDD no-list applies here as well: no confetti, no particles, no timers,
+  and nothing red (the tier tokens own the only red in the system).
+*/
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* The Studio is a desk, not a phone screen — it needs the width. */
+.studio-view {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--page-pad) var(--page-pad) 96px;
+}
+
+.studio-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--page-pad) var(--page-pad) 0;
+}
+
+.studio-bar .wordmark { margin: 0; }
+
+.studio-label {
+  font-family: var(--font-body);
+  color: var(--soft-ink);
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+.studio-bar nav { margin-left: auto; }
+
+.studio-muted { color: var(--soft-ink); }
+
+.panel {
+  background: var(--milk);
+  border: 1px solid var(--oat);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.panel h2 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin: 0 0 12px;
+}
+
+.panel h4 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin: 0 0 8px;
+}
+
+/* The board panel gives the game's column its natural width back. */
+.board-panel .board,
+.board-panel .solved-sets {
+  max-width: var(--max-width);
+  margin-inline: auto;
+}
+
+.board-panel .tile { cursor: default; }
+
+/* --- run list --- */
+
+.run-list { list-style: none; margin: 0; padding: 0; }
+
+.run-list a {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--oat);
+  color: inherit;
+  text-decoration: none;
+}
+
+.run-list a:hover { background: var(--oat); border-radius: var(--radius-tile); }
+
+.status {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--oat);
+  color: var(--soft-ink);
+}
+
+.status-awaiting-review { background: var(--honey); color: var(--ink); }
+.status-approved { background: var(--tier-green-tint); color: var(--tier-green-deep); }
+/* Deliberately taupe, not red — the no-list owns that colour. */
+.status-failed,
+.status-rejected { background: var(--taupe); color: var(--ink); }
+
+/* --- forms --- */
+
+.new-run { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.new-run label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; }
+.new-run label.inline { flex-direction: row; align-items: center; gap: 6px; }
+
+input[type='text'],
+input[type='number'],
+input:not([type]),
+select,
+textarea {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 8px 10px;
+  border: 1px solid var(--taupe);
+  border-radius: var(--radius-tile);
+  background: var(--milk);
+  color: var(--ink);
+}
+
+textarea { width: 100%; resize: vertical; }
+
+/* --- feedback --- */
+
+.fb-block { padding: 12px 0; border-top: 1px solid var(--oat); }
+.fb-block:first-child { border-top: 0; }
+.fb-board { background: var(--oat); border-radius: var(--radius-tile); padding: 12px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border: 1px solid var(--taupe);
+  border-radius: var(--radius-pill);
+  background: var(--milk);
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease);
+}
+
+.chip:hover { background: var(--oat); }
+.chip input { margin: 0; }
+.chip:has(input:checked) { background: var(--honey); border-color: var(--honey); }
+.chip-positive:has(input:checked) {
+  background: var(--tier-green-tint);
+  border-color: var(--tier-green-main);
+}
+
+.decisions,
+.revise {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.revise { border-top: 1px solid var(--oat); padding-top: 12px; }
+.revise label { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+
+/* --- reports --- */
+
+.report summary {
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.report pre {
+  margin: 12px 0 0;
+  padding: 12px;
+  background: var(--cream);
+  border-radius: var(--radius-tile);
+  overflow-x: auto;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.failure {
+  padding: 10px 12px;
+  background: var(--taupe);
+  border-radius: var(--radius-tile);
+  font-size: 0.85rem;
+}
+
+/* Inline notice instead of alert() — this page polls itself, and a modal
+   would block the very run it is reporting on. */
+.notice {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  max-width: min(600px, calc(100vw - 32px));
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  box-shadow: 0 2px 12px rgb(60 50 40 / 18%);
+  z-index: 10;
+}
+
+.notice[hidden] { display: none; }
+.notice-info { background: var(--honey); color: var(--ink); }
+/* Taupe, not red — the no-list owns that colour. */
+.notice-error { background: var(--taupe); color: var(--ink); }
+
+@media (max-width: 520px) {
+  .studio-view { padding: 12px 12px 80px; }
+  .new-run { flex-direction: column; align-items: stretch; }
+}
