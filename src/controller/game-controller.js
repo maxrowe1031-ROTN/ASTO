@@ -43,6 +43,24 @@ export class GameController {
     this.start();
   }
 
+  /**
+   * Swap in a different board — how the tutorial hands off to a real puzzle, and how the
+   * title screen starts one.
+   *
+   * The rules change with the board (the tutorial runs `maxMistakes: Infinity`), so they
+   * are replaced wholesale rather than merged; a leftover rule from the previous game is
+   * exactly the kind of bug that only shows up three screens later.
+   *
+   * Every view absorbs this without special-casing: the board treats all sixteen old
+   * words as departing tiles, the solved-set list clears on an empty solvedSetIds, and
+   * the header rebuilds its pips when the bean count changes.
+   */
+  loadPuzzle(puzzle, rules = {}) {
+    this.rules = rules;
+    this.state = initGame(puzzle, rules);
+    this.start();
+  }
+
   // --- intents (wired to view callbacks) ---
 
   tileTapped(term) {

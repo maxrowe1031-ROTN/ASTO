@@ -12,7 +12,7 @@ import { difficultyToTier } from '../engine/tiers.js';
 import { settleIn, staggerStep } from './motion.js';
 
 export class EndView {
-  constructor(root, { onShare, onPlayAgain }) {
+  constructor(root, { onShare, onPlayAgain, onBackToTitle }) {
     root.innerHTML = `
       <h1 class="end-title"></h1>
       <p class="end-score"></p>
@@ -21,7 +21,8 @@ export class EndView {
         <button class="pill primary" data-action="share">Share</button>
         <button class="pill" data-action="play-again">Play again</button>
       </div>
-      <p class="share-feedback" role="status" aria-live="polite"></p>`;
+      <p class="share-feedback" role="status" aria-live="polite"></p>
+      <button class="text-action" data-action="back-to-title">Back to title</button>`;
 
     this.titleEl = root.querySelector('.end-title');
     this.scoreEl = root.querySelector('.end-score');
@@ -31,6 +32,7 @@ export class EndView {
 
     root.querySelector('[data-action="share"]').addEventListener('click', onShare);
     root.querySelector('[data-action="play-again"]').addEventListener('click', onPlayAgain);
+    root.querySelector('[data-action="back-to-title"]').addEventListener('click', onBackToTitle);
   }
 
   /** Called by the controller like any other view; it simply ignores live games. */

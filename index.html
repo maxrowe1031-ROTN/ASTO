@@ -18,12 +18,18 @@
   <link rel="stylesheet" href="styles/components.css">
 </head>
 <body>
-  <!-- Screens are sections; app.js toggles them. Phase 2 ships the play screen only. -->
-  <section id="screen-play" class="screen" aria-label="Puzzle">
+  <!-- Screens are sections; app.js toggles them. A first-time player never sees the
+       title screen — GDD §5.2 forces the guided board on first launch. -->
+  <section id="screen-title" class="screen" aria-label="ASTO"></section>
+
+  <section id="screen-play" class="screen" aria-label="Puzzle" hidden>
     <header id="header" class="header"></header>
     <div id="status" class="status" role="status" aria-live="polite"></div>
     <div id="frame" class="frame" aria-label="Analogy frame"></div>
     <main id="board" class="board" aria-label="Word tiles"></main>
+    <!-- Between the board and the controls on purpose: the coach card must never cover a
+         tile, or it could swallow the very tap it is asking for. -->
+    <aside id="tutorial-coach" class="coach" aria-live="polite" hidden></aside>
     <div id="controls" class="controls"></div>
     <div id="solved-sets" class="solved-sets" aria-label="Solved sets"></div>
   </section>

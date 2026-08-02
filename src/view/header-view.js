@@ -1,5 +1,6 @@
 // Header: wordmark, puzzle title, coffee-bean mistake pips. READ-ONLY — renders state,
-// emits nothing.
+// emits one intent: the wordmark is the way back to the title screen, the convention
+// every site has trained players to expect of a logo in the top-left.
 //
 // Beans fill roast brown as mistakes are used. Never red; that is spec, not taste.
 
@@ -10,14 +11,16 @@ const BEAN_SVG = `
   </svg>`;
 
 export class HeaderView {
-  constructor(root) {
+  constructor(root, { onHome }) {
     root.innerHTML = `
-      <span class="wordmark">ASTO</span>
+      <button class="wordmark" data-action="home" aria-label="ASTO — back to the title screen">ASTO</button>
       <span class="puzzle-title"></span>
       <span class="beans" role="img"></span>`;
     this.titleEl = root.querySelector('.puzzle-title');
     this.beansEl = root.querySelector('.beans');
     this.beanEls = [];
+
+    root.querySelector('[data-action="home"]').addEventListener('click', onHome);
   }
 
   update(state) {
@@ -31,6 +34,15 @@ export class HeaderView {
       this.beanEls = [...this.beansEl.querySelectorAll('.bean')];
     }
     this.beanEls.forEach((bean, i) => bean.classList.toggle('used', i < state.mistakes));
-    this.beansEl.setAttribute('aria-label', `${state.mistakes} of ${total} mistakes used`);
+
+    // With no beans to show there is nothing to announce — "0 of 0 mistakes used" is
+    // noise a screen reader would read out on every render of the no-lose tutorial.
+    if (total === 0) {
+      this.beansEl.removeAttribute('aria-label');
+      this.beansEl.removeAttribute('role');
+    } else {
+      this.beansEl.setAttribute('role', 'img');
+      this.beansEl.setAttribute('aria-label', `${state.mistakes} of ${total} mistakes used`);
+    }
   }
 }

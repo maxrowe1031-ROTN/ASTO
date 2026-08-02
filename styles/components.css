@@ -10,10 +10,26 @@
   gap: 10px;
 }
 
+/* Also the way home. It stays visually a wordmark — no pill, no underline — because a
+   logo that goes to the title screen is a convention players already know. */
 .header .wordmark {
+  position: relative;
   font-family: var(--font-display);
   font-size: 28px;
   letter-spacing: 0.02em;
+  transition: opacity var(--motion-fast) var(--ease);
+}
+
+/* Grows the tap target to 44px WITHOUT changing the box, so the header's baseline
+   alignment is exactly what it was when this was a span. */
+.header .wordmark::after {
+  content: '';
+  position: absolute;
+  inset: -8px -8px;
+}
+
+.header .wordmark:active {
+  opacity: 0.6;
 }
 
 .header .puzzle-title {
@@ -331,4 +347,89 @@
   color: var(--ink);
   opacity: 0.82;
   margin-top: 2px;
+}
+
+/* A quiet way out that doesn't compete with Share and Play again for the eye. */
+.text-action {
+  align-self: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--soft-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: var(--tap-target);
+  padding: 0 12px;
+}
+
+/* ---------- Title screen ---------- */
+
+.title-block {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-wordmark {
+  font-family: var(--font-display);
+  font-size: 54px;
+  letter-spacing: 0.03em;
+}
+
+.title-tagline {
+  color: var(--soft-ink);
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+/* ---------- First-run coach card ---------- */
+
+.coach {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--taupe);
+  background: var(--milk);
+  padding: 12px 14px;
+}
+
+/* `display: flex` above outranks the UA stylesheet's [hidden] { display: none } — the
+   same trap that left every screen stacked in Phase 2. Say it explicitly. */
+.coach[hidden] {
+  display: none;
+}
+
+.coach-body {
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+/* The "nothing lost" aside — said once, and quieter than the diagnosis above it. */
+.coach-note {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--soft-ink);
+  margin-top: -4px;
+}
+
+.coach-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Smaller than a board control: the coach guides, it doesn't compete with Confirm.
+   Skip is a text action, not a pill — leaving the tutorial shouldn't look like the
+   recommended move on the very first screen a new player sees. */
+.coach-action.pill {
+  padding: 6px 18px;
+  min-height: 36px;
+  font-size: 14px;
+}
+
+.coach-action[hidden] {
+  display: none;
 }

@@ -2,6 +2,104 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-02 — Phase 4 built: first-run tutorial, coach, title screen (gate NOT yet met)
+
+- **Built (new):** `puzzles/tutorial.json` ("Warm Up", 4 relationship-not-category sets) ·
+  `src/controller/tutorial-script.js` (PURE coach-mark machine) ·
+  `src/view/tutorial-overlay.js` (the coach card) · `src/view/title-view.js` ·
+  `src/storage.js` (`tutorialSeen` only; guarded — Safari private mode *throws* on
+  localStorage) · `test/controller/tutorial-script.test.js` · `test/storage.test.js`.
+  **Changed:** `index.html` (`#screen-title`, `#tutorial-coach`), `app.js` (routing +
+  `ScreenRouter` gains a title state), `game-controller.js` (`loadPuzzle`),
+  `header-view.js`, `end-view.js`, `controls-view.js`, `styles/components.css`.
+  **No engine changes** — `maxMistakes: Infinity` has been built and tested since Phase 1.
+- **Decisions made with Max:** hand off to the real game **after the first set** (not the
+  whole board) · coach-marks are a **non-blocking bottom card**, never a scrim (Appendix D
+  lists the Screen 0 wireframe as *pending*, so this was a Phase 4 design decision, not a
+  spec being followed) · Claude drafts tutorial sets 2–4, Max edits · **title screen** with
+  Play / How to play · the **ASTO wordmark is the way home** · Play **resumes** a live
+  board · controls reordered to **Shuffle · Clear · Confirm**.
+- **Two engine dials, no engine code.** The tutorial runs
+  `{ maxMistakes: Infinity, clearSelectionOnFail: false }`, both existing `rules` knobs.
+  The second is new this session (Max): a wrong answer now **stays in the frame** so the
+  diagnosis can be checked against it — and "swap that one out" becomes one tap instead of
+  rebuilding from nothing. `TUTORIAL_RULES` lives in `tutorial-script.js` so the tests
+  exercise the shipped config, not a stand-in.
+- **The coach diagnoses instead of shrugging.** "Not quite" teaches nothing, so every wrong
+  submission is classified by *why*: cross-paired · one half backwards · three-plus-a-
+  stranger · two-and-two · two-and-strays · four scattered · identical repeat. Each is a
+  **ladder** of 2–3 escalating lines. Derived from `state.puzzle.sets` — the tutorial is
+  explicitly allowed to hint (§5.2) and never runs on a real puzzle; the main game's
+  empty `so-close` payload is untouched. No line names a set, tier, label or board word.
+- **Four real bugs, all in this session's own code, all found by Max playtesting:**
+  1. **Coach updated ~900ms after the status strip.** Measured with a MutationObserver:
+     status 1ms, coach 894ms. It sat *after* `FrameView`/`BoardView` in the views array
+     and the controller awaits each view, so it queued behind both ±4px shakes. Moved
+     ahead of the animating views → **1ms**. Nothing in `node:test` can catch this class
+     of bug; there is now a comment at the call site.
+  2. **The coach went permanently deaf after the first solve.** `if (solvedSetIds.length >
+     0) return STEPS.done` sat above every other branch, so a player who kept playing
+     instead of pressing Continue got congratulated forever — a wrong answer changed
+     nothing. Now the Continue **action** is sticky; the **words** are not. *A test named
+     "done sticks" was asserting this exact bug and holding it in place.*
+  3. **Identical copy read as frozen.** Three different scattered guesses produced one
+     byte-identical sentence. Fixed by the ladders above; a submission also always
+     re-animates the card even when the wording is unchanged.
+  4. **Nothing changed between taps 1–3** while filling the frame. Now one line per tap
+     (`relationship → pair-hunt → notation → one-more → order`), with the `::` lesson
+     moved to two words — the first moment the frame shows a whole pair.
+  Also fixed: leaving for the title screen **abandoned the board**. `Play` now resumes when
+  that puzzle is still in play (`status === 'playing'` — a finished board correctly starts
+  fresh). And a test leak-check was substring-based, flagging "sha**red**" as leaking the
+  tier "red"; it is word-boundary aware now.
+- **Verified:** `npm test` → **154 pass, 0 fail** (was 103; +51, red-first).
+  `check-board.js puzzles/tutorial.json` → schema v1.0 ✓, **16/16 accepted of 43,680
+  ordered tuples**, 0 collisions. Browser at 375×812, `localStorage` cleared: fresh profile
+  lands in the tutorial (not the title), **no bean pips**, 5 wrong submissions never left
+  the play screen, all 7 diagnoses fired on the real board, 9 moves → 9 distinct lines,
+  6 consecutive Confirms → 6 distinct lines. Hand-off, Skip, replay, resume (solved card +
+  spent bean + half-filled frame all survived), Back to title from win *and* loss, and the
+  §16 First-Run Tutorial criterion all confirmed. Reduced motion exercised by overriding
+  `matchMedia`: `settleIn`/`shake`/`fadeOut`/`pulse` all returned in **0ms**. Desktop
+  1280px no overflow; zero console errors; all requests 200.
+- **Honest limitations:** (a) **no phone playtest yet — the gate is unwalked.** (b) The
+  preview browser never advances its animation timeline, so motion was verified logically,
+  never watched. (c) Ladders are 2–3 rungs; the same mistake more times than that repeats
+  its top rung (the card still re-animates). (d) There is now **no way to abandon a board
+  mid-game and restart it** — Play resumes, and "Play again" only exists on the end screen.
+  Phase 5's select surface is its natural home.
+- **Design-doc drift (deviations recorded here, `design.md` left as approved):**
+  - **Title screen is not in `design.md`'s Phase 4** — routing was deferred to Phase 5. It
+    is a precursor to the select surface and Phase 5 may absorb it.
+  - `design.md`'s "pips hidden via a view flag" proved **unnecessary** — `maxMistakes:
+    Infinity` already renders zero beans. Only the `aria-label` needed suppressing (it was
+    announcing "0 of 0 mistakes used").
+  - `tutorialSeen` is recorded when the **last coach-mark appears**, not only on
+    Continue/Skip, so a player who wanders off after being coached isn't taught twice.
+- **Phase status: Phase 4 built and verified in the preview browser — GATE NOT MET.**
+  The gate is Max's playtest on a real iPhone: coach-card placement against the safe area,
+  and whether the shake still reads as "wrong" now that the tiles stay put.
+- **Next:**
+  1. **Max playtests Phase 4 on the phone.** That closes the gate.
+  2. **Phase 5a — daily puzzle + archive calendar.** Plan written and approved this
+     session: `~/.claude/plans/keen-percolating-boot.md`. Manifest (`puzzles/index.json`) ·
+     `validate-manifest.js` · pure `daily.js` (injected `today`, never `toISOString()`) ·
+     `results.js` + persisted per-puzzle results · `archive-view.js` calendar ·
+     Next-puzzle chaining · tighten `date` to `YYYY-MM-DD` when present (a tightening, not
+     a schema change) · drop the tutorial's `date`. Built against the **2** existing boards.
+  3. **New decision to record upstream:** Max chose the **daily puzzle format** with a
+     calendar archive — this answers GDD **§17.3**'s open question ("daily puzzle format or
+     puzzle packs?"). It is a deviation from `design.md`'s flat `select-view.js` list.
+  4. **Phase 5b — content.** The remaining 8 boards come from the **AI Puzzle Studio**
+     (Max's call), whose brainstorm is still paused at the agent-roster question. Because
+     the Studio authors them, it also produces §16's **Difficulty Loop** and **Pipeline
+     Demo** artifacts — so **Phase 5's gate needs no reword after all**, contrary to the
+     2026-08-01 entry. 5a is gated on its own checklist instead.
+  5. Carried: First Light `explanation` editorial pass (Red set weakest) · GDD drift to
+     propose upstream (Appendix A pre-v1.0 schema, §8's missing `already-tried` row, motion
+     now 187–281ms vs Appendix E's 120–180ms, §17.3 answered twice over now) · the
+     tutorial board's sets 2–4 wording is Max's to edit.
+
 ## 2026-08-01 — Started: AI Puzzle Studio design (brainstorm paused mid-way)
 
 **No code written.** Design conversation only, paused by Max to resume next session.

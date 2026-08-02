@@ -5,10 +5,12 @@
 
 export class ControlsView {
   constructor(root, { onConfirm, onClear, onShuffle }) {
+    // Shuffle · Clear · Confirm — least committal to most, ending on the primary action
+    // under the right thumb.
     root.innerHTML = `
+      <button class="pill" data-action="shuffle">Shuffle</button>
       <button class="pill" data-action="clear">Clear</button>
-      <button class="pill primary" data-action="confirm">Confirm</button>
-      <button class="pill" data-action="shuffle">Shuffle</button>`;
+      <button class="pill primary" data-action="confirm">Confirm</button>`;
     this.confirmEl = root.querySelector('[data-action="confirm"]');
     this.clearEl = root.querySelector('[data-action="clear"]');
     this.shuffleEl = root.querySelector('[data-action="shuffle"]');
