@@ -2,6 +2,49 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-01 — Live on GitHub Pages + first playtest rule: "already tried" is free
+
+- **Shipped the game publicly (Max's call):** repo flipped to public, GitHub Pages
+  enabled from `main` root. **Live at https://maxrowe1031-rotn.github.io/ASTO/** —
+  every push to `main` auto-redeploys (~1 min). All fetches were already relative
+  paths, so the `/ASTO/` subpath needed zero changes. Also reachable on LAN via
+  `npm run serve` + `http://<mac-ip>:8080`.
+- **First real-device playtest finding (iPhone, Max):** resubmitting the exact same
+  wrong four-in-order cost a second bean for the same mistake. Felt unfair; Max
+  specified the fix.
+- **New engine rule — `already-tried`:** state gained `failedAttempts` (every charged
+  miss/so-close records its exact ordered submission; `invalid` no-ops never recorded).
+  Resubmitting one → outcome `already-tried`: **no mistake**, selection clears per
+  `clearSelectionOnFail`, outcome carries only `type` (no hints, like so-close). Same
+  four words in a *different* order = new claim, charges normally. Status copy:
+  "Already tried that one." Shake animation for it arrives with Phase 3's motion pass.
+- **Deliberate scope note:** so-close repeats are also free — same fairness principle,
+  but it slightly softens the §8.3 so-close economy. Flagged to Max; two-line change
+  if playtesting disagrees.
+- **Verified:** 7 new red-first tests (repeat miss/so-close free · repeat clears
+  selection · different order charges · history survives intervening solves · invalids
+  unrecorded · no-hint payload) → **95 tests, 95 pass, exit 0**; check-board still
+  clean (integrity sweep probes a fresh history per tuple — acceptance surface
+  unchanged). Browser end-to-end: bean → free → free → different-order bean. **Max
+  re-tested on the phone and confirmed.** 3 existing tests updated off the old
+  repeats-charge assumption (they looped one identical miss to rack up mistakes).
+- **Docs drift:** GDD §8 feedback table now lacks the `already-tried` row — propose
+  upstream (GDD is Max-owned), alongside the standing Appendix A schema drift.
+  CLAUDE.md's "rules easy to get wrong" updated in-repo. `docs/design.md` outcome list
+  (`solved/so-close/miss`) now reads as pre-revision; deviation recorded here rather
+  than editing the approved plan.
+- Housekeeping: `.gitignore` added (`.DS_Store` — one snuck into a commit, removed).
+- **Phase status: Phase 2 still the last gated phase, gate met.** This session was a
+  playtest-driven rules revision + deployment, not a phase.
+- **Next:**
+  1. **Phase 3 — win/loss screens + motion polish** (unchanged from last entry):
+     `end-view.js` (win: tier cards, Share, Next puzzle; loss: reveal with
+     explanations), motion pass per Appendix E — FLIP solve→canonical→card, ±4px
+     shake ×3 (now also for `already-tried`), `prefers-reduced-motion`, paper grain.
+  2. Playtest watch-items for the §8.3 data: does free-repeat-of-so-close give too
+     much away? Still open: First Light explanations editorial pass; handbook/GDD
+     drift proposal.
+
 ## 2026-08-01 — Phase 2 complete: core play screen, playable in the browser
 
 - **Built (all new):** `index.html` (play screen, fonts link, error screen) ·
