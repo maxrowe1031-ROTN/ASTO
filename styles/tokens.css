@@ -39,9 +39,11 @@
   --font-display: 'Bree Serif', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
   --font-body: 'Nunito', 'Avenir Next', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
-  /* Motion: 120–180ms ease-out everywhere. No confetti, no particles, no timers. */
-  --motion-fast: 120ms;
-  --motion-slow: 180ms;
+  /* Motion: ease-out everywhere. No confetti, no particles, no timers.
+     Appendix E specifies 120–180ms; these are that range slowed 20% after the first
+     real-device playtest (2026-08-01). Keep in step with DURATION in view/motion.js. */
+  --motion-fast: 144ms;
+  --motion-slow: 216ms;
   --ease: cubic-bezier(0, 0, 0.2, 1);
 
   /* Shape */

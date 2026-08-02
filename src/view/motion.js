@@ -8,7 +8,10 @@
 // when the motion is done (immediately when motion is off), so callers can sequence
 // beats without setTimeout guesswork.
 
-const DURATION = 180;
+// 216ms = Appendix E's 180ms slowed 20% after the first real-device playtest (2026-08-01).
+// This is the single source of truth for JS-driven motion; the CSS transitions in
+// tokens.css (--motion-fast / --motion-slow) are scaled to match.
+const DURATION = 216;
 const EASE = 'cubic-bezier(0, 0, 0.2, 1)';
 const SHAKE_PX = 4;
 

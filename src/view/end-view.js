@@ -55,7 +55,7 @@ export class EndView {
     inTierOrder.forEach((set, i) => {
       const card = this.buildCard(set, state.solvedSetIds.includes(set.id));
       this.setsEl.appendChild(card);
-      settleIn(card, i * 60);
+      settleIn(card, i * 72);
     });
   }
 
