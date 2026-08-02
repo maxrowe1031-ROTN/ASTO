@@ -12,6 +12,8 @@ file protocol. Always serve it:
 npm run serve
 ```
 
+Then open http://localhost:8080.
+
 ```bash
 npm test
 ```

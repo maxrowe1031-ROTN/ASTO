@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F3ECDC">
+  <title>ASTO — Connections, but with analogies</title>
+
+  <!-- Bree Serif + Nunito. A network nicety, not a dependency: the CSS stacks in
+       tokens.css fall back to system fonts when this fails. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Nunito:ital,wght@0,600;0,700;0,800;1,600&display=swap">
+
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/components.css">
+</head>
+<body>
+  <!-- Screens are sections; app.js toggles them. Phase 2 ships the play screen only. -->
+  <section id="screen-play" class="screen" aria-label="Puzzle">
+    <header id="header" class="header"></header>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <div id="frame" class="frame" aria-label="Analogy frame"></div>
+    <main id="board" class="board" aria-label="Word tiles"></main>
+    <div id="controls" class="controls"></div>
+    <div id="solved-sets" class="solved-sets" aria-label="Solved sets"></div>
+  </section>
+
+  <section id="screen-error" class="screen" hidden>
+    <div class="load-error">
+      <h1>ASTO</h1>
+      <p id="error-message">Something went wrong loading the puzzle.</p>
+    </div>
+  </section>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

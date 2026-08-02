@@ -1,0 +1,259 @@
+/* Components: header + beans, analogy frame, board tiles, pills, solved cards, status.
+   Every color and duration comes from tokens.css. Tier colors appear ONLY inside
+   .solved-card — the live board must never hint at them. */
+
+/* ---------- Header ---------- */
+
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.header .wordmark {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 0.02em;
+}
+
+.header .puzzle-title {
+  color: var(--soft-ink);
+  font-size: 15px;
+  flex: 1;
+}
+
+.beans {
+  display: flex;
+  gap: 6px;
+  align-self: center;
+}
+
+.bean {
+  width: 18px;
+  height: 18px;
+  transition: fill var(--motion-slow) var(--ease);
+}
+
+.bean .bean-body {
+  fill: var(--bean-empty);
+}
+
+.bean.used .bean-body {
+  fill: var(--bean-filled);
+}
+
+.bean .bean-crease {
+  stroke: var(--cream);
+  stroke-width: 1.4;
+  fill: none;
+}
+
+/* ---------- Status strip ---------- */
+
+.status {
+  min-height: 24px;
+  text-align: center;
+  color: var(--soft-ink);
+  font-size: 15px;
+  transition: opacity var(--motion-slow) var(--ease);
+}
+
+.status.is-empty {
+  opacity: 0;
+}
+
+.status .status-strong {
+  font-weight: 800;
+  color: var(--ink);
+}
+
+/* ---------- Analogy frame ---------- */
+
+.frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  touch-action: none; /* pointer-event drag owns gestures here */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.frame .sep {
+  font-family: var(--font-display);
+  color: var(--faint-ink);
+  font-size: 18px;
+  flex: none;
+}
+
+.frame-slot {
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--tap-target);
+  border-radius: var(--radius-tile);
+  background: var(--oat);
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+  transition:
+    background var(--motion-fast) var(--ease),
+    box-shadow var(--motion-slow) var(--ease),
+    transform var(--motion-fast) var(--ease);
+}
+
+.frame-slot.filled {
+  background: var(--milk);
+  border-color: var(--taupe);
+  cursor: pointer;
+}
+
+.frame-slot.next {
+  box-shadow: 0 0 0 2px var(--honey-glow), inset 0 0 0 1px var(--honey-glow);
+}
+
+.frame-slot.dragging {
+  opacity: 0.85;
+  box-shadow: 0 4px 10px rgba(64, 52, 42, 0.18);
+  z-index: 2;
+  position: relative;
+  transition: none; /* mid-drag offset is transient view state; keep it 1:1 with the finger */
+}
+
+.frame-slot.drop-target {
+  background: var(--oat);
+  border-color: var(--faint-ink);
+  border-style: dashed;
+}
+
+/* ---------- Board ---------- */
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+}
+
+.tile {
+  min-height: 56px;
+  border-radius: var(--radius-tile);
+  background: var(--milk);
+  border: 1px solid var(--taupe);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 4px 2px;
+  overflow-wrap: anywhere;
+  transition:
+    background var(--motion-fast) var(--ease),
+    color var(--motion-fast) var(--ease),
+    transform var(--motion-fast) var(--ease),
+    opacity var(--motion-slow) var(--ease);
+}
+
+@media (hover: hover) {
+  .tile:hover:not(.selected) {
+    background: var(--oat);
+  }
+}
+
+.tile:active {
+  transform: translateY(1px); /* 1px press, per Appendix E */
+}
+
+.tile.selected {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--milk);
+}
+
+/* ---------- Controls ---------- */
+
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.pill {
+  border-radius: var(--radius-pill);
+  padding: 10px 22px;
+  min-height: var(--tap-target);
+  font-weight: 800;
+  font-size: 15px;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+  background: transparent;
+  transition:
+    background var(--motion-fast) var(--ease),
+    color var(--motion-fast) var(--ease),
+    opacity var(--motion-fast) var(--ease),
+    transform var(--motion-fast) var(--ease);
+}
+
+.pill:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* Ink fill is reserved for the one primary action on screen. */
+.pill.primary {
+  background: var(--ink);
+  color: var(--milk);
+}
+
+.pill:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ---------- Solved set cards ---------- */
+
+.solved-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.solved-card {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--card-main);
+  background: var(--card-tint);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.solved-card[data-tier='green']  { --card-main: var(--tier-green-main);  --card-tint: var(--tier-green-tint);  --card-deep: var(--tier-green-deep); }
+.solved-card[data-tier='yellow'] { --card-main: var(--tier-yellow-main); --card-tint: var(--tier-yellow-tint); --card-deep: var(--tier-yellow-deep); }
+.solved-card[data-tier='red']    { --card-main: var(--tier-red-main);    --card-tint: var(--tier-red-tint);    --card-deep: var(--tier-red-deep); }
+.solved-card[data-tier='black']  { --card-main: var(--tier-black-main);  --card-tint: var(--tier-black-tint);  --card-deep: var(--tier-black-deep); }
+
+.solved-card .tier-badge {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--card-deep);
+  border: 1px solid var(--card-main);
+  border-radius: var(--radius-pill);
+  padding: 1px 10px;
+}
+
+.solved-card .analogy {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--card-deep);
+}
+
+.solved-card .relationship {
+  font-style: italic;
+  font-size: 13px;
+  color: var(--soft-ink);
+}

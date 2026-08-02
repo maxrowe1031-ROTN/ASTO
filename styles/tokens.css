@@ -1,0 +1,57 @@
+/* ASTO design tokens — GDD Appendix E, verbatim.
+   Hand-mixed paint, not saturated app colors. These variables are the design system;
+   components never hardcode a color, font, or duration. */
+
+:root {
+  /* Palette */
+  --cream: #F3ECDC;      /* page */
+  --milk: #FAF5E9;       /* tiles */
+  --oat: #EAE0CB;        /* wells */
+  --taupe: #D8CCB3;      /* borders */
+  --faint-ink: #A5977F;  /* hints */
+  --soft-ink: #7A6B57;   /* secondary text */
+  --ink: #40342A;        /* text, primary fill */
+
+  /* Honey — the glow on the frame's next slot */
+  --honey: #D9A741;
+  --honey-glow: rgba(217, 167, 65, 0.35);
+
+  /* Tier triples: main (borders/badges), deep (text), tint (card backgrounds).
+     Revealed on solve only — nothing on the live board may use these. */
+  --tier-green-main: #8FAC84;
+  --tier-green-deep: #4F6B47;
+  --tier-green-tint: #E9EFE0;
+  --tier-yellow-main: #D9A741;
+  --tier-yellow-deep: #8A6519;
+  --tier-yellow-tint: #F7ECD1;
+  --tier-red-main: #C2603E;
+  --tier-red-deep: #8F4227;
+  --tier-red-tint: #F4E0D4;
+  --tier-black-main: #4A453E;
+  --tier-black-deep: #2E2B27;
+  --tier-black-tint: #E5E1D8;
+
+  /* Mistake beans — roast brown when used. Never red. */
+  --bean-empty: var(--oat);
+  --bean-filled: #5C4633;
+
+  /* Typography. Bree Serif: titles, wordmark, solved analogies only. Nunito: the rest. */
+  --font-display: 'Bree Serif', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-body: 'Nunito', 'Avenir Next', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* Motion: 120–180ms ease-out everywhere. No confetti, no particles, no timers. */
+  --motion-fast: 120ms;
+  --motion-slow: 180ms;
+  --ease: cubic-bezier(0, 0, 0.2, 1);
+
+  /* Shape */
+  --radius-tile: 12px;
+  --radius-card: 14px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --gap: 8px;
+  --page-pad: 16px;
+  --max-width: 480px;
+  --tap-target: 44px;
+}

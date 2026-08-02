@@ -1,0 +1,68 @@
+/* Base: reset, page shell, typography. Flat cream page — paper grain (Phase 3) lives
+   only on tiles and cards, never the background. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  padding:
+    env(safe-area-inset-top)
+    env(safe-area-inset-right)
+    env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+}
+
+.screen {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--page-pad);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 100dvh;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation; /* no double-tap zoom on fast tapping */
+}
+
+button:focus-visible {
+  outline: 2px solid var(--soft-ink);
+  outline-offset: 2px;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+.load-error {
+  margin: auto;
+  text-align: center;
+  color: var(--soft-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

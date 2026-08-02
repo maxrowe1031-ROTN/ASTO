@@ -2,6 +2,60 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-01 — Phase 2 complete: core play screen, playable in the browser
+
+- **Built (all new):** `index.html` (play screen, fonts link, error screen) ·
+  `styles/tokens.css` (Appendix E as CSS vars — palette, tier triples, type, motion) +
+  `base.css` + `components.css` · `src/source/local-json-source.js` (fetch + validate at
+  the boundary, injectable `fetchFn`) · six views in `src/view/` — header (bean pips),
+  status strip, frame (honey-glow next slot, pointer-event drag), board (4×4, persistent
+  keyed nodes), controls (Confirm-gated), solved cards ·
+  `src/controller/game-controller.js` (the only engine caller) · `src/app.js` bootstrap ·
+  `test/source/local-json-source.test.js` · `.claude/launch.json`. **No engine changes.**
+- **Decisions made with Max:** Google Fonts `<link>` for Bree Serif/Nunito with full
+  fallback stacks (network nicety, not a dependency; self-host later) · minimal status
+  strip for won/lost in Phase 2 — real end screens are Phase 3's `end-view.js`.
+- **Verified:**
+  - `npm test` → **88 tests, 88 pass, exit 0** (82 engine/source + 6 new source tests,
+    written red-first). `check-board.js` still exit 0.
+  - **Manual gate, preview browser, mobile viewport 375×812 — every item passed:**
+    full win (each set solved via a *different* accepted order; cards always display
+    canonical) · full loss (4 roast-brown beans, board inert after) · so-close costs a
+    bean + clears + leaks no set/tier · Clear free · Shuffle unsolved-only with selection
+    kept · deselect compresses (board tap AND frame-slot tap) · 4th tap never submits ·
+    Confirm gated at exactly 4 · drag-to-reorder commits (drag-fixed a cross-pair frame
+    into canonical and solved with it) · taps alone complete the game · zero console
+    errors, all requests 200 · desktop width sane.
+  - Visual spec held: tiers hidden until solve, beans never red, ink fill on Confirm
+    only, honey glow on next slot, flat cream page.
+  - **Max playtested and approved** ("working great").
+- **Two real view bugs found by the manual gate, fixed, re-verified:**
+  1. **Drag-to-reorder never committed** — the dragged slot follows the pointer via
+     `transform`, and `getBoundingClientRect()` includes transforms, so the drop
+     hit-test always found the dragged slot itself and read the drop as "onto yourself."
+     Fix: skip the dragged slot when hit-testing (`frame-view.js`).
+  2. **`setPointerCapture` could kill slot taps** — if capture throws (released/synthetic
+     pointer), pointerdown died before recording the tap. Now try/caught: capture is an
+     optimization, not a dependency.
+  Exactly the bug class engine tests can't see — the reason the gate is manual.
+- **Deviations from `docs/design.md`:** none of substance. Added `status-view.js` beyond
+  the listed views (the Phase 2 minimal end-state strip, agreed with Max);
+  `select-view.js`/`end-view.js`/`tutorial-overlay.js` are later phases as planned.
+- **Phase status: Phase 2 gate MET** — playable win and loss in mobile emulation with
+  all rule behaviors correct, playtested by Max.
+- **Still open:** the four First Light `explanation` strings await Max's editorial pass
+  (Red set weakest) · handbook drift (GDD Appendix A / tech spec pre-v1.0) still to
+  propose upstream.
+- **Next:**
+  1. **Phase 3 — win/loss screens + motion polish:** `end-view.js` (win: tier cards in
+     order, Share, Next puzzle; loss: unsolved sets revealed in canonical order **with
+     explanations**, REVEALED badges), motion pass per Appendix E (120–180ms ease-out,
+     FLIP solve→canonical→card sequence, ±4px shake ×3, `prefers-reduced-motion`),
+     paper grain (inline SVG feTurbulence data-URI, tiles/cards only).
+  2. Phase 3 gate: GDD §16 acceptance for core loop + end states, solve animation
+     glitch-free, no-list held. Real-iPhone check recommended at this gate (design.md
+     risk 4: 100dvh, safe-area, touch-action are in place but untested on device).
+
 ## 2026-08-01 — Phase 1 complete: headless engine, validator, integrity, First Light
 
 - **Built (all new):** `package.json` (zero deps, `type: module`) · `src/engine/`
