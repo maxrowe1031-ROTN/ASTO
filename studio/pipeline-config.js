@@ -43,7 +43,14 @@ export const DEFAULT_CONFIG = deepFreeze({
     },
   },
 
-  maxTokens: { default: 4096 },
+  // max_tokens caps thinking AND response text together, and Sonnet 5 runs
+  // adaptive thinking by default (we send no `thinking` parameter). The
+  // Development Brain records this exact failure from the prototype crew —
+  // "Sonnet-5 returned empty (thinking-by-default consumed the token budget)"
+  // — so the budget has headroom rather than sitting at a value the thinking
+  // alone could swallow. This is a ceiling, not a spend: only tokens actually
+  // produced are billed, and budget.js caps the real spend.
+  maxTokens: { default: 16_000 },
 
   // Two bounds, because there are two failure classes and they are retried by
   // different owners. `transport` bounds llm.js's own loop (timeouts, 429s,

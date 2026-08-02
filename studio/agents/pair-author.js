@@ -60,6 +60,7 @@ export function buildPrompt(input = {}, context) {
       .filter(Boolean)
       .join('\n'),
     outputRules: [
+      'Return { "pairs": [ ... ] }, optionally with "shortfall".',
       'Each pair is { "a", "b", "relationshipLabel", "shape" }, where "relationshipLabel" states the relation precisely',
       '(for example "small origin becomes larger result") and "shape" is its general family (for example "transformation").',
       JSON_ONLY,

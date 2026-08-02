@@ -55,7 +55,16 @@ export function buildPrompt(input = {}, context) {
       'Every set gets a one-line rationale.',
     ].join('\n'),
     data: asJsonBlock('Candidate sets', sets),
-    outputRules: `Return one entry per set, keyed by its "setId". ${JSON_ONLY}`,
+    // Names the wrapper and says ARRAY explicitly. The earlier wording — "one
+    // entry per set, keyed by its setId" — read as an instruction to return a
+    // map ({ "set-a": {...} }), which is exactly what the model produced, three
+    // times, against a schema that wanted { "grades": [...] }. It obeyed the
+    // prompt; the prompt was wrong.
+    outputRules: [
+      'Return { "grades": [ { "setId", "difficulty", "rationale" } ] }.',
+      '"grades" is an ARRAY with one entry per set — not an object keyed by set id.',
+      JSON_ONLY,
+    ].join(' '),
   });
 }
 
