@@ -2,6 +2,54 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-02 — AI Puzzle Studio designed and approved; Phase 4 gate CLOSED
+
+- **Phase 4 gate: MET.** Max playtested on the phone and called it good. Phases 1–4 are
+  now all closed.
+- **No game code this entry.** Design session: the AI Puzzle Studio brainstorm (paused
+  2026-08-01 at the agent-roster question) resumed, completed, and was approved as
+  **`docs/superpowers/specs/2026-08-02-asto-studio-design.md`** — the authority for all
+  Studio work. `CLAUDE.md` updated: the Studio lives at `studio/` in THIS repo (it
+  imports the game's validators directly); the handbook keeps the retired Python crew.
+- **Decisions made with Max (see the spec for full detail):**
+  - **All eight GDD §12.1 agents**, in order; the mechanical integrity sweep is a
+    deterministic gate between Board Builder and Analogy Validator, not a ninth agent.
+  - **Theme or surprise-me** (`--theme` or bare); surprise-me briefs are built from a
+    relationship index so variety is pipeline logic, not memory.
+  - **Two human gate types only** — editorial decision after a complete attempt, and
+    (later, A6b) learning-policy approval. No gates between agents.
+  - **Corpus** = extracted positives from shipped boards + Max's hand-authored
+    `rubric.md` with 5–8 annotated near-misses.
+  - **Feedback Learning Loop** (Max's major addition): every editorial action becomes a
+    structured, routed feedback event; agents learn via versioned external memory
+    (policies/examples/calibration) with per-attempt learning snapshots; permanent rules
+    always require Max's approval. Split: **A6a capture is required for Done; A6b
+    proposals/benchmarks build when feedback volume justifies.**
+  - **Runs vs. immutable attempts**; interrupted attempts **resume** at the first
+    incomplete stage (same re-entry machinery as revision) — Max's call, revised from
+    the draft's mark-failed-and-restart.
+  - **Blind Test-Player** — sees only what a player sees; simulated results are never
+    labeled empirical. Predicted / simulated / human-observed difficulty are three
+    distinct measurements (§16's Difficulty Loop, honestly framed).
+  - **Review Studio matches the app literally** — links the game's stylesheets; board
+    markup intentionally duplicated (~40 lines), `board-view.js` untouched (it owns
+    FLIP-critical keyed DOM). GDD no-list applies to the Studio UI too.
+  - **Core success bar:** an engine-valid, editorially reviewable board with a complete
+    audit trail — not first-run approval-unchanged.
+- **Game-side decision recorded for Phase 5a:** **mid-puzzle persistence** — leaving a
+  puzzle (including reload/closed tab) restores board state. Amends the approved 5a
+  plan (`~/.claude/plans/keen-percolating-boot.md`), which had scoped it out; fold in
+  when 5a begins.
+- **Next:**
+  1. **Studio Phase A1 — contracts and storage, red-first** (stage registry, schemas,
+     manifest, immutable attempts, atomic writes, locking, status transitions).
+  2. Then A2–A6a per the spec's implementation order; Review Studio (B1–B3) after Core.
+  3. Phase 5a (daily + archive + now mid-puzzle persistence) remains planned and
+     independent — either track can proceed.
+  4. Carried: First Light Red-set `explanation` pass · GDD drift list (Appendix A
+     schema, §8 `already-tried` row, motion range, §17.3 answered, §16 "empirical"
+     wording vs. the blind-Test-Player framing).
+
 ## 2026-08-02 — Phase 4 built: first-run tutorial, coach, title screen (gate NOT yet met)
 
 - **Built (new):** `puzzles/tutorial.json` ("Warm Up", 4 relationship-not-category sets) ·

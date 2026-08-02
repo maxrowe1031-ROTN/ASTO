@@ -5,9 +5,12 @@ Operating instructions for Claude working in the **ASTO** game repo.
 ## What this is
 
 ASTO is a cozy, mobile-first browser word puzzle — *"Connections, but with analogies."*
-A 4×4 board of 16 word tiles hides four analogy sets (`A : B :: C : D`). This repo is
-**the game**. The design thinking, course notes, and the AI Puzzle Studio crew live in a
-separate repo (`../maigd-course-handbook`).
+A 4×4 board of 16 word tiles hides four analogy sets (`A : B :: C : D`). This repo holds
+**the game** and, under `studio/`, the **AI Puzzle Studio** — the internal authoring
+pipeline that generates candidate boards for human editorial review. The Studio lives
+here because it imports the game's validators directly (one schema, no drift); its
+design is `docs/superpowers/specs/2026-08-02-asto-studio-design.md`. Course notes and
+the retired Python crew stay in `../maigd-course-handbook`.
 
 ## Read these first
 
