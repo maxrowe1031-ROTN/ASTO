@@ -1,7 +1,8 @@
 {
   "permissions": {
     "additionalDirectories": [
-      "../maigd-course-handbook"
+      "../maigd-course-handbook",
+      "../project-template"
     ],
     "deny": [
       "Read(./.env)",

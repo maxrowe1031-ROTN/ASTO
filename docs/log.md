@@ -84,9 +84,10 @@ protocol run for the first time, not a birth.
   2. Then A4 (corpus + variety — **Max still drafts `studio/corpus/rubric.md`**), A5,
      A6a; Review Studio B1–B3 after Core, which is what closes HR-2.
   3. Independent and unblocked: **Phase 5a** — daily + archive + mid-puzzle persistence.
-  4. Optional, one line: `.claude/settings.json` grants `../maigd-course-handbook` but not
-     `../project-template`. Add the latter if future migrations should read it without
-     `/add-dir`.
+
+**Follow-up, same session (commit after the merge):** `.claude/settings.json` now grants
+`../project-template` alongside `../maigd-course-handbook`, so a future migration review
+reads the template directly without `/add-dir`. Noted in `CLAUDE.md` §11.
 
 ## 2026-08-02 — Studio Core A1 + A2 built (contracts, storage, agents, transport)
 

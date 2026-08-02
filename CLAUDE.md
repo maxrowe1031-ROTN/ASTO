@@ -234,7 +234,9 @@ and was migrated onto it on 2026-08-02. Improvements flow **upstream, deliberate
 rule proven wrong or missing across two projects — or a single serious security,
 data-loss, or recovery scar — becomes a proposal in the `project-template` repo, never a
 silent local fork of house style. The migration process and project health check live in
-`docs/governance.md`; they run on demand, not every session.
+`docs/governance.md`; they run on demand, not every session. The template repo is
+readable at `../project-template` (granted in `.claude/settings.json`), so a migration
+review needs no extra setup.
 
 ## 12. Commands
 
