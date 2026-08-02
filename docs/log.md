@@ -11,9 +11,12 @@ protocol run for the first time, not a birth.
 
 - **Adopted from the template** (reviewed against its only commit, `da70440`, since the
   template repo has no tags or changelog):
-  - `.claude/settings.json` — Brain directory grant (`../maigd-course-handbook`) plus the
+  - `.claude/settings.json` — directory grants for `../maigd-course-handbook` (the Brain)
+    and `../project-template` (added in a follow-up commit after the merge, so migration
+    reviews read the template directly; noted in `CLAUDE.md` §11), plus the
     `Read(./.env)` / `Read(./.env.*)` denial. The untracked `settings.local.json` (the
-    `npm test` allow) is unchanged.
+    `npm test` allow) is unchanged. **Note:** Claude Code reads `settings.json` at
+    startup, so the grants take effect from the next session, not the one that wrote them.
   - `.claude/commands/pause.md` — **new third command.** A truthful checkpoint for
     interrupted work: reports failures honestly, commits `wip(...)` on the work branch,
     leaves `main` alone, and states plainly that the gate did **not** pass.
@@ -74,7 +77,13 @@ protocol run for the first time, not a birth.
   not started, Studio Core at A2 with A3 next. This session had no phase gate of its own;
   its gate was the migration verification above (automated + Claude-verifiable), which
   passed, so the branch merged to `main`.
-
+- **Session commits:** `94cf289` (migration, on `work/template-migration`) → `495d3b8`
+  (merge to `main`, branch deleted) → `1d5ae9f` (the `../project-template` grant, a tiny
+  verified fix taken directly on `main` per `CLAUDE.md` §9). `npm test` re-run green after
+  the merge and again at wrapup — 414/414 each time.
+- **Wrapup ran the new `/wrapup` for the first time**, which is the migration's own first
+  proof: it correctly reported a clean tree already in sync and required no new commit
+  beyond this log correction.
 - **Next:**
   1. **Studio Phase A3 — pipeline and mechanical gates** (unchanged from below). Eight-stage
      orchestration · `blackboard.js` · integrity insertion at `04a` · `budget.js` ·
@@ -84,10 +93,6 @@ protocol run for the first time, not a birth.
   2. Then A4 (corpus + variety — **Max still drafts `studio/corpus/rubric.md`**), A5,
      A6a; Review Studio B1–B3 after Core, which is what closes HR-2.
   3. Independent and unblocked: **Phase 5a** — daily + archive + mid-puzzle persistence.
-
-**Follow-up, same session (commit after the merge):** `.claude/settings.json` now grants
-`../project-template` alongside `../maigd-course-handbook`, so a future migration review
-reads the template directly without `/add-dir`. Noted in `CLAUDE.md` §11.
 
 ## 2026-08-02 — Studio Core A1 + A2 built (contracts, storage, agents, transport)
 
