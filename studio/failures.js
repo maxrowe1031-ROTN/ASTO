@@ -56,7 +56,7 @@ export function classifyTransportError(error) {
 
 const MAX_FEEDBACK_ERRORS = 8;
 
-export function classifyOutputFailure({ reason, errors = [] } = {}) {
+export function classifyOutputFailure({ reason, errors = [], ceilings = [], stopReason, blockTypes = [] } = {}) {
   switch (reason) {
     case 'unparseable':
       return {
@@ -73,11 +73,42 @@ export function classifyOutputFailure({ reason, errors = [] } = {}) {
       };
 
     // Truncation arrives as parseable-looking output but is a transport-shaped
-    // problem — the request was cut short, not answered wrongly.
+    // problem — the request was cut short, not answered wrongly. It is also
+    // the one retryable failure where resending the same request cannot
+    // possibly work: the ceiling is what stopped it. So the retry carries an
+    // instruction to raise that ceiling, once.
     case 'truncated':
       return {
         category: RETRYABLE_TRANSPORT,
         message: 'response was truncated before it finished',
+        escalateMaxTokens: 1.5,
+      };
+
+    // Raised once and truncated again: the stage wants more room than we are
+    // willing to buy blind, and a third identical attempt would only cost
+    // money. Terminal, naming both ceilings so the next decision is informed.
+    case 'truncated-again':
+      return {
+        category: TERMINAL_CONTENT,
+        message: `response was truncated at max_tokens ${ceilings[0]}, and again after raising it to ${ceilings[1]}`,
+      };
+
+    // A reply with no text at all. Joined to '' it would surface downstream as
+    // "not valid JSON", which points at the prompt when the cause is usually
+    // the model: thinking consumed the whole budget, or the id is wrong.
+    case 'empty':
+      return {
+        category: TERMINAL_CONTENT,
+        message:
+          `the model returned no text (stop_reason ${stopReason ?? 'unknown'}; ` +
+          `blocks: ${blockTypes.length > 0 ? blockTypes.join(', ') : 'none'}). ` +
+          'Likely an unknown model id, or thinking consumed the whole max_tokens budget.',
+      };
+
+    case 'context-exceeded':
+      return {
+        category: TERMINAL_CONTENT,
+        message: 'the request exceeded the model context window',
       };
 
     case 'refusal':

@@ -25,7 +25,13 @@ import { createLlm } from './llm.js';
 import { createBlackboard } from './blackboard.js';
 import { createBudget } from './budget.js';
 import { StudioFailure, TERMINAL_CONTENT } from './failures.js';
-import { DEFAULT_CONFIG, modelFor, maxTokensFor, retriesFor } from './pipeline-config.js';
+import {
+  DEFAULT_CONFIG,
+  effortFor,
+  modelFor,
+  maxTokensFor,
+  retriesFor,
+} from './pipeline-config.js';
 import { validatePuzzle } from '../src/source/validate-puzzle.js';
 import { checkBoard } from '../src/engine/board-integrity.js';
 import { deriveWords } from '../src/engine/arrangements.js';
@@ -265,17 +271,21 @@ async function runAgentStage(ctx, stage, { feedback: seedFeedback } = {}) {
   const agent = loadAgent(stage.agent);
   const input = STAGE_INPUTS[stage.id](blackboard, { manifest, config });
   const prompt = agent.buildPrompt(input, context);
+  const effort = effortFor(stage.id, config);
   const request = {
     stageId: stage.id,
     model: modelFor(stage.id, config),
     prompt,
     maxTokens: maxTokensFor(stage.id, config),
+    // Spread, not set to null: an absent effort must reach the transport as
+    // an absent key, because some models reject the parameter outright.
+    ...(effort ? { effort } : {}),
   };
   const { transport: transportRetries, validation: validationRetries } = retriesFor(stage.id, config);
 
   let feedback = seedFeedback;
   for (let round = 1; round <= validationRetries + 1; round += 1) {
-    const { text, record } = await send(llm, budget, request, {
+    const { text, record } = await sendOrRecord(ctx, stage, request, {
       maxAttempts: transportRetries,
       feedback,
     });
@@ -319,6 +329,53 @@ async function runAgentStage(ctx, stage, { feedback: seedFeedback } = {}) {
   }
   /* c8 ignore next */
   throw new Error(`unreachable: ${stage.id} retry loop fell through`);
+}
+
+/**
+ * send(), plus the evidence a stage that never gets a reply would otherwise
+ * not leave. Until now the request record was written only after a successful
+ * call, so a stage that died in transport left an empty run directory and a
+ * failure naming no stage at all — which is exactly how the 2026-08-02 run had
+ * to be diagnosed by arithmetic. The prompt exists before the first call, and
+ * llm.js already attaches the attempts and the ceiling to the failure, so all
+ * of this is knowable at the moment it goes wrong.
+ */
+async function sendOrRecord(ctx, stage, request, options) {
+  const { store, runId, attemptId, llm, budget } = ctx;
+  try {
+    return await send(llm, budget, request, options);
+  } catch (error) {
+    if (!(error instanceof StudioFailure)) throw error;
+
+    // recordFailure already reads failure.stageId; nothing on this path ever
+    // set it. `??=` so a failure that already knows better keeps its own.
+    error.stageId ??= stage.id;
+
+    // A distinct filename from request.json on purpose: resume treats a stage
+    // with validation.json as finished, and nothing here should look like a
+    // stage that got as far as producing output.
+    store.writeStageText(runId, attemptId, stage.id, 'prompt.txt', request.prompt);
+    store.writeStageArtifact(runId, attemptId, stage.id, 'request.failed.json', {
+      stageId: stage.id,
+      model: request.model,
+      // Two numbers because a truncation raises the ceiling once: the one we
+      // configured, and the one the last attempt actually went out with.
+      maxTokensConfigured: request.maxTokens,
+      maxTokens: error.maxTokens ?? request.maxTokens,
+      effort: request.effort ?? null,
+      category: error.category,
+      message: error.message,
+      requests: error.requests ?? [],
+      inputTokens: error.inputTokens ?? 0,
+      outputTokens: error.outputTokens ?? 0,
+    });
+    store.recordStageStatus(runId, attemptId, stage.id, {
+      status: 'failed',
+      category: error.category,
+      message: error.message,
+    });
+    throw error;
+  }
 }
 
 // Every call is charged, success or failure — the spend happened either way.
@@ -435,7 +492,38 @@ function gateReport(blackboard) {
     reasons.push(`${collision.order.join(' : ')} is claimed by ${collision.setIds.join(' and ')}`);
   }
 
-  return { ok: integrity.ok, reasons, schema, ...integrity };
+  const variety = relationVariety(output.board);
+  if (!variety.ok) {
+    reasons.push(
+      `only ${variety.distinct} distinct relationship label(s) across four sets, need ${MIN_DISTINCT_RELATIONS}: ${variety.labels.join(' | ')}`,
+    );
+  }
+
+  // `ok` last, and derived from the reasons: `...integrity` carries an `ok` of
+  // its own that would otherwise silently win and re-admit the board.
+  return { ...integrity, schema, variety, reasons, ok: reasons.length === 0 };
+}
+
+// Four sets that all express the same kind of relationship make a board that
+// is schema-valid and dull. The prototype crew hit this with an ocean board
+// that used two relation types across four sets, and added this gate in
+// response (lessons-learned.md section 3.3).
+//
+// This is the only check here that can fail a board the schema accepts —
+// `checkBoard` structurally cannot, since sixteen distinct words make an
+// ordered-tuple collision impossible.
+const MIN_DISTINCT_RELATIONS = 4;
+
+function relationVariety(board) {
+  const labels = board.sets.map((set) => set.relationshipLabel ?? '');
+  // Normalized the way the board's own word comparison is: a label repeated
+  // with different capitalization is the same relationship, not a new one.
+  const distinct = new Set(labels.map((label) => label.trim().toLowerCase().replace(/\s+/g, ' ')));
+  return {
+    ok: distinct.size >= MIN_DISTINCT_RELATIONS,
+    distinct: distinct.size,
+    labels,
+  };
 }
 
 const describe = (error) => `${error.path ? `${error.path}: ` : ''}${error.message}`;
@@ -445,6 +533,7 @@ const gateFeedback = (report) =>
     'The board you produced was rejected by the mechanical integrity check. Rebuild it, fixing exactly these problems:',
     ...report.reasons.map((reason) => `- ${reason}`),
     'A board must accept exactly four ordered readings per set and nothing else. If two sets can be regrouped into another valid analogy, choose different sets.',
+    `The four sets must also express ${MIN_DISTINCT_RELATIONS} genuinely different relationships. Reusing one relationship across sets is legal and dull; pick sets whose relationships differ in kind, not only in wording.`,
   ].join('\n');
 
 // --- failure ------------------------------------------------------------

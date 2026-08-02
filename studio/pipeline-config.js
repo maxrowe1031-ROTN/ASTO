@@ -50,7 +50,32 @@ export const DEFAULT_CONFIG = deepFreeze({
   // — so the budget has headroom rather than sitting at a value the thinking
   // alone could swallow. This is a ceiling, not a spend: only tokens actually
   // produced are billed, and budget.js caps the real spend.
+  //
+  // 16k is also about the practical limit for a non-streaming request before
+  // HTTP timeouts start to bite, which is what this transport makes.
   maxTokens: { default: 16_000 },
+
+  // How hard each stage thinks. Effort is the lever adaptive thinking left us:
+  // the old one, a fixed `budget_tokens`, is now rejected outright. Disabling
+  // thinking is the cheaper option and is what the prototype crew did, but its
+  // agents only emitted JSON — ours rate difficulty and hunt for alternate
+  // solutions, and that is reasoning we are paying for on purpose.
+  //
+  // There is no `default` key here, deliberately. Effort is an error on Haiku
+  // 4.5, so the checker stages must send no output_config at all, and a
+  // default would quietly put one on every request. An absent entry means
+  // absent, not "fall back to something".
+  //
+  // 04 gets the most: the handbook's crew post-mortem (section 3) found board
+  // assembly, not pair generation, to be the constraint-satisfaction problem
+  // that actually broke the prototype pipeline.
+  effort: {
+    '01-pair-author': 'high',
+    '02-theme-grouper': 'high',
+    '04-board-builder': 'xhigh',
+    '06-adversarial-solver': 'high',
+    '07-test-player': 'medium',
+  },
 
   // Two bounds, because there are two failure classes and they are retried by
   // different owners. `transport` bounds llm.js's own loop (timeouts, 429s,
@@ -85,6 +110,12 @@ export function modelFor(stageId, config = DEFAULT_CONFIG) {
 
 export function maxTokensFor(stageId, config = DEFAULT_CONFIG) {
   return config.maxTokens[stageId] ?? config.maxTokens.default;
+}
+
+// Null means "send no output_config", which is a different thing from a low
+// effort — on a model that rejects the parameter, the two are success and 400.
+export function effortFor(stageId, config = DEFAULT_CONFIG) {
+  return config.effort?.[stageId] ?? null;
 }
 
 export function retriesFor(stageId, config = DEFAULT_CONFIG) {

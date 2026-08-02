@@ -7,7 +7,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createLlm } from '../../studio/llm.js';
+import { createAnthropicTransport, createLlm } from '../../studio/llm.js';
 import { RETRYABLE_TRANSPORT, TERMINAL_CONTENT, StudioFailure } from '../../studio/failures.js';
 
 const reply = (text, extra = {}) => ({
@@ -156,6 +156,121 @@ test('a truncated reply is retried — stopReason max_tokens is not a real answe
   assert.equal(transport.calls.length, 2);
 });
 
+test('truncation raises the ceiling before retrying — the same request would truncate again', async () => {
+  const transport = scriptedTransport([
+    reply('{"partial":', { stopReason: 'max_tokens' }),
+    reply('{"whole":true}'),
+  ]);
+  const llm = createLlm({ transport, sleep: async () => {} });
+
+  const result = await llm.send(request, { maxAttempts: 3 });
+
+  assert.equal(result.text, '{"whole":true}');
+  assert.equal(transport.calls[0].maxTokens, 100);
+  assert.ok(
+    transport.calls[1].maxTokens > 100,
+    `retry must raise the ceiling, got ${transport.calls[1].maxTokens}`,
+  );
+  assert.equal(result.record.maxTokens, transport.calls[1].maxTokens);
+});
+
+test('a second truncation is terminal and names both ceilings — no third identical attempt', async () => {
+  const transport = scriptedTransport([
+    reply('{"a":', { stopReason: 'max_tokens' }),
+    reply('{"b":', { stopReason: 'max_tokens' }),
+    reply('never reached'),
+  ]);
+  const llm = createLlm({ transport, sleep: async () => {} });
+
+  await assert.rejects(
+    () => llm.send(request, { maxAttempts: 3 }),
+    (error) => {
+      assert.equal(error.category, TERMINAL_CONTENT, 'escalation is exhausted, not retryable');
+      assert.match(error.message, /100/);
+      assert.match(error.message, /150/);
+      return true;
+    },
+  );
+  assert.equal(transport.calls.length, 2, 'the third attempt would truncate identically');
+});
+
+test('escalation does not compound — it raises the ceiling once, from the original', async () => {
+  const transport = scriptedTransport([
+    reply('{"a":', { stopReason: 'max_tokens' }),
+    reply('{"b":true}'),
+  ]);
+  const llm = createLlm({ transport, sleep: async () => {} });
+
+  await llm.send(request, { maxAttempts: 3 });
+
+  assert.equal(transport.calls[1].maxTokens, 150);
+});
+
+test('a reply with no text is a loud failure, not a JSON parse error downstream', async () => {
+  // The prototype crew's failure (lessons-learned.md 1.1): thinking consumed
+  // the whole budget and the reply carried no text block. Joined to '' it
+  // surfaces as "not valid JSON", which points at the wrong thing entirely.
+  const transport = scriptedTransport([
+    reply('', { stopReason: 'end_turn', blockTypes: ['thinking'] }),
+  ]);
+  const llm = createLlm({ transport, sleep: async () => {} });
+
+  await assert.rejects(
+    () => llm.send(request, { maxAttempts: 2 }),
+    (error) => {
+      assert.equal(error.category, TERMINAL_CONTENT);
+      assert.match(error.message, /no text/i);
+      assert.match(error.message, /end_turn/, 'the stop reason is the diagnosis');
+      assert.match(error.message, /thinking/, 'name the block types that did come back');
+      return true;
+    },
+  );
+});
+
+test('an exhausted context window is terminal, not a silent success', async () => {
+  const transport = scriptedTransport([
+    reply('{"cut":', { stopReason: 'model_context_window_exceeded' }),
+  ]);
+  const llm = createLlm({ transport, sleep: async () => {} });
+
+  await assert.rejects(
+    () => llm.send(request, { maxAttempts: 3 }),
+    (error) => {
+      assert.equal(error.category, TERMINAL_CONTENT);
+      assert.match(error.message, /context window/i);
+      return true;
+    },
+  );
+  assert.equal(transport.calls.length, 1);
+});
+
+test('the record states the ceiling and effort actually used', async () => {
+  const transport = scriptedTransport([reply('ok')]);
+  const llm = createLlm({ transport });
+
+  const { record } = await llm.send({ ...request, effort: 'high' });
+
+  assert.equal(record.maxTokens, 100);
+  assert.equal(record.effort, 'high');
+});
+
+test('a failure carries the ceiling and effort too — a dead stage must still be diagnosable', async () => {
+  const transport = scriptedTransport([
+    Object.assign(new Error('overloaded'), { status: 529 }),
+    Object.assign(new Error('overloaded'), { status: 529 }),
+  ]);
+  const llm = createLlm({ transport, sleep: async () => {} });
+
+  await assert.rejects(
+    () => llm.send({ ...request, effort: 'xhigh' }, { maxAttempts: 2 }),
+    (error) => {
+      assert.equal(error.maxTokens, 100);
+      assert.equal(error.effort, 'xhigh');
+      return true;
+    },
+  );
+});
+
 test('a refusal is terminal and never retried', async () => {
   const transport = scriptedTransport([reply('I cannot help with that', { stopReason: 'refusal' })]);
   const llm = createLlm({ transport, sleep: async () => {} });
@@ -193,4 +308,85 @@ test('an API key is never copied into the request record', async () => {
   const llm = createLlm({ transport });
   const { record } = await llm.send({ ...request, apiKey: 'sk-ant-secret' });
   assert.ok(!JSON.stringify(record).includes('sk-ant-secret'));
+});
+
+// --- the real transport's request shape ---------------------------------
+//
+// Still zero network: fetch is injected. These assert the wire shape, which
+// is the layer a fixture can never check — a fixture is written to match our
+// schema, so it proves nothing about what we actually send Anthropic.
+
+const capturingFetch = (body = { content: [{ type: 'text', text: 'ok' }], stop_reason: 'end_turn' }) => {
+  const calls = [];
+  const impl = async (url, init) => {
+    calls.push({ url, init, body: JSON.parse(init.body) });
+    return { ok: true, json: async () => body, headers: new Headers() };
+  };
+  impl.calls = calls;
+  return impl;
+};
+
+test('effort is sent as output_config when a stage has one', async () => {
+  const fetchImpl = capturingFetch();
+  const transport = createAnthropicTransport({ apiKey: 'sk-test', fetchImpl });
+
+  await transport({ model: 'claude-sonnet-5', prompt: 'hi', maxTokens: 16000, effort: 'high' });
+
+  assert.deepEqual(fetchImpl.calls[0].body.output_config, { effort: 'high' });
+});
+
+test('output_config is omitted entirely when a stage has no effort — Haiku rejects it', async () => {
+  const fetchImpl = capturingFetch();
+  const transport = createAnthropicTransport({ apiKey: 'sk-test', fetchImpl });
+
+  await transport({ model: 'claude-haiku-4-5-20251001', prompt: 'hi', maxTokens: 16000 });
+
+  assert.ok(
+    !('output_config' in fetchImpl.calls[0].body),
+    'an absent effort must send no output_config at all, not an empty one',
+  );
+});
+
+test('no sampling parameters are ever sent — Sonnet 5 rejects them with a 400', async () => {
+  const fetchImpl = capturingFetch();
+  const transport = createAnthropicTransport({ apiKey: 'sk-test', fetchImpl });
+
+  await transport({ model: 'claude-sonnet-5', prompt: 'hi', maxTokens: 16000, temperature: 0.7 });
+
+  const { body } = fetchImpl.calls[0];
+  for (const key of ['temperature', 'top_p', 'top_k']) {
+    assert.ok(!(key in body), `${key} must never reach the API`);
+  }
+});
+
+test('the request carries an abort signal — a hung call must not hang the run', async () => {
+  const fetchImpl = capturingFetch();
+  const transport = createAnthropicTransport({ apiKey: 'sk-test', fetchImpl, timeoutMs: 1000 });
+
+  await transport({ model: 'claude-sonnet-5', prompt: 'hi', maxTokens: 16000 });
+
+  assert.ok(fetchImpl.calls[0].init.signal, 'no signal means an unbounded wait');
+});
+
+test('the transport reports the block types it saw, so an empty reply can be explained', async () => {
+  const fetchImpl = capturingFetch({
+    content: [{ type: 'thinking', thinking: '' }],
+    stop_reason: 'end_turn',
+  });
+  const transport = createAnthropicTransport({ apiKey: 'sk-test', fetchImpl });
+
+  const result = await transport({ model: 'claude-sonnet-5', prompt: 'hi', maxTokens: 100 });
+
+  assert.equal(result.text, '');
+  assert.deepEqual(result.blockTypes, ['thinking']);
+});
+
+test('a missing key names the variable and never a value', () => {
+  assert.throws(
+    () => createAnthropicTransport({ apiKey: '' }),
+    (error) => {
+      assert.match(error.message, /ANTHROPIC_API_KEY/);
+      return true;
+    },
+  );
 });

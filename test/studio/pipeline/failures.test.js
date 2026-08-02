@@ -169,16 +169,84 @@ test('the failure is appended to the run decision log', async () => {
   }
 });
 
+// The 2026-08-02 incident, replayed. A real run died in transport at stage
+// 02 and left no stage folder at all, because the request record is written
+// only after a reply arrives. Which stage failed, and under which ceiling,
+// had to be reconstructed by dividing token totals by request counts. These
+// assert that never being necessary again.
+test('a stage that dies in transport still leaves its prompt and request on disk', async () => {
+  const { result, rootDir, runId, cleanup } = await runWith({
+    '02-theme-grouper': { text: '{"sets": [', stopReason: 'max_tokens' },
+  });
+  try {
+    assert.equal(result.status, 'failed');
+    const stageDir = join(rootDir, runId, 'attempts', result.attemptId, 'stages', '02-theme-grouper');
+
+    assert.ok(existsSync(join(stageDir, 'prompt.txt')), 'the prompt is known before any call');
+    const failed = JSON.parse(readFileSync(join(stageDir, 'request.failed.json'), 'utf8'));
+    assert.equal(failed.stageId, '02-theme-grouper');
+    assert.equal(failed.model, 'claude-sonnet-5');
+    // Both ceilings, because truncation raises it once before giving up. The
+    // point is that neither has to be worked out from token arithmetic.
+    assert.equal(failed.maxTokensConfigured, 16_000);
+    assert.equal(failed.maxTokens, 24_000, 'the ceiling the last attempt actually used');
+    assert.equal(failed.effort, 'high');
+    assert.equal(failed.category, TERMINAL_CONTENT);
+    assert.ok(Array.isArray(failed.requests) && failed.requests.length > 0);
+
+    // …and it must not read as finished to resume.
+    assert.equal(existsSync(join(stageDir, 'validation.json')), false);
+  } finally {
+    cleanup();
+  }
+});
+
+test('the failed stage is named in failure.json and in the attempt status map', async () => {
+  const { result, store, rootDir, runId, cleanup } = await runWith({
+    '02-theme-grouper': { status: 529, error: 'overloaded' },
+  });
+  try {
+    assert.equal(failureJson(rootDir, runId, result.attemptId).stageId, '02-theme-grouper');
+
+    const { stageStatuses } = store.readAttempt(runId, result.attemptId);
+    assert.equal(stageStatuses['01-pair-author'].status, 'complete');
+    assert.equal(stageStatuses['02-theme-grouper'].status, 'failed');
+    assert.equal(stageStatuses['02-theme-grouper'].category, RETRYABLE_TRANSPORT);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a completed stage records the ceiling and effort it ran under', async () => {
+  const { result, rootDir, runId, cleanup } = await runWith({});
+  try {
+    assert.equal(result.status, 'complete');
+    const stageDir = join(rootDir, runId, 'attempts', result.attemptId, 'stages');
+    const sonnet = JSON.parse(readFileSync(join(stageDir, '04-board-builder', 'request.json'), 'utf8'));
+    const haiku = JSON.parse(readFileSync(join(stageDir, '03-difficulty-rater', 'request.json'), 'utf8'));
+
+    assert.equal(sonnet.effort, 'xhigh');
+    assert.equal(sonnet.maxTokens, 16_000);
+    assert.equal(haiku.effort, null, 'the checker stages send no effort at all');
+  } finally {
+    cleanup();
+  }
+});
+
 test('a truncated reply is never silently accepted as a finished stage', async () => {
   const { result, rootDir, runId, cleanup } = await runWith({
     '01-pair-author': { text: '{"pairs": [', stopReason: 'max_tokens' },
   });
   try {
     assert.equal(result.status, 'failed');
-    // A2 classifies truncation as transport-shaped on purpose — the request was
-    // cut short, not answered wrongly — so llm.js retries it rather than
-    // sending the model feedback about output it never finished writing.
-    assert.equal(result.failure.category, RETRYABLE_TRANSPORT);
+    // Truncation is classified transport-shaped — the request was cut short,
+    // not answered wrongly — so llm.js retries it rather than sending the
+    // model feedback about output it never finished writing. But it retries
+    // with a raised ceiling exactly once: a stage that truncates at both is
+    // terminal, because a third identical attempt only costs money.
+    assert.equal(result.failure.category, TERMINAL_CONTENT);
+    assert.match(result.failure.message, /truncated at max_tokens \d+, and again/);
+    assert.equal(result.failure.stageId, '01-pair-author', 'the failure must name its stage');
     const stageDir = join(rootDir, runId, 'attempts', result.attemptId, 'stages', '01-pair-author');
     assert.equal(existsSync(join(stageDir, 'validation.json')), false);
   } finally {

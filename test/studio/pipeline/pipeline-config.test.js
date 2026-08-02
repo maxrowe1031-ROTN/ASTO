@@ -7,10 +7,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { DEFAULT_CONFIG, modelFor, retriesFor } from '../../../studio/pipeline-config.js';
+import {
+  DEFAULT_CONFIG,
+  effortFor,
+  modelFor,
+  retriesFor,
+} from '../../../studio/pipeline-config.js';
 import { STAGES } from '../../../studio/stage-registry.js';
 
 const AGENT_STAGES = STAGES.filter((stage) => stage.kind === 'agent');
+const SONNET = 'claude-sonnet-5';
 
 test('every agent stage resolves to a model', () => {
   for (const stage of AGENT_STAGES) {
@@ -37,6 +43,38 @@ test('the approved spec\'s model tiering is what ships', () => {
   assert.equal(modelFor('04-board-builder', DEFAULT_CONFIG), 'claude-sonnet-5');
   assert.equal(modelFor('03-difficulty-rater', DEFAULT_CONFIG), 'claude-haiku-4-5-20251001');
   assert.equal(modelFor('08-style-guide', DEFAULT_CONFIG), 'claude-haiku-4-5-20251001');
+});
+
+// Adaptive thinking is on by default for the Claude 5 family and shares the
+// max_tokens ceiling with the response text, so effort is how a stage's
+// thinking depth is controlled. It is not universally supported: sending
+// output_config.effort to Haiku 4.5 is an error, so the lookup has to be able
+// to return nothing rather than fall back to a default.
+test('effort is set for exactly the stages whose model accepts it', () => {
+  for (const stage of AGENT_STAGES) {
+    const effort = effortFor(stage.id, DEFAULT_CONFIG);
+    if (modelFor(stage.id, DEFAULT_CONFIG) === SONNET) {
+      assert.ok(
+        ['low', 'medium', 'high', 'xhigh', 'max'].includes(effort),
+        `${stage.id} runs on Sonnet but has no effort (${effort})`,
+      );
+    } else {
+      assert.equal(effort, null, `${stage.id} runs on Haiku, which rejects output_config.effort`);
+    }
+  }
+});
+
+test('the gate stage has no effort — it never calls a model', () => {
+  assert.equal(effortFor('04a-integrity', DEFAULT_CONFIG), null);
+});
+
+test('the hardest stage gets the most effort — assembly, not generation, is the hard problem', () => {
+  // maigd-course-handbook/projects/asto/crew/lessons-learned.md section 3:
+  // "Pair generation is comparatively easy; assembling 4 sets [...] is
+  // constraint satisfaction, and it's where the pipeline actually failed."
+  assert.equal(effortFor('04-board-builder', DEFAULT_CONFIG), 'xhigh');
+  assert.equal(effortFor('01-pair-author', DEFAULT_CONFIG), 'high');
+  assert.equal(effortFor('02-theme-grouper', DEFAULT_CONFIG), 'high');
 });
 
 test('every stage has small explicit retry limits for both failure classes', () => {

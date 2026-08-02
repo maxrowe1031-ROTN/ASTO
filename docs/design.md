@@ -191,9 +191,17 @@ acceptance checklists compensate; everything decision-shaped is in the tested en
    and `collisions` is always empty. `board-integrity.js` is therefore a **regression
    guard on the engine** — it would catch a future change that sorted a submission or
    widened acceptance — not a per-board content check. What actually rejects a board
-   mechanically is `validate-puzzle.js`. Nothing mechanical catches a board that is
-   merely *bad*; that is the Studio's Adversarial Solver (stage 06), its evaluation
-   pass (A5), and finally Max.
+   mechanically is `validate-puzzle.js`.
+
+   *Amended 2026-08-03:* the 04a gate now also enforces **≥4 distinct relationship
+   labels across the four sets** — the first mechanical check in this repo that *can*
+   fail a schema-valid board, and the answer to the backlog question about whether one
+   should exist. It is carried over from the retired prototype crew, which shipped a
+   schema-valid ocean board using only two relation types and added the gate in
+   response. A rejection feeds the count *and* the offending labels back through the
+   gate's existing bounded rebuild loop, so the retry has something to act on.
+   Everything else that makes a board merely *bad* remains the Studio's Adversarial
+   Solver (stage 06), its evaluation pass (A5), and finally Max.
 2. **`file://` fails** (ESM + fetch) — README line 1: use `npm run serve`.
 3. **Google Fonts = hidden network dep** — ship fallback stacks; self-host woff2 later.
 4. **iOS specifics** — `100dvh`, safe-area insets, `touch-action`; test on a real
