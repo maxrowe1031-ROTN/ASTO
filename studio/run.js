@@ -1,0 +1,117 @@
+// run.js — the CLI adapter. An adapter, not a second orchestrator: it turns
+// argv into options, calls the exported runPipeline, and prints where the run
+// landed. It holds no pipeline logic and shells out to nothing.
+//
+// Until the Review Studio exists (Part B), this is how Max exercises the Core
+// without reading code — which is what HR-2 in docs/design.md promises.
+//
+//   node studio/run.js --mock --theme "Lantern light"
+//   node studio/run.js --run <runId>                    # resume where it stopped
+//   node studio/run.js --run <runId> --revise-from 04-board-builder --notes "..."
+//
+// --mock replays the committed fixtures and touches no network. Without it the
+// real Anthropic transport is used, which needs ANTHROPIC_API_KEY in the
+// environment; a missing key is reported by name, never by value.
+
+import { parseArgs } from 'node:util';
+import { fileURLToPath } from 'node:url';
+
+import { runPipeline, requestRevision } from './pipeline.js';
+import { createRunStore } from './storage/run-store.js';
+import { createAnthropicTransport } from './llm.js';
+import { createMockTransport } from './mock-transport.js';
+import { isValidStageId } from './stage-registry.js';
+
+const RUNS_DIR = fileURLToPath(new URL('./runs/', import.meta.url));
+const FIXTURES_DIR = fileURLToPath(new URL('./fixtures/responses/', import.meta.url));
+
+const OPTIONS = {
+  theme: { type: 'string' },
+  slug: { type: 'string' },
+  run: { type: 'string' },
+  'revise-from': { type: 'string' },
+  notes: { type: 'string' },
+  mock: { type: 'boolean', default: false },
+  fresh: { type: 'boolean', default: false },
+  count: { type: 'string' },
+};
+
+/** Pure: argv → options. The only part of this file worth testing. */
+export function parseArgv(argv) {
+  const { values } = parseArgs({ args: argv, options: OPTIONS, strict: true });
+
+  const theme = values.theme ?? null;
+  const reviseFrom = values['revise-from'] ?? null;
+
+  if (reviseFrom && !values.run) {
+    throw new Error('--revise-from needs --run <runId>: a revision revises an existing run.');
+  }
+  if (reviseFrom && !isValidStageId(reviseFrom)) {
+    throw new Error(`--revise-from: unknown stage id "${reviseFrom}"`);
+  }
+
+  return {
+    theme,
+    slug: values.slug ?? slugify(theme) ?? 'surprise-me',
+    runId: values.run ?? null,
+    reviseFrom,
+    notes: values.notes ?? '',
+    mock: values.mock,
+    fresh: values.fresh,
+    brief: { count: Number(values.count ?? 8) },
+  };
+}
+
+const slugify = (text) => {
+  if (!text) return null;
+  const slug = text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return slug.length > 0 ? slug : null;
+};
+
+async function main(argv) {
+  const options = parseArgv(argv);
+  const store = createRunStore({ rootDir: RUNS_DIR });
+  const transport = options.mock
+    ? createMockTransport({ fixturesDir: FIXTURES_DIR })
+    : createAnthropicTransport();
+
+  let runId = options.runId;
+  if (runId === null) {
+    ({ runId } = store.createRun({ slug: options.slug, theme: options.theme, brief: options.brief }));
+    console.log(`run ${runId}`);
+  }
+  if (options.reviseFrom) {
+    const attemptId = requestRevision(store, runId, {
+      fromStage: options.reviseFrom,
+      notes: options.notes,
+    });
+    console.log(`revision attempt ${attemptId} from ${options.reviseFrom}`);
+  }
+
+  const result = await runPipeline({ runId, store, transport, fresh: options.fresh });
+
+  console.log(`attempt ${result.attemptId}: ${result.status}`);
+  if (result.resumedAt) console.log(`resumed at ${result.resumedAt}`);
+  if (result.status === 'complete') console.log(`board "${result.board.title}" (${result.board.id})`);
+  else console.log(`failure [${result.failure.category}] ${result.failure.message}`);
+
+  const { requests, tokens, costUsd } = result.usage.attempt;
+  console.log(`spend: ${requests} request(s), ${tokens} tokens, ~$${costUsd.toFixed(4)}`);
+  console.log(`artifacts: studio/runs/${runId}/attempts/${result.attemptId}/`);
+
+  return result.status === 'complete' ? 0 : 1;
+}
+
+// Only runs as a script, so importing parseArgv in a test costs nothing.
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main(process.argv.slice(2)).then(
+    (code) => process.exit(code),
+    (error) => {
+      console.error(error.message);
+      process.exit(1);
+    },
+  );
+}

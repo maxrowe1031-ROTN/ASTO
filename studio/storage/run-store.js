@@ -20,7 +20,7 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 
-import { writeJsonAtomic } from './atomic-write.js';
+import { writeJsonAtomic, writeTextAtomic } from './atomic-write.js';
 import { withLock } from './lock.js';
 import { isValidStageId, stagesFrom } from '../stage-registry.js';
 import {
@@ -207,11 +207,73 @@ export function createRunStore({ rootDir, clock = () => new Date().toISOString()
       });
     },
 
+    // Prompts and responses are text, not JSON documents — stored as-is so a
+    // reviewer reads the prompt the model actually saw.
+    writeStageText(runId, attemptId, stageId, filename, text) {
+      if (!isValidStageId(stageId)) throw new Error(`unknown stage id: ${stageId}`);
+      return withLock(runDir(runId), () => {
+        assertMutable(readAttempt(runId, attemptId));
+        const stageDir = join(attemptDir(runId, attemptId), 'stages', stageId);
+        mkdirSync(stageDir, { recursive: true });
+        writeTextAtomic(join(stageDir, filename), text);
+      });
+    },
+
     readStageArtifact(runId, attemptId, stageId, filename) {
       return readJson(
         join(attemptDir(runId, attemptId), 'stages', stageId, filename),
         `${stageId}/${filename} of attempt ${attemptId}`,
       );
+    },
+
+    hasStageArtifact(runId, attemptId, stageId, filename) {
+      return existsSync(join(attemptDir(runId, attemptId), 'stages', stageId, filename));
+    },
+
+    // Attempt-level documents: board.json, blackboard.json, failure.json,
+    // revision.json, parent-attempt.json. Same immutability rule as stages.
+    writeAttemptArtifact(runId, attemptId, filename, value) {
+      return withLock(runDir(runId), () => {
+        assertMutable(readAttempt(runId, attemptId));
+        writeJsonAtomic(join(attemptDir(runId, attemptId), filename), value);
+      });
+    },
+
+    readAttemptArtifact(runId, attemptId, filename) {
+      return readJson(
+        join(attemptDir(runId, attemptId), filename),
+        `${filename} of attempt ${attemptId}`,
+      );
+    },
+
+    listAttempts(runId) {
+      const dir = join(runDir(runId), 'attempts');
+      if (!existsSync(dir)) return [];
+      return readdirSync(dir)
+        .filter((name) => existsSync(attemptPath(runId, name)))
+        .sort();
+    },
+
+    recordStageStatus(runId, attemptId, stageId, status) {
+      if (!isValidStageId(stageId)) throw new Error(`unknown stage id: ${stageId}`);
+      return withLock(runDir(runId), () => {
+        const attempt = readAttempt(runId, attemptId);
+        assertMutable(attempt);
+        writeAttempt(runId, {
+          ...attempt,
+          stageStatuses: { ...attempt.stageStatuses, [stageId]: { ...status, at: clock() } },
+        });
+      });
+    },
+
+    // Cumulative spend for this attempt, plus the price list it was costed
+    // with — a stored cost is uninterpretable without one.
+    recordUsage(runId, attemptId, { usage, pricingVersion }) {
+      return withLock(runDir(runId), () => {
+        const attempt = readAttempt(runId, attemptId);
+        assertMutable(attempt);
+        writeAttempt(runId, { ...attempt, usage, pricingVersion });
+      });
     },
 
     // Resume support: the first stage (scanning from the attempt's starting
