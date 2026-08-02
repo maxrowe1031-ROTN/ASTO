@@ -13,7 +13,12 @@ let counter = 0;
 export function writeJsonAtomic(filePath, value) {
   // Serialize first: a value JSON cannot represent must fail before any
   // filesystem work happens.
-  const text = `${JSON.stringify(value, null, 2)}\n`;
+  writeTextAtomic(filePath, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+// Prompts and responses are stored as the text they actually are, so a
+// reviewer reads a prompt rather than a JSON-escaped one-liner.
+export function writeTextAtomic(filePath, text) {
   const tempPath = join(dirname(filePath), `.tmp-${process.pid}-${(counter += 1)}`);
   let fd;
   try {
