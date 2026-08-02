@@ -26,13 +26,21 @@ export class GameController {
   constructor(puzzle, views, { rules = {}, rand = Math.random } = {}) {
     this.views = views;
     this.rand = rand;
+    this.rules = rules;
     this.state = initGame(puzzle, rules);
+    this.queue = Promise.resolve();
   }
 
   /** Shuffle the fresh board and render — the entry point app.js calls. */
   start() {
     this.state = shuffle(this.state, this.rand);
     this.render();
+  }
+
+  /** Play the same puzzle again from scratch, freshly shuffled. */
+  restart() {
+    this.state = initGame(this.state.puzzle, this.rules);
+    this.start();
   }
 
   // --- intents (wired to view callbacks) ---
@@ -76,9 +84,29 @@ export class GameController {
 
   // --- output ---
 
+  /**
+   * Update every view, in order, awaiting any that animate.
+   *
+   * The sequencing the GDD asks for on a solve — frame settles into canonical order, the
+   * board closes around the departing tiles, then the card arrives — falls out of view
+   * ORDER rather than any timing code here. A view that doesn't animate returns
+   * undefined and the await passes straight through.
+   *
+   * Renders are SERIALIZED. Since a render can now await animation, a fast second tap
+   * would otherwise start a concurrent pass and let two loops paint interleaved state.
+   * Each queued pass reads `this.state` when it actually runs, so it always paints the
+   * latest truth rather than a snapshot from when it was queued.
+   */
   render(outcome) {
+    this.queue = this.queue
+      .then(() => this.paint(outcome))
+      .catch((error) => console.error('render failed', error));
+    return this.queue;
+  }
+
+  async paint(outcome) {
     for (const view of this.views) {
-      view.update(this.state, outcome);
+      await view.update(this.state, outcome);
     }
   }
 }

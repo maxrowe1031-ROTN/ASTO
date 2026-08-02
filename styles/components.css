@@ -141,10 +141,12 @@
 }
 
 .tile {
+  position: relative;
   min-height: 56px;
   border-radius: var(--radius-tile);
   background: var(--milk);
   border: 1px solid var(--taupe);
+  isolation: isolate;
   font-weight: 700;
   font-size: 14px;
   padding: 4px 2px;
@@ -154,6 +156,19 @@
     color var(--motion-fast) var(--ease),
     transform var(--motion-fast) var(--ease),
     opacity var(--motion-slow) var(--ease);
+}
+
+/* Paper grain lives on tiles and cards, and nowhere else. */
+.tile::after,
+.solved-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: var(--grain);
+  opacity: var(--grain-strength);
+  pointer-events: none;
+  z-index: -1;
 }
 
 @media (hover: hover) {
@@ -220,6 +235,8 @@
 }
 
 .solved-card {
+  position: relative;
+  isolation: isolate;
   border-radius: var(--radius-card);
   border: 1px solid var(--card-main);
   background: var(--card-tint);
@@ -256,4 +273,62 @@
   font-style: italic;
   font-size: 13px;
   color: var(--soft-ink);
+}
+
+/* ---------- End screens (win / loss) ---------- */
+
+.end-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.end-score {
+  text-align: center;
+  color: var(--soft-ink);
+  font-size: 15px;
+  margin-top: -6px;
+}
+
+.end-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.end-actions {
+  margin-top: 4px;
+}
+
+.share-feedback {
+  text-align: center;
+  min-height: 20px;
+  font-size: 14px;
+  color: var(--soft-ink);
+}
+
+.badge-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Not a scold — the same calm voice as the tier badge, just outlined in soft ink. */
+.revealed-badge {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--soft-ink);
+  border: 1px dashed var(--faint-ink);
+  border-radius: var(--radius-pill);
+  padding: 1px 10px;
+}
+
+.solved-card .explanation {
+  font-size: 13.5px;
+  color: var(--ink);
+  opacity: 0.82;
+  margin-top: 2px;
 }

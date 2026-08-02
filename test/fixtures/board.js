@@ -42,10 +42,17 @@ export const board = {
 export const MISS = ['Seed', 'Painter', 'Nest', 'Dough'];
 
 /**
- * Distinct orderings of the MISS words — every one is a fresh miss that charges a
- * mistake. Needed since the already-tried rule made repeating an identical order free.
+ * Four words spanning two sets but matching neither — a miss that survives set-tools
+ * being solved, unlike MISS (which holds one word from every set).
  */
-export function distinctMisses(count) {
+export const MISS_AFTER_TOOLS = ['Seed', 'Nest', 'Dough', 'Bear'];
+
+/**
+ * Distinct orderings of four words — every one is a fresh miss that charges a mistake.
+ * Needed since the already-tried rule made repeating an identical order free. Pass a
+ * different `base` when the default words are no longer all on the board.
+ */
+export function distinctMisses(count, base = MISS) {
   const perms = [];
   const build = (rest, chosen) => {
     if (rest.length === 0) {
@@ -56,6 +63,6 @@ export function distinctMisses(count) {
       build(rest.toSpliced(i, 1), [...chosen, rest[i]]);
     }
   };
-  build(MISS, []);
+  build(base, []);
   return perms;
 }

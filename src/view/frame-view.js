@@ -9,7 +9,10 @@
 // Mid-drag visuals are transient view state; the reorder becomes game state only when
 // the drop commits through the controller (order decides so-close vs solved).
 
+import { pulse, shake } from './motion.js';
+
 const DRAG_THRESHOLD_PX = 6;
+const SHAKES = new Set(['miss', 'so-close', 'already-tried']);
 
 export class FrameView {
   constructor(root, { onSlotTap, onReorder }) {
@@ -31,14 +34,32 @@ export class FrameView {
     });
   }
 
-  update(state) {
-    this.filledCount = state.selectedTerms.length;
+  async update(state, outcome) {
+    // A wrong answer shakes the frame before it empties.
+    if (SHAKES.has(outcome?.type)) await shake(this.slots.filter((s) => s.classList.contains('filled')));
+
+    // On a solve, play the canonical reorder before clearing: it shows the player WHY a
+    // non-canonical order was accepted. The engine cleared selectedTerms the moment the
+    // set was solved, so this replays from the outcome — presentation catching up with a
+    // decision already made, not the view deciding anything.
+    if (outcome?.type === 'solved') await this.playCanonicalBeat(outcome.canonicalOrder);
+
+    this.paint(state.selectedTerms, state.status);
+  }
+
+  paint(terms, status) {
+    this.filledCount = terms.length;
     this.slots.forEach((slot, i) => {
-      const term = state.selectedTerms[i];
+      const term = terms[i];
       slot.textContent = term ?? '';
       slot.classList.toggle('filled', term !== undefined);
-      slot.classList.toggle('next', state.status === 'playing' && i === state.selectedTerms.length);
+      slot.classList.toggle('next', status === 'playing' && i === terms.length);
     });
+  }
+
+  async playCanonicalBeat(canonical) {
+    this.paint(canonical, 'playing');
+    await pulse(this.slots);
   }
 
   pointerDown(event, slot, index) {

@@ -7,6 +7,7 @@
 
 import { canonicalOrder } from '../engine/arrangements.js';
 import { difficultyToTier } from '../engine/tiers.js';
+import { settleIn } from './motion.js';
 
 export class SolvedSetsView {
   constructor(root) {
@@ -14,7 +15,13 @@ export class SolvedSetsView {
     this.cards = new Map(); // setId → card element, persistent like board tiles
   }
 
-  update(state) {
+  async update(state) {
+    // Play again starts a fresh game: drop cards belonging to a run that is over.
+    if (state.solvedSetIds.length === 0 && this.cards.size > 0) {
+      this.root.innerHTML = '';
+      this.cards.clear();
+    }
+
     for (const setId of state.solvedSetIds) {
       if (this.cards.has(setId)) continue;
 
@@ -41,6 +48,7 @@ export class SolvedSetsView {
       card.append(badge, analogy, relationship);
       this.cards.set(setId, card);
       this.root.appendChild(card);
+      await settleIn(card);
     }
   }
 }

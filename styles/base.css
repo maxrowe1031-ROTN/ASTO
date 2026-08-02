@@ -39,6 +39,12 @@ body {
   min-height: 100dvh;
 }
 
+/* `display: flex` above outranks the UA stylesheet's [hidden] { display: none },
+   so hiding a screen has to be said explicitly or every screen renders at once. */
+.screen[hidden] {
+  display: none;
+}
+
 button {
   font: inherit;
   color: inherit;
