@@ -1,19 +1,47 @@
 // Motion helpers. Presentation only — these know nothing about analogies, sets, or rules.
 //
-// Appendix E: 120–180ms ease-out everywhere, ±4px shake ×3, tiles press 1px.
-// No confetti, no particles, no timers.
+// Appendix E: ease-out everywhere, ±4px shake ×3, tiles press 1px. No confetti, no
+// particles, no timers. Speed comes from --motion-slow in tokens.css — the one dial.
 //
 // Every helper here no-ops under prefers-reduced-motion, so reduced motion is handled
 // once rather than remembered at each call site. Each returns a promise that resolves
 // when the motion is done (immediately when motion is off), so callers can sequence
 // beats without setTimeout guesswork.
 
-// 216ms = Appendix E's 180ms slowed 20% after the first real-device playtest (2026-08-01).
-// This is the single source of truth for JS-driven motion; the CSS transitions in
-// tokens.css (--motion-fast / --motion-slow) are scaled to match.
-const DURATION = 216;
 const EASE = 'cubic-bezier(0, 0, 0.2, 1)';
 const SHAKE_PX = 4;
+
+// Used only if the token can't be read (no DOM, stylesheet missing). Tuning happens in
+// tokens.css, never here.
+const FALLBACK_MS = 281;
+
+let cachedDuration = null;
+
+/**
+ * The motion duration, read from `--motion-slow` in tokens.css.
+ *
+ * Reading the token keeps ONE dial: JS animations and CSS transitions used to hold the
+ * same number in two files, which drifts the moment someone tunes only one of them.
+ * Cached after first read — retuning is a code change, not a runtime event.
+ */
+function duration() {
+  if (cachedDuration !== null) return cachedDuration;
+
+  const raw = globalThis.getComputedStyle?.(document.documentElement)
+    .getPropertyValue('--motion-slow')
+    .trim();
+  const value = Number.parseFloat(raw);
+
+  cachedDuration = Number.isFinite(value) && value > 0
+    ? (raw.endsWith('ms') ? value : value * 1000) // tolerate `0.28s` as well as `281ms`
+    : FALLBACK_MS;
+  return cachedDuration;
+}
+
+/** Gap between staggered entrances (end-screen cards), proportional to the dial. */
+export function staggerStep() {
+  return Math.round(duration() * 0.33);
+}
 
 export function prefersReducedMotion() {
   return globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
@@ -28,13 +56,13 @@ export function prefersReducedMotion() {
  * animation would freeze the board. Racing a timer guarantees the game keeps moving; the
  * worst case is that a beat is skipped, which no player will notice.
  */
-function settled(animations, duration) {
+function settled(animations, expectedMs) {
   const list = [animations].flat().filter(Boolean);
   if (list.length === 0) return Promise.resolve();
 
   return Promise.race([
     Promise.allSettled(list.map((a) => a.finished)),
-    new Promise((resolve) => setTimeout(resolve, duration + 80))
+    new Promise((resolve) => setTimeout(resolve, expectedMs + 80))
   ]).then(() => {
     // If the timer won, some animations are still pending — and a pending animation keeps
     // applying its first keyframe, which for a fade-in means the element stays invisible.
@@ -52,10 +80,10 @@ export function pulse(elements) {
     [elements].flat().map((el) =>
       el.animate(
         [{ transform: 'scale(1)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }],
-        { duration: DURATION, easing: EASE }
+        { duration: duration(), easing: EASE }
       )
     ),
-    DURATION
+    duration()
   );
 }
 
@@ -89,12 +117,12 @@ export async function flip(elements, mutate) {
     animations.push(
       el.animate(
         [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'translate(0, 0)' }],
-        { duration: DURATION, easing: EASE }
+        { duration: duration(), easing: EASE }
       )
     );
   }
 
-  await settled(animations, DURATION);
+  await settled(animations, duration());
 }
 
 /** ±4px, three times — the wrong-answer beat. */
@@ -113,10 +141,10 @@ export async function shake(elements) {
           { transform: `translateX(-${SHAKE_PX}px)` },
           { transform: 'translateX(0)' }
         ],
-        { duration: DURATION * 1.6, easing: 'ease-in-out' }
+        { duration: duration() * 1.6, easing: 'ease-in-out' }
       )
     ),
-    DURATION * 1.6
+    duration() * 1.6
   );
 }
 
@@ -139,9 +167,9 @@ export async function settleIn(element, delay = 0) {
           { opacity: 0, transform: 'translateY(6px)' },
           { opacity: 1, transform: 'translateY(0)' }
         ],
-        { duration: DURATION, easing: EASE, delay }
+        { duration: duration(), easing: EASE, delay }
       ),
-      DURATION + delay
+      duration() + delay
     );
   } finally {
     element.style.opacity = '';
@@ -155,11 +183,11 @@ export async function fadeOut(elements) {
   await settled(
     [elements].flat().map((el) =>
       el.animate([{ opacity: 1 }, { opacity: 0 }], {
-        duration: DURATION * 0.7,
+        duration: duration() * 0.7,
         easing: EASE,
         fill: 'forwards'
       })
     ),
-    DURATION * 0.7
+    duration() * 0.7
   );
 }

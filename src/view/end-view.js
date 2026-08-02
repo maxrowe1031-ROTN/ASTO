@@ -9,7 +9,7 @@
 
 import { canonicalOrder } from '../engine/arrangements.js';
 import { difficultyToTier } from '../engine/tiers.js';
-import { settleIn } from './motion.js';
+import { settleIn, staggerStep } from './motion.js';
 
 export class EndView {
   constructor(root, { onShare, onPlayAgain }) {
@@ -55,7 +55,7 @@ export class EndView {
     inTierOrder.forEach((set, i) => {
       const card = this.buildCard(set, state.solvedSetIds.includes(set.id));
       this.setsEl.appendChild(card);
-      settleIn(card, i * 72);
+      settleIn(card, i * staggerStep());
     });
   }
 
