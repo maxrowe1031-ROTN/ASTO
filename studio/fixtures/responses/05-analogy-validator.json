@@ -1,0 +1,3 @@
+{
+  "text": "{\n  \"boardPasses\": true,\n  \"verdicts\": [\n    {\n      \"setId\": \"set-growth\",\n      \"pass\": true,\n      \"notes\": \"Both pairs express the stated relation in the same direction.\"\n    },\n    {\n      \"setId\": \"set-tools\",\n      \"pass\": true,\n      \"notes\": \"Both pairs express the stated relation in the same direction.\"\n    },\n    {\n      \"setId\": \"set-homes\",\n      \"pass\": true,\n      \"notes\": \"Both pairs express the stated relation in the same direction.\"\n    },\n    {\n      \"setId\": \"set-material\",\n      \"pass\": true,\n      \"notes\": \"Both pairs express the stated relation in the same direction.\"\n    }\n  ]\n}"
+}

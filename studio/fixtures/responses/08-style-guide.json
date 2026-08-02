@@ -1,0 +1,3 @@
+{
+  "text": "{\n  \"compliant\": false,\n  \"edits\": [\n    {\n      \"setId\": \"set-homes\",\n      \"field\": \"explanation\",\n      \"suggestion\": \"A nest is where a bird lives, the way a den is where a bear lives.\",\n      \"reason\": \"Already in voice; kept as-is for the record.\"\n    }\n  ]\n}"
+}
