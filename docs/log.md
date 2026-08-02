@@ -2,6 +2,77 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-01 — Phase 3 complete: win/loss screens, share, and the motion pass
+
+- **Built (new):** `src/view/end-view.js` (win + loss screens) · `src/view/motion.js`
+  (flip, shake, settleIn, fadeOut, pulse, prefersReducedMotion) · `src/share.js`
+  (pure `buildShareText` + `share()` with navigator.share → clipboard → selection
+  fallback) · `test/share.test.js`. **Changed:** `index.html` (#screen-end),
+  `styles/*` (end screens, REVEALED badge, paper grain, `.screen[hidden]`),
+  board/frame/solved-sets views (motion), `game-controller.js` (async serialized
+  render + `restart()`), `app.js` (ScreenRouter, share wiring). **No engine changes.**
+- **Decisions made with Max:** Share = Connections-style tier-square grid, spoiler-free ·
+  **no "Next puzzle" button** (depends on Phase 5 manifest/routing) — win screen offers
+  **Play again** instead · **explanations shown on the win screen too**, not just the
+  loss screen. That last one closes a GDD §17.3 open question ("how much explanation
+  should solved sets reveal?") — propose upstream.
+- **Verified:** `npm test` → **103 pass, 0 fail, exit 0** (8 new share tests, red-first);
+  `check-board.js` exit 0. Manual gate in preview browser at 375×812 walked the **GDD §16
+  checklist item by item** — all passed. Canonical beat confirmed by submitting
+  `Fire|Spark|Tree|Seed` and watching the frame reorder to `Seed|Tree|Spark|Fire` before
+  clearing. Loss screen shows all four sets, unsolved ones badged REVEALED, every card
+  with its explanation. Share text verified spoiler-free (`ASTO — First Light / 4/4 ·
+  no beans / ⬛🟩🟥🟨`, squares in solve order; unit-tested against all 16 board words).
+  Play again fully resets. Reduced motion: full game playable, helpers return in 0ms.
+  Desktop 1280px: no overflow. Zero console errors, all requests 200.
+- **No-list audit:** grain on `button.tile` and `.solved-card` only (page background
+  `none`); used bean = `rgb(92,70,51)` roast brown, never red; no `setInterval`, no rAF
+  loops, no confetti, no particles. The only `setTimeout` is motion's liveness guard.
+- **Three real bugs found at the gate, fixed and re-verified:**
+  1. **`.screen[hidden]` did nothing** — `.screen { display: flex }` outranks the UA
+     stylesheet's `[hidden] { display: none }`, so screens rendered stacked. **Latent
+     since Phase 2** (the error screen had the same flaw, never exercised).
+  2. **`Animation.finished` can never resolve** (it doesn't in the preview browser at
+     all) — and view rendering had been chained onto it, so a stalled animation froze
+     the whole game. Every helper now races a bounded timer AND cancels unfinished
+     animations. **Motion can no longer hold the game hostage.**
+  3. **`fill: 'backwards'` left staggered cards permanently invisible** if their
+     animation never ran (backgrounded tab → empty win screen). Visibility is now
+     restored in a `finally`, and pending animations are cancelled so they cannot pin an
+     element at its first keyframe.
+- **Playtest tuning (Max, on device):** motion slowed **20%**, then a further **30%** —
+  `--motion-slow` 180 → 216 → **281ms**, `--motion-fast` 120 → **187ms**. On the second
+  pass the two duplicated timing constants were **collapsed into one dial**: `motion.js`
+  now reads `--motion-slow` from `tokens.css` at runtime and derives the card stagger
+  from it, so JS animations and CSS transitions cannot drift. Verified by setting the
+  token to 500ms and confirming a JS animation reported exactly 500.
+- **Architecture note:** `render()` is now async and **serialized** — a queued pass reads
+  `this.state` when it runs, so it always paints the latest truth. The solve sequence
+  (frame beat → board close → card settle) falls out of **view order** in `app.js`, not
+  timing code. Consequence: taps during a solve animation queue rather than drop. Max
+  playtested and reported it feels fine; revisit if it ever reads as laggy.
+- **Honest limitation:** the preview browser never advances its animation timeline, so
+  **Claude verified motion logic but never watched it play.** All visual timing judgement
+  came from Max on a real iPhone.
+- **Phase status: Phase 3 gate MET** — §16 checklist passed, solve animation glitch-free,
+  no-list held, playtested and approved by Max on device.
+- **Docs drift to propose upstream (GDD is Max-owned):** motion is now 187–281ms vs
+  Appendix E's stated 120–180ms (~56% longer) · §8 feedback table still lacks the
+  `already-tried` row · §17.3's "how much explanation" question is now answered
+  (both end screens) · Appendix A schema still pre-v1.0.
+- **Next:**
+  1. **Phase 4 — first-run tutorial:** `puzzles/tutorial.json` (ordinary schema-v1.0
+     board, difficulty-1 set = Seed:Tree::Spark:Fire, same validator + integrity bar),
+     `tutorial-script.js` (3 coach-marks: relationship-not-category · order matters ·
+     what `::` means, advance conditions keyed to controller events),
+     `tutorial-overlay.js`, pips hidden via a view flag, `storage.js` `tutorialSeen`
+     + skip affordance. The engine's `maxMistakes: Infinity` no-lose rule is **already
+     built and tested** since Phase 1 — no engine work needed.
+  2. Phase 4 gate: fresh profile lands in tutorial, cannot lose, coach-marks fire
+     correctly, completion routes to First Light, returning visitor skips.
+  3. Still open: First Light `explanation` editorial pass (Red set weakest) · the §8.3
+     watch-item on free so-close repeats · the handbook/GDD drift proposals above.
+
 ## 2026-08-01 — Live on GitHub Pages + first playtest rule: "already tried" is free
 
 - **Shipped the game publicly (Max's call):** repo flipped to public, GitHub Pages
