@@ -1,0 +1,15 @@
+{
+  "name": "asto",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ASTO — Connections, but with analogies. A cozy, mobile-first browser word puzzle.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\"",
+    "serve": "node tools/serve.js",
+    "check-board": "node tools/check-board.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "asto-first-light",
+  "title": "First Light",
+  "date": "2026-08-01",
+  "sets": [
+    {
+      "id": "set-growth",
+      "relationshipLabel": "Small origin becomes larger result",
+      "explanation": "A seed grows into a tree the way a spark grows into a fire.",
+      "pairs": [["Seed", "Tree"], ["Spark", "Fire"]],
+      "difficulty": 1,
+      "baitTags": ["nature"]
+    },
+    {
+      "id": "set-tools",
+      "relationshipLabel": "Tool used by profession",
+      "explanation": "A brush is what a painter works with, the way a chisel is what a sculptor works with.",
+      "pairs": [["Brush", "Painter"], ["Chisel", "Sculptor"]],
+      "difficulty": 2,
+      "baitTags": ["craft"]
+    },
+    {
+      "id": "set-homes",
+      "relationshipLabel": "Home of animal",
+      "explanation": "A nest is where a bird lives, the way a den is where a bear lives.",
+      "pairs": [["Nest", "Bird"], ["Den", "Bear"]],
+      "difficulty": 3,
+      "baitTags": ["nature", "animal"]
+    },
+    {
+      "id": "set-material",
+      "relationshipLabel": "Material transformed into finished object",
+      "explanation": "Dough is baked into bread the way clay is fired into pottery.",
+      "pairs": [["Dough", "Bread"], ["Clay", "Pottery"]],
+      "difficulty": 4,
+      "baitTags": ["craft"]
+    }
+  ]
+}
