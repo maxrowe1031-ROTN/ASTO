@@ -1,0 +1,5 @@
+# Generated run directories stay out of git (see the spec's Git and
+# artifact policy). Demonstration runs are copied into committed fixtures
+# deliberately, never accumulated here.
+*
+!.gitignore
