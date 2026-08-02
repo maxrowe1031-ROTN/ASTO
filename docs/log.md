@@ -2,6 +2,69 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-01 — Started: AI Puzzle Studio design (brainstorm paused mid-way)
+
+**No code written.** Design conversation only, paused by Max to resume next session.
+
+- **Why this started:** Max noticed `docs/design.md` covers only the game — the AI Puzzle
+  Studio pipeline is explicitly out of scope there ("the crew gets re-tooled later").
+  Decision: **do not** bolt it on as a Phase 6; give it its own design plan, including a
+  **web interface for Max to review agent outputs and give editorial feedback.**
+- **Gap found in the existing plan (unresolved, deliberately):** Phase 5's gate says
+  "full §16 acceptance pass", but GDD §16 includes two criteria no phase builds —
+  **Difficulty Loop** (test-player agent produces empirical 1–4 grades) and **Pipeline
+  Demo** (a puzzle traceable prompt → agent reports → decision log → JSON). Max chose to
+  leave `design.md` untouched and let the Studio plan cover them. **Phase 5's gate will
+  need rewording when we get there.**
+- **Findings from exploring `../maigd-course-handbook/projects/asto/`:**
+  - A **runnable 5-agent Python crew already exists** (~1,200 lines: Pair Author, Board
+    Builder, Analogy Validator, Adversarial Solver + human editor; blackboard
+    orchestration, bounded revise loop, `--mock` offline mode, Assignment-4 RAG layer,
+    3 generated boards with traces + reports).
+  - **Correction to an earlier log claim:** `crew/schema.py` is *already* near schema
+    v1.0 — camelCase, `pairs` as source of truth, required `explanation`, derived 16
+    terms, one set per difficulty. Only a leftover `tier` field drifts. The pre-v1.0
+    problem is the **GDD's Appendix A**, not the crew code.
+  - Max's call: **fully clean slate** — none of the code, corpus, or rubric carries over.
+    Consequence to honour in the plan: the grounding corpus and editorial rubric are
+    **editorial deliverables that must be budgeted**, not things that appear for free.
+    The plan should also re-specify `--mock` mode and a bounded revise loop from the
+    start (the two pieces that cost real debugging last time).
+- **Design insight worth keeping:** `board-integrity.js` already proves mechanical
+  uniqueness exhaustively (43,680 tuples, exactly 16 accepted). The **Adversarial Solver
+  must not re-do that** — its job is the part brute force provably cannot see:
+  *human-plausible* alternate readings (design.md risk 1).
+- **Decisions locked this session:**
+  1. **Purpose: both, tool-first** — it must genuinely author Phase 5's boards, with the
+     §16 demo falling out of a legible review UI.
+  2. **Clean slate**, no carry-over of code or content.
+  3. **Node, zero dependencies** — Anthropic API over built-in `fetch`. The studio
+     imports `src/source/validate-puzzle.js` and `src/engine/board-integrity.js`
+     **directly**, so pipeline and game share one validator and schema drift becomes
+     structurally impossible. Keeps the repo's zero-dep rule intact; tests via `node:test`.
+  4. **UI scope: review, decide, and send revisions back** — approve/revise/reject with
+     notes, and a revise re-invokes the pipeline from the right stage.
+  5. **Split into two specs** with the **run-directory format as the contract** between
+     them: **Studio Core** (agents + orchestration + artifacts, CLI-driven) then
+     **Review Studio** (the web interface). Core is designed and built first.
+- **Open — first question next session:** the **agent roster**. GDD §12.1 specifies eight;
+  the options on the table were All 8 · Six (Pair Author, Board Builder absorbing Theme
+  Grouper, Difficulty Rater, Analogy Validator, Adversarial Solver, Test-Player —
+  deferring Style Guide) · Five · Four-then-grow. Note §16's Difficulty Loop requires the
+  **Test-Player**, and §9.1 calls it "ASTO's primary difficulty instrument".
+- **Also still open:** theme input (Max-supplied vs generated) · where the human gate sits
+  in the run · model tier per agent + token budget (GDD §12.5 estimates ≈30k/pass,
+  45–60k/approved puzzle) · corpus authoring approach · run-directory layout.
+- **Next:**
+  1. **Resume the Studio Core brainstorm** at the agent-roster question, then the open
+     items above → design doc at `docs/superpowers/specs/` → implementation plan.
+  2. Unchanged and independent: **Phase 4 — first-run tutorial** (no engine work needed;
+     `maxMistakes: Infinity` has been built and tested since Phase 1). Phase 4 and the
+     Studio are separable — either can go first.
+  3. Carried: First Light `explanation` editorial pass · §8.3 watch on free so-close
+     repeats · the four-item GDD drift list (motion range, `already-tried` row,
+     explanation question, Appendix A schema) · Phase 5 gate rewording noted above.
+
 ## 2026-08-01 — Phase 3 complete: win/loss screens, share, and the motion pass
 
 - **Built (new):** `src/view/end-view.js` (win + loss screens) · `src/view/motion.js`
