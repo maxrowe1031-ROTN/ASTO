@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ASTO — Review Studio</title>
+
+    <!--
+      The game's own stylesheets, not a copy. The Studio looks like ASTO
+      because it IS ASTO's design system; review.css only adds Studio chrome.
+    -->
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/base.css" />
+    <link rel="stylesheet" href="/styles/components.css" />
+    <link rel="stylesheet" href="/studio/review/ui/review.css" />
+  </head>
+  <body>
+    <header class="studio-bar">
+      <h1 class="wordmark">ASTO</h1>
+      <span class="studio-label">Review Studio</span>
+      <nav><a class="text-action" href="#/">All runs</a></nav>
+    </header>
+
+    <main id="view" class="studio-view">
+      <p class="studio-muted">Loading…</p>
+    </main>
+
+    <script type="module" src="/studio/review/ui/review.js"></script>
+  </body>
+</html>

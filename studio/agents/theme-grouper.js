@@ -66,7 +66,11 @@ export function buildPrompt(input = {}, context) {
       'Any pair that does not belong in a coherent set goes in "setAside" with a reason. Never invent a theme to force a grouping.',
     ].join('\n'),
     data: asJsonBlock('Candidate pairs', pairs),
-    outputRules: `Set ids must be unique, lowercase, hyphenated (for example "set-growth"). ${JSON_ONLY}`,
+    outputRules: [
+      'Return { "sets": [ { "id", "relationshipLabel", "shape", "pairs" } ] }, optionally with "setAside".',
+      'Set ids must be unique, lowercase, hyphenated (for example "set-growth").',
+      JSON_ONLY,
+    ].join(' '),
   });
 }
 

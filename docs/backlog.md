@@ -13,3 +13,11 @@
 - `budget.js` cost caps only bite once every model in play is priced. Rates are estimates
   until A5 measures real spend; unpriced models are surfaced in `usage.unpricedModels`.
 - Studio run artifacts accumulate under the git-ignored `studio/runs/`; no pruning yet.
+- R1 has no un-approve: `approved → archived` only. Fine for the rubric loop (a new run
+  is cheap), but revisit if Max changes his mind about a board mid-loop.
+- R1 binds `127.0.0.1`, so the Studio is not reachable from the iPhone Max playtests on.
+  Deliberate — it starts runs and spends credit. Revisit only with auth, never a flag flip.
+- The Review Studio adds two endpoints beyond the spec's list (`POST /api/runs/:id`
+  resume, `POST /api/runs/:id/feedback`); fold them into the spec or drop them at B2.
+- `run.js` and the Studio can drive the same run concurrently; the lock protects the
+  files but the UX is confusing. Documented as "one driver at a time" — consider enforcing.

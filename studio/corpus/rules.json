@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0",
+  "_comment": [
+    "Editorial rules handed to every agent. Seeded from GDD section 10.2 —",
+    "Max's own editorial standards, verbatim. Nothing else has been adopted.",
+    "",
+    "Rules compiled from Max's recorded feedback land here after each batch of",
+    "the review loop, with source 'feedback-batch-N' and provenance naming the",
+    "runs and tags that justified them. Only status 'approved' rules are ever",
+    "loaded into a prompt, so a proposal can wait here without taking effect."
+  ],
+  "rules": [
+    {
+      "id": "rule-001",
+      "text": "Every pair in a set must share the same relationship.",
+      "status": "approved",
+      "source": "gdd-10.2",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "rule-002",
+      "text": "The relationship label should make the answer feel fair once revealed.",
+      "status": "approved",
+      "source": "gdd-10.2",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "rule-003",
+      "text": "A puzzle should avoid accidental alternate solutions unless intentionally designed for them.",
+      "status": "approved",
+      "source": "gdd-10.2",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "rule-004",
+      "text": "Words should be familiar enough that the challenge is the relationship, not obscure vocabulary.",
+      "status": "approved",
+      "source": "gdd-10.2",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "rule-005",
+      "text": "Hard puzzles can be abstract, but they should not be arbitrary.",
+      "status": "approved",
+      "source": "gdd-10.2",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "rule-006",
+      "text": "A human editor reviews and edits every board before it is used; write for that reader.",
+      "status": "approved",
+      "source": "gdd-10.2",
+      "createdAt": "2026-08-02"
+    }
+  ]
+}

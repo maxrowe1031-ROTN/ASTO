@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0",
+  "_comment": [
+    "The relationship-shape taxonomy, plus hand labels for the boards that",
+    "shipped before agents recorded a `shape` per pair.",
+    "",
+    "Counts are NOT stored here — they are recomputed on demand by",
+    "studio/variety.js from what shipped and what runs produced, so there is no",
+    "second mutable file to drift out of step with the runs themselves.",
+    "",
+    "Taxonomy is the Studio spec's eight shapes plus the GDD section 10.1",
+    "relationship types that were not already covered."
+  ],
+  "shapes": [
+    { "id": "transformation", "description": "One thing becomes another through a process" },
+    { "id": "part-whole", "description": "A component and the thing it belongs to" },
+    { "id": "tool-function", "description": "An instrument and the work or worker it serves" },
+    { "id": "cause-effect", "description": "Something that acts and the result it produces" },
+    { "id": "material-object", "description": "A raw material and the finished object made from it" },
+    { "id": "young-mature", "description": "An early stage and the developed form it grows into" },
+    { "id": "container-contents", "description": "A vessel and what it holds" },
+    { "id": "scale-degree", "description": "A milder degree and its fuller counterpart" },
+    { "id": "symbol-figure", "description": "An emblem and what or whom it stands for" },
+    { "id": "creator-creation", "description": "A maker and the thing they made" },
+    { "id": "place-occupant", "description": "A place and the one who lives or works in it" },
+    { "id": "synonym-antonym-reversal", "description": "Sameness, opposition, or a reversed direction" },
+    { "id": "double-meaning", "description": "A word whose second sense carries the analogy" }
+  ],
+  "shippedLabels": {
+    "asto-first-light": {
+      "set-growth": "transformation",
+      "set-tools": "tool-function",
+      "set-homes": "place-occupant",
+      "set-material": "material-object"
+    },
+    "asto-tutorial": {
+      "set-growth": "transformation",
+      "set-degree": "scale-degree",
+      "set-resolution": "cause-effect",
+      "set-erosion": "cause-effect"
+    }
+  }
+}

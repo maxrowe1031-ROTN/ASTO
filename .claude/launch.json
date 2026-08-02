@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "serve"],
       "port": 8080
+    },
+    {
+      "name": "studio-review",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "studio:review"],
+      "port": 4321
     }
   ]
 }

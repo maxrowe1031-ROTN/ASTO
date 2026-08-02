@@ -21,6 +21,9 @@ import { createRunStore } from './storage/run-store.js';
 import { createAnthropicTransport } from './llm.js';
 import { createMockTransport } from './mock-transport.js';
 import { isValidStageId } from './stage-registry.js';
+import { buildRelationshipIndex, buildVarietyBrief } from './variety.js';
+import { loadRules } from './corpus/rules.js';
+import { loadEnv } from './env.js';
 
 const RUNS_DIR = fileURLToPath(new URL('./runs/', import.meta.url));
 const FIXTURES_DIR = fileURLToPath(new URL('./fixtures/responses/', import.meta.url));
@@ -73,6 +76,7 @@ const slugify = (text) => {
 
 async function main(argv) {
   const options = parseArgv(argv);
+  loadEnv();
   const store = createRunStore({ rootDir: RUNS_DIR });
   const transport = options.mock
     ? createMockTransport({ fixturesDir: FIXTURES_DIR })
@@ -80,8 +84,17 @@ async function main(argv) {
 
   let runId = options.runId;
   if (runId === null) {
-    ({ runId } = store.createRun({ slug: options.slug, theme: options.theme, brief: options.brief }));
+    // Same brief the Review Studio builds, so a run started here and a run
+    // started from the web surface are the same kind of run.
+    const brief =
+      options.theme === null
+        ? buildVarietyBrief({ index: buildRelationshipIndex({ store }), count: options.brief.count })
+        : options.brief;
+    ({ runId } = store.createRun({ slug: options.slug, theme: options.theme, brief }));
     console.log(`run ${runId}`);
+    if (brief.relationshipShapes?.length) {
+      console.log(`surprise-me: reaching for ${brief.relationshipShapes.join(', ')}`);
+    }
   }
   if (options.reviseFrom) {
     const attemptId = requestRevision(store, runId, {
@@ -91,7 +104,14 @@ async function main(argv) {
     console.log(`revision attempt ${attemptId} from ${options.reviseFrom}`);
   }
 
-  const result = await runPipeline({ runId, store, transport, fresh: options.fresh });
+  const rules = loadRules();
+  const result = await runPipeline({
+    runId,
+    store,
+    transport,
+    fresh: options.fresh,
+    context: { rules: rules.map((rule) => rule.text) },
+  });
 
   console.log(`attempt ${result.attemptId}: ${result.status}`);
   if (result.resumedAt) console.log(`resumed at ${result.resumedAt}`);

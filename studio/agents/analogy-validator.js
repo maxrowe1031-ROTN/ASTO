@@ -50,7 +50,11 @@ export function buildPrompt(input = {}, context) {
       'Fail closed: if any set fails, "boardPasses" is false.',
     ].join('\n'),
     data: asJsonBlock('Board', board),
-    outputRules: `Give every set a verdict with notes, even when it passes. ${JSON_ONLY}`,
+    outputRules: [
+      'Return { "verdicts": [ ... ], "boardPasses": true or false }.',
+      'Give every set a verdict with notes, even when it passes.',
+      JSON_ONLY,
+    ].join(' '),
   });
 }
 

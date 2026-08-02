@@ -330,7 +330,17 @@ test('decisions and feedback append as jsonl and read back in order', () => {
     const { runId } = store.createRun({ slug: 'lantern' });
     store.appendDecision(runId, { action: 'revise', notes: 'set-3 is reversible' });
     store.appendDecision(runId, { action: 'approve' });
-    store.appendFeedback(runId, { action: 'revise-set', tags: ['order-ambiguous'] });
+    // A schema-valid event: appendFeedback validates on the way in (R1), so
+    // this fixture grew the required fields. The assertions below are
+    // unchanged — this test is about jsonl round-tripping and clock stamping.
+    store.appendFeedback(runId, {
+      schemaVersion: '1.0',
+      id: 'fb-1',
+      attemptId: '0001',
+      action: 'revise-set',
+      scope: { type: 'set', setId: 'set-3' },
+      tags: ['order-ambiguous'],
+    });
     assert.deepEqual(store.readDecisions(runId).map((d) => d.action), ['revise', 'approve']);
     assert.deepEqual(store.readFeedback(runId)[0].tags, ['order-ambiguous']);
     // Every appended event is stamped by the injected clock.
