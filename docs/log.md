@@ -2,6 +2,82 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-02 — Studio Core A1 + A2 built (contracts, storage, agents, transport)
+
+Second half of the same session as the entry below, which approved the design. **No game
+code touched** — `src/`, `styles/` and `index.html` are byte-identical to Phase 4, and no
+board was added. Everything here is new `studio/` and `test/studio/`.
+
+- **A1 — contracts and storage (commit `15fe304`).** `stage-registry.js` (9 ordered
+  stages = 8 agents + the `04a-integrity` gate, deeply frozen; `stagesFrom()` is the one
+  primitive both revision and resume re-entry use) · `schemas.js` (manifest/attempt
+  validators in the `validate-puzzle.js` style — pure, never throw, collect every error —
+  plus the run-status transition map) · `storage/atomic-write.js` (temp → fsync → rename;
+  a failed write neither clobbers the destination nor leaves litter) ·
+  `storage/lock.js` (pid-aware: a dead holder's lock is stolen, a live one blocks with a
+  typed `LockHeldError`) · `storage/run-store.js` — **the only module that touches run
+  artifacts**, enforcing monotonic attempt ids, one running attempt per run, immutability
+  of completed attempts, the transition map, and jsonl decisions/feedback.
+- **A2 — agent boundaries and mock transport (commit `e825fec`).** `schema-check.js`
+  (zero-dep declarative validator) · `failures.js` (the three retry categories as one
+  pure decision) · `llm.js` (injected transport, retry loop with backoff + `retry-after`,
+  the request record; **the only `fetch` in the Studio**) · `mock-transport.js` (fixture
+  replay, scriptable failures) · the **eight pure agent modules** behind
+  `agents/index.js`, sharing `agent-kit.js` · 8 committed fixtures in
+  `studio/fixtures/responses/`.
+- **Decisions made while building (all inside the approved spec, none overriding it):**
+  - **Resume rule implemented as Max specified.** A partial stage folder is **quarantined
+    to `<stage>.partial-<n>`, never deleted**, and its stage reruns fresh; the half-written
+    work stays readable. Immutability is scoped to *completed* work, not whole attempts.
+  - **`failures.js` split out of `llm.js`** (the spec listed no separate module). llm.js
+    owns the I/O, failures.js owns the meaning — so the entire retry policy is testable
+    with zero network, the same reason agents are pure. **Unrecognized failures default to
+    terminal:** an unknown failure that retries is an unbounded loop.
+  - **`schema-check.js` added** — zero deps means no JSON Schema library, and eight agents
+    needed one dialect between them. Structured output from the API is a convenience;
+    this is the authority.
+  - **`storage/migration.js` deliberately not created.** With only schema v1.0 in
+    existence it has no job; "old schema opened by new code fails loudly" already lives in
+    the validators and is tested. It appears when a second version does.
+  - Model IDs live in config, not agent files: `claude-sonnet-5` /
+    `claude-haiku-4-5-20251001` (§12.1's tiers, current IDs).
+- **The boundary law is enforced by test, not convention.** The agent contract suite reads
+  each module's source and asserts no `fetch`, no `node:fs`, no transport import — plus no
+  input mutation, and that **approved rules actually reach every prompt** (learning that
+  silently failed to arrive would otherwise be invisible). The **Test-Player is blind by
+  construction**: a test hands it the *entire* board — sets, explanations, integrity
+  report — and asserts no label, explanation or set id reaches the prompt. **Board
+  Builder's output is validated against the game's own `validatePuzzle()`**, so pipeline
+  and game cannot drift.
+- **One real bug, caught by its own test:** the Test-Player prompt rendered "you lose on
+  your **3th** mistake" for any non-default allowance. Fixed with a proper ordinal.
+- **Verified:** `npm test` → **414 pass, 0 fail** (was 154; +260, every one watched red
+  first). `node tools/check-board.js` → 2 boards, all clean. A round-trip suite drives all
+  eight agents through `llm.js` over the mock transport with `globalThis.fetch` replaced by
+  a throwing stub — **zero network calls**, and the fixture board passes the game
+  validator. **No browser verification was done or needed** — no UI file changed.
+- **Phase status: Studio A1 and A2 complete and verified. A3 not started.** The Studio has
+  no gate of its own until Core is runnable; the spec's Definition of Done is the target.
+  Game phases are unchanged: **Phases 1–4 closed**, Phase 5a planned and not started.
+- **Design-doc drift:** none new. `docs/design.md` is untouched and still describes the
+  game only — correct, since the Studio has its own spec
+  (`docs/superpowers/specs/2026-08-02-asto-studio-design.md`). The four deviations from
+  that spec are listed above and are all additive.
+- **Next:**
+  1. **Studio Phase A3 — pipeline and mechanical gates.** Eight-stage orchestration ·
+     `blackboard.js` · integrity insertion at `04a` (free sweep before evaluation tokens) ·
+     `budget.js` enforcement · failure recording · revision entry points · immutable child
+     attempts · **resume wired to `findFirstIncompleteStage`** (A1 built the storage half;
+     A3 makes the pipeline use it). Fixtures and the run-store contract are ready for it.
+  2. Then A4 (corpus + variety — **Max drafts `studio/corpus/rubric.md`**, the one input
+     only he can write), A5 (evaluation), A6a (feedback capture).
+  3. Independent and unblocked: **Phase 5a** — daily + archive + the newly added
+     **mid-puzzle persistence** (see the entry below).
+  4. Carried: First Light Red-set `explanation` pass · the GDD drift list (Appendix A
+     schema, §8's missing `already-tried` row, motion 187–281ms vs Appendix E's 120–180ms,
+     §17.3 answered, and §16's "empirical" wording now contradicted by the spec's
+     predicted/simulated/human-observed split).
+
 ## 2026-08-02 — AI Puzzle Studio designed and approved; Phase 4 gate CLOSED
 
 - **Phase 4 gate: MET.** Max playtested on the phone and called it good. Phases 1–4 are
