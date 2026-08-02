@@ -252,9 +252,17 @@ library. That is a conversation with Max, not a unilateral `npm install`.
 he can see what's going on and functionally change things through the project's real
 public seams.
 
-**ASTO's current state:** `studio/` is a headless pipeline (Core A1 + A2 + A3 —
-contracts, storage, agents, transport, and now orchestration: blackboard, budget,
-mechanical gates, revisions and resume). There is no Studio *page* yet.
+**ASTO's current state (updated 2026-08-02):** `studio/` is the Core pipeline (A1+A2+A3)
+**plus Review Studio R1** — a local web surface at `npm run studio:review` where Max
+starts runs, sees a candidate board rendered in ASTO's own design system beside every
+agent's report, and records structured editorial feedback.
+
+**R1 is a deliberate reorder of the approved spec, agreed with Max on 2026-08-02.** A
+B1/B2 subset of the Review Studio moved **ahead of A4 and A5**, because Max chose to
+build the editorial rubric from ~30 recorded judgements rather than write it cold —
+judging concrete boards beats articulating taste in the abstract, and it produces a
+rubric with evidence attached to every line. **Deferred, not built:** approval landing
+into `puzzles/` (until just before Phase 5b), hand-editing (B2), learning proposals (A6b).
 
 **Why:** the approved Studio design builds the Core first and the human surface second.
 The **Review Studio** in Part B of
@@ -271,9 +279,15 @@ its artifacts landed.
 
 **Why the CLI exists (A3, 2026-08-02):** A3 is exactly the growth the reconsider-when
 trigger names — the Core stopped being readable-only. `run.js` was added a phase earlier
-than the spec's implementation order lists it so the trigger does not fire: Max can
-exercise the whole pipeline without reading code. It holds no pipeline logic and shells
-out to nothing. This is a stopgap for the Review Studio, not a replacement for it.
+than the spec's implementation order lists it so the trigger does not fire. It holds no
+pipeline logic and shells out to nothing. R1 has since superseded it as the primary
+surface; the CLI remains for scripted and headless runs.
 
-**Reconsider-when:** Review Studio Part B slips past the next phase gate, or the Core
-grows a capability the CLI cannot exercise. Either means the surface has waited too long.
+**Status: largely discharged.** R1 delivers what this rule actually asks for — Max can
+see what the pipeline is doing and change things through the project's real public seams
+(`runPipeline`, `requestRevision`, `run-store`), which is also what proves those seams
+are clean. What remains deferred is bounded and named above.
+
+**Reconsider-when:** approval-into-`puzzles/` or hand-editing is still missing when Phase
+5b needs the Studio to author content, or the Core grows a capability neither the CLI nor
+R1 can exercise.

@@ -2,6 +2,123 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-02 — Review Studio R1, and the first real API run (which failed)
+
+Third unit of work this session, on `work/review-studio-r1` (commits `8fe4b46`, `58c4d95`).
+**No game code touched** — `git diff main -- src/ styles/ index.html puzzles/` is empty.
+
+- **Max changed the plan, deliberately.** Rather than write `rubric.md` cold (A4's
+  centrepiece), he wants it **compiled from ~30 recorded judgements**: generate a board,
+  review it in a web UI, tag and annotate it, recompile rules between batches of ten. He
+  proposed this himself — *"what if before we published a single puzzle, we went through
+  20–30 iterations where I gave direct feedback on each one."* Judging concrete boards
+  beats articulating taste in the abstract, and it yields a rubric with evidence attached
+  to every line. **This reorders the approved Studio spec: a B1/B2 subset of the Review
+  Studio moves ahead of A4 and A5.**
+- **Scope agreed before building:** approve/reject/revise are **recorded only** — no
+  landing into `puzzles/` (deferred to just before Phase 5b) · **no hand-editing**
+  (deferred to B2) · real Anthropic transport, Max holds the key.
+- **Built (`studio/review/`):** `api.js` — route handlers with no `node:http`, no `fs`,
+  no `fetch`, so every rule is a function call in a test; IDs are pattern-checked before
+  reaching the store, making traversal impossible by construction; the store's own guards
+  stay the authority and map to 409 rather than being reimplemented. `runner.js` — the
+  server's only door to the pipeline; 202-plus-polling because a real run takes minutes,
+  with `manifest.status` (already a state machine) as the progress signal. `server.js` —
+  binds `127.0.0.1` explicitly (`tools/serve.js` binds everything and is deliberately not
+  reused); static serving is an **allowlist**, so `studio/runs/` and `.env` are not
+  addressable rather than merely guarded. `ui/` — `board-html.js` is the spec's
+  intentional duplication (amendment 2) as a pure string template, unit-testable with no
+  DOM, using the game's classes and the game's derivations.
+- **Also built:** `validateFeedbackEvent` + `validateRulesFile` (`schemas.js`) over the
+  spec's ten actions and thirteen quick-tags — closed vocabularies, because the rubric is
+  compiled from this corpus and a typo'd tag is signal that quietly disappears ·
+  `corpus/rules.json` seeded **only** with GDD §10.2's six standards, with only
+  `status: "approved"` rules ever reaching a prompt · `corpus/relationship-index.json` +
+  `variety.js` for locked decision 6's surprise-me brief, counts recomputed on demand so
+  there is no second source of truth · `env.js`, a `.env` loader that prints nothing on
+  any path (naming a variable discloses which secrets exist; echoing a parse error echoes
+  the line the secret is on) · run-store hardening: `appendFeedback` validates, and
+  `appendEvent` moved under the run lock now that the decision log has two writers.
+- **Three bugs found and fixed, each caught by a test written first:**
+  1. **`runner.revise()` created the child attempt before building the transport**, so a
+     missing key left the run wedged in `revision-requested` around an attempt that could
+     never run. Reproduced live in the browser before fixing. A run now also records
+     whether it came from fixtures, so a revision cannot silently switch to the real API —
+     and a mock-derived board stays identifiable rather than counting as editorial signal.
+  2. **The UI used `alert()`**, which blocks a page that polls itself; it wedged the
+     browser pane mid-verification. Replaced with an inline notice.
+  3. **Every agent's prompt could disagree with its own schema** — see below.
+- **The first real API run failed, and the cause was ours (~$0.23).** Stage
+  `03-difficulty-rater` was rejected three rounds running. Its prompt said *"Return one
+  entry per set, keyed by its `setId`"*, so the model returned
+  `{ "set-a": {...}, "set-b": {...} }` against a schema requiring `{ "grades": [...] }`.
+  **The model obeyed the prompt; the prompt was wrong**, and the retry feedback lost to
+  the instruction sitting in front of it.
+  - **Fixtures could not have caught this.** A fixture is hand-written to match the
+    schema, so A2's round-trip test proved *the schema accepts the fixture* — never that
+    *the prompt produces it*. The two can disagree completely with every offline test
+    green.
+  - **New test `prompt-schema-agreement`** asserts every agent's prompt names the
+    top-level keys its own schema requires. **It failed for five of eight agents.**
+    `board-builder` is handled explicitly, its contract being "exactly one of `board` or
+    `insufficientSets`", which a schema `required` array cannot express.
+  - Fixed `difficulty-rater` (array, stated twice) and named the wrapper keys in
+    `pair-author`, `theme-grouper`, `analogy-validator`. Stages 01 and 02 had only
+    survived the failed run because the model guessed right.
+- **Handbook consulted at Max's request** (he remembered debugging something similar in
+  the prototype). **The failure is not recorded there** — and the search explained why:
+  the prototype had **no difficulty-rater at all**; difficulty was deterministic
+  (`crew.py:_normalize_board`, one set per tier). This Studio is the first to run that
+  agent. **Max's decision: difficulty stays agent-rated**, since the GDD's difficulty loop
+  needs it and he intends to give feedback on the ratings.
+  - The search did surface a live prototype failure worth acting on:
+    *"Sonnet-5 returned empty — thinking-by-default consumed the token budget."* Our
+    transport sends no `thinking` parameter and Sonnet 5 thinks by default, with
+    `max_tokens` capping thinking and output together. **`maxTokens` raised 4096 → 16000**
+    (a ceiling, not a spend). This had not bitten us yet.
+- **Verified:**
+  - `npm test` → **623 pass, 0 fail** (500 at the entry below; +113 for R1, +10 for the
+    prompt-schema suite). All 21 A1 run-store tests still green.
+  - `node tools/check-board.js puzzles/*.json` → both clean. No board added.
+  - **Boundary greps:** `api.js` and `runner.js` do no file I/O — everything through
+    `run-store`; `llm.js` still owns the only server-side `fetch` (`review.js`'s is
+    browser-side, calling its own API).
+  - **Browser, with evidence:** run list and review page render; create → revise →
+    approve all work over HTTP; double-approve correctly 409s; feedback lands as
+    schema-valid `feedback.jsonl`; approved runs lock all four controls; no console or
+    server errors. **Visual parity measured, not eyeballed** — tile background, border,
+    radius, font, weight, size and body background are *identical values* to the game's at
+    375×812 and 1280px, because the Studio links the game's real stylesheets. **No red
+    anywhere** in the rendered page: the no-list holds.
+  - The prompt fixes are verified **offline only** — see below.
+- **Phase status: Review Studio R1 built; its automated and Claude-verifiable gates are
+  MET. Two things remain open and neither is claimed as passed:**
+  1. **The real-transport path is unproven.** It has been run once and it failed. The fix
+     is verified against the schema and against offline tests; it has **not** been run
+     against a live model. First action next session.
+  2. **Max acceptance**, which is the entire point of R1: whether the thirteen quick-tags
+     are the right vocabulary for what he actually wants to say about a board. Better
+     found on board one than board thirty.
+- **Drift check:** `docs/design.md` HR-2 updated — the Review Studio surface is arriving
+  now, as an R1 subset ahead of A4/A5, with what was deferred and why recorded. No locked
+  decision touched: schema v1.0 unchanged, zero dependencies held (`node:http`, `node:util`,
+  `node:crypto`, `structuredClone` — all built-ins), engine-first intact, and the game's
+  `board-view.js` untouched per amendment 2.
+- **Next:**
+  1. **Generate one real board and confirm it clears stage 03.** The prompt fix is
+     unverified against a live model; treat it as unproven until a run completes.
+  2. **Then the loop itself:** batches of ~10 with a rules recompile between, so batch 3
+     vs batch 1 answers whether feedback actually changes the output. After ~30, compile
+     `rubric.md` from the approved rules — A4's centrepiece, evidence-backed.
+  3. **Tell Claude if the tag vocabulary is wrong.** Changing it later means re-reading
+     old feedback through a new lens.
+  4. Then A4's remainder, A5 (where budget rates get calibrated against real spend), A6a,
+     then Review Studio B1–B3 proper, which is what fully closes HR-2.
+  5. Carried: First Light `explanation` editorial pass (Red set weakest) · GDD drift to
+     propose upstream (Appendix A pre-v1.0 schema, §8's missing `already-tried` row,
+     motion 187–281ms vs Appendix E's 120–180ms) · the tutorial board's sets 2–4 wording
+     is Max's to edit.
+
 ## 2026-08-02 — Studio Core A3: pipeline, blackboard, budget, mechanical gates
 
 Built on `work/studio-core-a3` (commit `a075ea0`), red-first throughout. **No game code
