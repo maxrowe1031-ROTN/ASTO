@@ -2,6 +2,92 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-02 — Migrated onto project-template (governance, recovery, house rules)
+
+Process-and-docs session on branch `work/template-migration`. **No product code touched**
+— `src/`, `studio/`, `test/`, `puzzles/`, `styles/` and `index.html` are byte-identical to
+the entry below. ASTO predates `project-template`, so this is the governance-doc migration
+protocol run for the first time, not a birth.
+
+- **Adopted from the template** (reviewed against its only commit, `da70440`, since the
+  template repo has no tags or changelog):
+  - `.claude/settings.json` — Brain directory grant (`../maigd-course-handbook`) plus the
+    `Read(./.env)` / `Read(./.env.*)` denial. The untracked `settings.local.json` (the
+    `npm test` allow) is unchanged.
+  - `.claude/commands/pause.md` — **new third command.** A truthful checkpoint for
+    interrupted work: reports failures honestly, commits `wip(...)` on the work branch,
+    leaves `main` alone, and states plainly that the gate did **not** pass.
+  - `docs/governance.md` (verbatim — authority order, project health check, migration
+    protocol, upstream proposals) · `docs/decisions/README.md` (verbatim ticket format,
+    no tickets invented) · `docs/backlog.md` (empty parking lot).
+  - `docs/recovery.md` — adopted and **ASTO-corrected**: no `npm install` step (zero
+    deps, Node 22+ only), a "the game won't load" section for the `file://` trap, and a
+    truthful "what recovery can't restore" naming browser `localStorage` (tutorialSeen,
+    per-puzzle results) and git-ignored `studio/runs/`.
+  - `docs/brief.md` — **written for ASTO**, derived from the GDD v0.13 and design.md's
+    Context. It restates product intent and decides nothing new; the "locally shipped"
+    definition it records is the GDD's own (10+ curated boards, tutorial → select → real
+    win/loss, results surviving reload).
+  - `.gitignore` merged (secrets, node_modules, build output, OS junk, `*.local` — the
+    old lone `.DS_Store` line is subsumed) · `.gitattributes` · `.env.example` (names
+    `ANTHROPIC_API_KEY` for the Studio's real transport, no value) · `template.json`.
+- **`CLAUDE.md` folded, not replaced.** Every ASTO rule survives verbatim in meaning —
+  locked decisions, the boundary law, the game rules that are easy to get wrong, the GDD
+  no-list, taps-over-drag. New house sections: working with Max, the Brain knowledge loop,
+  house architecture defaults, the Studio contract, gate kinds, git/recovery, safety
+  rails, template provenance.
+- **The real behavior change: git discipline.** `main` now holds **verified states only**;
+  implementation runs on `work/<phase>` branches; `/wrapup` merges when the gate passes;
+  `/pause` checkpoints WIP. The old `/wrapup` pushed straight to `main`. Commit trailer is
+  now the model-agnostic `Co-Authored-By: Claude <noreply@anthropic.com>`.
+- **`/warmup` and `/wrapup` extended, ASTO content kept.** warmup gained branch awareness,
+  an open-decisions/backlog step, and a Brain check for new phases; wrapup gained the three
+  gate kinds (with **Max acceptance never assumed** — ASTO's phase gates are playtest
+  gates), blocking-vs-non-blocking routing with a switch-to-`/pause` escape hatch, ticket
+  closing, the work-branch merge flow, and the `v0.1.0-local` tag trigger. Both keep
+  `check-board`, the boundary-law refresher, and "a playtest is the gate".
+- **Deliberately not adopted:** `/birth` (ASTO is already born and its plan approved), the
+  template's `studio/index.html` proof-of-life page (ASTO's `studio/` is a real pipeline),
+  and the template's skeleton `design.md` / `log.md` / `README.md`.
+- **Design-doc drift — one deliberate change.** `docs/design.md` gained a **House-rule
+  exceptions** section (+51 lines, 0 deletions — verified with `git diff --numstat`).
+  Two exceptions recorded with reconsider-when triggers: **HR-1** strict zero dependencies
+  (stricter than the house default; reconsider if hand-rolling a security/auth/parsing/
+  storage/accessibility problem would be *less* safe than a library) and **HR-2** the
+  Studio web surface deferred to Review Studio Part B (reconsider if Part B slips past the
+  next phase gate, or the Core grows a capability Max can't exercise without reading code).
+- **Verified:**
+  - `npm test` → **414 pass, 0 fail** — identical to the pre-migration baseline taken at
+    the start of the session.
+  - `node tools/check-board.js puzzles/first-light.json` → clean, 16/16 accepted tuples.
+  - `grep -rn "{{" --include="*.md" --include="*.json" .` → the only hit is
+    `docs/governance.md`'s own description of the placeholder check. No unresolved
+    placeholders survived from the template files.
+  - `git diff main --stat` → 16 files, all docs/config; no `src/`, `studio/`, `test/`,
+    `puzzles/`, `styles/` or `index.html` in the diff.
+  - Governance health check run end-to-end: required docs present, current phase has a
+    defined gate, `.gitignore` covers `.env`, settings deny-rule intact.
+  - **Preview browser** (`npm run serve`, 375×812): the game loads, the first-run tutorial
+    renders with its board and coach-mark, zero console errors. Repo reshuffle broke
+    nothing.
+- **Phase status:** unchanged by this session — **Phases 1–4 closed**, Phase 5a planned and
+  not started, Studio Core at A2 with A3 next. This session had no phase gate of its own;
+  its gate was the migration verification above (automated + Claude-verifiable), which
+  passed, so the branch merged to `main`.
+
+- **Next:**
+  1. **Studio Phase A3 — pipeline and mechanical gates** (unchanged from below). Eight-stage
+     orchestration · `blackboard.js` · integrity insertion at `04a` · `budget.js` ·
+     failure recording · revision entry points · immutable child attempts · resume wired to
+     `findFirstIncompleteStage`. Start it on `work/studio-core-a3` — the new git rule is
+     live from now on.
+  2. Then A4 (corpus + variety — **Max still drafts `studio/corpus/rubric.md`**), A5,
+     A6a; Review Studio B1–B3 after Core, which is what closes HR-2.
+  3. Independent and unblocked: **Phase 5a** — daily + archive + mid-puzzle persistence.
+  4. Optional, one line: `.claude/settings.json` grants `../maigd-course-handbook` but not
+     `../project-template`. Add the latter if future migrations should read it without
+     `/add-dir`.
+
 ## 2026-08-02 — Studio Core A1 + A2 built (contracts, storage, agents, transport)
 
 Second half of the same session as the entry below, which approved the design. **No game

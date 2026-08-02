@@ -25,9 +25,14 @@ built-in `node:test` (requires Node 22+).
 
 | File | What it is |
 | --- | --- |
-| [`docs/design.md`](docs/design.md) | The approved build plan — locked decisions, architecture, the 5 phases and their gates. **The authority.** |
+| [`docs/design.md`](docs/design.md) | The approved build plan — locked decisions, architecture, the 5 phases and their gates, house-rule exceptions. **The authority.** |
 | [`docs/asto-gdd.html`](docs/asto-gdd.html) | The Game Design Document (v0.13). Open in a browser. Its no-list is spec. |
+| [`docs/brief.md`](docs/brief.md) | Product intent — what ASTO is, who it's for, MVP vs. later, what "locally shipped" means. |
 | [`docs/log.md`](docs/log.md) | Dev log, newest first. The latest `Next:` line is the live task. |
+| [`docs/backlog.md`](docs/backlog.md) | The parking lot. Unapproved ideas, one line each. |
+| [`docs/recovery.md`](docs/recovery.md) | Plain-language rollback playbook — how to get back to a working state. |
+| [`docs/governance.md`](docs/governance.md) | Authority order, project health check, template migration protocol. |
+| [`docs/decisions/`](docs/decisions/) | Open questions as decision tickets. |
 | [`CLAUDE.md`](CLAUDE.md) | Operating instructions for Claude Code in this repo. |
 
 ## Architecture — the boundary law

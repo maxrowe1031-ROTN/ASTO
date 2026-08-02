@@ -1,0 +1,32 @@
+{
+  "template": "project-template",
+  "bornFromVersion": "pre-template (ASTO predates the template; migrated 2026-08-02)",
+  "lastReviewedAgainstVersion": "da70440 (2026-08-02)",
+  "adoptedChanges": [
+    {
+      "date": "2026-08-02",
+      "against": "da70440",
+      "adopted": [
+        ".claude/settings.json — Brain directory grant + .env read denial",
+        ".claude/commands/pause.md — truthful WIP checkpoint command",
+        "docs/governance.md — authority order, health check, migration protocol",
+        "docs/backlog.md — the parking lot",
+        "docs/recovery.md — plain-language rollback playbook",
+        "docs/decisions/ — decision-ticket format",
+        "docs/brief.md — product intent (written for ASTO, decides nothing new)",
+        ".gitignore / .gitattributes / .env.example — secret and text-normalization rails",
+        "CLAUDE.md — house sections folded in: working with Max, knowledge loop, Studio contract, gate kinds, git/recovery, safety rails, provenance",
+        "/warmup + /wrapup — extended with branch awareness, decisions/backlog, Brain check, gate kinds, work-branch merge flow"
+      ],
+      "notAdopted": [
+        "/birth — ASTO is already born and its plan is approved",
+        "studio/index.html proof-of-life page — ASTO's studio/ is a real pipeline",
+        "skeleton docs/design.md, docs/log.md, README.md — ASTO's are real"
+      ]
+    }
+  ],
+  "localExceptions": [
+    "HR-1 — strict zero dependencies (docs/design.md, House-rule exceptions)",
+    "HR-2 — Studio web surface deferred to Review Studio Part B (docs/design.md, House-rule exceptions)"
+  ]
+}
