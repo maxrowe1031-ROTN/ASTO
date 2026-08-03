@@ -12,6 +12,7 @@ import { join } from 'node:path';
 import { runPipeline } from '../../../studio/pipeline.js';
 import { STAGES } from '../../../studio/stage-registry.js';
 import { validatePuzzle } from '../../../src/source/validate-puzzle.js';
+import { DEFAULT_CONFIG } from '../../../studio/pipeline-config.js';
 import { makeStore, mockTransport, seedRun, fastTime } from './helpers.js';
 
 const AGENT_STAGE_IDS = STAGES.filter((s) => s.kind === 'agent').map((s) => s.id);
@@ -197,4 +198,24 @@ test('the board lands as board.json at the attempt root', async () => {
   } finally {
     cleanup();
   }
+});
+
+test('an attempt records the effort profile it ran under, beside the pricing version', () => {
+  // Both answer the same question about a recorded number: under what
+  // settings? Without it, "this board cost $0.28" is uninterpretable a week
+  // later, and the review corpus cannot tell a cheap profile from a rich one.
+  return (async () => {
+    const { store, cleanup } = makeStore();
+    try {
+      const runId = seedRun(store);
+      const result = await runPipeline({ runId, store, transport: mockTransport(), ...fastTime() });
+      assert.equal(result.status, 'complete', result.failure?.message);
+
+      const attempt = store.readAttempt(runId, result.attemptId);
+      assert.equal(attempt.effortProfile, DEFAULT_CONFIG.effortProfile);
+      assert.equal(attempt.pricingVersion, DEFAULT_CONFIG.pricingVersion);
+    } finally {
+      cleanup();
+    }
+  })();
 });

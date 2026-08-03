@@ -9,7 +9,7 @@ import { join } from 'node:path';
 
 import { runPipeline } from '../../../studio/pipeline.js';
 import { RETRYABLE_TRANSPORT, TERMINAL_CONTENT } from '../../../studio/failures.js';
-import { DEFAULT_CONFIG } from '../../../studio/pipeline-config.js';
+import { DEFAULT_CONFIG, effortFor } from '../../../studio/pipeline-config.js';
 import { makeStore, mockTransport, seedRun, fastTime, fixturesWith } from './helpers.js';
 
 const runWith = async (overrides, extra = {}) => {
@@ -190,7 +190,7 @@ test('a stage that dies in transport still leaves its prompt and request on disk
     // point is that neither has to be worked out from token arithmetic.
     assert.equal(failed.maxTokensConfigured, 16_000);
     assert.equal(failed.maxTokens, 24_000, 'the ceiling the last attempt actually used');
-    assert.equal(failed.effort, 'high');
+    assert.equal(failed.effort, effortFor('02-theme-grouper'));
     assert.equal(failed.category, TERMINAL_CONTENT);
     assert.ok(Array.isArray(failed.requests) && failed.requests.length > 0);
 
@@ -225,7 +225,7 @@ test('a completed stage records the ceiling and effort it ran under', async () =
     const sonnet = JSON.parse(readFileSync(join(stageDir, '04-board-builder', 'request.json'), 'utf8'));
     const haiku = JSON.parse(readFileSync(join(stageDir, '03-difficulty-rater', 'request.json'), 'utf8'));
 
-    assert.equal(sonnet.effort, 'xhigh');
+    assert.equal(sonnet.effort, effortFor('04-board-builder'));
     assert.equal(sonnet.maxTokens, 16_000);
     assert.equal(haiku.effort, null, 'the checker stages send no effort at all');
   } finally {

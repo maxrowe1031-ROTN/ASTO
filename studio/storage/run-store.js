@@ -273,11 +273,14 @@ export function createRunStore({ rootDir, clock = () => new Date().toISOString()
 
     // Cumulative spend for this attempt, plus the price list it was costed
     // with — a stored cost is uninterpretable without one.
-    recordUsage(runId, attemptId, { usage, pricingVersion }) {
+    // pricingVersion and effortProfile travel with the usage they explain: a
+    // cost is only interpretable beside the rates that priced it and the
+    // effort levels that produced it.
+    recordUsage(runId, attemptId, { usage, pricingVersion, effortProfile }) {
       return withLock(runDir(runId), () => {
         const attempt = readAttempt(runId, attemptId);
         assertMutable(attempt);
-        writeAttempt(runId, { ...attempt, usage, pricingVersion });
+        writeAttempt(runId, { ...attempt, usage, pricingVersion, effortProfile });
       });
     },
 

@@ -10,9 +10,15 @@
 - ~~Studio A3 surfaced that the `04a` gate can only reject on schema, not on board quality.~~
   **Resolved 2026-08-03:** the gate now enforces ≥4 distinct relationship labels — see
   design.md risk 1. Whether *further* quality checks belong there is still open.
-- The Studio's per-stage `effort` levels are a first guess, not a measurement. A5 should
-  calibrate them against real spend, latency and board quality the way it calibrates budget
-  rates — a board-builder call at `xhigh` was observed taking ~6 minutes.
+- ~~The Studio's per-stage `effort` levels are a first guess.~~ **Partly done 2026-08-03:**
+  02 and 04 re-aimed from measurement; every attempt now records its `effortProfile` so the
+  review corpus can judge quality against it. Remaining levers, unapplied: `01-pair-author`
+  (now 44% of a run, and 4.5× variance across three runs at identical settings),
+  `07-test-player`, and 05–08 concurrency.
+- Stages 05–08 are four independent evaluators of a finished board (verified: none reads
+  another's output) run sequentially. Making them concurrent is free wall-clock — ~20s of
+  ~250s — but puts concurrent writers through `run-store`'s lock. Deferred so it does not
+  confound the effort measurement.
 - ~~The difficulty rater has never returned a 4.~~ **Addressed 2026-08-03 (design.md D-1):**
   the builder now promotes its hardest set to Black and the Studio shows it. The underlying
   question — should the Pair Author be asked for a hard set in the first place? — is still
