@@ -250,3 +250,46 @@ test('a promoted set is not an invented one — a rated set relabelled Black pas
     cleanup();
   }
 });
+
+// --- a rebuild that cannot help is never attempted ------------------------
+//
+// The gate's rebuild loop exists to fix a board the builder got wrong. It
+// cannot fix a candidate pool that is too small — the builder may not invent
+// sets, so re-asking it produces the same refusal at the same price. On
+// 2026-08-03 a real run paid for three xhigh builder attempts to rediscover
+// that its pool held three sets. The handbook calls this a blind re-roll
+// (lessons-learned.md 4.1): a retry that changes nothing is resampling.
+test('a pool too small to build from fails at once, without re-asking the builder', async () => {
+  const shortPool = {
+    '03-difficulty-rater': {
+      text: JSON.stringify({
+        grades: [
+          { setId: 'set-growth', difficulty: 1, rationale: 'immediate' },
+          { setId: 'set-tools', difficulty: 2, rationale: 'a moment' },
+          { setId: 'set-homes', difficulty: 3, rationale: 'abstract' },
+        ],
+      }),
+    },
+    '04-board-builder': {
+      text: JSON.stringify({ insufficientSets: 'only three graded candidates were provided' }),
+    },
+  };
+  const { store, rootDir, cleanup: dropStore } = makeStore();
+  const { dir, cleanup: dropFixtures } = fixturesWith(shortPool);
+  const transport = mockTransport(dir);
+  const runId = seedRun(store);
+  const result = await runPipeline({ runId, store, transport, ...fastTime() });
+  try {
+    assert.equal(result.status, 'failed');
+    assert.equal(result.failure.stageId, '04a-integrity');
+    // The message must point at the real cause, not at the builder.
+    assert.match(result.failure.message, /3 graded candidate/i);
+    assert.match(result.failure.message, /rebuild cannot add/i);
+
+    const builderCalls = transport.calls.filter((c) => c.stageId === '04-board-builder');
+    assert.equal(builderCalls.length, 1, `the builder was re-asked ${builderCalls.length} times`);
+  } finally {
+    dropStore();
+    dropFixtures();
+  }
+});

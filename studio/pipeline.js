@@ -37,6 +37,10 @@ import { checkBoard } from '../src/engine/board-integrity.js';
 import { deriveWords } from '../src/engine/arrangements.js';
 
 const FIRST_STAGE = STAGES[0].id;
+// A board is four sets, one per difficulty — so four is also the smallest
+// candidate pool the builder can possibly build from.
+const SETS_PER_BOARD = 4;
+
 const RATER_STAGE = '03-difficulty-rater';
 const BOARD_STAGE = '04-board-builder';
 const GATE_STAGE = '04a-integrity';
@@ -443,6 +447,16 @@ async function runIntegrityGate(ctx) {
     store.writeStageArtifact(runId, attemptId, GATE_STAGE, `integrity.rejected-${round}.json`, report);
     store.recordStageStatus(runId, attemptId, GATE_STAGE, { status: 'rejected', round });
 
+    // Some rejections cannot be rebuilt out of. Spending the attempts anyway
+    // is the blind re-roll the handbook warns about, and it is not cheap:
+    // the builder runs at the highest effort setting in the pipeline.
+    if (report.fatal) {
+      throw new StudioFailure(TERMINAL_CONTENT, report.reasons.join('; '), {
+        stageId: GATE_STAGE,
+        report,
+      });
+    }
+
     if (round > config.maxIntegrityRetries) {
       throw new StudioFailure(
         TERMINAL_CONTENT,
@@ -467,6 +481,23 @@ function gateReport(blackboard) {
   const graded = new Set(
     (blackboard.get(RATER_STAGE)?.grades ?? []).map((grade) => grade.setId),
   );
+
+  // Checked before anything else, and marked `fatal` so the caller does not
+  // enter its rebuild loop. A board needs four sets and the builder may not
+  // invent one, so re-asking it against the same short pool buys the same
+  // refusal at the same price — three times over, in the run that prompted
+  // this. The failure has to name the pool, not the builder, or it points the
+  // reader at the wrong stage entirely.
+  if (graded.size > 0 && graded.size < SETS_PER_BOARD) {
+    return {
+      ok: false,
+      fatal: true,
+      reasons: [
+        `only ${graded.size} graded candidate set(s) reached the builder; a board needs ${SETS_PER_BOARD}, and a rebuild cannot add candidates — the pool was already too small when grouping finished`,
+      ],
+      schema: { ok: false, errors: [] },
+    };
+  }
   if (!output.board) {
     return {
       ok: false,
