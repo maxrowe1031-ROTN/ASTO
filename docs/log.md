@@ -59,32 +59,68 @@ touched** — `git diff main -- src/ styles/ index.html puzzles/` is empty.
     same gap **latent** — the run never reached the last two.
   - The test now walks each schema to any depth and requires every `required` key to be
     named. **That generalization found the three latent cases; the run found one.**
-- **A structural finding, not yet acted on.** The run's brief asked for 8 pairs; the
-  grouper made exactly 4 sets from them, and the rater graded those 1, 2, 2, 3. With no
-  difficulty-4 candidate the builder correctly **refused rather than compromise**
-  (`insufficientSets`), and the gate sent it back. One-per-tier was arithmetically out of
-  reach — 8 pairs gives the builder no choice at all, and §3 is explicit that assembly
-  needs candidates. Raising the brief's pair count is a form-field change, not a code one.
+- **A structural finding.** The run's brief asked for 8 pairs; the grouper made exactly 4
+  sets from them, and the rater graded those 1, 2, 2, 3. With no difficulty-4 candidate the
+  builder correctly **refused rather than compromise** (`insufficientSets`), and the gate
+  sent it back. One-per-tier was arithmetically out of reach.
+
+### The second run — eight stages, one board, `awaiting-review`
+
+Max approved a second run with the brief raised to 14 pairs. **It completed: all eight
+stages, `awaiting-review`, a board on disk, $0.53.** The first end-to-end proof of the
+real transport, and the first board this pipeline has ever produced.
+
+- **Every prompt fix verified live**, each at the stage that would have failed without it:
+  02 returned `["Wallet","Cash"]` arrays first try, no rejection round · 05 returned
+  `setId, pass, notes` exactly · 06 completed, and its keys were latent-broken this
+  morning. The board **passed the new variety gate on real data**:
+  `variety: {ok: true, distinct: 4}`.
+- **`tools/check-board.js` on the generated board: clean.** Schema v1.0, 16/16 accepted of
+  43,680 ordered tuples, 80 near-miss orderings. "Concealed Connections" —
+  `Wallet : Cash :: Vault : Treasure` (green) · `Spider : Web :: Bakery : Bread` (yellow) ·
+  `Ram : Sheep :: Mouse : Rodent` (red) · `Coal : Diamond :: Sand : Glass` (black).
+- **The critic did not rubber-stamp:** the analogy validator returned `boardPasses: false`.
+  Per the crew post-mortem §6, that is the correct posture, not a defect.
+- **⚠️ The Board Builder authored a set instead of choosing one, and nobody rated it.**
+  The rater graded five candidates 1, 2, 3, 1, 2 — **no difficulty 4 again, across both
+  runs and ten graded sets**. On the rebuild the builder filled the gap by inventing
+  `set-material-transformation` (`Coal : Diamond :: Sand : Glass`), which is **not in the
+  graded pool**, and assigned it difficulty 4 itself. Its own prompt says "Choose exactly
+  four sets from the graded candidates" and, failing that, refuse — it refused on round 1
+  and invented on round 2. The board is good and passes every check, but its hardest set
+  carries **no independent difficulty rating**, and GDD §16's difficulty loop compares
+  *predicted* against *simulated*. **This is Max's call, not a bug to quietly fix:** either
+  the builder may author to fill a tier (and the rater should then re-grade), or it may
+  not (and the pool must be made to span four tiers upstream). Nothing has been changed.
+- **Also observed:** a board-builder call at `xhigh` ran ~6 minutes. Well inside the new
+  300s-per-request timeout only because the timeout is per request and it retried cleanly —
+  but the Studio shows nothing but "running" throughout. Effort levels are a first guess
+  and want calibrating against real latency and spend in A5.
 - **Verified:** `npm test` → **664 pass, 0 fail** (623 at the entry below) · boundary greps
   clean: `llm.js` still owns the only server-side `fetch`, `run-store.js` is still the only
   writer of run artifacts, `pipeline.js` does no file I/O · a mock run through the restarted
   server reached `awaiting-review` with the board rendered · the live run's
   `request.json` states `maxTokens: 16000, effort: "high"` on its face, which is the fact
-  that previously took arithmetic to recover.
-- **Not claimed:** no board has reached Max. The four prompt fixes are **verified offline
-  only** — exactly the caveat this session inherited, and it should be treated as unproven
-  until a run completes. `/pause`, not `/wrapup`: the gate is not passed.
+  that previously took arithmetic to recover · the generated board rendered in the Studio
+  in ASTO's own design system, no console errors, and passed `tools/check-board.js`.
+- **Total spend this session: ~$0.90** across two real runs.
+- **Gate: the automated and Claude-verifiable parts are MET.** The suite is green, and a
+  real run completed end to end with a board that passes the project's own content check.
+  **Max acceptance is outstanding and is not claimed:** the board's editorial quality, and
+  whether the thirteen quick-tags are the right vocabulary, are his judgement. The board is
+  sitting in the Studio at `awaiting-review` waiting for it.
 - **Next:**
-  1. **One more real run** (~$0.40), with the brief's pair count raised from 8 to ~14 so
-     the builder has candidates to choose from. Two independent reasons to expect it to go
-     further: the four prompt fixes, and a pool that can actually span four tiers.
-  2. If it completes: **Max reviews the board**, and rules on the thirteen quick-tags —
-     changing that vocabulary after thirty boards means re-reading old feedback through a
-     new lens.
-  3. Then the loop itself: batches of ~10 with a rules recompile between.
-  4. Carried: `effort` levels are a first guess and want calibrating in A5 · First Light
-     `explanation` editorial pass · GDD drift to propose upstream · the tutorial board's
-     sets 2–4 wording is Max's to edit.
+  1. **Max reviews the board** — `npm run studio:review`, newest run. Record a real
+     feedback event, and rule on the tag vocabulary. Changing it after thirty boards means
+     re-reading old feedback through a new lens, so board one is where it is cheap.
+  2. **Decide the Board Builder question above** — may it author a set to fill a missing
+     tier, or must it refuse? Whichever way, the rater currently never returns a 4, and
+     that wants addressing upstream rather than by the builder quietly compensating.
+  3. Then the loop itself: batches of ~10 with a rules recompile between, so batch 3 vs
+     batch 1 answers whether feedback actually changes the output.
+  4. Carried: `effort` levels and the 300s timeout want calibrating in A5 against real
+     latency and spend · First Light `explanation` editorial pass · GDD drift to propose
+     upstream · the tutorial board's sets 2–4 wording is Max's to edit.
 
 ## 2026-08-02 — Review Studio R1, and the first real API run (which failed)
 
