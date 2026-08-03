@@ -2,6 +2,33 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-03 — Promotion: the builder may label its hardest set Black
+
+Follow-on from the entry below, after Max read the Board Builder finding. Recorded in full
+as **design.md D-1** with its accepted risk and reconsider-when trigger.
+
+- **Max's call:** ship a board even when the graded pool does not span all four tiers, and
+  label the hardest set Black anyway. *"Upping the difficulty of level 4 maybe something we
+  can train with the studio."* The rater's ceiling is to be taught through the review loop,
+  not engineered around before the loop has run.
+- **No locked decision moved.** Schema v1.0 still requires exactly four sets at difficulties
+  1–4, and Black is still derived from difficulty 4 — there is no `tier` field. The builder
+  now ranks its four chosen sets and assigns 1–4 in that order instead of matching grades
+  exactly. That is Studio behaviour, not schema.
+- **Built:** `promotions` on the builder's output, validated against the board it claims to
+  promote (a promotion naming an absent set, or claiming no change, is rejected) · the 04a
+  gate rejects any board set that was **not** in the graded pool, so the builder can choose
+  and relabel but never author — enforced in code because a prompt can only ask · the Review
+  Studio marks the card *"graded 3 — promoted to Black"*, since a promotion Max cannot see is
+  a judgement he cannot give feedback on.
+- **Verified:** `npm test` → **675 pass, 0 fail** · the promotion rendered in the browser
+  through a real mock run: exactly one `.promotion`, on the black card, reading
+  *"graded 3 — promoted to Black"*, italic in `--soft-ink` and **not red** — the no-list
+  holds. The temporary fixture used for that check was restored (`git status` clean).
+- **Next:** unchanged from below — Max reviews the waiting board and rules on the tag
+  vocabulary. Note the board he is about to review was built *before* this change, so its
+  Black set is the invented one, not a promoted one.
+
 ## 2026-08-03 — Aiming the model calls; the pipeline's first eight-stage run
 
 Built on `work/studio-transport-aiming` (commits `0b1216b`, `8a4ba4f`). **No game code

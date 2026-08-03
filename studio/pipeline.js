@@ -37,6 +37,7 @@ import { checkBoard } from '../src/engine/board-integrity.js';
 import { deriveWords } from '../src/engine/arrangements.js';
 
 const FIRST_STAGE = STAGES[0].id;
+const RATER_STAGE = '03-difficulty-rater';
 const BOARD_STAGE = '04-board-builder';
 const GATE_STAGE = '04a-integrity';
 
@@ -463,6 +464,9 @@ async function runIntegrityGate(ctx) {
 
 function gateReport(blackboard) {
   const output = blackboard.get(BOARD_STAGE) ?? {};
+  const graded = new Set(
+    (blackboard.get(RATER_STAGE)?.grades ?? []).map((grade) => grade.setId),
+  );
   if (!output.board) {
     return {
       ok: false,
@@ -490,6 +494,17 @@ function gateReport(blackboard) {
   }
   for (const collision of integrity.collisions) {
     reasons.push(`${collision.order.join(' : ')} is claimed by ${collision.setIds.join(' and ')}`);
+  }
+
+  // The builder may relabel a set's difficulty (promotion) but may not author
+  // one. An invented set carries no independent difficulty judgement, which
+  // is precisely the signal the review loop exists to sharpen. A rule can
+  // enforce this; a prompt can only ask.
+  const invented = output.board.sets.map((set) => set.id).filter((id) => !graded.has(id));
+  if (graded.size > 0 && invented.length > 0) {
+    reasons.push(
+      `${invented.join(', ')} ${invented.length === 1 ? 'is' : 'are'} not among the graded candidates — choose from the rated sets and promote one if you need a harder tier, never author a new set`,
+    );
   }
 
   const variety = relationVariety(output.board);

@@ -227,6 +227,49 @@ acceptance checklists compensate; everything decision-shaped is in the tested en
 - Log the build session in `system/log.md` at wrapup; crew re-tooling to schema v1.0 is
   a later session.
 
+## Decisions taken during the build
+
+### D-1 — The Board Builder may promote a set to Black (2026-08-03)
+
+**The problem, from evidence:** the Difficulty Rater has never returned a 4. Ten graded
+sets across two real runs came back `1,2,3,1,2` and `1,2,2,3`. Nothing upstream is asked to
+produce a hard set, and the rater grades each candidate on its own merits, so a pool that
+spans all four tiers is luck rather than design. The Board Builder needs one set per tier,
+so it could not build at all — and on a rebuild it **invented a set nothing had rated** and
+assigned it difficulty 4 itself.
+
+**What Claude proposed:** either allow authoring and re-rate the result, or forbid it and
+fix the shortage upstream.
+
+**Max's choice, and his reasoning:** neither. Ship the board with the sets you have, and
+label the hardest one Black even though it was graded lower — *"upping the difficulty of
+level 4 maybe something we can train with the studio."* The rater's ceiling is a thing to
+teach through the review loop, not to engineer around before the loop has run.
+
+**What this does and does not change.** Schema v1.0 is **untouched**: a board still carries
+exactly four sets at difficulties 1–4, and Black is still *derived* from difficulty 4 — there
+is no `tier` field to set. What changed is Studio behaviour: the builder ranks its four
+chosen sets and assigns 1–4 in that order rather than requiring an exact match to the grades.
+
+**The accepted risk:** a promoted Black set's difficulty is the builder's ranking, not an
+independent judgement, so GDD §16's difficulty loop has no *predicted* value to compare its
+*simulated* one against for that set. Max accepted this knowingly — it is the thing being
+trained.
+
+**Three guards, so the risk stays visible rather than silent:**
+- The builder may **choose and relabel, never author**. Enforced at the 04a gate in code, not
+  in the prompt: any board set absent from the graded pool is rejected and sent back.
+- Every promotion is **recorded** (`promotions: [{setId, gradedDifficulty, assignedDifficulty}]`)
+  and checked against the board it claims to promote.
+- Every promotion is **shown in the Review Studio** on the card itself — *"graded 3 — promoted
+  to Black"*. A promotion Max cannot see is a judgement he cannot give feedback on, which
+  would defeat the purpose of the choice.
+
+**Reconsider-when:** the rater starts returning 4s of its own accord after a rubric recompile
+(the promotion machinery then costs nothing but should be re-examined), **or** the review
+corpus shows promoted Black sets are consistently rated too easy — at which point the fix
+belongs upstream, in what the Pair Author is asked for, not in the builder's relabelling.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

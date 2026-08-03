@@ -103,3 +103,56 @@ test('the prompt distinguishes a false trail from a second valid solution', () =
   const prompt = boardBuilder.buildPrompt({ gradedSets: [] }, {});
   assert.match(prompt, /never be an actual second valid solution/i);
 });
+
+// --- promotion (decided with Max, 2026-08-03) -----------------------------
+//
+// The difficulty rater has never once returned a 4 — ten graded sets across
+// two real runs came back 1,2,3,1,2 and 1,2,2,3. Faced with no difficulty-4
+// candidate the builder used to refuse, and on a rebuild it invented a set of
+// its own that nothing had rated. Max's call: ship the board anyway, and
+// label the hardest set you actually have as Black even though it was graded
+// lower. Raising the rater's ceiling is a thing to TRAIN through the review
+// loop, so the promotion has to be visible rather than silently absorbed.
+
+test('a promoted set is recorded with the grade it actually got', () => {
+  const output = {
+    board: structuredClone(firstLight),
+    falseTrails: [],
+    promotions: [{ setId: 'set-material', gradedDifficulty: 3, assignedDifficulty: 4 }],
+  };
+  assert.equal(boardBuilder.validateOutput(output).ok, true);
+});
+
+test('a promotion that claims no change is rejected — it is not a promotion', () => {
+  const output = {
+    board: structuredClone(firstLight),
+    falseTrails: [],
+    promotions: [{ setId: 'set-material', gradedDifficulty: 4, assignedDifficulty: 4 }],
+  };
+  const result = boardBuilder.validateOutput(output);
+  assert.equal(result.ok, false);
+  assert.match(result.errors[0].message, /differ|higher/i);
+});
+
+test('a promotion must name a set the board actually contains', () => {
+  const output = {
+    board: structuredClone(firstLight),
+    falseTrails: [],
+    promotions: [{ setId: 'set-not-here', gradedDifficulty: 2, assignedDifficulty: 4 }],
+  };
+  const result = boardBuilder.validateOutput(output);
+  assert.equal(result.ok, false);
+  assert.match(result.errors[0].message, /not in the board/i);
+});
+
+test('the prompt tells the builder to promote rather than refuse, and never to invent', () => {
+  const prompt = boardBuilder.buildPrompt(
+    { gradedSets: [{ id: 'set-a', difficulty: 1 }, { id: 'set-b', difficulty: 2 }] },
+    {},
+  );
+  assert.match(prompt, /promote/i, 'promotion is not offered');
+  assert.match(prompt, /"promotions"/, 'the promotions key is never named');
+  assert.match(prompt, /never invent|do not invent/i, 'inventing a set is not forbidden');
+  // The refusal path survives, but only for genuinely too little material.
+  assert.match(prompt, /"insufficientSets"/);
+});

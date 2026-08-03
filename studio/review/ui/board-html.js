@@ -60,17 +60,34 @@ export function tilesHtml(board) {
   return `  <div class="board">\n${tiles}\n  </div>`;
 }
 
-/** The four sets as the game reveals them once solved. */
-export function setsHtml(board) {
+/**
+ * The four sets as the game reveals them once solved.
+ *
+ * `promotions` is the one thing here a player never sees. The builder may
+ * label its hardest available set Black even when the rater graded it lower,
+ * and that judgement is exactly what the review loop is meant to sharpen — so
+ * it is shown to the reviewer rather than absorbed into a tier badge.
+ */
+export function setsHtml(board, promotions = []) {
+  const promotedBy = new Map(
+    (promotions ?? []).map((promotion) => [promotion.setId, promotion]),
+  );
+
   return (board?.sets ?? [])
     .slice()
     .sort((a, b) => a.difficulty - b.difficulty)
     .map((set) => {
       const tier = difficultyToTier(set.difficulty);
+      const promotion = promotedBy.get(set.id);
+      const promotionHtml = promotion
+        ? `\n    <div class="promotion">graded ${escape(promotion.gradedDifficulty)} — promoted to ${escape(
+            tier.charAt(0).toUpperCase() + tier.slice(1),
+          )}</div>`
+        : '';
       const analogy = canonicalOrder(set.pairs).join(' : ').replace(/^(\S+ : \S+) : /, '$1 :: ');
       return [
         `  <article class="solved-card" data-tier="${escape(tier)}" data-set-id="${escape(set.id)}">`,
-        `    <span class="tier-badge">${escape(tier)}</span>`,
+        `    <span class="tier-badge">${escape(tier)}</span>${promotionHtml}`,
         `    <div class="analogy">${escape(analogy)}</div>`,
         `    <div class="relationship">${escape(set.relationshipLabel)}</div>`,
         `    <div class="explanation">${escape(set.explanation)}</div>`,
@@ -80,7 +97,7 @@ export function setsHtml(board) {
     .join('\n');
 }
 
-export function boardHtml(board) {
+export function boardHtml(board, promotions = []) {
   if (!board?.sets) return '';
-  return `${tilesHtml(board)}\n<div class="solved-sets">\n${setsHtml(board)}\n</div>`;
+  return `${tilesHtml(board)}\n<div class="solved-sets">\n${setsHtml(board, promotions)}\n</div>`;
 }

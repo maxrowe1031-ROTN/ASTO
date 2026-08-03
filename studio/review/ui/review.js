@@ -154,7 +154,14 @@ async function renderRun(runId) {
       }
     </section>
 
-    ${attempt.board ? `<section class="panel board-panel">${boardHtml(attempt.board)}</section>` : ''}
+    ${
+      attempt.board
+        ? `<section class="panel board-panel">${boardHtml(
+            attempt.board,
+            attempt.reports['04-board-builder']?.promotions ?? [],
+          )}</section>`
+        : ''
+    }
 
     ${reportPanel('Difficulty rater', attempt.reports['03-difficulty-rater'])}
     ${reportPanel('Integrity gate', attempt.reports['04a-integrity'])}
