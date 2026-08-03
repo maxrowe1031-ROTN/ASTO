@@ -322,11 +322,16 @@ the Core's seams (`run-store.js` as the only writer of run artifacts, pure agent
 injected transport) were designed for it from the first file — which is what the house
 rule actually asks for.
 
-**Interim verification surface:** `npm test` (500 tests as of A3, including the storage,
-agent and pipeline suites) · `node tools/check-board.js` for content · the game itself in
-the preview browser · and, since A3, **`node studio/run.js --mock`** — a thin CLI adapter
-over the exported `runPipeline`, which starts, resumes and revises a run and prints where
-its artifacts landed.
+**Interim verification surface:** `npm test` (697 tests as of 2026-08-03, including the
+storage, agent, pipeline and review suites) · `node tools/check-board.js` for content · the
+game itself in the preview browser · and, since A3, **`node studio/run.js --mock`** — a thin
+CLI adapter over the exported `runPipeline`, which starts, resumes and revises a run and
+prints where its artifacts landed.
+
+**Status update (2026-08-03):** the pipeline now produces boards end to end against the real
+API, and the rubric loop is running — five real boards judged, 25 recorded feedback events,
+eleven of the thirteen quick-tags exercised. What HR-2 still defers is unchanged: approval
+landing into `puzzles/` (nothing in the Studio writes there yet) and hand-editing (B2).
 
 **Why the CLI exists (A3, 2026-08-02):** A3 is exactly the growth the reconsider-when
 trigger names — the Core stopped being readable-only. `run.js` was added a phase earlier

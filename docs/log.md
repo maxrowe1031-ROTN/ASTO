@@ -2,6 +2,78 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-03 — Session wrapup: the loop is running, and it costs a third less
+
+*Dates: entries below are UTC, matching the run directory ids. Locally this was the
+evening of 2026-08-02 — one continuous session that crossed midnight UTC.*
+
+Closing entry. It records two things that were **not knowable** when the four entries below
+were written: measurements across several runs rather than one, and Max's own review
+activity, which happened while the last unit of work was being built.
+
+### The re-aim, measured across runs instead of one
+
+The entry below compared a single run to a single baseline and was honest that n=1 could not
+support much. With every real run of the day in hand:
+
+| | completed real runs | average |
+|---|---|---|
+| before the re-aim | 3 | $0.542 · `[0.534, 0.523, 0.568]` |
+| after the re-aim | 2 | **$0.355** · `[0.414, 0.296]` |
+
+**A 34% reduction**, and the second lean run (`ocean`, $0.296) lands essentially on the
+target Max asked for. The single-run figure I logged below (−20%) understated it, because
+that run was the one where `01-pair-author` spent 4× its usual.
+
+**And the first quality signal: `weather`, built on the lean profile, Max approved.** One
+board is not proof, but it is the exact question the profile stamp was built to let him
+answer, and it is now answerable from the corpus rather than from an argument.
+
+### Failures were nearly a third of the day's spend
+
+Four real runs failed, costing **$0.989 of $3.32 total**. Every one was a supply or
+re-roll problem now fixed: the 8-pair brief that could never yield four sets, and the gate
+re-asking the builder against an unchanged pool. Those fixes are worth more than the effort
+re-aim on any day where a run would otherwise have died.
+
+### The rubric loop is not hypothetical any more
+
+**25 feedback events across five boards, 19 carrying a written note**, with verdicts spread
+across approve, revise and reject — and Max has been recording them himself, unprompted.
+
+**This answers the open question about the tag vocabulary**, which has been outstanding
+since R1 shipped. **Eleven of the thirteen tags have been used organically.** Only
+`repetitive-shape` and `valid-but-unfair` have never been reached for — and both are
+plausibly just rarer cases rather than wrong ones. The vocabulary does not need changing
+before the loop continues, which was the thing worth knowing early.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **697 pass, 0 fail** (623 at session start).
+  `node tools/check-board.js puzzles/*.json` → both shipped boards clean.
+- **Claude-verifiable: PASSED.** Every Studio change verified in the browser on real boards,
+  not asserted: the promotion note, the analogy line in each feedback block, the effort
+  profile in the header (`9 req · 41,421 tok · ~$0.4140 · effort 2026-08-03-lean`), and a
+  three-word term rendering its `::` correctly.
+- **Max acceptance: OPEN, and partly answered by his own activity.** Board quality remains
+  his call. The tag-vocabulary item is effectively closed by use. The `ocean` board sits at
+  `awaiting-review`.
+- **Game untouched all session:** `git diff 0f888d7 -- src/ styles/ index.html puzzles/` is
+  empty. Phase 5 and the game itself are exactly where they were.
+- **Locked decisions intact:** schema v1.0 unchanged (D-1 explicitly did not move it), zero
+  dependencies held, engine-first intact.
+
+- **Next:**
+  1. **`01-pair-author` high → medium.** It is now ~44% of a run and the most volatile line
+     (2,681 / 2,825 / 12,008 output tokens across three runs at identical settings). Named
+     but deliberately not applied — it was outside the approved plan's scope.
+  2. **Review `ocean`**, which is waiting at `awaiting-review`.
+  3. **Keep the loop going to ~30 boards**, then compile `rubric.md` from the approved rules.
+     Five real boards judged so far; the corpus is at 25 events.
+  4. Carried: the stale-server trap keeps recurring and deserves a real fix · 05–08 could run
+     concurrently (~20s, free) · `07-test-player` is the next effort lever after 01 · First
+     Light `explanation` pass · GDD drift to propose upstream.
+
 ## 2026-08-03 — The builder was proving something already proven
 
 Max: a run costs ~$0.52 and takes ~6 minutes, roughly twice what he wanted. Measured from
