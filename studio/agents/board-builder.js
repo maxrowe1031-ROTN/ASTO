@@ -97,7 +97,15 @@ export function buildPrompt(input = {}, context) {
       'Never invent a set that is not among the graded candidates. Choose and relabel; do not author.',
       'All sixteen words must be distinct. No word may appear in two sets.',
       'Engineer deliberate false trails: words that look like they belong to another set on first read, and pull the player off the true grouping. Record each one you intended.',
-      'A false trail must never be an actual second valid solution. If two sets could legitimately be regrouped into a different valid analogy, the board is broken — pick different sets.',
+      // Was: "prove no two sets could be regrouped into another valid
+      // analogy". That is a combinatorial obligation over sixteen words, and
+      // it was where this stage's cost went — 94% of its billed output was
+      // thinking. A deterministic checker sweeps all 43,680 ordered tuples
+      // milliseconds later, and with sixteen distinct words the property
+      // cannot be violated anyway (design.md risk 1). Telling the model the
+      // check exists is what stops it doing the work a second time.
+      'A false trail should mislead on first read and never be an actual second valid solution — aim for near-misses, not genuine ambiguity.',
+      'Do not try to prove the board has none, though. A checker sweeps every possible ordering immediately after you and will reject the board if one exists, so spend your attention on choosing sets that read cleanly rather than on verifying them.',
       'Write an "explanation" for every set: one sentence a player reads after solving, phrased so the answer feels fair in hindsight.',
       'Return only "insufficientSets" with a reason when there are genuinely fewer than four usable sets to choose from — not merely because the grades do not span 1 to 4.',
     ].join('\n'),

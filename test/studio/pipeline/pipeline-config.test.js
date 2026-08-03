@@ -68,13 +68,17 @@ test('the gate stage has no effort — it never calls a model', () => {
   assert.equal(effortFor('04a-integrity', DEFAULT_CONFIG), null);
 });
 
-test('the hardest stage gets the most effort — assembly, not generation, is the hard problem', () => {
-  // maigd-course-handbook/projects/asto/crew/lessons-learned.md section 3:
-  // "Pair generation is comparatively easy; assembling 4 sets [...] is
-  // constraint satisfaction, and it's where the pipeline actually failed."
-  assert.equal(effortFor('04-board-builder', DEFAULT_CONFIG), 'xhigh');
+test('effort follows what a stage actually has to work out', () => {
+  // These started from the handbook's crew post-mortem (section 3: "assembling
+  // 4 sets is constraint satisfaction, and it's where the pipeline actually
+  // failed"), which put the board builder at the top. That was true of THEIR
+  // builder, which assembled from a raw pool. Ours selects and ranks from a
+  // pre-graded pool of five, and since 2026-08-03 does not verify uniqueness
+  // either — so generation is now the harder end of this pipeline, not
+  // assembly. Measurement, not the analogy, decides.
   assert.equal(effortFor('01-pair-author', DEFAULT_CONFIG), 'high');
-  assert.equal(effortFor('02-theme-grouper', DEFAULT_CONFIG), 'high');
+  assert.equal(effortFor('02-theme-grouper', DEFAULT_CONFIG), 'medium');
+  assert.equal(effortFor('04-board-builder', DEFAULT_CONFIG), 'medium');
 });
 
 test('every stage has small explicit retry limits for both failure classes', () => {
@@ -114,4 +118,28 @@ test('caps exist at all three scopes', () => {
   for (const scope of ['perStage', 'perAttempt', 'perRun']) {
     assert.ok(DEFAULT_CONFIG.limits[scope], `no ${scope} limits`);
   }
+});
+
+// --- the 2026-08-03 re-aim ----------------------------------------------
+//
+// Measured, not guessed. A complete run cost $0.52 / 347s, and 04 alone was
+// $0.244 / 166s of it — 94% of its billed output was thinking, behind an
+// 876-token answer. The stage had already stopped authoring sets (D-1), and
+// removing its combinatorial obligation left work that does not need the
+// pipeline's highest setting.
+
+test('the board builder no longer runs at the highest effort in the pipeline', () => {
+  assert.equal(effortFor('04-board-builder', DEFAULT_CONFIG), 'medium');
+});
+
+test('the adversarial solver keeps its effort — it is the last line before Max', () => {
+  assert.equal(effortFor('06-adversarial-solver', DEFAULT_CONFIG), 'high');
+});
+
+test('the effort profile carries a version, like the pricing table does', () => {
+  // A recorded cost is only interpretable beside the settings that produced
+  // it. The review loop uses this to answer "did the cheaper profile make
+  // worse boards?" from judgements Max is making anyway.
+  assert.ok(typeof DEFAULT_CONFIG.effortProfile === 'string');
+  assert.ok(DEFAULT_CONFIG.effortProfile.length > 0);
 });

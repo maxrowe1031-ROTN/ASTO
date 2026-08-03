@@ -2,6 +2,67 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-03 — The builder was proving something already proven
+
+Max: a run costs ~$0.52 and takes ~6 minutes, roughly twice what he wanted. Measured from
+the run records rather than guessed — three stages were **85% of cost and 84% of time**, and
+on all three, **91–94% of billed output was thinking rather than answer**.
+
+- **Max rejected the easy reading, and was right.** Told the board builder was the problem,
+  he pushed back: it only picks one analogy per tier, it should be simple. It is — but its
+  prompt gave it four jobs, and one was *"prove no two sets could regroup into another valid
+  analogy."* That is combinatorial over sixteen words, **already done exhaustively by the 04a
+  gate 200ms later** (43,680 ordered tuples), **done again by stage 06** — and per design.md
+  risk 1, verified in code, *impossible to violate* with sixteen distinct words. The stage
+  was deliberating at the pipeline's deepest setting about avoiding the impossible.
+- **Changed:** the proof obligation removed from the builder's prompt, replaced with a line
+  telling it the checker exists (the *design principle* — a false trail is a near-miss, not a
+  genuine second answer — was kept; a pre-existing test caught that I had cut both) ·
+  `04-board-builder` xhigh → medium · `02-theme-grouper` high → medium ·
+  `06-adversarial-solver` **left at high**, being the last thing between a flawed board and
+  Max's time · `01` and `07` deliberately untouched, to keep the measurement readable.
+- **Also built:** an `effortProfile` version string stamped onto every attempt beside
+  `pricingVersion`, and shown in the Studio next to the cost. Both answer the same question
+  about a recorded number — *under what settings?* Max is judging ~30 boards anyway, so his
+  existing judgements now also answer "did the cheaper profile make worse boards?" — the A5
+  calibration, for free.
+
+### The measurement, honestly
+
+Baseline `01-04-43` (surprise-me, 14 pairs) vs new `04-11-05` (weather, 14 pairs):
+
+| stage | baseline | now | |
+|---|---|---|---|
+| 01 pair author *(unchanged)* | 32s · $0.045 | **115s · $0.182** | ⚠️ 4× worse |
+| 02 theme grouper high→medium | 65s · $0.104 | 16s · $0.032 | **4× faster, 3.3× cheaper** |
+| 04 board builder xhigh→medium | 166s · $0.244 | 10s · $0.022 | **16× faster, 11× cheaper** |
+| 06 adversarial solver *(unchanged)* | 59s · $0.091 | 47s · $0.079 | as expected |
+| 07 test player *(unchanged)* | 13s · $0.024 | 26s · $0.048 | 2× worse |
+| **total** | **347s · $0.517** | **248s · $0.414** | −29% time, −20% cost |
+
+- **The two stages changed did exactly what was intended, and more.** Together they fell from
+  $0.348 to $0.054. At 04 the thinking share collapsed from **94% to 40%** — the diagnosis
+  confirming itself, not just a cheaper setting.
+- **The target was missed anyway**, because `01-pair-author` — which was *not touched* — spent
+  4× its usual on this run. Had it behaved as before, the run lands near $0.28 and ~165s.
+- **A hypothesis of mine was wrong, and is corrected here.** Mid-run I attributed 01's cost to
+  the themed brief. The `music` run was also themed and its 01 was cheap. Across three runs at
+  **identical settings**, stage 01 produced **2,681 / 2,825 / 12,008** output tokens — 4.5×
+  variance run to run. It is volatility, not the theme.
+- **n=1 per configuration.** Single runs at a stage this volatile cannot support strong claims;
+  what carries weight at 02 and 04 is the *size* of the change and the thinking-share collapse.
+- **Verified:** `npm test` → **697 pass, 0 fail** · boundary greps clean · the board passes
+  `tools/check-board.js` (16/16 of 43,680 tuples) · the Studio header reads
+  `9 req · 41,421 tok · ~$0.4140 · effort 2026-08-03-lean` · and the board contains
+  `Humidity : Fog :: Warm Ocean Water : Hurricane` — a three-word term rendering its `::`
+  correctly, which is the exact case yesterday's shared-`analogyOf` fix repaired.
+- **Not claimed:** whether the cheaper boards are *worse*. That is Max's judgement, and the
+  profile stamp is what lets him answer it across a batch instead of from one board.
+- **Next, reported not applied** (the plan said so explicitly): `01-pair-author` is now **44%
+  of the run** and the most volatile line — high → medium is the obvious next lever, and would
+  likely land the target on its own. Then `07-test-player`, then the deferred 05–08
+  concurrency.
+
 ## 2026-08-03 — A run failed on arithmetic, and paid three times to find out
 
 Max's `music` run failed: *"board failed integrity after 2 rebuild(s): board builder

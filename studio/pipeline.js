@@ -141,6 +141,7 @@ export async function runPipeline({
     store.recordUsage(runId, attemptId, {
       usage: budget.usage(),
       pricingVersion: config.pricingVersion,
+      effortProfile: config.effortProfile,
     });
   };
 

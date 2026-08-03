@@ -66,16 +66,34 @@ export const DEFAULT_CONFIG = deepFreeze({
   // default would quietly put one on every request. An absent entry means
   // absent, not "fall back to something".
   //
-  // 04 gets the most: the handbook's crew post-mortem (section 3) found board
-  // assembly, not pair generation, to be the constraint-satisfaction problem
-  // that actually broke the prototype pipeline.
+  // Re-aimed 2026-08-03 from measurement rather than analogy. These started
+  // at 04 = xhigh on the strength of the handbook's crew post-mortem
+  // (section 3: assembly, not generation, is the constraint-satisfaction
+  // problem). That was true of THEIR builder, which assembled from a raw
+  // pool. Ours picks four sets from a pre-graded pool of five, no longer
+  // authors a set (D-1), and no longer verifies uniqueness — a checker does
+  // that exhaustively straight afterwards. What was left did not need the
+  // pipeline's deepest setting: 04 alone was $0.244 and 166s of a $0.52,
+  // 347s run, with 94% of its billed output going to thinking behind an
+  // 876-token answer.
+  //
+  // 06 stays high on purpose. It is the one stage whose entire job is
+  // catching what everything else missed, and it is the last thing between a
+  // flawed board and Max's time.
   effort: {
     '01-pair-author': 'high',
-    '02-theme-grouper': 'high',
-    '04-board-builder': 'xhigh',
+    '02-theme-grouper': 'medium',
+    '04-board-builder': 'medium',
     '06-adversarial-solver': 'high',
     '07-test-player': 'medium',
   },
+
+  // Bumped whenever the effort map above changes, for the same reason
+  // pricingVersion exists: a recorded cost or duration is only interpretable
+  // beside the settings that produced it. Stamped onto every attempt, so the
+  // review corpus can answer "did the cheaper profile make worse boards?"
+  // from judgements Max is making anyway.
+  effortProfile: '2026-08-03-lean',
 
   // Two bounds, because there are two failure classes and they are retried by
   // different owners. `transport` bounds llm.js's own loop (timeouts, 429s,

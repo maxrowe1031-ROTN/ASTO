@@ -44,10 +44,16 @@ async function api(path, options) {
   return body;
 }
 
-const money = (usage) =>
-  usage
-    ? `${usage.attempt.requests} req · ${usage.attempt.tokens.toLocaleString()} tok · ~$${usage.attempt.costUsd.toFixed(4)}`
-    : '—';
+// The effort profile rides alongside the cost on purpose. Across a batch of
+// reviews it is what turns "these boards cost less" into "these boards cost
+// less AND here is whether they were worse" — the judgements are being made
+// anyway, so the profile is what makes them answer a second question.
+const money = (attempt) => {
+  const usage = attempt?.usage;
+  if (!usage) return '—';
+  const spend = `${usage.attempt.requests} req · ${usage.attempt.tokens.toLocaleString()} tok · ~$${usage.attempt.costUsd.toFixed(4)}`;
+  return attempt.effortProfile ? `${spend} · effort ${attempt.effortProfile}` : spend;
+};
 
 // --- run list ---
 
@@ -139,7 +145,7 @@ async function renderRun(runId) {
       }</p>
       <p>
         <span class="status status-${escape(manifest.status)}">${escape(manifest.status)}</span>
-        <span class="studio-muted">${escape(money(attempt.attempt.usage))}</span>
+        <span class="studio-muted">${escape(money(attempt.attempt))}</span>
       </p>
       ${working ? '<p class="studio-muted">Working… this page refreshes itself.</p>' : ''}
       ${

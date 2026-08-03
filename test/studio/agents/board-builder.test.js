@@ -156,3 +156,35 @@ test('the prompt tells the builder to promote rather than refuse, and never to i
   // The refusal path survives, but only for genuinely too little material.
   assert.match(prompt, /"insufficientSets"/);
 });
+
+// --- what this stage is NOT asked to do (2026-08-03) ---------------------
+//
+// The builder was costing $0.24 and 166s per board — 94% of its billed
+// output was thinking, against an 876-token answer. Its prompt gave it four
+// jobs, and one was a combinatorial obligation: prove no two sets could
+// regroup into another valid analogy. The 04a gate already brute-forces all
+// 43,680 ordered tuples immediately afterwards, and design.md risk 1 records
+// (verified in code) that with sixteen distinct words that property cannot be
+// violated at all. It was deliberating about avoiding the impossible.
+
+test('the builder is not asked to prove the board has no alternate solution', () => {
+  const prompt = boardBuilder.buildPrompt({ gradedSets: [{ id: 'set-a', difficulty: 1 }] }, {});
+  assert.equal(
+    /regrouped into a different valid analogy/i.test(prompt),
+    false,
+    'the combinatorial proof is still being asked for',
+  );
+});
+
+test('it is told the checker does that, so it does not try to do it anyway', () => {
+  const prompt = boardBuilder.buildPrompt({ gradedSets: [{ id: 'set-a', difficulty: 1 }] }, {});
+  assert.match(prompt, /checker|verified automatically|immediately after/i);
+});
+
+test('the work only this stage does is still asked for', () => {
+  const prompt = boardBuilder.buildPrompt({ gradedSets: [{ id: 'set-a', difficulty: 1 }] }, {});
+  assert.match(prompt, /false trail/i, 'false trails were dropped');
+  assert.match(prompt, /"explanation"/, 'explanations were dropped');
+  assert.match(prompt, /sixteen words must be distinct/i, 'the distinctness rule was dropped');
+  assert.match(prompt, /promote/i, 'promotion was dropped');
+});
