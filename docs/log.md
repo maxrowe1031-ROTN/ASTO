@@ -2,6 +2,90 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-03 — Aiming the model calls; the pipeline's first eight-stage run
+
+Built on `work/studio-transport-aiming` (commits `0b1216b`, `8a4ba4f`). **No game code
+touched** — `git diff main -- src/ styles/ index.html puzzles/` is empty.
+
+- **Warmup found a fourth real run that was never logged.**
+  `studio/runs/2026-08-02T23-08-42.315Z-surprise-me`, `brief.mock: false`, started ~90
+  seconds *after* the R1 fixes merged, cost ~$0.23, died at `02-theme-grouper` with
+  "response was truncated". It left **no stage folder at all**, so which stage failed had
+  to be worked out by dividing token totals by request counts (3 requests / 15,213 tokens
+  ≈ 5,071 each — impossible under a 16,000 ceiling, so it ran at the old 4,096).
+- **The cause, and the proof.** The handbook's prototype-crew post-mortem records it
+  exactly (`lessons-learned.md` §1.1): the Claude 5 family runs adaptive thinking by
+  default, and `max_tokens` caps thinking and response text together. We send no
+  `thinking` parameter, so stage 02 spent its ceiling on reasoning. **The stale server was
+  still running when this session started** — PID 44977, started 22:45 UTC, seventeen
+  minutes before the 23:02 commit whose fix it never loaded. Node caches modules; a
+  running server never sees a code change.
+- **The prototype's own fix was not adopted.** `thinking: {type: "disabled"}` predates
+  adaptive thinking, and `budget_tokens` — what it was reaching for — is now a 400. Its
+  agents only emitted JSON; ours rate difficulty and hunt alternate solutions, and that
+  is reasoning we pay for on purpose. **Max chose per-stage `effort`** instead: `high` for
+  the reasoning stages, `xhigh` for the board builder (§3: assembly, not generation, is
+  the constraint-satisfaction problem that broke the prototype). Deliberately **no
+  default** — effort is an error on Haiku 4.5, so the three checker stages must send no
+  `output_config` at all, and a default would quietly put one on every request.
+- **Also in `llm.js`:** `temperature` dropped (this model family rejects sampling
+  parameters outright — nothing set it, so we were lucky rather than correct) · an
+  `AbortSignal.timeout` so a wedged call becomes a bounded retryable failure · block types
+  reported · the ceiling and effort **recorded**. Truncation now raises the ceiling once
+  and retries; a second truncation is terminal naming both ceilings, instead of buying
+  three copies of one failure. Empty text and `model_context_window_exceeded` are loud
+  failures rather than a misleading JSON parse error and a silent success.
+- **A dead stage now leaves evidence.** `prompt.txt` and `request.failed.json` are written
+  on the failure path, the failure names its stage, and the attempt marks it failed.
+  Tested by replaying this exact incident. **The real transport had no tests at all** —
+  which is how a wrong request shape shipped; it has them now, with `fetch` injected.
+- **Agreed with Max, from the same post-mortem:** the 04a gate now enforces **≥4 distinct
+  relationship labels** — the first mechanical check here that can fail a schema-valid
+  board, closing the backlog question and amending `design.md` risk 1 — and the crew's
+  four hard-won content rules joined `corpus/rules.json` with provenance.
+- **The real run: eight stages attempted, five complete, one board built.** Fresh server,
+  `mock: false`, $0.37. 01 → 02 → 03 → 04 → 04a all passed. **Stage 03 cleared, which is
+  the first live proof of last session's prompt fix**, and a real board passed the new
+  integrity gate including the variety check. It failed at `05-analogy-validator`.
+- **And the failure was readable off disk, which was the point.** Three more instances of
+  one bug family, in three different agents. Last session's fix named each agent's
+  *top-level* schema keys and the test enforced only those; **nested** required keys were
+  still guesswork, and the model guesses from the shapes around it:
+  - `02-theme-grouper` is handed pairs as `{a, b}` objects and its schema wants
+    `["A","B"]` arrays. It returned objects. Rejected once, recovered on retry.
+  - `05-analogy-validator` requires `pass` per verdict; the prompt named only `verdicts`
+    and `boardPasses`, and the model wrote `passes` three rounds running. This killed it.
+  - `04-board-builder` (falseTrails), `06-adversarial-solver` and `08-style-guide` had the
+    same gap **latent** — the run never reached the last two.
+  - The test now walks each schema to any depth and requires every `required` key to be
+    named. **That generalization found the three latent cases; the run found one.**
+- **A structural finding, not yet acted on.** The run's brief asked for 8 pairs; the
+  grouper made exactly 4 sets from them, and the rater graded those 1, 2, 2, 3. With no
+  difficulty-4 candidate the builder correctly **refused rather than compromise**
+  (`insufficientSets`), and the gate sent it back. One-per-tier was arithmetically out of
+  reach — 8 pairs gives the builder no choice at all, and §3 is explicit that assembly
+  needs candidates. Raising the brief's pair count is a form-field change, not a code one.
+- **Verified:** `npm test` → **664 pass, 0 fail** (623 at the entry below) · boundary greps
+  clean: `llm.js` still owns the only server-side `fetch`, `run-store.js` is still the only
+  writer of run artifacts, `pipeline.js` does no file I/O · a mock run through the restarted
+  server reached `awaiting-review` with the board rendered · the live run's
+  `request.json` states `maxTokens: 16000, effort: "high"` on its face, which is the fact
+  that previously took arithmetic to recover.
+- **Not claimed:** no board has reached Max. The four prompt fixes are **verified offline
+  only** — exactly the caveat this session inherited, and it should be treated as unproven
+  until a run completes. `/pause`, not `/wrapup`: the gate is not passed.
+- **Next:**
+  1. **One more real run** (~$0.40), with the brief's pair count raised from 8 to ~14 so
+     the builder has candidates to choose from. Two independent reasons to expect it to go
+     further: the four prompt fixes, and a pool that can actually span four tiers.
+  2. If it completes: **Max reviews the board**, and rules on the thirteen quick-tags —
+     changing that vocabulary after thirty boards means re-reading old feedback through a
+     new lens.
+  3. Then the loop itself: batches of ~10 with a rules recompile between.
+  4. Carried: `effort` levels are a first guess and want calibrating in A5 · First Light
+     `explanation` editorial pass · GDD drift to propose upstream · the tutorial board's
+     sets 2–4 wording is Max's to edit.
+
 ## 2026-08-02 — Review Studio R1, and the first real API run (which failed)
 
 Third unit of work this session, on `work/review-studio-r1` (commits `8fe4b46`, `58c4d95`).
