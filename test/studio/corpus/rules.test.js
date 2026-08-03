@@ -39,15 +39,42 @@ const rule = (overrides = {}) => ({
 
 const file = (rules) => ({ schemaVersion: '1.0', rules });
 
-test('the shipped rules file is valid and seeded from the GDD', () => {
+// Every rule in the shipped corpus traces to a source Max adopted knowingly.
+// The list is closed on purpose: an unattributed rule in here would be an
+// editorial standard nobody agreed to, reaching every agent's prompt.
+const ADOPTED_SOURCES = new Set(['gdd-10.2', 'prototype-crew']);
+
+test('the shipped rules file is valid and every rule names an adopted source', () => {
   const rules = loadRules();
-  assert.ok(rules.length >= 6, `only ${rules.length} rules`);
-  // Seeded from GDD §10.2 — Max's own words, not an invented standard.
-  assert.ok(rules.every((r) => r.source === 'gdd-10.2'), 'a rule arrived from somewhere else');
+  assert.ok(rules.length >= 10, `only ${rules.length} rules`);
+  assert.ok(
+    rules.every((r) => ADOPTED_SOURCES.has(r.source)),
+    'a rule arrived from somewhere nobody approved',
+  );
+  // GDD §10.2 — Max's own words, not an invented standard.
   assert.ok(
     rules.some((r) => /same relationship/i.test(r.text)),
     'the first editorial standard is missing',
   );
+});
+
+test('the prototype crew\'s four hard-won content rules are carried forward', () => {
+  // maigd-course-handbook/projects/asto/crew/lessons-learned.md section 2:
+  // each of these exists because a live run produced the bad case. Adopted
+  // 2026-08-03 with Max, rather than rediscovering them over thirty boards.
+  const texts = loadRules()
+    .filter((r) => r.source === 'prototype-crew')
+    .map((r) => r.text.toLowerCase());
+  assert.equal(texts.length, 4, `expected four, got ${texts.length}`);
+
+  for (const [what, pattern] of [
+    ['directional & transformative', /adjective|property/],
+    ['parallel precision', /grain/],
+    ['no progression chains', /chain/],
+    ['no unintended alternate pairings', /alternate|second/],
+  ]) {
+    assert.ok(texts.some((text) => pattern.test(text)), `${what} rule is missing`);
+  }
 });
 
 test('the shipped file has no rule Max has not approved', () => {

@@ -45,6 +45,64 @@ const runWith = async (builderScript, extra = {}) => {
   };
 };
 
+// Relation-type variety: the first check here that can fail a board which is
+// entirely schema-valid. The prototype crew shipped an ocean board using only
+// two distinct relation types across its four sets — legal, and boring to
+// play (lessons-learned.md section 3.3). Nothing mechanical caught it.
+const monotonousBoard = {
+  ...board,
+  sets: board.sets.map((set, i) => ({
+    ...set,
+    relationshipLabel: i < 2 ? 'Tool used by profession' : 'Home of animal',
+  })),
+};
+
+test('a schema-valid board with too few distinct relation types is rejected', async () => {
+  const { result, cleanup } = await runWith([boardReply(monotonousBoard)]);
+  try {
+    assert.equal(result.status, 'failed');
+    assert.equal(result.failure.stageId, '04a-integrity');
+    assert.match(result.failure.message, /2 distinct relationship label/);
+    // The offending labels go back with the count — a rebuild told only "not
+    // varied enough" is a re-roll, not a retry.
+    assert.match(result.failure.message, /Tool used by profession/);
+  } finally {
+    cleanup();
+  }
+});
+
+test('the monotonous board really is schema-valid — the gate is adding a check, not repeating one', async () => {
+  const { validatePuzzle } = await import('../../../src/source/validate-puzzle.js');
+  assert.equal(validatePuzzle(monotonousBoard).ok, true);
+});
+
+test('labels differing only in case or spacing are not four distinct types', async () => {
+  const casedBoard = {
+    ...board,
+    sets: board.sets.map((set, i) => ({
+      ...set,
+      relationshipLabel: ['Home of animal', 'home of animal', '  HOME OF ANIMAL  ', 'Tool used by profession'][i],
+    })),
+  };
+  const { result, cleanup } = await runWith([boardReply(casedBoard)]);
+  try {
+    assert.equal(result.status, 'failed');
+    assert.match(result.failure.message, /2 distinct relationship label/);
+  } finally {
+    cleanup();
+  }
+});
+
+test('the rebuild loop recovers a monotonous board when the builder varies it', async () => {
+  const { result, cleanup } = await runWith([boardReply(monotonousBoard), boardReply(board)]);
+  try {
+    assert.equal(result.status, 'complete');
+    assert.equal(result.board.id, board.id);
+  } finally {
+    cleanup();
+  }
+});
+
 test('a board carrying the old schema is rejected — the agent passed it, the gate did not', async () => {
   const { result, rootDir, runId, cleanup } = await runWith([boardReply(oldSchemaBoard)]);
   try {

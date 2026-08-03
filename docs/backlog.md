@@ -7,9 +7,20 @@
 - `current-attempt.json` at the run root is in the Studio spec's run-directory contract
   but has never been built (A1 or A3); `manifest.currentAttemptId` serves the purpose.
   Decide whether to build it or amend the spec.
-- Studio A3 surfaced that the `04a` gate can only reject on schema, not on board quality
-  (see design.md risk 1). Consider whether A5 should add a mechanical check that *can*
-  fail a schema-valid board, or whether that stays entirely with stage 06 and Max.
+- ~~Studio A3 surfaced that the `04a` gate can only reject on schema, not on board quality.~~
+  **Resolved 2026-08-03:** the gate now enforces ≥4 distinct relationship labels — see
+  design.md risk 1. Whether *further* quality checks belong there is still open.
+- The Studio's per-stage `effort` levels are a first guess, not a measurement. A5 should
+  calibrate them against real spend, latency and board quality the way it calibrates budget
+  rates — a board-builder call at `xhigh` was observed taking ~6 minutes.
+- The difficulty rater has never returned a 4: ten graded sets across two real runs came
+  back 1, 2, 3, 1, 2 and 1, 2, 2, 3. Nothing upstream asks for a spread, and the builder
+  needs one set per tier. Decide where the spread should come from.
+- The Review Studio shows only "running" for the whole of a multi-minute stage. Per-stage
+  progress would make a slow `xhigh` call distinguishable from a wedged one.
+- A long-running Review Studio server holds the pipeline config it started with, so a code
+  fix does not reach a running server. Cost ~$0.23 once. Consider surfacing the loaded
+  `pricingVersion`/config in the UI, or having the server exit on a config file change.
 - `budget.js` cost caps only bite once every model in play is priced. Rates are estimates
   until A5 measures real spend; unpriced models are surfaced in `usage.unpricedModels`.
 - Studio run artifacts accumulate under the git-ignored `studio/runs/`; no pruning yet.

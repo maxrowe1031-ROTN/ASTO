@@ -68,6 +68,13 @@ export function buildPrompt(input = {}, context) {
     data: asJsonBlock('Candidate pairs', pairs),
     outputRules: [
       'Return { "sets": [ { "id", "relationshipLabel", "shape", "pairs" } ] }, optionally with "setAside".',
+      // The candidate pairs arrive as {a, b} objects and must go back out as
+      // two-item arrays. Saying so is not pedantry: a real run returned
+      // objects for every pair, because the shape it was shown was the shape
+      // it copied.
+      'Each set\'s "pairs" is exactly two pairs, and every pair is a two-item array of strings: "pairs": [["Seed", "Tree"], ["Spark", "Fire"]].',
+      'The candidate pairs above are given to you as objects with "a" and "b" keys. Do not copy that shape into your reply — convert each one to a two-item array.',
+      'Each "setAside" entry is { "pair": ["Seed", "Tree"], "reason": "..." }, with the same two-item array.',
       'Set ids must be unique, lowercase, hyphenated (for example "set-growth").',
       JSON_ONLY,
     ].join(' '),

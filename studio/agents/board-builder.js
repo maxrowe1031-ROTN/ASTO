@@ -80,7 +80,7 @@ export function buildPrompt(input = {}, context) {
     ].join('\n'),
     data: asJsonBlock('Graded candidate sets', gradedSets),
     outputRules: [
-      'Return { "board": { "id", "title", "sets": [ { "id", "relationshipLabel", "explanation", "pairs", "difficulty", "baitTags" } ] }, "falseTrails": [...] }.',
+      'Return { "board": { "id", "title", "sets": [ { "id", "relationshipLabel", "explanation", "pairs", "difficulty", "baitTags" } ] }, "falseTrails": [ { "words", "note" } ] }.',
       'Each set\'s "pairs" is [[A, B], [C, D]] — order carries the meaning and is never sorted.',
       'The board carries no "words" array; the sixteen words are derived from the pairs.',
       'No set carries a "tier" field; the tier derives from "difficulty".',

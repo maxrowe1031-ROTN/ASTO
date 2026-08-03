@@ -1,8 +1,13 @@
 {
   "schemaVersion": "1.0",
   "_comment": [
-    "Editorial rules handed to every agent. Seeded from GDD section 10.2 —",
-    "Max's own editorial standards, verbatim. Nothing else has been adopted.",
+    "Editorial rules handed to every agent. Seeded from GDD section 10.2 \u2014",
+    "Max's own editorial standards, verbatim \u2014 plus four rules carried over",
+    "from the retired prototype crew (source 'prototype-crew'), each of which",
+    "exists because a live run produced the bad board it describes. Adopted",
+    "with Max on 2026-08-03 rather than rediscovered across thirty reviews;",
+    "the cases are recorded in the handbook at",
+    "projects/asto/crew/lessons-learned.md, section 2.",
     "",
     "Rules compiled from Max's recorded feedback land here after each batch of",
     "the review loop, with source 'feedback-batch-N' and provenance naming the",
@@ -51,6 +56,54 @@
       "status": "approved",
       "source": "gdd-10.2",
       "createdAt": "2026-08-02"
+    },
+    {
+      "id": "rule-007",
+      "text": "A pair must be directional and transformative: B is an entity or outcome that A maps to, never a static adjective or property. \"Caterpillar : Butterfly\" and \"Grape : Wine\" work; \"Gulf Stream : warm\" does not.",
+      "status": "approved",
+      "source": "prototype-crew",
+      "provenance": {
+        "document": "maigd-course-handbook/projects/asto/crew/lessons-learned.md",
+        "section": "2",
+        "note": "a live run produced \"Gulf Stream : warm\""
+      },
+      "createdAt": "2026-08-03"
+    },
+    {
+      "id": "rule-008",
+      "text": "Both pairs in a set must share the same relationship type at the same grain. \"Sonar : mapping :: Submersible : exploration\" fails: a concrete process is being matched to a broad activity.",
+      "status": "approved",
+      "source": "prototype-crew",
+      "provenance": {
+        "document": "maigd-course-handbook/projects/asto/crew/lessons-learned.md",
+        "section": "2",
+        "note": "the sonar/submersible board matched a concrete process to a broad activity"
+      },
+      "createdAt": "2026-08-03"
+    },
+    {
+      "id": "rule-009",
+      "text": "Never build a set from a progression chain that repeats a word, such as \"Second : Minute :: Minute : Hour\". A set is two independent pairs and needs four distinct words, so use \"Second : Minute :: Hour : Day\" instead.",
+      "status": "approved",
+      "source": "prototype-crew",
+      "provenance": {
+        "document": "maigd-course-handbook/projects/asto/crew/lessons-learned.md",
+        "section": "2",
+        "note": "the Time and Music runs both produced progression chains"
+      },
+      "createdAt": "2026-08-03"
+    },
+    {
+      "id": "rule-010",
+      "text": "No word may plausibly belong to a second set. Before proposing a board, check whether any four of its words form another valid analogy; if they do, change the words.",
+      "status": "approved",
+      "source": "prototype-crew",
+      "provenance": {
+        "document": "maigd-course-handbook/projects/asto/crew/lessons-learned.md",
+        "section": "2",
+        "note": "the Adversarial Solver exists to hunt these"
+      },
+      "createdAt": "2026-08-03"
     }
   ]
 }
