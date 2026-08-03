@@ -122,3 +122,36 @@ test('renders nothing rather than throwing when there is no board', () => {
   assert.equal(boardHtml(null), '');
   assert.deepEqual(tilesFor(null), []);
 });
+
+// --- promotions ----------------------------------------------------------
+//
+// The builder may label its hardest available set Black even when the rater
+// graded it lower (decided with Max, 2026-08-03). Raising the rater's ceiling
+// is meant to be TRAINED through this loop, so the promotion has to be on the
+// card Max is looking at. A promotion he cannot see is a judgement he cannot
+// give feedback on, and the rater's blind spot stays invisible.
+
+test('a promoted set says so on its card, with the grade it actually got', () => {
+  const html = boardHtml(BOARD, [
+    { setId: 'set-material', gradedDifficulty: 3, assignedDifficulty: 4 },
+  ]);
+  assert.match(html, /promoted/i, 'the promotion is not shown at all');
+  assert.match(html, /graded 3/, 'the grade it actually got is missing');
+});
+
+test('only the promoted card is marked', () => {
+  const html = boardHtml(BOARD, [
+    { setId: 'set-material', gradedDifficulty: 3, assignedDifficulty: 4 },
+  ]);
+  assert.equal((html.match(/class="promotion"/g) ?? []).length, 1);
+});
+
+test('a board with no promotions carries no promotion markup', () => {
+  assert.equal(/promotion/i.test(boardHtml(BOARD)), false);
+  assert.equal(/promotion/i.test(boardHtml(BOARD, [])), false);
+});
+
+test('a promotion naming an unknown set marks nothing rather than throwing', () => {
+  const html = boardHtml(BOARD, [{ setId: 'set-nope', gradedDifficulty: 1, assignedDifficulty: 4 }]);
+  assert.equal(/class="promotion"/.test(html), false);
+});

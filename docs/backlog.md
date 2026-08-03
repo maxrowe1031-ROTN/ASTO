@@ -13,9 +13,10 @@
 - The Studio's per-stage `effort` levels are a first guess, not a measurement. A5 should
   calibrate them against real spend, latency and board quality the way it calibrates budget
   rates — a board-builder call at `xhigh` was observed taking ~6 minutes.
-- The difficulty rater has never returned a 4: ten graded sets across two real runs came
-  back 1, 2, 3, 1, 2 and 1, 2, 2, 3. Nothing upstream asks for a spread, and the builder
-  needs one set per tier. Decide where the spread should come from.
+- ~~The difficulty rater has never returned a 4.~~ **Addressed 2026-08-03 (design.md D-1):**
+  the builder now promotes its hardest set to Black and the Studio shows it. The underlying
+  question — should the Pair Author be asked for a hard set in the first place? — is still
+  open, and D-1's reconsider-when trigger is where it gets revisited.
 - The Review Studio shows only "running" for the whole of a multi-minute stage. Per-stage
   progress would make a slow `xhigh` call distinguishable from a wedged one.
 - A long-running Review Studio server holds the pipeline config it started with, so a code

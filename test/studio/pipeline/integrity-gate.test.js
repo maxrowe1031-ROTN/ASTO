@@ -202,3 +202,51 @@ test('the gate runs before the four taste stages, never after', async () => {
     cleanup();
   }
 });
+
+// --- the board may only use sets that were actually rated -----------------
+//
+// The builder is now allowed to PROMOTE a set (label the hardest one it has
+// as Black even though the rater graded it lower). It is not allowed to
+// INVENT one — a set nothing rated has no independent difficulty judgement
+// behind it, which is the signal the whole review loop exists to improve.
+// Enforced here rather than in the prompt, because a rule can enforce it and
+// a prompt can only ask.
+const inventedBoard = {
+  ...board,
+  // The graded pool is set-growth / set-tools / set-homes / set-material.
+  sets: board.sets.map((set, i) => (i === 3 ? { ...set, id: 'set-invented' } : set)),
+};
+
+test('a board containing a set that was never rated is rejected', async () => {
+  const { result, cleanup } = await runWith([boardReply(inventedBoard)]);
+  try {
+    assert.equal(result.status, 'failed');
+    assert.equal(result.failure.stageId, '04a-integrity');
+    assert.match(result.failure.message, /set-invented/);
+    assert.match(result.failure.message, /not among the graded candidates/i);
+  } finally {
+    cleanup();
+  }
+});
+
+test('the invented board is otherwise schema-valid — this is a new check, not a repeat', async () => {
+  const { validatePuzzle } = await import('../../../src/source/validate-puzzle.js');
+  assert.equal(validatePuzzle(inventedBoard).ok, true);
+});
+
+test('a promoted set is not an invented one — a rated set relabelled Black passes', async () => {
+  // set-homes was graded 3. Labelling it difficulty 4 is exactly the promotion
+  // Max asked for, and the gate must not confuse it with invention.
+  const promoted = {
+    ...board,
+    sets: board.sets
+      .filter((set) => set.id !== 'set-material')
+      .concat([{ ...board.sets.find((s) => s.id === 'set-material'), difficulty: 4 }]),
+  };
+  const { result, cleanup } = await runWith([boardReply(promoted)]);
+  try {
+    assert.equal(result.status, 'complete', result.failure?.message);
+  } finally {
+    cleanup();
+  }
+});

@@ -54,6 +54,22 @@ const SCHEMA = {
         },
       },
     },
+    // A set labelled harder than the rater graded it. Recorded rather than
+    // absorbed: the rater has never returned a 4, and the whole point of the
+    // review loop is to teach it to. A promotion the Studio cannot show Max
+    // is a weakness that quietly disappears.
+    promotions: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['setId', 'gradedDifficulty', 'assignedDifficulty'],
+        properties: {
+          setId: { type: 'string', minLength: 1 },
+          gradedDifficulty: { type: 'integer', minimum: 1, maximum: 4 },
+          assignedDifficulty: { type: 'integer', minimum: 1, maximum: 4 },
+        },
+      },
+    },
     insufficientSets: { type: 'string', minLength: 1 },
   },
 };
@@ -71,16 +87,24 @@ export function buildPrompt(input = {}, context) {
       'one at each difficulty 1, 2, 3 and 4.',
     context,
     task: [
-      'Choose exactly four sets from the graded candidates — one of each difficulty — and assemble a board.',
+      'Choose exactly four sets from the graded candidates and assemble a board with one set at each difficulty 1, 2, 3 and 4.',
+      // The rater grades each set on its own merits and often never reaches 4.
+      // Rank-and-assign rather than requiring an exact match, so a usable pool
+      // is not thrown away over a label. Decided with Max, 2026-08-03.
+      'The grades are the rater\'s opinion, not a constraint you must match exactly. Rank your four chosen sets from easiest to hardest and assign difficulties 1, 2, 3 and 4 in that order.',
+      'This means the hardest set you have becomes difficulty 4 — the Black set — even if the rater graded it lower. Do this rather than refusing; a board with a promoted Black set is wanted.',
+      'Record every set you labelled harder than it was graded in "promotions". A promotion the reviewer cannot see is a judgement nobody can check.',
+      'Never invent a set that is not among the graded candidates. Choose and relabel; do not author.',
       'All sixteen words must be distinct. No word may appear in two sets.',
       'Engineer deliberate false trails: words that look like they belong to another set on first read, and pull the player off the true grouping. Record each one you intended.',
       'A false trail must never be an actual second valid solution. If two sets could legitimately be regrouped into a different valid analogy, the board is broken — pick different sets.',
       'Write an "explanation" for every set: one sentence a player reads after solving, phrased so the answer feels fair in hindsight.',
-      'If the candidates do not contain one usable set at each difficulty, do not compromise. Return only "insufficientSets" with a reason.',
+      'Return only "insufficientSets" with a reason when there are genuinely fewer than four usable sets to choose from — not merely because the grades do not span 1 to 4.',
     ].join('\n'),
     data: asJsonBlock('Graded candidate sets', gradedSets),
     outputRules: [
-      'Return { "board": { "id", "title", "sets": [ { "id", "relationshipLabel", "explanation", "pairs", "difficulty", "baitTags" } ] }, "falseTrails": [ { "words", "note" } ] }.',
+      'Return { "board": { "id", "title", "sets": [ { "id", "relationshipLabel", "explanation", "pairs", "difficulty", "baitTags" } ] }, "falseTrails": [ { "words", "note" } ], "promotions": [ { "setId", "gradedDifficulty", "assignedDifficulty" } ] }.',
+      'Leave "promotions" empty when every set kept the difficulty it was graded.',
       'Each set\'s "pairs" is [[A, B], [C, D]] — order carries the meaning and is never sorted.',
       'The board carries no "words" array; the sixteen words are derived from the pairs.',
       'No set carries a "tier" field; the tier derives from "difficulty".',
@@ -137,11 +161,40 @@ const uniqueSetIds = (output) => {
     : [{ path: 'board.sets', message: 'set ids must be unique within a board' }];
 };
 
+// A promotion is a claim about the board, so it has to be checkable against
+// it. Both halves matter: a promotion naming an absent set is a bookkeeping
+// error, and one claiming no change is a promotion that did not happen —
+// either way the record the reviewer reads would be wrong.
+const promotionsMatchTheBoard = (output) => {
+  const promotions = output.promotions ?? [];
+  if (promotions.length === 0) return [];
+  const setIds = new Set((output.board?.sets ?? []).map((set) => set.id));
+
+  return promotions
+    .map((promotion, i) => {
+      if (!setIds.has(promotion.setId)) {
+        return {
+          path: `promotions[${i}].setId`,
+          message: `"${promotion.setId}" is not in the board it claims to promote`,
+        };
+      }
+      if (promotion.assignedDifficulty <= promotion.gradedDifficulty) {
+        return {
+          path: `promotions[${i}]`,
+          message: 'a promotion must assign a higher difficulty than the one graded',
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+};
+
 export function validateOutput(output) {
   return validateAgainst(output, SCHEMA, [
     boardOrRefusal,
     oneSetPerDifficulty,
     sixteenDistinctWords,
     uniqueSetIds,
+    promotionsMatchTheBoard,
   ]);
 }

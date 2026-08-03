@@ -134,6 +134,9 @@ export function createApi({
   // human-facing integrity.json rather than its output.json duplicate.
   const REPORT_STAGES = [
     ['03-difficulty-rater', 'output.json'],
+    // Read for its "promotions" — which sets were labelled harder than they
+    // were graded. The board itself comes from board.json.
+    ['04-board-builder', 'output.json'],
     ['04a-integrity', 'integrity.json'],
     ['05-analogy-validator', 'output.json'],
     ['06-adversarial-solver', 'output.json'],

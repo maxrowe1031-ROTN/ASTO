@@ -220,3 +220,18 @@ textarea { width: 100%; resize: vertical; }
   .studio-view { padding: 12px 12px 80px; }
   .new-run { flex-direction: column; align-items: stretch; }
 }
+
+/*
+  A promotion: the builder labelled this set harder than the rater graded it.
+  Studio-only — a player never sees it, and no game class is touched. It reads
+  as a quiet annotation rather than a warning, because a promotion is expected
+  behaviour that Max is being asked to judge, not an error.
+*/
+.promotion {
+  margin-top: 4px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--soft-ink);
+  font-style: italic;
+}
