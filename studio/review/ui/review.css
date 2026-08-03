@@ -135,6 +135,18 @@ textarea { width: 100%; resize: vertical; }
 .fb-block:first-child { border-top: 0; }
 .fb-board { background: var(--oat); border-radius: var(--radius-tile); padding: 12px; }
 
+/*
+  The analogy the block is asking about. Set in the display face, because when
+  Max is judging a set this is the thing he is actually reading — the set id
+  above it is bookkeeping.
+*/
+.fb-analogy {
+  margin: 2px 0 8px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--ink);
+}
+
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
 
 .chip {

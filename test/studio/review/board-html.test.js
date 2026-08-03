@@ -12,7 +12,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { boardHtml, tilesFor } from '../../../studio/review/ui/board-html.js';
+import { analogyOf, boardHtml, tilesFor } from '../../../studio/review/ui/board-html.js';
 import { deriveWords } from '../../../src/engine/arrangements.js';
 
 const BOARD = {
@@ -154,4 +154,31 @@ test('a board with no promotions carries no promotion markup', () => {
 test('a promotion naming an unknown set marks nothing rather than throwing', () => {
   const html = boardHtml(BOARD, [{ setId: 'set-nope', gradedDifficulty: 1, assignedDifficulty: 4 }]);
   assert.equal(/class="promotion"/.test(html), false);
+});
+
+// --- the analogy line, shared -------------------------------------------
+//
+// The board card and the feedback block both need to show a set as
+// "A : B :: C : D", so the formatting lives in one place rather than being
+// written twice and drifting.
+
+test('a set renders as an ordered analogy with the double colon in the middle', () => {
+  const set = { pairs: [['Seed', 'Tree'], ['Spark', 'Fire']] };
+  assert.equal(analogyOf(set), 'Seed : Tree :: Spark : Fire');
+});
+
+test('multi-word terms keep the double colon in the right place', () => {
+  // The old inline regex matched on \S+, so a two-word term silently lost the
+  // "::" and the set read as four things in a row.
+  const set = { pairs: [['Gulf Stream', 'Warm Water'], ['Jet Stream', 'Fast Air']] };
+  assert.equal(analogyOf(set), 'Gulf Stream : Warm Water :: Jet Stream : Fast Air');
+});
+
+test('a set with no pairs renders as empty rather than throwing', () => {
+  assert.equal(analogyOf({}), '');
+  assert.equal(analogyOf(null), '');
+});
+
+test('the board card still shows the analogy it always did', () => {
+  assert.match(boardHtml(BOARD), /Seed : Tree :: Spark : Fire/);
 });

@@ -7,6 +7,8 @@
 // corpus does not recognise. Browser validation is a convenience; the
 // authority is server-side.
 
+import { analogyOf } from './board-html.js';
+
 export const QUICK_TAGS = [
   'relationship-does-not-click',
   'order-ambiguous',
@@ -49,6 +51,7 @@ export function feedbackControls(board) {
       (set) => `
       <section class="fb-block" data-set-id="${escape(set.id)}">
         <h4>${escape(set.id)} <span class="studio-muted">— ${escape(set.relationshipLabel)}</span></h4>
+        <p class="fb-analogy">${escape(analogyOf(set))}</p>
         <div class="chips">${tagChips(set.id)}</div>
         <textarea class="note" data-scope="${escape(set.id)}" rows="2"
           placeholder="What is wrong with this set — or right about it?"></textarea>
