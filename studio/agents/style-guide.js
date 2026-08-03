@@ -53,7 +53,12 @@ export function buildPrompt(input = {}, context) {
       'This is one pass. Do not iterate.',
     ].join('\n'),
     data: asJsonBlock('Labels and explanations', title ? { title, items } : { items }),
-    outputRules: `If everything is in voice, return "compliant": true and an empty "edits". ${JSON_ONLY}`,
+    outputRules: [
+      'Return { "edits": [ { "setId", "field", "suggestion", "reason" } ], "compliant": true or false }.',
+      '"field" is one of relationshipLabel, explanation, title — the one your "suggestion" would replace.',
+      'If everything is in voice, return "compliant": true and an empty "edits".',
+      JSON_ONLY,
+    ].join(' '),
   });
 }
 

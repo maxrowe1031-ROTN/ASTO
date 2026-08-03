@@ -68,6 +68,81 @@ test('the difficulty rater asks for a grades ARRAY, not a map keyed by setId', (
   );
 });
 
+// Third instance of one family, and the generalization that covers all of
+// them. Naming the TOP-LEVEL keys is not enough: the analogy validator's
+// schema requires `pass` on every verdict, its prompt named only "verdicts"
+// and "boardPasses", and the model wrote `passes` three rounds running
+// (2026-08-03, a real run). Every required key at every depth has to be named
+// somewhere in the prompt, or the model is guessing — and it guesses the
+// shape of whatever is nearby.
+const requiredKeysAnywhere = (schema, seen = new Set()) => {
+  if (!schema || typeof schema !== 'object') return seen;
+  for (const key of schema.required ?? []) seen.add(key);
+  for (const value of Object.values(schema.properties ?? {})) requiredKeysAnywhere(value, seen);
+  if (schema.items) requiredKeysAnywhere(schema.items, seen);
+  return seen;
+};
+
+for (const stage of AGENT_STAGES) {
+  test(`${stage.agent}: every required key, at every depth, is named in the prompt`, () => {
+    const agent = loadAgent(stage.agent);
+    const prompt = agent.buildPrompt(INPUT[stage.agent], {});
+    const missing = [...requiredKeysAnywhere(agent.getOutputSchema())].filter(
+      (key) => !prompt.includes(`"${key}"`),
+    );
+    assert.deepEqual(
+      missing,
+      [],
+      `${stage.agent} requires ${missing.join(', ')} but never names ${missing.length === 1 ? 'it' : 'them'} — ` +
+        'the model has to guess, and it guesses from the shapes around it',
+    );
+  });
+}
+
+// The same failure one level down, found by the next real run (2026-08-03).
+// Naming the top-level keys is not enough when a nested shape is at stake:
+// the theme grouper is *handed* pairs as {a, b} objects and its schema
+// requires them back as ["A", "B"] arrays. Its prompt named "pairs" and said
+// nothing about the shape, so the model copied the shape it was shown and
+// every pair came back as an object.
+//
+// Any agent whose schema wants an array-of-arrays-of-strings has this trap
+// available to it, so the check is general rather than about one agent.
+const arrayOfArrayProps = (schema, path = []) => {
+  const found = [];
+  if (!schema || typeof schema !== 'object') return found;
+  if (schema.type === 'array' && schema.items?.type === 'array' && schema.items.items?.type === 'string') {
+    found.push(path.join('.'));
+  }
+  for (const [key, value] of Object.entries(schema.properties ?? {})) {
+    found.push(...arrayOfArrayProps(value, [...path, key]));
+  }
+  if (schema.items) found.push(...arrayOfArrayProps(schema.items, [...path, '[]']));
+  return found;
+};
+
+for (const stage of AGENT_STAGES) {
+  test(`${stage.agent}: a nested array-of-arrays shape is shown, not just named`, () => {
+    const agent = loadAgent(stage.agent);
+    const nested = arrayOfArrayProps(agent.getOutputSchema());
+    if (nested.length === 0) return;
+
+    const prompt = agent.buildPrompt(INPUT[stage.agent], {});
+    assert.match(
+      prompt,
+      /\[\s*\[/,
+      `${stage.agent} requires ${nested.join(', ')} as arrays of arrays but never shows that shape — ` +
+        'naming the key leaves the model to copy whatever shape its input happened to use',
+    );
+  });
+}
+
+test('the theme grouper warns against copying its input shape', () => {
+  const prompt = loadAgent('theme-grouper').buildPrompt(INPUT['theme-grouper'], {});
+  assert.match(prompt, /\[\["Seed", "Tree"\]|\[\[/, 'the array shape is not shown');
+  assert.match(prompt, /"a" and "b"|do not copy/i, 'the input-shape trap is not called out');
+});
+
 test('every agent still demands raw JSON', () => {
   for (const stage of AGENT_STAGES) {
     const prompt = loadAgent(stage.agent).buildPrompt(INPUT[stage.agent], {});

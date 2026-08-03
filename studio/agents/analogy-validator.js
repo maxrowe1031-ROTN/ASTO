@@ -51,7 +51,10 @@ export function buildPrompt(input = {}, context) {
     ].join('\n'),
     data: asJsonBlock('Board', board),
     outputRules: [
-      'Return { "verdicts": [ ... ], "boardPasses": true or false }.',
+      'Return { "verdicts": [ { "setId", "pass", "notes" } ], "boardPasses": true or false }.',
+      // "pass", not "passes". A real run wrote "passes" three rounds running,
+      // with "boardPasses" sitting right beside it in the same object.
+      'Each verdict\'s "pass" is a boolean and is spelled exactly "pass" — not "passes".',
       'Give every set a verdict with notes, even when it passes.',
       JSON_ONLY,
     ].join(' '),

@@ -69,7 +69,13 @@ export function buildPrompt(input = {}, context) {
     data: [asJsonBlock('Board', board), integrity ? asJsonBlock('Mechanical integrity report (already proven — do not redo)', integrity) : '']
       .filter(Boolean)
       .join('\n\n'),
-    outputRules: `Rate each finding low, medium or high by how likely a real player is to be misled. ${JSON_ONLY}`,
+    outputRules: [
+      'Return { "findings": [ { "kind", "words", "severity", "note" } ], "noneFound": true or false }.',
+      '"kind" is one of alternate-reading, cross-set-association, ambiguous-order, double-meaning, misleading-label, unfair.',
+      '"words" is an array of the board words involved, "severity" is low, medium or high, and "note" says what a player would see.',
+      'Rate each finding low, medium or high by how likely a real player is to be misled.',
+      JSON_ONLY,
+    ].join(' '),
   });
 }
 
