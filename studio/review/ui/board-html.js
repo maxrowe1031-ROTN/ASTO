@@ -46,6 +46,27 @@ const seedOf = (id) => {
   return hash >>> 0;
 };
 
+/**
+ * A set as "A : B :: C : D", in the order the game accepts as canonical.
+ *
+ * Shared because the board card and the feedback form both show it, and two
+ * copies would drift. Built from the four terms rather than by rewriting a
+ * joined string: the earlier inline version matched on `\S+`, so a two-word
+ * term like "Gulf Stream" silently lost its "::" and the set read as four
+ * things in a row.
+ */
+export function analogyOf(set) {
+  // canonicalOrder throws on a malformed set, which is right for the engine
+  // and wrong for a review page — a half-written board should still render
+  // enough of itself to be looked at. So the shape is checked here.
+  const pairs = set?.pairs;
+  if (!Array.isArray(pairs) || pairs.length !== 2) return '';
+  if (!pairs.every((pair) => Array.isArray(pair) && pair.length === 2)) return '';
+
+  const [a, b, c, d] = canonicalOrder(pairs);
+  return `${a} : ${b} :: ${c} : ${d}`;
+}
+
 /** The sixteen words in the order a player would meet them. */
 export function tilesFor(board) {
   if (!board?.sets) return [];
@@ -84,7 +105,7 @@ export function setsHtml(board, promotions = []) {
             tier.charAt(0).toUpperCase() + tier.slice(1),
           )}</div>`
         : '';
-      const analogy = canonicalOrder(set.pairs).join(' : ').replace(/^(\S+ : \S+) : /, '$1 :: ');
+      const analogy = analogyOf(set);
       return [
         `  <article class="solved-card" data-tier="${escape(tier)}" data-set-id="${escape(set.id)}">`,
         `    <span class="tier-badge">${escape(tier)}</span>${promotionHtml}`,
