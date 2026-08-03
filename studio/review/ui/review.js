@@ -58,7 +58,7 @@ async function renderList() {
       <h2>New run</h2>
       <form id="new-run" class="new-run">
         <label>Theme <input name="theme" placeholder="leave blank for surprise-me" /></label>
-        <label>Pairs <input name="count" type="number" value="8" min="4" max="16" /></label>
+        <label>Pairs <input name="count" type="number" value="14" min="12" max="16" /></label>
         <label class="inline"><input name="mock" type="checkbox" /> mock (no API spend)</label>
         <button class="pill primary" type="submit">Generate a board</button>
       </form>

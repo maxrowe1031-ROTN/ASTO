@@ -2,6 +2,44 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-03 — A run failed on arithmetic, and paid three times to find out
+
+Max's `music` run failed: *"board failed integrity after 2 rebuild(s): board builder
+returned no board: Only three graded candidate sets were provided."* Diagnosed from the
+run's own artifacts, which is what yesterday's work was for.
+
+- **The chain, and it is arithmetic.** The brief asked for **8 pairs** (the form's old
+  default). A set is two pairs, so 8 is *exactly* four sets with zero slack. The grouper
+  set aside 2 pairs as not belonging in any coherent set — leaving 6 pairs, so **3 sets**.
+  The builder needs 4. It refused rather than inventing one, which is D-1's guard working.
+  **8 pairs can only ever succeed if nothing is discarded, and grouping always discards.**
+- **The expensive part was not the failure but the retrying.** The run paid for the rater
+  and **three** board-builder attempts at `xhigh` — the highest effort in the pipeline —
+  all against an unchanged pool of three sets. $0.163 to rediscover something knowable the
+  moment stage 02 returned. This is the handbook's blind re-roll (§4.1): a retry that
+  changes nothing is resampling.
+- **Fixed, three ways, each at the earliest point it can be caught:**
+  1. **Supply.** The brief floor is now **12 pairs** and the default **14** (the count that
+     produced the first complete board), replacing a floor of 4 and a default of 8. A count
+     of 4 could never have built anything. Enforced server-side, not only in the form.
+  2. **Self-correction at stage 02.** The grouper must return at least four sets; fewer is
+     a validation failure whose feedback points it back at its own `setAside` list — *"if
+     two of them share a relationship, they are a set."* A retry here can genuinely fix the
+     problem, because the model still has the discarded pairs in front of it.
+  3. **No re-roll at the gate.** A pool smaller than four sets now fails the gate
+     **immediately**, marked `fatal`, without entering the rebuild loop. The message names
+     the pool rather than the builder — *"a rebuild cannot add candidates"* — so it points
+     at the stage that actually went wrong.
+- **Verified:** `npm test` → **690 pass, 0 fail** · the API rejects counts of 8 and 11 and
+  accepts 12, checked over HTTP against a restarted server · the form reads
+  `value=14 min=12` · a scripted three-set pool fails with the builder called **once**,
+  where the real run called it three times. Two mock runs created as probes were removed.
+- **Noticed again:** the running server held the old `api.js` until restarted — the same
+  stale-module trap that cost $0.23 on 2026-08-02. It is on the backlog; it keeps recurring
+  and is worth fixing properly.
+- **Next:** unchanged — the board from the 01-04 run is still waiting for Max's review and
+  his ruling on the tag vocabulary.
+
 ## 2026-08-03 — Promotion: the builder may label its hardest set Black
 
 Follow-on from the entry below, after Max read the Board Builder finding. Recorded in full

@@ -62,7 +62,7 @@ export function buildPrompt(input = {}, context) {
       'Cluster the candidate pairs into sets of exactly two pairs each.',
       'Both pairs in a set must share the same relationship in the same direction. If the second pair reverses the relation, they do not belong together.',
       'Give each set one relationship label that is true of both pairs, and a general shape family.',
-      'Aim to surface at least four sets so the Board Builder has a choice.',
+      'You must surface at least four sets — a board is exactly four, and the Board Builder cannot invent one you did not find. Five or six is better, so it has a choice.',
       'Any pair that does not belong in a coherent set goes in "setAside" with a reason. Never invent a theme to force a grouping.',
     ].join('\n'),
     data: asJsonBlock('Candidate pairs', pairs),
@@ -106,6 +106,26 @@ const fourDistinctWordsPerSet = (output) =>
     })
     .filter(Boolean);
 
+// The Board Builder needs four sets and cannot invent a fifth candidate, so a
+// short pool is fatal — but only downstream, where the only available retry is
+// a re-roll against the same pairs. Caught here instead, a retry is worth
+// making: the model still has its own setAside list to reconsider.
+const MIN_SETS = 4;
+
+const enoughSetsToBuildABoard = (output) =>
+  output.sets.length >= MIN_SETS
+    ? []
+    : [
+        {
+          path: 'sets',
+          message: `only ${output.sets.length} set(s); a board needs ${MIN_SETS}. Re-read the pairs you set aside — if two of them share a relationship, they are a set.`,
+        },
+      ];
+
 export function validateOutput(output) {
-  return validateAgainst(output, SCHEMA, [uniqueSetIds, fourDistinctWordsPerSet]);
+  return validateAgainst(output, SCHEMA, [
+    uniqueSetIds,
+    fourDistinctWordsPerSet,
+    enoughSetsToBuildABoard,
+  ]);
 }

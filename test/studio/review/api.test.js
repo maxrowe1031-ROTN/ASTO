@@ -205,6 +205,13 @@ test('POST /api/runs rejects a bad body without creating anything', async () => 
       { theme: 42 },
       { count: 1 },
       { count: 99 },
+      // A board is four sets of two pairs. Anything under the floor cannot
+      // produce one: the grouper always sets some pairs aside, and a run that
+      // was arithmetically doomed at the brief still pays for the rater and
+      // every board-builder attempt before anyone finds out (2026-08-03, a
+      // real run — 8 pairs, 2 set aside, 3 sets, $0.16).
+      { count: 8 },
+      { count: 11 },
       { slug: '../escape' },
       { surprise: true },
       'not an object',
@@ -437,6 +444,16 @@ test('no response ever carries a secret-shaped field', async () => {
       const text = JSON.stringify(body);
       assert.equal(/apiKey|api_key|ANTHROPIC/i.test(text), false, path);
     }
+  } finally {
+    cleanup();
+  }
+});
+
+test('POST /api/runs accepts a count with slack for pairs the grouper discards', async () => {
+  const { api, cleanup } = setup();
+  try {
+    const { status } = await api.handle({ method: 'POST', path: '/api/runs', body: { count: 12 } });
+    assert.equal(status, 202);
   } finally {
     cleanup();
   }
