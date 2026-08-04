@@ -296,6 +296,21 @@ order-ambiguous · too-obscure · too-easy · too-difficult · cross-set-associa
 repetitive-shape · weak-explanation · weak-label · valid-but-unfair · good-unchanged ·
 strong-reveal · difficulty-accurate.
 
+> **Amendment, 2026-08-04 — four tags added, and the tier picker built.**
+> The thirteen above proved to be leaking. Across 55 events on 10 boards Max kept
+> writing the same four judgements in prose because no chip carried them, and on one
+> board wrote five notes while ticking nothing at all. Added, append-only (a removed
+> tag would orphan the events already carrying it): **not-always-true** (his most
+> common reason for killing a set — B follows from A only sometimes), **no-unifying-theme**
+> (board-scoped only; a single set cannot lack a theme), **not-evocative** and its
+> positive twin **feels-like-asto**.
+>
+> The **"plays like" tier picker** was built on this spec's own `change-difficulty`
+> action with its `before`/`after` fields — anticipated here, never given a control,
+> so "this should be a red" could only be written in prose, which nothing can count.
+> Picking the set's current tier records nothing; `difficulty-accurate` already says
+> that.
+
 **Routing:** feedback targets the agents that can act on it (words → Pair Author;
 regrouping → Theme Grouper; difficulty → Rater/Test-Player; composition → Board
 Builder; plausible alternates → Adversarial Solver + Validator; copy → Style Guide;
@@ -365,10 +380,35 @@ POST /api/runs/:runId/decisions   POST /api/runs/:runId/edits
 POST /api/runs/:runId/approve     POST /api/runs/:runId/reject
 GET  /api/learning/proposals
 POST /api/learning/proposals/:proposalId/approve | /reject
+GET  /api/config              # added 2026-08-04 — see amendment 4
 ```
 Every mutating endpoint validates its body, restricts IDs, rejects path traversal,
 enforces request-size limits, acquires the run lock, and revalidates server-side.
 Browser validation is a convenience, not the authority.
+
+> **Amendment 3, 2026-08-04 — the candidate board is playable.**
+> A reviewer judging a board by reading it is judging something no player will ever
+> see. The review page now offers **Play this board**, which swaps the static preview
+> for a live game built from the game's **own** `GameController` and views
+> (`studio/review/ui/play.js`) — the exact composition `src/app.js` uses, minus the
+> title screen, tutorial and routing. This is the deliberate opposite of the duplicated
+> board markup below: nothing about how play *works* is copied, so the Studio cannot
+> drift from the game's rules. It is also the sharpest test the boundary law has had —
+> if the game were not genuinely composable from a validated puzzle with the app shell
+> absent, this page could not exist.
+>
+> The server's static mounts widened to serve `src/engine/` and `src/view/` whole and
+> `src/controller/game-controller.js`; `app.js`, `storage.js`, `share.js` and
+> `tutorial-script.js` remain unreachable. `EndView` is deliberately **not** reused — it
+> is a full-screen takeover that reveals every set with its explanation, which the
+> review page already shows below and which the reviewer has usually read. A one-line
+> banner reads `state.status` instead and decides nothing.
+>
+> **Amendment 4, 2026-08-04 — `GET /api/config`.** A long-running Studio holds the
+> pipeline config it started with, so a code fix never reaches it (cost ~$0.23 once).
+> The endpoint reports the config **the runner is holding** — never a re-read of the
+> file, which would always agree with the repo and so report a stale server as current
+> — and the run list shows it beside the button that spends money under it.
 
 **Visual relationship with ASTO (amendment 2):** the UI links the game's `tokens.css` /
 `base.css` / `components.css` — typefaces, paper palette, tile and card styles are

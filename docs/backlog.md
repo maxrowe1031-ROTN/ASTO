@@ -7,14 +7,23 @@
 - `current-attempt.json` at the run root is in the Studio spec's run-directory contract
   but has never been built (A1 or A3); `manifest.currentAttemptId` serves the purpose.
   Decide whether to build it or amend the spec.
+- Two of the seventeen quick tags have still never been reached for: `valid-but-unfair` and
+  `order-ambiguous`. `repetitive-shape` was the third until 2026-08-04, when Max used it on
+  the basketball board — so silence is weak evidence of a wrong tag. Leave both; revisit at
+  the ~30-board rubric compilation.
 - ~~Studio A3 surfaced that the `04a` gate can only reject on schema, not on board quality.~~
   **Resolved 2026-08-03:** the gate now enforces ≥4 distinct relationship labels — see
   design.md risk 1. Whether *further* quality checks belong there is still open.
-- ~~The Studio's per-stage `effort` levels are a first guess.~~ **Partly done 2026-08-03:**
-  02 and 04 re-aimed from measurement; every attempt now records its `effortProfile` so the
-  review corpus can judge quality against it. Remaining levers, unapplied: `01-pair-author`
-  (now 44% of a run, and 4.5× variance across three runs at identical settings),
-  `07-test-player`, and 05–08 concurrency.
+- ~~The Studio's per-stage `effort` levels are a first guess.~~ **Done 2026-08-04:** 01, 02
+  and 04 all re-aimed from measurement (profile `2026-08-03-lean-2`); a run is now ~$0.21–0.27
+  against a $0.542 baseline. Remaining levers, unapplied and low-value: `07-test-player`
+  (already medium, $0.02–0.05 a run) and 05–08 concurrency.
+- **The difficulty rater can abstain the pool below four, and nothing checks it.** Surfaced by
+  Max's `cars` run, 2026-08-04: the grouper returned enough sets, the rater abstained on two
+  for "relationship-grain inconsistencies", and the builder refused with three. Stage 02 has a
+  four-set floor; stage 03 does not, so the shortfall is only discovered at the 04a gate where
+  a retry can only re-roll. Same family as the two failures fixed on 2026-08-03/04 — a
+  constraint enforced at one stage and not the next one downstream.
 - Stages 05–08 are four independent evaluators of a finished board (verified: none reads
   another's output) run sequentially. Making them concurrent is free wall-clock — ~20s of
   ~250s — but puts concurrent writers through `run-store`'s lock. Deferred so it does not
@@ -25,9 +34,11 @@
   open, and D-1's reconsider-when trigger is where it gets revisited.
 - The Review Studio shows only "running" for the whole of a multi-minute stage. Per-stage
   progress would make a slow `xhigh` call distinguishable from a wedged one.
-- A long-running Review Studio server holds the pipeline config it started with, so a code
-  fix does not reach a running server. Cost ~$0.23 once. Consider surfacing the loaded
-  `pricingVersion`/config in the UI, or having the server exit on a config file change.
+- ~~A long-running Review Studio server holds the pipeline config it started with, so a code
+  fix does not reach a running server.~~ **Partly done 2026-08-04:** `GET /api/config` reports
+  the config the *runner holds* and the run list shows it, so a stale server is visible at a
+  glance. Still manual — the server does not exit on a config change, and a restart is still
+  the fix. Revisit only if the visible line proves insufficient.
 - `budget.js` cost caps only bite once every model in play is priced. Rates are estimates
   until A5 measures real spend; unpriced models are surfaced in `usage.unpricedModels`.
 - Studio run artifacts accumulate under the git-ignored `studio/runs/`; no pruning yet.

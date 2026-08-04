@@ -2,6 +2,126 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-04 — The feedback started feeding back
+
+The session began as one more effort lever and turned into the first time Max's reviews
+changed what the pipeline is told. Four units of work, each verified before the next started.
+
+### 1. The last effort lever, and three doors left open
+
+`01-pair-author` high → medium — named but deliberately unapplied last session, to keep the
+02/04 measurement readable. Measured on one real run: **$0.2097 total, 128s**, against a
+$0.542 pre-re-aim average. Stage 01 itself fell to **$0.0278**, below the cheapest of its four
+`high` observations ($0.0449 / $0.1084 / $0.1134 / $0.1824); thinking share **95% → 73%**.
+n=1 at a stage with 4.5× variance is not proof — *"below the minimum of four priors"* is the
+honest claim. Profile bumped to `2026-08-03-lean-2`, with a test that fails if the effort map
+changes without it.
+
+Three bugs found while doing it, all the same shape — **a rule enforced at one door and not
+the others**:
+
+- **The stale server.** `runner.js` imports `DEFAULT_CONFIG` at module load, so a Studio left
+  running spends at yesterday's settings (~$0.23 once). `GET /api/config` now reports the
+  config **the runner holds** — never a re-read of the file, which would always agree with the
+  repo and so report a stale server as current — shown in the run list beside the button that
+  spends money under it.
+- **`run.js` still defaulted to 8 pairs** — the exact count that killed the `music` run for
+  $0.16. The floor went into the Studio API on 2026-08-03 and never into the CLI. Bounds now
+  live in `pipeline-config.js`, where the constraint belongs, and both drivers import them.
+- **The variety index counted mock runs**, so a fixture replay of First Light was steering real
+  runs away from its shapes. `run-store` records `brief.mock` explicitly for this reason;
+  `variety.js` was not honouring it.
+
+### 2. Four tags, a tier picker, two rules, and a subject
+
+Max asked whether his feedback had taught the pipeline anything. It had not: the ten rules
+reaching every agent came from the GDD (six) and the retired crew (four), and the only reader
+of `feedback.jsonl` anywhere was the page that displays it back. Reading all 55 events:
+
+- **Two rules adopted** (`rule-011`, `rule-012`, source `feedback-batch-1`) — see **D-2** in
+  `design.md`, including Max's amendment to the second and the "short labels" rule the corpus
+  **refuted** (praised 8.8 words vs faulted 9.3; the longest he liked was longer than the
+  longest he faulted).
+- **Four tags**, append-only, 13 → 17: `not-always-true`, `no-unifying-theme` (board-scoped),
+  `not-evocative`, `feels-like-asto`. Each was something he had written in prose repeatedly
+  because no chip carried it — on the skiing board he wrote five notes and ticked nothing.
+- **The "plays like" tier picker**, built on the schema's own `change-difficulty` action with
+  `before`/`after` — anticipated when the corpus was designed, never given a control. "This
+  should be a red" had been sayable only in prose, which nothing can count. Picking the current
+  tier records nothing; `difficulty-accurate` already says that.
+- **Surprise-me picks a subject.** It steered relationship *shapes* and never a subject, so it
+  was structurally incapable of the themed boards Max consistently approves — both surprise-me
+  boards he judged were rejected for exactly that. It now draws from `studio/corpus/subjects.js`
+  and keeps its shape brief: subject **and** variety.
+
+### 3. The candidate board is playable
+
+`studio/review/ui/play.js` builds a live game from the game's **own** `GameController` and
+views — the composition `app.js` uses, minus title, tutorial and routing. The deliberate
+opposite of the duplicated board markup: nothing about how play *works* is copied, so the
+Studio cannot drift from the game's rules. It is also the boundary law read from the other
+direction, and is recorded as such under HR-2.
+
+### 4. Two content bugs, one fixed and one recorded
+
+The first real surprise-me run **failed** at the 04a gate ($0.2816): the grouper had returned
+five sets, two carrying a byte-identical label. Four distinct labels existed — a valid board
+was available — and the builder picked both duplicates on all three attempts while the gate
+could only re-roll against an unchanged pool. The same blind re-roll as the 2026-08-03
+pair-count failure, one field over. Fixed at both points: stage 02 now rejects duplicate
+labels (naming the offender and pointing at the earlier set), and the builder is told the
+gate's four-distinct-relationships rule, which it had never been told.
+
+Then Max caught the last one himself: **a surprise-me run was still named `-surprise-me`** on
+disk after drawing a subject. The slug now follows the subject in both drivers. My original
+reasoning — "the slug records how the run was started" — was wrong; the run id is the folder
+you open and the line you scan, and it should say what the board is about.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **741 pass, 0 fail** (697 at session start).
+  `node tools/check-board.js puzzles/*.json` → both shipped boards clean. Boundary greps clean:
+  `api.js` still free of fs/fetch/node:http, `run-store.js` + its own `atomic-write.js` the only
+  artifact writers, engine still pure. **Game untouched** — `git diff main..HEAD -- src/ styles/
+  index.html puzzles/` is empty.
+- **Claude-verifiable: PASSED.** Verified in the browser on a real mock board, not asserted:
+  played a full game in the review page — "So close!" charged a mistake and cleared the
+  selection, a bean filled roast brown, a correct solve revealed its tier card, a full win
+  reached the banner, Back to preview restored the static copy. Recorded a real judgement and
+  confirmed the two events that landed in `feedback.jsonl`, including
+  `change-difficulty {before:1, after:3}`, reading back as *"plays like red — was green"*. Board
+  block offers 17 tags, set blocks 16. Both new rules confirmed **verbatim in a live prompt**.
+  The duplicate-label fix verified by **replaying the failing run's own grouper output** through
+  the new validator.
+- **Max acceptance: OPEN, as always.** Board quality is his. The `forests` board
+  (`Nature's Blueprints`, $0.2710, 16/16 integrity) is with him — and he has already requested a
+  revision on it. **Flagged honestly:** three of its four sets are structure-related, which may
+  read as `repetitive-shape`.
+- **Locked decisions intact:** schema v1.0 untouched, zero dependencies held, engine-first
+  intact. New decision **D-2** recorded; spec amendments 3 and 4 added.
+
+### The loop, by the numbers
+
+**78 feedback events across 14 boards**, up from 25/5 at the last wrapup — Max is starting and
+judging runs unprompted between sessions, which is the behaviour the loop was built to earn.
+
+- **Next:**
+  1. **The rater can abstain the pool below four, and nothing checks it.** Max's `cars` run
+     died this way: grouper returned enough, rater abstained on two, builder refused with
+     three. Stage 02 has a four-set floor; stage 03 does not. Same family as the two failures
+     already fixed — fix it at stage 03, where a retry can still act.
+  2. **Keep the loop to ~30 boards, then compile `rubric.md`.** 14 judged. D-2 pulled two rules
+     forward; the compilation milestone is unchanged, and those two get re-derived from the
+     full corpus rather than grandfathered.
+  3. **Watch whether the subject makes boards narrower.** A subject plus three required shapes
+     is a tighter brief than either alone — the `forests` board's three structure-ish sets may
+     be the first sign. One board is not evidence; the next few are.
+  4. Carried: `README.md` never mentions `npm run studio:review` · the Studio server prints its
+     URL but not the config it loaded (the browser now does) · 05–08 concurrency (~20s, free) ·
+     First Light `explanation` pass · GDD drift to propose upstream · a mock run marked
+     `approved` still sits in the corpus (`2026-08-03T02-44-09.138Z-surprise-me`) — flagged for
+     Max, not deleted, since it is his review record.
+
 ## 2026-08-03 — Session wrapup: the loop is running, and it costs a third less
 
 *Dates: entries below are UTC, matching the run directory ids. Locally this was the
