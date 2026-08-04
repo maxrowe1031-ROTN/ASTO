@@ -96,6 +96,13 @@ export function buildPrompt(input = {}, context) {
       'Record every set you labelled harder than it was graded in "promotions". A promotion the reviewer cannot see is a judgement nobody can check.',
       'Never invent a set that is not among the graded candidates. Choose and relabel; do not author.',
       'All sixteen words must be distinct. No word may appear in two sets.',
+      // The gate has required four distinct labels since 2026-08-03, but the
+      // builder was never told. On 2026-08-04 it was handed five candidates
+      // with four distinct labels — a valid board was available — and picked
+      // the duplicated pair three times running, dying at the gate. The
+      // grouper now refuses to produce duplicates at all; this line means that
+      // if one ever reaches here, the builder knows to choose around it.
+      'Your four sets must carry four different relationships. If two candidates share a relationship label, at most one of them can be on the board — a checker enforces this immediately after you.',
       'Engineer deliberate false trails: words that look like they belong to another set on first read, and pull the player off the true grouping. Record each one you intended.',
       // Was: "prove no two sets could be regrouped into another valid
       // analogy". That is a combinatorial obligation over sixteen words, and
