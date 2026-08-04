@@ -200,7 +200,19 @@ export function createApi({
       return bad(`count must be an integer between ${MIN_PAIR_COUNT} and ${MAX_PAIR_COUNT}`);
     }
 
-    const slug = body.slug ?? slugify(theme) ?? 'surprise-me';
+    // Surprise-me also picks a SUBJECT, which shape variety never was. Both
+    // surprise-me boards Max has judged were rejected for having no unifying
+    // theme, while every themed board was approved — so the run gets a subject
+    // AND its shape brief.
+    const runTheme = theme ?? chooseSubject();
+
+    // The slug follows the SUBJECT, not the door the run came in through.
+    // It was 'surprise-me' for a few hours on 2026-08-04 and Max caught it:
+    // the run id is the folder on disk and the thing you scan in the run list,
+    // and "surprise-me" tells you nothing once a subject has been drawn. What
+    // still marks a run as surprise-me is the shape brief on its manifest,
+    // which a themed run never carries.
+    const slug = body.slug ?? slugify(runTheme) ?? 'surprise-me';
     if (!SLUG.test(slug)) return bad('slug must be lowercase letters, digits and hyphens');
 
     // Surprise-me runs get a positive variety brief: which underused shapes to
@@ -210,11 +222,6 @@ export function createApi({
     // revision must not silently switch to the real API, and a fixture-derived
     // board must stay identifiable so it never counts as editorial signal.
     const brief = { ...(theme === null ? buildBrief({ count }) : { count }), mock };
-    // Surprise-me also picks a SUBJECT, which shape variety never was. Both
-    // surprise-me boards Max has judged were rejected for having no unifying
-    // theme, while every themed board was approved — so the run gets a subject
-    // AND its shape brief, and only the slug stays 'surprise-me'.
-    const runTheme = theme ?? chooseSubject();
     const { runId } = store.createRun({ slug, theme: runTheme, brief });
     // Fire and forget: a real run takes minutes, so the answer is 202 and the
     // UI follows manifest.status, which is already the state machine.

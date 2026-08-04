@@ -69,7 +69,10 @@ export function parseArgv(argv) {
 
   return {
     theme,
-    slug: values.slug ?? slugify(theme) ?? 'surprise-me',
+    // null for a surprise-me run with no explicit --slug: the slug follows the
+    // subject, and the subject is not drawn until launch. parseArgv stays pure
+    // — the same argv must not mean a different run each time it is parsed.
+    slug: values.slug ?? slugify(theme),
     runId: values.run ?? null,
     reviseFrom,
     notes: values.notes ?? '',
@@ -106,8 +109,11 @@ async function main(argv) {
         : options.brief;
     // A surprise-me run picks a subject too — the Studio does the same, and a
     // run started here must be the same kind of run as one started there.
+    // The slug follows the subject so the run id names what the board is
+    // about; only a run with no subject at all could fall back.
     const theme = options.theme ?? pickSubject();
-    ({ runId } = store.createRun({ slug: options.slug, theme, brief }));
+    const slug = options.slug ?? slugify(theme) ?? 'surprise-me';
+    ({ runId } = store.createRun({ slug, theme, brief }));
     console.log(`run ${runId}`);
     if (options.theme === null) console.log(`surprise-me subject: ${theme}`);
     if (brief.relationshipShapes?.length) {

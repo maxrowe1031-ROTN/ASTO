@@ -226,14 +226,16 @@ test('POST /api/runs creates the run and starts it, answering 202 immediately', 
 // boards Max judged were rejected for the same reason — "no overall theme here.
 // goes from money to animals to geology" — while every themed board was
 // approved. Shape variety was never the missing ingredient.
-test('a themeless run picks a subject, and still slugs as surprise-me', async () => {
+test('a themeless run picks a subject, and the run id is named after it', async () => {
   const { store, api, cleanup } = setup({}, { chooseSubject: () => 'clocks and time' });
   try {
     const { status, body } = await api.handle({ method: 'POST', path: '/api/runs', body: { mock: true } });
     assert.equal(status, 202);
-    // The slug stays surprise-me: it is how the run was STARTED, and the run
-    // list still reads as a surprise-me run in the id.
-    assert.match(body.runId, /-surprise-me$/);
+    // The id follows the SUBJECT, not the door the run came in through. It
+    // said 'surprise-me' for a few hours on 2026-08-04 and Max caught it: the
+    // run id is the folder on disk and the line you scan in the run list, and
+    // "surprise-me" says nothing once a subject has been drawn.
+    assert.match(body.runId, /-clocks-and-time$/);
     const manifest = store.readManifest(body.runId);
     assert.equal(manifest.theme, 'clocks and time');
     // ...and it keeps the shape steering it already had. Subject AND variety.
@@ -268,12 +270,36 @@ test('every subject in the list is usable as a theme', async () => {
   }
 });
 
-test('a themeless run is surprise-me, and still gets a slug', async () => {
-  const { api, cleanup } = setup();
+test('a themeless run still gets a filesystem-safe slug, whatever was drawn', async () => {
+  // Every subject in the list has to survive slugification into a run id the
+  // store will accept — a subject with a slash or a quote in it would create a
+  // run nobody can open.
+  const { SUBJECTS } = await import('../../../studio/corpus/subjects.js');
+  for (const subject of SUBJECTS) {
+    const { api, cleanup } = setup({}, { chooseSubject: () => subject });
+    try {
+      const { status, body } = await api.handle({
+        method: 'POST',
+        path: '/api/runs',
+        body: { mock: true },
+      });
+      assert.equal(status, 202, subject);
+      assert.match(body.runId, /^\d{4}-\d{2}-\d{2}T[\d-]+\.\d{3}Z-[a-z0-9][a-z0-9-]*$/, subject);
+    } finally {
+      cleanup();
+    }
+  }
+});
+
+test('an explicit slug still wins over the drawn subject', async () => {
+  const { api, cleanup } = setup({}, { chooseSubject: () => 'clocks and time' });
   try {
-    const { status, body } = await api.handle({ method: 'POST', path: '/api/runs', body: { mock: true } });
-    assert.equal(status, 202);
-    assert.match(body.runId, /-surprise-me$/);
+    const { body } = await api.handle({
+      method: 'POST',
+      path: '/api/runs',
+      body: { slug: 'my-own-name', mock: true },
+    });
+    assert.match(body.runId, /-my-own-name$/);
   } finally {
     cleanup();
   }
