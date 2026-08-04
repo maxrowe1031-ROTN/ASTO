@@ -66,11 +66,35 @@ test('serves the pure engine modules the board renderer needs', async () => {
   });
 });
 
+// Widened 2026-08-04 so a candidate board can be played in the review page.
+// The Studio drives the game's OWN views and controller rather than
+// re-implementing play, so those modules have to be reachable.
+test('serves the game modules the review page plays a board with', async () => {
+  await withServer(async ({ url }) => {
+    for (const path of [
+      '/src/engine/engine.js', // the whole engine is pure; the allowlist was noise
+      '/src/view/board-view.js',
+      '/src/view/frame-view.js',
+      '/src/view/motion.js',
+      '/src/controller/game-controller.js',
+    ]) {
+      const response = await fetch(`${url}${path}`);
+      assert.equal(response.status, 200, path);
+      assert.match(response.headers.get('content-type'), /javascript/);
+    }
+  });
+});
+
 test('does not serve the rest of the repo — the mount list is an allowlist', async () => {
   await withServer(async ({ url }) => {
     for (const path of [
+      // The app shell owns the game's routing, storage and first-run logic.
+      // The Studio composes its own; this must stay unreachable.
       '/src/app.js',
-      '/src/engine/engine.js',
+      // Only game-controller.js is a legitimate entry point under controller/.
+      '/src/controller/tutorial-script.js',
+      '/src/storage.js',
+      '/src/share.js',
       '/package.json',
       '/studio/runs/',
       '/.env',

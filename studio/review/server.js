@@ -50,12 +50,24 @@ const MIME = {
 // ordinary relative imports ('../../../src/engine/arrangements.js') that
 // resolve identically under node and in the browser, so board-html.js can be
 // unit-tested without an import map or a build step.
+// Widened 2026-08-04 so a candidate board can be PLAYED in the review page.
+// The Studio composes the game's own views and controller rather than
+// re-implementing play — which is both the boundary law and the proof of it:
+// if the game's modules can be driven from another page with nothing but a
+// validated puzzle, the seams really are clean.
+//
+// The engine allowlist is gone because it was protecting nothing: every module
+// under src/engine is pure by the boundary law, and enumerating three of them
+// only meant the list went stale the moment the Studio needed a fourth. What
+// stays narrow is the controller, where exactly one module is a legitimate
+// entry point, and app.js, which owns the game's own routing and storage and
+// is deliberately not reachable.
 const MOUNTS = [
   ['/studio/review/ui/', UI_DIR],
   ['/styles/', join(REPO, 'styles')],
-  // Only the pure modules the board renderer imports. The engine proper, the
-  // views and app.js are not part of the Studio and are not served.
-  ['/src/engine/', join(REPO, 'src', 'engine'), new Set(['arrangements.js', 'tiers.js', 'rng.js'])],
+  ['/src/engine/', join(REPO, 'src', 'engine')],
+  ['/src/view/', join(REPO, 'src', 'view')],
+  ['/src/controller/', join(REPO, 'src', 'controller'), new Set(['game-controller.js'])],
 ];
 
 const send = (res, status, body, type = 'text/plain; charset=utf-8') => {

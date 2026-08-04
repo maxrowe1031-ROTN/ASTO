@@ -270,6 +270,43 @@ trained.
 corpus shows promoted Black sets are consistently rated too easy — at which point the fix
 belongs upstream, in what the Pair Author is asked for, not in the builder's relabelling.
 
+### D-2 — The first rules compiled from Max's own reviews, adopted at 10 boards (2026-08-04)
+
+**The plan of record** was to judge ~30 boards, then compile `rubric.md` from the corpus in
+one pass. The reasoning still holds: rules written from concrete judgements beat rules
+articulated in the abstract.
+
+**What changed:** at 10 boards / 55 events, Max asked what his feedback had actually taught
+the pipeline, and the honest answer was **nothing** — the ten rules reaching every agent came
+from the GDD (six) and the retired prototype crew (four), and the only reader of
+`feedback.jsonl` anywhere in the Studio was the page that displays it back. Reading the corpus
+end to end, two patterns were already past arguing:
+
+- **7 events** — B must follow from A *necessarily*, not occasionally. Max's most common
+  reason for killing a set, and twice he wrote the corrected pair himself.
+- **8 events** — word familiarity drives difficulty. The green slot kept landing too hard
+  because the rater grades relationship trickiness alone.
+
+**Max's decision:** adopt both now, **amending the second in his own words** — familiarity
+*affects* difficulty; the relationship and the words **together** set it. Familiarity does not
+replace the relationship as the driver, which the first drafting had implied.
+
+**What this does and does not change.** The ~30-board compilation milestone is **unchanged**;
+this is a partial pull-forward of two rules, not a replacement for it. `rules.json` gains
+source `feedback-batch-1`, and both rules carry `provenance.runs` naming the runs that
+justified them — a rule whose evidence is not recorded cannot be re-examined when it turns out
+to be wrong.
+
+**Also decided against, for the record:** a "keep relationship labels short" rule. It felt
+right — Max had called one label "far too long" — but the corpus refuted it. Sets he praised
+averaged 8.8 words, sets he faulted 9.3, and the longest label he *liked* (16 words) was
+longer than the longest he faulted (12). The label he objected to was convoluted, not long.
+
+**Reconsider-when:** the corpus reaches ~30 boards and `rubric.md` is compiled — at which
+point these two are re-derived from the full set rather than grandfathered, **or** boards
+built under them start drawing the *opposite* complaint (analogies too literal, greens too
+trivial), which would mean a rule overshot.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
@@ -322,16 +359,19 @@ the Core's seams (`run-store.js` as the only writer of run artifacts, pure agent
 injected transport) were designed for it from the first file — which is what the house
 rule actually asks for.
 
-**Interim verification surface:** `npm test` (697 tests as of 2026-08-03, including the
+**Interim verification surface:** `npm test` (741 tests as of 2026-08-04, including the
 storage, agent, pipeline and review suites) · `node tools/check-board.js` for content · the
 game itself in the preview browser · and, since A3, **`node studio/run.js --mock`** — a thin
 CLI adapter over the exported `runPipeline`, which starts, resumes and revises a run and
 prints where its artifacts landed.
 
-**Status update (2026-08-03):** the pipeline now produces boards end to end against the real
-API, and the rubric loop is running — five real boards judged, 25 recorded feedback events,
-eleven of the thirteen quick-tags exercised. What HR-2 still defers is unchanged: approval
-landing into `puzzles/` (nothing in the Studio writes there yet) and hand-editing (B2).
+**Status update (2026-08-04):** the pipeline produces boards end to end against the real API,
+and the rubric loop is running hard — **14 boards judged, 78 recorded feedback events**, with
+Max starting and reviewing runs unprompted between sessions. The tag vocabulary has been
+extended from use rather than guessed at (spec amendment, 2026-08-04), and the candidate board
+is now **playable** in the review page from the game's own controller and views. What HR-2
+still defers is unchanged: approval landing into `puzzles/` (nothing in the Studio writes
+there yet) and hand-editing (B2).
 
 **Why the CLI exists (A3, 2026-08-02):** A3 is exactly the growth the reconsider-when
 trigger names — the Core stopped being readable-only. `run.js` was added a phase earlier
@@ -343,6 +383,13 @@ surface; the CLI remains for scripted and headless runs.
 see what the pipeline is doing and change things through the project's real public seams
 (`runPipeline`, `requestRevision`, `run-store`), which is also what proves those seams
 are clean. What remains deferred is bounded and named above.
+
+*Sharpened 2026-08-04:* the playable board is the strongest evidence yet that the seams
+are real. `studio/review/ui/play.js` builds a live game from `GameController` and the
+game's views with the app shell absent — the "game runs with the view off" invariant read
+from the other direction. Had the game not been genuinely composable from a validated
+puzzle, that page could not have been written without dragging `app.js`, storage and
+routing into the Studio.
 
 **Reconsider-when:** approval-into-`puzzles/` or hand-editing is still missing when Phase
 5b needs the Studio to author content, or the Core grows a capability neither the CLI nor

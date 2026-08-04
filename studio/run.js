@@ -24,6 +24,8 @@ import { isValidStageId } from './stage-registry.js';
 import { buildRelationshipIndex, buildVarietyBrief } from './variety.js';
 import { loadRules } from './corpus/rules.js';
 import { loadEnv } from './env.js';
+import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from './pipeline-config.js';
+import { pickSubject } from './corpus/subjects.js';
 
 const RUNS_DIR = fileURLToPath(new URL('./runs/', import.meta.url));
 const FIXTURES_DIR = fileURLToPath(new URL('./fixtures/responses/', import.meta.url));
@@ -53,15 +55,30 @@ export function parseArgv(argv) {
     throw new Error(`--revise-from: unknown stage id "${reviseFrom}"`);
   }
 
+  // The same floor the Review Studio enforces, from the same constants. This
+  // defaulted to 8 for a day after the Studio was fixed — a count that cannot
+  // build a board, still reachable from the CLI. Rejecting here costs nothing;
+  // finding out at stage 04 cost $0.16.
+  const count = Number(values.count ?? DEFAULT_PAIR_COUNT);
+  if (!Number.isInteger(count) || count < MIN_PAIR_COUNT || count > MAX_PAIR_COUNT) {
+    throw new Error(
+      `--count must be an integer between ${MIN_PAIR_COUNT} and ${MAX_PAIR_COUNT}: ` +
+        `a board needs four sets of two pairs and the grouper always sets some aside.`,
+    );
+  }
+
   return {
     theme,
-    slug: values.slug ?? slugify(theme) ?? 'surprise-me',
+    // null for a surprise-me run with no explicit --slug: the slug follows the
+    // subject, and the subject is not drawn until launch. parseArgv stays pure
+    // — the same argv must not mean a different run each time it is parsed.
+    slug: values.slug ?? slugify(theme),
     runId: values.run ?? null,
     reviseFrom,
     notes: values.notes ?? '',
     mock: values.mock,
     fresh: values.fresh,
-    brief: { count: Number(values.count ?? 8) },
+    brief: { count },
   };
 }
 
@@ -90,8 +107,15 @@ async function main(argv) {
       options.theme === null
         ? buildVarietyBrief({ index: buildRelationshipIndex({ store }), count: options.brief.count })
         : options.brief;
-    ({ runId } = store.createRun({ slug: options.slug, theme: options.theme, brief }));
+    // A surprise-me run picks a subject too — the Studio does the same, and a
+    // run started here must be the same kind of run as one started there.
+    // The slug follows the subject so the run id names what the board is
+    // about; only a run with no subject at all could fall back.
+    const theme = options.theme ?? pickSubject();
+    const slug = options.slug ?? slugify(theme) ?? 'surprise-me';
+    ({ runId } = store.createRun({ slug, theme, brief }));
     console.log(`run ${runId}`);
+    if (options.theme === null) console.log(`surprise-me subject: ${theme}`);
     if (brief.relationshipShapes?.length) {
       console.log(`surprise-me: reaching for ${brief.relationshipShapes.join(', ')}`);
     }

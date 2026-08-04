@@ -124,6 +124,23 @@ export function createRunner({
       return state.get(runId) ?? null;
     },
 
+    /**
+     * The settings THIS runner is holding — deliberately the closed-over
+     * `config`, never a fresh read of pipeline-config.js.
+     *
+     * A server started before a config change keeps the old map: the import
+     * happened once, at module load. Re-reading the file here would always
+     * agree with the repo and would report a stale server as current, which is
+     * the one thing this must not do. Cost of learning that the slow way:
+     * ~$0.23 and a run whose recorded settings were not the settings it ran at.
+     */
+    configOf() {
+      return {
+        effortProfile: config.effortProfile ?? null,
+        pricingVersion: config.pricingVersion ?? null,
+      };
+    },
+
     /** The in-flight promise, for tests and for draining on shutdown. */
     settled(runId) {
       return inFlight.get(runId) ?? Promise.resolve(state.get(runId) ?? null);

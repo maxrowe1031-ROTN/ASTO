@@ -104,6 +104,15 @@ test('the prompt distinguishes a false trail from a second valid solution', () =
   assert.match(prompt, /never be an actual second valid solution/i);
 });
 
+test('the prompt states the four-distinct-relationships rule the gate enforces', () => {
+  // The 04a gate has required four distinct labels since 2026-08-03 and the
+  // builder was never told. On 2026-08-04 it was handed five candidates with
+  // four distinct labels — a valid board was available — and chose the
+  // duplicated pair on all three attempts before the run died.
+  const prompt = boardBuilder.buildPrompt({ gradedSets: [] }, {});
+  assert.match(prompt, /four different relationships/i);
+});
+
 // --- promotion (decided with Max, 2026-08-03) -----------------------------
 //
 // The difficulty rater has never once returned a 4 — ten graded sets across

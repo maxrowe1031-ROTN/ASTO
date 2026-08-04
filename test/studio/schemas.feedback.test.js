@@ -54,9 +54,36 @@ test('the spec\'s ten in-scope actions are all accepted', () => {
   }
 });
 
-test('the spec\'s thirteen quick tags are all accepted', () => {
-  assert.equal(QUICK_TAGS.length, 13);
+test('the spec\'s thirteen quick tags, plus four from the corpus, are all accepted', () => {
+  assert.equal(QUICK_TAGS.length, 17);
   assert.equal(validateFeedbackEvent(good({ tags: [...QUICK_TAGS] })).ok, true);
+});
+
+test('the spec\'s original thirteen are all still there — the vocabulary only grows', () => {
+  // Append-only: a removed tag would orphan every event already carrying it,
+  // and the corpus is a record of what Max thought at the time.
+  for (const tag of [
+    'relationship-does-not-click', 'order-ambiguous', 'too-obscure', 'too-easy',
+    'too-difficult', 'cross-set-association', 'repetitive-shape', 'weak-explanation',
+    'weak-label', 'valid-but-unfair', 'good-unchanged', 'strong-reveal', 'difficulty-accurate',
+  ]) {
+    assert.ok(QUICK_TAGS.includes(tag), `the spec's ${tag} went missing`);
+  }
+});
+
+test('a change-difficulty event from the tier picker validates as written', () => {
+  // The exact shape studio/review/ui/feedback.js emits. The action and the
+  // before/after fields predate the control by two days; this is the test that
+  // says the control and the schema agree.
+  const event = good({
+    action: 'change-difficulty',
+    scope: { type: 'set', setId: 'set-growth' },
+    tags: [],
+    before: { difficulty: 1 },
+    after: { difficulty: 3 },
+  });
+  delete event.note;
+  assert.equal(validateFeedbackEvent(event).ok, true);
 });
 
 test('an unknown action is rejected — the vocabulary is closed', () => {

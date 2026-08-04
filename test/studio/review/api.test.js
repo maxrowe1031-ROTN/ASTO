@@ -10,12 +10,21 @@ import assert from 'node:assert/strict';
 import { createApi } from '../../../studio/review/api.js';
 import { makeStore } from '../pipeline/helpers.js';
 
+// Deliberately not the real profile strings: the route must report whatever
+// the runner holds, and a test that used the live values would still pass if
+// api.js reached for pipeline-config.js itself — which is the bug this whole
+// endpoint exists to make impossible.
+const STUB_CONFIG = { effortProfile: 'stub-profile', pricingVersion: 'stub-pricing' };
+
 // A stub runner: records what it was asked to do, runs nothing.
-function stubRunner({ reviseThrows = null } = {}) {
+function stubRunner({ reviseThrows = null, config = STUB_CONFIG } = {}) {
   const calls = { start: [], revise: [] };
   return {
     calls,
     state: new Map(),
+    configOf() {
+      return config;
+    },
     start(runId, options = {}) {
       calls.start.push({ runId, ...options });
     },
@@ -59,10 +68,10 @@ function seedReviewable(store, { slug = 'lantern', theme = 'Lantern light' } = {
   return { runId, attemptId };
 }
 
-const setup = (runnerOptions) => {
+const setup = (runnerOptions, apiOptions = {}) => {
   const { store, cleanup } = makeStore();
   const runner = stubRunner(runnerOptions);
-  return { store, runner, api: createApi({ store, runner }), cleanup };
+  return { store, runner, api: createApi({ store, runner, ...apiOptions }), cleanup };
 };
 
 const feedbackEvent = (overrides = {}) => ({
@@ -77,6 +86,32 @@ const feedbackEvent = (overrides = {}) => ({
 });
 
 // --- reads ---
+
+test('GET /api/config reports the settings the runner is holding', async () => {
+  const { api, cleanup } = setup({
+    config: { effortProfile: 'held-by-this-server', pricingVersion: '1999-01-01' },
+  });
+  try {
+    const { status, body } = await api.handle({ method: 'GET', path: '/api/config' });
+    assert.equal(status, 200);
+    // The runner's values, not pipeline-config.js's — a server that started
+    // before a config change must keep reporting what it will actually run at.
+    assert.deepEqual(body, { effortProfile: 'held-by-this-server', pricingVersion: '1999-01-01' });
+  } finally {
+    cleanup();
+  }
+});
+
+test('POST /api/config is not a route — settings are read-only here', async () => {
+  const { api, cleanup } = setup();
+  try {
+    const { status, body } = await api.handle({ method: 'POST', path: '/api/config', body: {} });
+    assert.equal(status, 405);
+    assert.match(body.error, /not allowed/);
+  } finally {
+    cleanup();
+  }
+});
 
 test('GET /api/runs summarises every run, newest first', async () => {
   const { store, api, cleanup } = setup();
@@ -187,12 +222,84 @@ test('POST /api/runs creates the run and starts it, answering 202 immediately', 
   }
 });
 
-test('a themeless run is surprise-me, and still gets a slug', async () => {
-  const { api, cleanup } = setup();
+// Surprise-me picks a SUBJECT as well as a shape brief. Both surprise-me
+// boards Max judged were rejected for the same reason — "no overall theme here.
+// goes from money to animals to geology" — while every themed board was
+// approved. Shape variety was never the missing ingredient.
+test('a themeless run picks a subject, and the run id is named after it', async () => {
+  const { store, api, cleanup } = setup({}, { chooseSubject: () => 'clocks and time' });
   try {
     const { status, body } = await api.handle({ method: 'POST', path: '/api/runs', body: { mock: true } });
     assert.equal(status, 202);
-    assert.match(body.runId, /-surprise-me$/);
+    // The id follows the SUBJECT, not the door the run came in through. It
+    // said 'surprise-me' for a few hours on 2026-08-04 and Max caught it: the
+    // run id is the folder on disk and the line you scan in the run list, and
+    // "surprise-me" says nothing once a subject has been drawn.
+    assert.match(body.runId, /-clocks-and-time$/);
+    const manifest = store.readManifest(body.runId);
+    assert.equal(manifest.theme, 'clocks and time');
+    // ...and it keeps the shape steering it already had. Subject AND variety.
+    assert.ok(Array.isArray(manifest.brief.relationshipShapes));
+    assert.ok(manifest.brief.relationshipShapes.length > 0);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a run with an explicit theme is left alone — no subject is picked over it', async () => {
+  const { store, api, cleanup } = setup({}, { chooseSubject: () => 'should not be used' });
+  try {
+    const { body } = await api.handle({
+      method: 'POST',
+      path: '/api/runs',
+      body: { theme: 'Lantern light', mock: true },
+    });
+    assert.equal(store.readManifest(body.runId).theme, 'Lantern light');
+  } finally {
+    cleanup();
+  }
+});
+
+test('every subject in the list is usable as a theme', async () => {
+  const { SUBJECTS } = await import('../../../studio/corpus/subjects.js');
+  assert.ok(SUBJECTS.length >= 20, 'too few subjects to feel like a surprise');
+  assert.equal(new Set(SUBJECTS).size, SUBJECTS.length, 'duplicate subject');
+  for (const subject of SUBJECTS) {
+    assert.equal(typeof subject, 'string');
+    assert.ok(subject.trim().length > 0);
+  }
+});
+
+test('a themeless run still gets a filesystem-safe slug, whatever was drawn', async () => {
+  // Every subject in the list has to survive slugification into a run id the
+  // store will accept — a subject with a slash or a quote in it would create a
+  // run nobody can open.
+  const { SUBJECTS } = await import('../../../studio/corpus/subjects.js');
+  for (const subject of SUBJECTS) {
+    const { api, cleanup } = setup({}, { chooseSubject: () => subject });
+    try {
+      const { status, body } = await api.handle({
+        method: 'POST',
+        path: '/api/runs',
+        body: { mock: true },
+      });
+      assert.equal(status, 202, subject);
+      assert.match(body.runId, /^\d{4}-\d{2}-\d{2}T[\d-]+\.\d{3}Z-[a-z0-9][a-z0-9-]*$/, subject);
+    } finally {
+      cleanup();
+    }
+  }
+});
+
+test('an explicit slug still wins over the drawn subject', async () => {
+  const { api, cleanup } = setup({}, { chooseSubject: () => 'clocks and time' });
+  try {
+    const { body } = await api.handle({
+      method: 'POST',
+      path: '/api/runs',
+      body: { slug: 'my-own-name', mock: true },
+    });
+    assert.match(body.runId, /-my-own-name$/);
   } finally {
     cleanup();
   }

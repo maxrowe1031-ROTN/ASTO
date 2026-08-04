@@ -62,6 +62,7 @@ export function buildPrompt(input = {}, context) {
       'Cluster the candidate pairs into sets of exactly two pairs each.',
       'Both pairs in a set must share the same relationship in the same direction. If the second pair reverses the relation, they do not belong together.',
       'Give each set one relationship label that is true of both pairs, and a general shape family.',
+      'Every set you return must carry a DIFFERENT relationship. Two sets with the same label are the same relationship found twice — they leave the Board Builder with fewer real choices than it needs.',
       'You must surface at least four sets — a board is exactly four, and the Board Builder cannot invent one you did not find. Five or six is better, so it has a choice.',
       'Any pair that does not belong in a coherent set goes in "setAside" with a reason. Never invent a theme to force a grouping.',
     ].join('\n'),
@@ -122,10 +123,48 @@ const enoughSetsToBuildABoard = (output) =>
         },
       ];
 
+// Two candidate sets carrying the same relationship label are the same
+// relationship found twice, not two choices. They eat a slot in the pool the
+// Board Builder needs, and the 04a gate requires four DISTINCT labels across
+// the finished board — so a duplicate here can only be discovered three stages
+// later, where the retry is a re-roll against an unchanged pool.
+//
+// That is exactly what happened on 2026-08-04: an astronomy run returned five
+// sets, two of them labelled "a bounded region of space contains a population
+// of smaller bodies" word for word. Four distinct labels existed, so a valid
+// board was available — the builder picked both duplicates three times running
+// and the run died at the gate having spent $0.28.
+//
+// Compared byte-for-byte after normalising case and whitespace. Two labels
+// that merely MEAN the same thing are a judgement call, and this is not the
+// place to make it — the gate's own check is textual too, so anything stricter
+// here would reject boards the gate would have passed.
+const distinctRelationshipLabels = (output) => {
+  const seen = new Map();
+  return output.sets
+    .map((set, i) => {
+      const key = String(set.relationshipLabel).trim().toLowerCase().replace(/\s+/g, ' ');
+      const first = seen.get(key);
+      if (first === undefined) {
+        seen.set(key, i);
+        return null;
+      }
+      return {
+        path: `sets[${i}].relationshipLabel`,
+        message:
+          `sets[${first}] already uses this relationship word for word: "${set.relationshipLabel}". ` +
+          'Every candidate set must offer a different relationship. Either find a distinct ' +
+          'relationship these two pairs share, or set one of them aside.',
+      };
+    })
+    .filter(Boolean);
+};
+
 export function validateOutput(output) {
   return validateAgainst(output, SCHEMA, [
     uniqueSetIds,
     fourDistinctWordsPerSet,
     enoughSetsToBuildABoard,
+    distinctRelationshipLabels,
   ]);
 }

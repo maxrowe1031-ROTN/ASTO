@@ -42,7 +42,9 @@ const file = (rules) => ({ schemaVersion: '1.0', rules });
 // Every rule in the shipped corpus traces to a source Max adopted knowingly.
 // The list is closed on purpose: an unattributed rule in here would be an
 // editorial standard nobody agreed to, reaching every agent's prompt.
-const ADOPTED_SOURCES = new Set(['gdd-10.2', 'prototype-crew']);
+// 'feedback-batch-1' added 2026-08-04: the first rules compiled from Max's own
+// review corpus rather than inherited from the GDD or the retired crew.
+const ADOPTED_SOURCES = new Set(['gdd-10.2', 'prototype-crew', 'feedback-batch-1']);
 
 test('the shipped rules file is valid and every rule names an adopted source', () => {
   const rules = loadRules();
@@ -74,6 +76,32 @@ test('the prototype crew\'s four hard-won content rules are carried forward', ()
     ['no unintended alternate pairings', /alternate|second/],
   ]) {
     assert.ok(texts.some((text) => pattern.test(text)), `${what} rule is missing`);
+  }
+});
+
+test('the first two rules compiled from Max\'s own reviews are adopted', () => {
+  // Pulled forward from the planned ~30-board rubric compilation because the
+  // evidence was already overwhelming at 10 boards / 55 events: "B must follow
+  // necessarily" was his most common reason for killing a set (7 notes), and
+  // familiarity-drives-difficulty his most repeated theme (8 notes).
+  const rules = loadRules().filter((r) => r.source === 'feedback-batch-1');
+  assert.equal(rules.length, 2, `expected two, got ${rules.length}`);
+
+  const [necessity, familiarity] = ['necessarily', 'familiarity'].map((word) =>
+    rules.find((r) => new RegExp(word, 'i').test(r.text)),
+  );
+  assert.ok(necessity, 'the always-true rule is missing');
+  assert.ok(familiarity, 'the word-familiarity rule is missing');
+
+  // Max's amendment, and it matters: familiarity AFFECTS difficulty alongside
+  // the relationship, it does not replace it as the driver.
+  assert.match(familiarity.text, /together/i);
+
+  // Every compiled rule must name the runs that justified it. A rule without
+  // its evidence cannot be re-examined when it turns out to be wrong.
+  for (const rule of rules) {
+    assert.ok(Array.isArray(rule.provenance?.runs), `${rule.id} names no runs`);
+    assert.ok(rule.provenance.runs.length >= 3, `${rule.id} rests on too little`);
   }
 });
 

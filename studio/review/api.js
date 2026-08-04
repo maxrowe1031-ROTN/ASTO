@@ -23,6 +23,10 @@ import { isValidStageId } from '../stage-registry.js';
 import { validateFeedbackEvent } from '../schemas.js';
 import { StudioFailure } from '../failures.js';
 import { buildRelationshipIndex, buildVarietyBrief } from '../variety.js';
+// The pair-count bounds are the pipeline's arithmetic, not this API's policy —
+// see pipeline-config.js for why the floor is where it is.
+import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-config.js';
+import { pickSubject } from '../corpus/subjects.js';
 
 // The shape createRun builds: an ISO timestamp with ':' replaced by '-',
 // then the slug.
@@ -60,23 +64,12 @@ function fromThrow(error) {
   return isConflict ? conflict(message) : { status: 500, body: { error: message } };
 }
 
-// A board is four sets of two pairs, so eight pairs is the arithmetic minimum
-// with nothing to spare — and the Theme Grouper always sets some pairs aside,
-// because forcing an incoherent pair into a set is worse than dropping it. A
-// brief with no slack is therefore a run that can only succeed if nothing is
-// discarded, which is not how grouping goes: on 2026-08-03 a count of 8 lost
-// two pairs, yielded three sets, and cost $0.16 before anyone found out.
-//
-// The floor buys room for two discarded pairs; the default buys room for
-// three and is the count that produced this pipeline's first complete board.
-export const MIN_PAIR_COUNT = 12;
-export const DEFAULT_PAIR_COUNT = 14;
-
 export function createApi({
   store,
   runner,
   clock = () => new Date().toISOString(),
   buildBrief = ({ count }) => buildVarietyBrief({ index: buildRelationshipIndex({ store }), count }),
+  chooseSubject = pickSubject,
 }) {
   const runExists = (runId) => store.listRuns().includes(runId);
 
@@ -116,6 +109,13 @@ export function createApi({
       .filter(Boolean)
       .sort((a, b) => (a.runId < b.runId ? 1 : -1)); // newest first
     return ok({ runs });
+  }
+
+  // What the running server would actually use, asked of the runner rather
+  // than read from disk — see runner.configOf. The values are settings, not
+  // secrets: two version strings, nothing about the key or the environment.
+  function readConfig() {
+    return ok(runner.configOf());
   }
 
   function readRun(runId) {
@@ -196,11 +196,23 @@ export function createApi({
     const { theme = null, count = DEFAULT_PAIR_COUNT, mock = false } = body;
     if (theme !== null && typeof theme !== 'string') return bad('theme must be a string or null');
     if (typeof mock !== 'boolean') return bad('mock must be a boolean');
-    if (!Number.isInteger(count) || count < MIN_PAIR_COUNT || count > 16) {
-      return bad(`count must be an integer between ${MIN_PAIR_COUNT} and 16`);
+    if (!Number.isInteger(count) || count < MIN_PAIR_COUNT || count > MAX_PAIR_COUNT) {
+      return bad(`count must be an integer between ${MIN_PAIR_COUNT} and ${MAX_PAIR_COUNT}`);
     }
 
-    const slug = body.slug ?? slugify(theme) ?? 'surprise-me';
+    // Surprise-me also picks a SUBJECT, which shape variety never was. Both
+    // surprise-me boards Max has judged were rejected for having no unifying
+    // theme, while every themed board was approved — so the run gets a subject
+    // AND its shape brief.
+    const runTheme = theme ?? chooseSubject();
+
+    // The slug follows the SUBJECT, not the door the run came in through.
+    // It was 'surprise-me' for a few hours on 2026-08-04 and Max caught it:
+    // the run id is the folder on disk and the thing you scan in the run list,
+    // and "surprise-me" tells you nothing once a subject has been drawn. What
+    // still marks a run as surprise-me is the shape brief on its manifest,
+    // which a themed run never carries.
+    const slug = body.slug ?? slugify(runTheme) ?? 'surprise-me';
     if (!SLUG.test(slug)) return bad('slug must be lowercase letters, digits and hyphens');
 
     // Surprise-me runs get a positive variety brief: which underused shapes to
@@ -210,7 +222,7 @@ export function createApi({
     // revision must not silently switch to the real API, and a fixture-derived
     // board must stay identifiable so it never counts as editorial signal.
     const brief = { ...(theme === null ? buildBrief({ count }) : { count }), mock };
-    const { runId } = store.createRun({ slug, theme, brief });
+    const { runId } = store.createRun({ slug, theme: runTheme, brief });
     // Fire and forget: a real run takes minutes, so the answer is 202 and the
     // UI follows manifest.status, which is already the state machine.
     runner.start(runId, { mock });
@@ -312,6 +324,7 @@ export function createApi({
   // --- dispatch ---
 
   const ROUTES = [
+    ['GET', /^\/api\/config$/, () => readConfig()],
     ['GET', /^\/api\/runs$/, () => listRuns()],
     ['POST', /^\/api\/runs$/, (_m, { body }) => createRun(body)],
     ['GET', /^\/api\/runs\/([^/]+)$/, (m) => readRun(m[1])],
