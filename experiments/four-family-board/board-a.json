@@ -1,0 +1,34 @@
+{
+  "id": "exp-kitchen-a",
+  "title": "Kitchen, Board A",
+  "sets": [
+    {
+      "id": "set-pickled",
+      "relationshipLabel": "vegetable and its pickled form",
+      "explanation": "Pickle a cucumber and you have a pickle; pickle cabbage and you have sauerkraut.",
+      "pairs": [["Cucumber", "Pickle"], ["Cabbage", "Sauerkraut"]],
+      "difficulty": 1
+    },
+    {
+      "id": "set-spice-tool",
+      "relationshipLabel": "spice and the tool made for it",
+      "explanation": "Nutmeg is grated and pepper is ground — each spice with the kitchen tool built for exactly it.",
+      "pairs": [["Nutmeg", "Grater"], ["Pepper", "Grinder"]],
+      "difficulty": 2
+    },
+    {
+      "id": "set-mealtime",
+      "relationshipLabel": "time of day and its meal",
+      "explanation": "Morning brings breakfast the way evening brings supper — the hour names the meal.",
+      "pairs": [["Morning", "Breakfast"], ["Evening", "Supper"]],
+      "difficulty": 3
+    },
+    {
+      "id": "set-kitchen-sounds",
+      "relationshipLabel": "the sound that announces the cooking",
+      "explanation": "A sizzle tells you something is frying; the kettle's whistle tells you the water is boiling.",
+      "pairs": [["Sizzle", "Frying"], ["Whistle", "Boiling"]],
+      "difficulty": 4
+    }
+  ]
+}
