@@ -25,3 +25,30 @@ node experiments/arrow-round-2/install.js
 Gate: Max acceptance only. Feedback through the Studio's normal form; tier picker
 demotions are first-class evidence this round. Nothing here is promoted anywhere
 without redesign (smallness exemption, `CLAUDE.md` §5).
+
+---
+
+## RESULT (2026-08-04, Max played both blind)
+
+**Replicated, decisively.** Board B (the mixed arrowed/arrowless test) was approved as
+*"the best puzzle yet… my face genuinely lit up… this felt like the cozy puzzle time.
+This is ASTO"* — and became the first board in the corpus to score
+`good-unchanged + strong-reveal + difficulty-accurate + feels-like-asto` on **all
+four sets**. Board A (the all-arrowed control, written just as evocatively) was
+rejected, with Max naming the effect himself, blind: *"another 'arrow' puzzle."*
+
+The two decisive notes:
+- The membership set changed his solving behaviour — *"hunting around on the board for
+  the name of something till I found Venus"* — an arrowless relation is a different
+  activity, not just a different answer.
+- The absence set produced the biggest reaction *because it inverted the rest*: "a
+  complete inverse of the other analogies and I felt a real rush." The black slot may
+  naturally belong to the set that runs against the board's grain.
+
+Kept from A's notes: individual arrowed sets can still earn `strong-reveal`
+(ember:ash::echo:silence did) — the finding is about boards made *only* of them. And
+A's black (night:dew::sleep:dream) over-reached: poetic explanation, mushy relation.
+
+**Status: n=2, blind both rounds, letters flipped, evocative control. Still not law —
+but strong enough to design the pipeline change against.** Next step lives in the
+dev log's Next: line.
