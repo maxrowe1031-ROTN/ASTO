@@ -170,6 +170,72 @@ textarea { width: 100%; resize: vertical; }
   border-color: var(--tier-green-main);
 }
 
+/*
+  "Plays like" — the tier picker. Each chip wears its own tier colour when
+  chosen, using the game's own tier tokens, so a disagreement reads at a glance
+  as the colour Max thinks the set should be rather than as a number.
+*/
+.fb-tier { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.fb-tier .chips { margin-bottom: 0; }
+
+.chip-tier:has(input:checked) { color: var(--milk); }
+.chip-tier[data-tier='green']:has(input:checked) {
+  background: var(--tier-green-main);
+  border-color: var(--tier-green-deep);
+}
+.chip-tier[data-tier='yellow']:has(input:checked) {
+  background: var(--tier-yellow-main);
+  border-color: var(--tier-yellow-deep);
+}
+.chip-tier[data-tier='red']:has(input:checked) {
+  background: var(--tier-red-main);
+  border-color: var(--tier-red-deep);
+}
+.chip-tier[data-tier='black']:has(input:checked) {
+  background: var(--tier-black-main);
+  border-color: var(--tier-black-deep);
+}
+
+/*
+  Playing a candidate board. Almost nothing is needed here: the play area is
+  built from the game's own classes and dressed by the game's own stylesheets,
+  which is the point. Only the Studio chrome around it belongs to this file.
+*/
+.play-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.play-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 10px 14px;
+  background: var(--oat);
+  border-radius: var(--radius-tile);
+  font-family: var(--font-display);
+}
+
+/*
+  `display: flex` above outranks the UA stylesheet's [hidden] { display: none },
+  so both need this to actually disappear. The game learned this twice already
+  — see .screen[hidden] in base.css and .coach[hidden] in components.css.
+*/
+.play-bar[hidden],
+.play-banner[hidden] {
+  display: none;
+}
+
+/* Past feedback, read back as sentences. */
+.fb-log { list-style: none; padding: 0; margin: 0; }
+.fb-log li { padding: 8px 0; border-top: 1px solid var(--oat); font-size: 0.85rem; }
+.fb-log li:first-child { border-top: 0; }
+.fb-log-note { margin-top: 4px; color: var(--ink); }
+
 .decisions,
 .revise {
   display: flex;

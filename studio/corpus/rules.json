@@ -104,6 +104,40 @@
         "note": "the Adversarial Solver exists to hunt these"
       },
       "createdAt": "2026-08-03"
+    },
+    {
+      "id": "rule-011",
+      "text": "B must follow from A necessarily, not occasionally. If there is a common case where A happens and B does not, the pair is broken. \"Telescope : Discovery\" fails this test — a telescope does not necessarily yield a discovery. \"Foul : Free throw\" passes it.",
+      "status": "approved",
+      "source": "feedback-batch-1",
+      "provenance": {
+        "runs": [
+          "2026-08-03T03-43-19.868Z-space",
+          "2026-08-04T00-48-01.563Z-basketball",
+          "2026-08-04T00-57-50.180Z-skiing",
+          "2026-08-04T00-28-36.080Z-surprise-me"
+        ],
+        "events": 7,
+        "note": "Max's most common reason for killing a set. Twice he supplied the fix himself (Player : Jersey, Hiking : Summit). The examples in the text are his own words."
+      },
+      "createdAt": "2026-08-04"
+    },
+    {
+      "id": "rule-012",
+      "text": "Word familiarity affects difficulty: the relationship and the words together set a set's difficulty. A green set must use words the average person knows without thinking; obscure words raise the difficulty regardless of how simple the relationship is.",
+      "status": "approved",
+      "source": "feedback-batch-1",
+      "provenance": {
+        "runs": [
+          "2026-08-03T04-28-20.336Z-ocean",
+          "2026-08-03T03-30-11.587Z-music",
+          "2026-08-03T04-11-05.778Z-weather",
+          "2026-08-04T00-42-06.386Z-history"
+        ],
+        "events": 8,
+        "note": "The green slot kept landing too hard because the rater grades relationship trickiness alone. Wording is Max's amendment: familiarity AFFECTS difficulty, it does not replace the relationship as the driver."
+      },
+      "createdAt": "2026-08-04"
     }
   ]
 }

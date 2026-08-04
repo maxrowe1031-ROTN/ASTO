@@ -26,6 +26,7 @@ import { buildRelationshipIndex, buildVarietyBrief } from '../variety.js';
 // The pair-count bounds are the pipeline's arithmetic, not this API's policy —
 // see pipeline-config.js for why the floor is where it is.
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-config.js';
+import { pickSubject } from '../corpus/subjects.js';
 
 // The shape createRun builds: an ISO timestamp with ':' replaced by '-',
 // then the slug.
@@ -68,6 +69,7 @@ export function createApi({
   runner,
   clock = () => new Date().toISOString(),
   buildBrief = ({ count }) => buildVarietyBrief({ index: buildRelationshipIndex({ store }), count }),
+  chooseSubject = pickSubject,
 }) {
   const runExists = (runId) => store.listRuns().includes(runId);
 
@@ -208,7 +210,12 @@ export function createApi({
     // revision must not silently switch to the real API, and a fixture-derived
     // board must stay identifiable so it never counts as editorial signal.
     const brief = { ...(theme === null ? buildBrief({ count }) : { count }), mock };
-    const { runId } = store.createRun({ slug, theme, brief });
+    // Surprise-me also picks a SUBJECT, which shape variety never was. Both
+    // surprise-me boards Max has judged were rejected for having no unifying
+    // theme, while every themed board was approved — so the run gets a subject
+    // AND its shape brief, and only the slug stays 'surprise-me'.
+    const runTheme = theme ?? chooseSubject();
+    const { runId } = store.createRun({ slug, theme: runTheme, brief });
     // Fire and forget: a real run takes minutes, so the answer is 202 and the
     // UI follows manifest.status, which is already the state machine.
     runner.start(runId, { mock });

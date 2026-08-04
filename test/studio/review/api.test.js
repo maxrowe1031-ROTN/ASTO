@@ -68,10 +68,10 @@ function seedReviewable(store, { slug = 'lantern', theme = 'Lantern light' } = {
   return { runId, attemptId };
 }
 
-const setup = (runnerOptions) => {
+const setup = (runnerOptions, apiOptions = {}) => {
   const { store, cleanup } = makeStore();
   const runner = stubRunner(runnerOptions);
-  return { store, runner, api: createApi({ store, runner }), cleanup };
+  return { store, runner, api: createApi({ store, runner, ...apiOptions }), cleanup };
 };
 
 const feedbackEvent = (overrides = {}) => ({
@@ -219,6 +219,52 @@ test('POST /api/runs creates the run and starts it, answering 202 immediately', 
     assert.deepEqual(runner.calls.start, [{ runId: body.runId, mock: true }]);
   } finally {
     cleanup();
+  }
+});
+
+// Surprise-me picks a SUBJECT as well as a shape brief. Both surprise-me
+// boards Max judged were rejected for the same reason — "no overall theme here.
+// goes from money to animals to geology" — while every themed board was
+// approved. Shape variety was never the missing ingredient.
+test('a themeless run picks a subject, and still slugs as surprise-me', async () => {
+  const { store, api, cleanup } = setup({}, { chooseSubject: () => 'clocks and time' });
+  try {
+    const { status, body } = await api.handle({ method: 'POST', path: '/api/runs', body: { mock: true } });
+    assert.equal(status, 202);
+    // The slug stays surprise-me: it is how the run was STARTED, and the run
+    // list still reads as a surprise-me run in the id.
+    assert.match(body.runId, /-surprise-me$/);
+    const manifest = store.readManifest(body.runId);
+    assert.equal(manifest.theme, 'clocks and time');
+    // ...and it keeps the shape steering it already had. Subject AND variety.
+    assert.ok(Array.isArray(manifest.brief.relationshipShapes));
+    assert.ok(manifest.brief.relationshipShapes.length > 0);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a run with an explicit theme is left alone — no subject is picked over it', async () => {
+  const { store, api, cleanup } = setup({}, { chooseSubject: () => 'should not be used' });
+  try {
+    const { body } = await api.handle({
+      method: 'POST',
+      path: '/api/runs',
+      body: { theme: 'Lantern light', mock: true },
+    });
+    assert.equal(store.readManifest(body.runId).theme, 'Lantern light');
+  } finally {
+    cleanup();
+  }
+});
+
+test('every subject in the list is usable as a theme', async () => {
+  const { SUBJECTS } = await import('../../../studio/corpus/subjects.js');
+  assert.ok(SUBJECTS.length >= 20, 'too few subjects to feel like a surprise');
+  assert.equal(new Set(SUBJECTS).size, SUBJECTS.length, 'duplicate subject');
+  for (const subject of SUBJECTS) {
+    assert.equal(typeof subject, 'string');
+    assert.ok(subject.trim().length > 0);
   }
 });
 

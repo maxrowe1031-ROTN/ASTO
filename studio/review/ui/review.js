@@ -126,6 +126,35 @@ async function renderList() {
 
 // --- one run ---
 
+const TIER_NAMES = { 1: 'green', 2: 'yellow', 3: 'red', 4: 'black' };
+const tierName = (difficulty) => TIER_NAMES[difficulty] ?? `difficulty ${difficulty}`;
+
+/**
+ * Past feedback, read back as sentences rather than as the raw JSON this used
+ * to dump. A change-difficulty event in particular is unreadable as an object
+ * — `before: {difficulty: 2}, after: {difficulty: 3}` is the corpus's spelling
+ * of "plays like red, was yellow", and the point of showing it is that Max can
+ * see at a glance where he has been disagreeing with the rater.
+ */
+function feedbackList(events) {
+  if (!events || events.length === 0) return '<p class="studio-muted">Nothing recorded yet.</p>';
+  return `<ul class="fb-log">${events
+    .map((event) => {
+      const where = event.scope?.type === 'set' ? escape(event.scope.setId) : 'the board';
+      const body =
+        event.action === 'change-difficulty'
+          ? `plays like <strong>${escape(tierName(event.after?.difficulty))}</strong> — was ${escape(
+              tierName(event.before?.difficulty),
+            )}`
+          : `<strong>${escape(event.action)}</strong>${
+              (event.tags ?? []).length > 0 ? ` · ${escape(event.tags.join(', '))}` : ''
+            }`;
+      const note = event.note ? `<div class="fb-log-note">${escape(event.note)}</div>` : '';
+      return `<li><span class="studio-muted">${where}</span> ${body}${note}</li>`;
+    })
+    .join('')}</ul>`;
+}
+
 const reportPanel = (title, value) =>
   value === undefined
     ? ''
@@ -176,10 +205,16 @@ async function renderRun(runId) {
 
     ${
       attempt.board
-        ? `<section class="panel board-panel">${boardHtml(
-            attempt.board,
-            attempt.reports['04-board-builder']?.promotions ?? [],
-          )}</section>`
+        ? `<section class="panel board-panel" id="board-panel">
+             <div class="play-bar">
+               <button class="pill" data-act="play">Play this board</button>
+               <span class="studio-muted">judge it by playing it</span>
+             </div>
+             <div id="board-preview">${boardHtml(
+               attempt.board,
+               attempt.reports['04-board-builder']?.promotions ?? [],
+             )}</div>
+           </section>`
         : ''
     }
 
@@ -215,10 +250,52 @@ async function renderRun(runId) {
     }
 
     <details class="panel report"><summary>Feedback so far (${detail.feedback.length})</summary>
-      <pre>${escape(JSON.stringify(detail.feedback, null, 2))}</pre></details>`;
+      ${feedbackList(detail.feedback)}</details>`;
 
   wireDecisions(runId, attemptId);
+  wirePlay(attempt.board);
   schedulePoll(working, runId);
+}
+
+/**
+ * Play ⇄ preview, swapped inside the board panel.
+ *
+ * Safe against the poll loop by construction rather than by a guard: polling
+ * only runs while a run is `running` or `revising`, and a board that can be
+ * played is past both. Navigating away replaces the whole view, which takes
+ * the game with it.
+ */
+function wirePlay(board) {
+  const panel = document.getElementById('board-panel');
+  if (!panel || !board) return;
+
+  const preview = document.getElementById('board-preview');
+  const bar = panel.querySelector('.play-bar');
+  let session = null;
+
+  const stop = () => {
+    session?.destroy();
+    session = null;
+    bar.hidden = false;
+    preview.hidden = false;
+  };
+
+  panel.addEventListener('click', async (event) => {
+    if (event.target.dataset?.act !== 'play') return;
+    // Loaded on demand: a reviewer who never presses Play never fetches the
+    // game's views or controller.
+    const { startPlay } = await import('./play.js');
+    preview.hidden = true;
+    bar.hidden = true;
+    const host = document.createElement('div');
+    panel.append(host);
+    session = startPlay(host, board, {
+      onExit: () => {
+        stop();
+        host.remove();
+      },
+    });
+  });
 }
 
 function wireDecisions(runId, attemptId) {

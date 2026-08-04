@@ -25,6 +25,7 @@ import { buildRelationshipIndex, buildVarietyBrief } from './variety.js';
 import { loadRules } from './corpus/rules.js';
 import { loadEnv } from './env.js';
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from './pipeline-config.js';
+import { pickSubject } from './corpus/subjects.js';
 
 const RUNS_DIR = fileURLToPath(new URL('./runs/', import.meta.url));
 const FIXTURES_DIR = fileURLToPath(new URL('./fixtures/responses/', import.meta.url));
@@ -103,8 +104,12 @@ async function main(argv) {
       options.theme === null
         ? buildVarietyBrief({ index: buildRelationshipIndex({ store }), count: options.brief.count })
         : options.brief;
-    ({ runId } = store.createRun({ slug: options.slug, theme: options.theme, brief }));
+    // A surprise-me run picks a subject too — the Studio does the same, and a
+    // run started here must be the same kind of run as one started there.
+    const theme = options.theme ?? pickSubject();
+    ({ runId } = store.createRun({ slug: options.slug, theme, brief }));
     console.log(`run ${runId}`);
+    if (options.theme === null) console.log(`surprise-me subject: ${theme}`);
     if (brief.relationshipShapes?.length) {
       console.log(`surprise-me: reaching for ${brief.relationshipShapes.join(', ')}`);
     }

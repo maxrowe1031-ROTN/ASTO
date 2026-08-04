@@ -40,6 +40,13 @@ test('--count inside the range carries through untouched', () => {
   assert.equal(parseArgv(['--count', '16']).brief.count, 16);
 });
 
+test('a bare invocation leaves the theme null for the launcher to fill', () => {
+  // parseArgv stays pure — the SUBJECT is picked at launch, not at parse, so
+  // the same argv does not mean a different run every time it is parsed. The
+  // Studio and the CLI both pick at createRun; that is where they agree.
+  assert.equal(parseArgv([]).theme, null);
+});
+
 test('--theme carries through, and seeds the slug', () => {
   const options = parseArgv(['--theme', 'Lantern light']);
   assert.equal(options.theme, 'Lantern light');

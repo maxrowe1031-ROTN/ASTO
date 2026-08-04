@@ -99,6 +99,27 @@ export const FEEDBACK_ACTIONS = Object.freeze([
   'change-explanation',
 ]);
 
+// The spec's thirteen, plus four added 2026-08-04 from the review corpus itself.
+//
+// APPEND ONLY. A removed tag would orphan the events that already carry it —
+// the corpus is the record of what Max thought at the time, and a vocabulary
+// change must never rewrite that.
+//
+// The four are not guesses. Each is something Max wrote in prose repeatedly
+// because no chip existed for it, across 55 events on 10 boards:
+//
+//   not-always-true    his most common reason for killing a set (7 notes) —
+//                      "a telescope does not necessarily yeild a discovery",
+//                      "a buzzer does not always indicate overtime". It was
+//                      being logged as relationship-does-not-click, which also
+//                      covers labels that merely read badly. Two different
+//                      faults with two different fixes deserve two tags.
+//   no-unifying-theme  the reason both surprise-me boards were rejected, with
+//                      no way to say it except a note.
+//   not-evocative      "doesn't have the ASTO vibe", "not very whisimical or
+//                      fun", "doesn't feel exciting. or evocative."
+//   feels-like-asto    the positive twin, which he also kept writing out:
+//                      "This puzzle feels like ASTO", "a great ASTO puzzle".
 export const QUICK_TAGS = Object.freeze([
   'relationship-does-not-click',
   'order-ambiguous',
@@ -113,6 +134,10 @@ export const QUICK_TAGS = Object.freeze([
   'good-unchanged',
   'strong-reveal',
   'difficulty-accurate',
+  'not-always-true',
+  'no-unifying-theme',
+  'not-evocative',
+  'feels-like-asto',
 ]);
 
 export const FEEDBACK_SCOPES = Object.freeze(['board', 'set']);

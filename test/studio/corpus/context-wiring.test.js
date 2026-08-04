@@ -75,12 +75,17 @@ test('a surprise-me run started from the Studio asks the author for underused sh
     await runner.settled(runId);
 
     const manifest = store.readManifest(runId);
-    assert.equal(manifest.theme, null);
+    // Since 2026-08-04 a surprise-me run carries BOTH: a subject, because Max
+    // rejected both themeless boards for having none, and the shape brief it
+    // always had. The two steer different things and neither replaced the other.
+    assert.equal(typeof manifest.theme, 'string');
+    assert.ok(manifest.theme.length > 0, 'surprise-me picked no subject');
     assert.ok(manifest.brief.relationshipShapes.length > 0, 'no shapes were requested');
 
     const prompt = promptFor(rootDir, runId, '0001', '01-pair-author');
     assert.match(prompt, /underused in the library so far/);
     assert.ok(prompt.includes(manifest.brief.relationshipShapes[0]));
+    assert.ok(prompt.includes(manifest.theme), 'the picked subject never reached the author');
   } finally {
     await close();
     cleanup();
