@@ -23,6 +23,9 @@ import { isValidStageId } from '../stage-registry.js';
 import { validateFeedbackEvent } from '../schemas.js';
 import { StudioFailure } from '../failures.js';
 import { buildRelationshipIndex, buildVarietyBrief } from '../variety.js';
+// The pair-count bounds are the pipeline's arithmetic, not this API's policy —
+// see pipeline-config.js for why the floor is where it is.
+import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-config.js';
 
 // The shape createRun builds: an ISO timestamp with ':' replaced by '-',
 // then the slug.
@@ -59,18 +62,6 @@ function fromThrow(error) {
     );
   return isConflict ? conflict(message) : { status: 500, body: { error: message } };
 }
-
-// A board is four sets of two pairs, so eight pairs is the arithmetic minimum
-// with nothing to spare — and the Theme Grouper always sets some pairs aside,
-// because forcing an incoherent pair into a set is worse than dropping it. A
-// brief with no slack is therefore a run that can only succeed if nothing is
-// discarded, which is not how grouping goes: on 2026-08-03 a count of 8 lost
-// two pairs, yielded three sets, and cost $0.16 before anyone found out.
-//
-// The floor buys room for two discarded pairs; the default buys room for
-// three and is the count that produced this pipeline's first complete board.
-export const MIN_PAIR_COUNT = 12;
-export const DEFAULT_PAIR_COUNT = 14;
 
 export function createApi({
   store,
@@ -116,6 +107,13 @@ export function createApi({
       .filter(Boolean)
       .sort((a, b) => (a.runId < b.runId ? 1 : -1)); // newest first
     return ok({ runs });
+  }
+
+  // What the running server would actually use, asked of the runner rather
+  // than read from disk — see runner.configOf. The values are settings, not
+  // secrets: two version strings, nothing about the key or the environment.
+  function readConfig() {
+    return ok(runner.configOf());
   }
 
   function readRun(runId) {
@@ -196,8 +194,8 @@ export function createApi({
     const { theme = null, count = DEFAULT_PAIR_COUNT, mock = false } = body;
     if (theme !== null && typeof theme !== 'string') return bad('theme must be a string or null');
     if (typeof mock !== 'boolean') return bad('mock must be a boolean');
-    if (!Number.isInteger(count) || count < MIN_PAIR_COUNT || count > 16) {
-      return bad(`count must be an integer between ${MIN_PAIR_COUNT} and 16`);
+    if (!Number.isInteger(count) || count < MIN_PAIR_COUNT || count > MAX_PAIR_COUNT) {
+      return bad(`count must be an integer between ${MIN_PAIR_COUNT} and ${MAX_PAIR_COUNT}`);
     }
 
     const slug = body.slug ?? slugify(theme) ?? 'surprise-me';
@@ -312,6 +310,7 @@ export function createApi({
   // --- dispatch ---
 
   const ROUTES = [
+    ['GET', /^\/api\/config$/, () => readConfig()],
     ['GET', /^\/api\/runs$/, () => listRuns()],
     ['POST', /^\/api\/runs$/, (_m, { body }) => createRun(body)],
     ['GET', /^\/api\/runs\/([^/]+)$/, (m) => readRun(m[1])],

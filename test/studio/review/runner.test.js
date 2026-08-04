@@ -22,6 +22,37 @@ const setup = ({ makeTransport } = {}) => {
   return { store, runner, cleanup };
 };
 
+test('configOf reports the config this runner holds, not the file on disk', async () => {
+  const { store, cleanup } = makeStore();
+  try {
+    // A runner built with an old map — exactly what a long-running server is.
+    const runner = createRunner({
+      store,
+      makeTransport: () => mockTransport(),
+      config: { effortProfile: 'yesterdays-profile', pricingVersion: '2026-01-01' },
+    });
+    assert.deepEqual(runner.configOf(), {
+      effortProfile: 'yesterdays-profile',
+      pricingVersion: '2026-01-01',
+    });
+  } finally {
+    cleanup();
+  }
+});
+
+test('configOf reports absent settings as null rather than undefined', async () => {
+  const { store, cleanup } = makeStore();
+  try {
+    const runner = createRunner({ store, makeTransport: () => mockTransport(), config: {} });
+    // JSON drops undefined keys, so the UI would see no field at all and could
+    // not tell "this server has no profile" from "this server is too old to
+    // report one". null survives the wire and says which.
+    assert.deepEqual(runner.configOf(), { effortProfile: null, pricingVersion: null });
+  } finally {
+    cleanup();
+  }
+});
+
 test('start runs the pipeline to completion in the background', async () => {
   const { store, runner, cleanup } = setup();
   try {

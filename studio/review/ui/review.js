@@ -57,8 +57,21 @@ const money = (attempt) => {
 
 // --- run list ---
 
+// The settings the SERVER is holding, shown beside the button that spends
+// money under them. A server left running keeps the config it started with, so
+// this line is how a stale one becomes visible: if it disagrees with
+// pipeline-config.js in the repo, the fix has not reached this process yet.
+// Same vocabulary as `money()` above, so "effort <profile>" reads the same
+// whether it is describing a past attempt or the next one.
+const serverLine = (config) =>
+  config
+    ? `<p class="studio-muted">server: effort ${escape(config.effortProfile ?? 'none')} · pricing ${escape(config.pricingVersion ?? 'none')}</p>`
+    : '';
+
 async function renderList() {
-  const { runs } = await api('/runs');
+  // A failure here must not blank the run list — the settings line is context,
+  // the runs are the page.
+  const [{ runs }, config] = await Promise.all([api('/runs'), api('/config').catch(() => null)]);
   view.innerHTML = `
     <section class="panel">
       <h2>New run</h2>
@@ -68,6 +81,7 @@ async function renderList() {
         <label class="inline"><input name="mock" type="checkbox" /> mock (no API spend)</label>
         <button class="pill primary" type="submit">Generate a board</button>
       </form>
+      ${serverLine(config)}
     </section>
 
     <section class="panel">

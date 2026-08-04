@@ -74,11 +74,27 @@ test('effort follows what a stage actually has to work out', () => {
   // failed"), which put the board builder at the top. That was true of THEIR
   // builder, which assembled from a raw pool. Ours selects and ranks from a
   // pre-graded pool of five, and since 2026-08-03 does not verify uniqueness
-  // either — so generation is now the harder end of this pipeline, not
-  // assembly. Measurement, not the analogy, decides.
-  assert.equal(effortFor('01-pair-author', DEFAULT_CONFIG), 'high');
+  // either. Measurement, not the analogy, decides.
+  //
+  // 01 was the last one held at high, on the reading that generation is the
+  // harder end. Its own numbers did not support the price: ~44% of a run, and
+  // 2,681 / 2,825 / 12,008 output tokens across three runs at identical
+  // settings. Effort that swings 4.5× is not buying a reproducible depth.
+  assert.equal(effortFor('01-pair-author', DEFAULT_CONFIG), 'medium');
   assert.equal(effortFor('02-theme-grouper', DEFAULT_CONFIG), 'medium');
   assert.equal(effortFor('04-board-builder', DEFAULT_CONFIG), 'medium');
+  // The exception, and the reason there is one: 06 is the last thing between a
+  // flawed board and Max's time. Cheapening it would move cost onto him.
+  assert.equal(effortFor('06-adversarial-solver', DEFAULT_CONFIG), 'high');
+});
+
+test('the effort profile changes whenever the effort map does', () => {
+  // Every attempt is stamped with this string, and the review corpus uses it to
+  // ask "did the cheaper profile make worse boards?". Two different maps
+  // sharing one label would silently merge the two populations being compared,
+  // so the assertion is pinned deliberately: changing the map above without
+  // changing the string fails here.
+  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-08-03-lean-2');
 });
 
 test('every stage has small explicit retry limits for both failure classes', () => {

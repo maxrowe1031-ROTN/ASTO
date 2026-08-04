@@ -10,12 +10,21 @@ import assert from 'node:assert/strict';
 import { createApi } from '../../../studio/review/api.js';
 import { makeStore } from '../pipeline/helpers.js';
 
+// Deliberately not the real profile strings: the route must report whatever
+// the runner holds, and a test that used the live values would still pass if
+// api.js reached for pipeline-config.js itself — which is the bug this whole
+// endpoint exists to make impossible.
+const STUB_CONFIG = { effortProfile: 'stub-profile', pricingVersion: 'stub-pricing' };
+
 // A stub runner: records what it was asked to do, runs nothing.
-function stubRunner({ reviseThrows = null } = {}) {
+function stubRunner({ reviseThrows = null, config = STUB_CONFIG } = {}) {
   const calls = { start: [], revise: [] };
   return {
     calls,
     state: new Map(),
+    configOf() {
+      return config;
+    },
     start(runId, options = {}) {
       calls.start.push({ runId, ...options });
     },
@@ -77,6 +86,32 @@ const feedbackEvent = (overrides = {}) => ({
 });
 
 // --- reads ---
+
+test('GET /api/config reports the settings the runner is holding', async () => {
+  const { api, cleanup } = setup({
+    config: { effortProfile: 'held-by-this-server', pricingVersion: '1999-01-01' },
+  });
+  try {
+    const { status, body } = await api.handle({ method: 'GET', path: '/api/config' });
+    assert.equal(status, 200);
+    // The runner's values, not pipeline-config.js's — a server that started
+    // before a config change must keep reporting what it will actually run at.
+    assert.deepEqual(body, { effortProfile: 'held-by-this-server', pricingVersion: '1999-01-01' });
+  } finally {
+    cleanup();
+  }
+});
+
+test('POST /api/config is not a route — settings are read-only here', async () => {
+  const { api, cleanup } = setup();
+  try {
+    const { status, body } = await api.handle({ method: 'POST', path: '/api/config', body: {} });
+    assert.equal(status, 405);
+    assert.match(body.error, /not allowed/);
+  } finally {
+    cleanup();
+  }
+});
 
 test('GET /api/runs summarises every run, newest first', async () => {
   const { store, api, cleanup } = setup();

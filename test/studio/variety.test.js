@@ -12,8 +12,8 @@ import { buildRelationshipIndex, buildVarietyBrief, SHAPES } from '../../studio/
 import { makeStore } from './pipeline/helpers.js';
 
 // A run whose pair author declared shapes, and whose board used two of them.
-function seedRun(store, { slug, shapes, status = 'awaiting-review' }) {
-  const { runId } = store.createRun({ slug, theme: null, brief: { count: 8 } });
+function seedRun(store, { slug, shapes, status = 'awaiting-review', mock = false }) {
+  const { runId } = store.createRun({ slug, theme: null, brief: { count: 8, mock } });
   const attemptId = store.createAttempt(runId);
   store.updateStatus(runId, 'running');
 
@@ -74,6 +74,22 @@ test('a run\'s shapes are derived by joining its board back to the pair author',
     seedRun(store, { slug: 'one', shapes: ['container-contents', 'part-whole'] });
     const after = buildRelationshipIndex({ store }).counts['container-contents'];
     assert.equal(after, before + 1, 'the run\'s shape was not picked up');
+  } finally {
+    cleanup();
+  }
+});
+
+// A mock run replays the same fixture board every time, so counting it tells
+// the brief that First Light's shapes are heavily used and steers real runs
+// away from them — variety pressure from a board nobody authored. One had been
+// sitting in the corpus marked `approved` since 2026-08-03.
+test('mock runs do not steer the brief — a fixture board is not editorial signal', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    const before = buildRelationshipIndex({ store }).counts['container-contents'] ?? 0;
+    seedRun(store, { slug: 'fixture', shapes: ['container-contents', 'part-whole'], mock: true });
+    const after = buildRelationshipIndex({ store }).counts['container-contents'] ?? 0;
+    assert.equal(after, before, 'a mock run was counted into the variety index');
   } finally {
     cleanup();
   }

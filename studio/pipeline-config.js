@@ -20,6 +20,24 @@ const deepFreeze = (value) => {
 const REASONING = 'claude-sonnet-5';
 const CHECKER = 'claude-haiku-4-5-20251001';
 
+// A board is four sets of two pairs, so eight pairs is the arithmetic minimum
+// with nothing to spare — and the Theme Grouper always sets some pairs aside,
+// because forcing an incoherent pair into a set is worse than dropping it. A
+// brief with no slack is therefore a run that can only succeed if nothing is
+// discarded, which is not how grouping goes: on 2026-08-03 a count of 8 lost
+// two pairs, yielded three sets, and cost $0.16 before anyone found out.
+//
+// The floor buys room for two discarded pairs; the default buys room for three
+// and is the count that produced this pipeline's first complete board.
+//
+// These live here rather than beside one driver because the constraint belongs
+// to the pipeline, not to whatever started it. They were first written into
+// the Review Studio's API alone, and `run.js` went on defaulting to 8 — the
+// same failure, still reachable, just by the other door.
+export const MIN_PAIR_COUNT = 12;
+export const DEFAULT_PAIR_COUNT = 14;
+export const MAX_PAIR_COUNT = 16;
+
 export const DEFAULT_CONFIG = deepFreeze({
   // Bumped whenever a rate below changes, so a stored cost stays interpretable
   // long after the price it was computed from has moved.
@@ -80,8 +98,19 @@ export const DEFAULT_CONFIG = deepFreeze({
   // 06 stays high on purpose. It is the one stage whose entire job is
   // catching what everything else missed, and it is the last thing between a
   // flawed board and Max's time.
+  //
+  // 01 was held back from that pass on purpose, so the 02/04 measurement had
+  // an unchanged stage to read against. With that measurement in, 01 is the
+  // remaining problem: ~44% of a run, and the pipeline's most volatile line —
+  // 2,681 / 2,825 / 12,008 output tokens across three runs at IDENTICAL
+  // settings. A stage swinging 4.5× run to run is not spending that budget on
+  // anything reproducible, which is the same shape 04 had before it dropped.
+  // Lowered 2026-08-03. Note what this means for the measurement afterwards:
+  // at that variance a single run cannot prove the change worked, so the
+  // evidence to look for is the size of the drop and the thinking share, not
+  // the total.
   effort: {
-    '01-pair-author': 'high',
+    '01-pair-author': 'medium',
     '02-theme-grouper': 'medium',
     '04-board-builder': 'medium',
     '06-adversarial-solver': 'high',
@@ -93,7 +122,10 @@ export const DEFAULT_CONFIG = deepFreeze({
   // beside the settings that produced it. Stamped onto every attempt, so the
   // review corpus can answer "did the cheaper profile make worse boards?"
   // from judgements Max is making anyway.
-  effortProfile: '2026-08-03-lean',
+  // The string must change with the map, not just when it feels significant:
+  // boards built under two different maps are two populations, and reusing one
+  // label would merge them inside the very corpus meant to tell them apart.
+  effortProfile: '2026-08-03-lean-2',
 
   // Two bounds, because there are two failure classes and they are retried by
   // different owners. `transport` bounds llm.js's own loop (timeouts, 429s,

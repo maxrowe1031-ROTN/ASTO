@@ -5,6 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { parseArgv } from '../../../studio/run.js';
+import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT } from '../../../studio/pipeline-config.js';
 
 test('a bare invocation is a surprise-me run against the real transport', () => {
   const options = parseArgv([]);
@@ -12,6 +13,31 @@ test('a bare invocation is a surprise-me run against the real transport', () => 
   assert.equal(options.mock, false);
   assert.equal(options.fresh, false);
   assert.equal(options.runId, null);
+});
+
+// The CLI is the pipeline's other door. When the Review Studio's floor went in
+// on 2026-08-03 this one kept defaulting to 8 pairs — the exact count that
+// yielded three sets, failed at the board builder, and cost $0.16 to discover.
+// A floor enforced at one entrance is not enforced.
+test('a bare invocation asks for enough pairs to build a board', () => {
+  assert.equal(parseArgv([]).brief.count, DEFAULT_PAIR_COUNT);
+  assert.ok(DEFAULT_PAIR_COUNT >= MIN_PAIR_COUNT);
+});
+
+test('--count below the floor is refused before a single request is made', () => {
+  assert.throws(() => parseArgv(['--count', '8']), /--count must be an integer between/);
+  assert.throws(() => parseArgv(['--count', String(MIN_PAIR_COUNT - 1)]), /--count/);
+});
+
+test('--count above the ceiling, or not a number at all, is refused too', () => {
+  assert.throws(() => parseArgv(['--count', '17']), /--count/);
+  assert.throws(() => parseArgv(['--count', 'lots']), /--count/);
+  assert.throws(() => parseArgv(['--count', '13.5']), /--count/);
+});
+
+test('--count inside the range carries through untouched', () => {
+  assert.equal(parseArgv(['--count', '12']).brief.count, 12);
+  assert.equal(parseArgv(['--count', '16']).brief.count, 16);
 });
 
 test('--theme carries through, and seeds the slug', () => {

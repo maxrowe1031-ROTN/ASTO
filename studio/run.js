@@ -24,6 +24,7 @@ import { isValidStageId } from './stage-registry.js';
 import { buildRelationshipIndex, buildVarietyBrief } from './variety.js';
 import { loadRules } from './corpus/rules.js';
 import { loadEnv } from './env.js';
+import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from './pipeline-config.js';
 
 const RUNS_DIR = fileURLToPath(new URL('./runs/', import.meta.url));
 const FIXTURES_DIR = fileURLToPath(new URL('./fixtures/responses/', import.meta.url));
@@ -53,6 +54,18 @@ export function parseArgv(argv) {
     throw new Error(`--revise-from: unknown stage id "${reviseFrom}"`);
   }
 
+  // The same floor the Review Studio enforces, from the same constants. This
+  // defaulted to 8 for a day after the Studio was fixed — a count that cannot
+  // build a board, still reachable from the CLI. Rejecting here costs nothing;
+  // finding out at stage 04 cost $0.16.
+  const count = Number(values.count ?? DEFAULT_PAIR_COUNT);
+  if (!Number.isInteger(count) || count < MIN_PAIR_COUNT || count > MAX_PAIR_COUNT) {
+    throw new Error(
+      `--count must be an integer between ${MIN_PAIR_COUNT} and ${MAX_PAIR_COUNT}: ` +
+        `a board needs four sets of two pairs and the grouper always sets some aside.`,
+    );
+  }
+
   return {
     theme,
     slug: values.slug ?? slugify(theme) ?? 'surprise-me',
@@ -61,7 +74,7 @@ export function parseArgv(argv) {
     notes: values.notes ?? '',
     mock: values.mock,
     fresh: values.fresh,
-    brief: { count: Number(values.count ?? 8) },
+    brief: { count },
   };
 }
 
