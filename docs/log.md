@@ -2,6 +2,98 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-04 — Two blind playtests, and the thing that actually makes a board feel varied
+
+Continuation of the session below, after its work was merged. Max raised a design question
+rather than a task: the pipeline starts from a theme and discovers relationships from the
+words — should it name the relationship first instead? *"Did that make sense?"*
+
+It did, and the corpus agreed with the symptom he described.
+
+### What the corpus said
+
+- **~80% of all 284 pairs ever authored are "one thing becomes or produces another."** Max's
+  own words for it: *"they often have to do with one thing following another thing."*
+- **A method error of mine, caught by Max.** I first claimed four relationship types had
+  *never* been produced. He disagreed — he'd seen animal/home and sand→glass boards — and he
+  was right. I had counted the declared `shape` **string**, not the relationship built; with
+  39 of 48 shape strings invented free text, a place-occupant set labelled "shelter" was
+  invisible to the count. Reading all 67 sets instead: ~10 are genuinely non-causal. The
+  direction held; the specific claim was false and the method invalid.
+- **A likely mechanical cause:** `rule-007` tells every agent a pair must be *"directional
+  **and transformative**"* with two transformation examples. Read literally it forbids three
+  of the four sets on the approved First Light board.
+- **A measurement bug:** the `shape` field is free text, so **40% of pairs are uncountable**
+  by the variety brief — the diversity steering has been running on 60% of the data.
+
+### Max's own correction, which changed the work
+
+> *"I can't be fully relied on to create a foundation for analogies because I am not an
+> expert. I'm merely interested in playing them."*
+
+So instead of building a taxonomy from taste, we went and found one. **Bejar, Chaffin &
+Embretson (1991)** — 10 families, 79 relation types, developed at ETS to classify GRE verbal
+analogy items, reachable via SemEval-2012 Task 2 under CC-BY. Preserved with all paradigm
+pairs in **`docs/research/semeval-2012-taxonomy.md`**, with provenance, licence and a note on
+where ASTO sits on it. Two of ASTO's locked decisions turn out to be independently validated
+there: pair **order** matters (reversed pairs are marked bad examples), and relation
+membership is **graded**, which is exactly `rule-011`.
+
+### Two blind A/B playtests — and the first one was wrong
+
+Max declined to adopt the resulting design rule on argument alone: he wanted to feel it. So
+both rounds were hand-made boards, installed as mock runs, played blind in the Review Studio.
+
+- **Round 1 (`experiments/four-family-board/`) invalidated its own design.** A board with one
+  set from each of four *formal* families read to Max as *"all the same — an object moving
+  forward in time somehow"*, and he demoted yellow, red and black all to green. Formal
+  taxonomy diversity produced **zero** felt diversity: every set still carried an **arrow**.
+- **Round 2 (`experiments/arrow-round-2/`) replicated the corrected hypothesis** — blind,
+  letters flipped, and with an equally evocative control so the effect couldn't be a theme
+  artefact. The mixed arrowed/arrowless board was approved as *"the best puzzle yet… This is
+  ASTO"* and is the **first board in the corpus to score `good-unchanged + strong-reveal +
+  difficulty-accurate + feels-like-asto` on all four sets.** The all-arrowed control was
+  rejected with Max naming the effect himself, blind: *"another 'arrow' puzzle."*
+
+Recorded as **D-3** in `docs/design.md`, including its explicit **n=2, not-law** status at
+Max's instruction, and the four pieces of pipeline work it authorises.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **741 pass, 0 fail**. `tools/check-board.js` clean on
+  both shipped boards **and** all four experiment boards (16/16 of 43,680 tuples each).
+- **Claude-verifiable: PASSED.** Both rounds installed through `run-store`'s public API as
+  mock runs and confirmed rendering and playable in the Studio (a set solved in-browser on
+  round 1's Board A).
+- **Max acceptance: PASSED — this gate was the playtest, and it answered.** Four boards
+  played, 24 new feedback events, a clear and replicated verdict.
+- **Nothing in the game or the Studio changed.** `git diff main..HEAD -- src/ styles/
+  index.html puzzles/ studio/` is empty; this branch is docs and `experiments/` only.
+- **Locked decisions intact.** Schema v1.0 untouched — every experiment board is ordinary
+  schema v1.0 and passes the same validator.
+
+### The loop
+
+**117 feedback events across 20 boards.** Note for whoever compiles `rubric.md`: **4 of those
+boards are hand-made experiments**, so their judgements are evidence about *design*, not about
+pipeline output — do not conflate them (also in `docs/backlog.md`).
+
+- **Next:**
+  1. **Teach the pipeline the arrow finding — design.md D-3, in its stated order:** reword
+     `rule-007` (it currently forbids the sets Max rated best) · make `shape` a controlled
+     vocabulary from the taxonomy, each entry tagged arrowed/arrowless (fixes the 40%
+     uncountable bug at the same time) · a board-composition rule for the builder, not four
+     sets of one texture · then real runs, judged in the existing review loop. **Max asked for
+     this to be picked up at the start of the next session.**
+  2. **The rater can abstain the pool below four and nothing checks it** — carried; killed
+     Max's `cars` run. Stage 02 has a four-set floor, stage 03 does not.
+  3. **Keep the loop toward ~30 boards, then compile `rubric.md`.** 16 pipeline boards judged.
+  4. Carried: relationship-first generation stays parked (D-3's work may deliver most of its
+     benefit without the reorder) · `README.md` never mentions `npm run studio:review` ·
+     05–08 concurrency · First Light `explanation` pass · GDD drift to propose upstream · the
+     mock run marked `approved` in the corpus (`2026-08-03T02-44-09.138Z-surprise-me`),
+     flagged for Max, not deleted.
+
 ## 2026-08-04 — The feedback started feeding back
 
 The session began as one more effort lever and turned into the first time Max's reviews
