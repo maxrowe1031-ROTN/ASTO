@@ -1,0 +1,34 @@
+{
+  "id": "exp-night-b",
+  "title": "Night, Board B",
+  "sets": [
+    {
+      "id": "set-night-signals",
+      "relationshipLabel": "the night creature and the signal it gives off",
+      "explanation": "A firefly speaks in glow the way a cricket speaks in chirps.",
+      "pairs": [["Firefly", "Glow"], ["Cricket", "Chirp"]],
+      "difficulty": 1
+    },
+    {
+      "id": "set-named-one",
+      "relationshipLabel": "the kind of thing, and one of them by name",
+      "explanation": "Orion is a constellation the way Venus is a planet — the category, then the named member of it.",
+      "pairs": [["Constellation", "Orion"], ["Planet", "Venus"]],
+      "difficulty": 2
+    },
+    {
+      "id": "set-marked-by",
+      "relationshipLabel": "the sky object and the feature it wears",
+      "explanation": "The moon wears its craters the way a comet wears its tail.",
+      "pairs": [["Moon", "Crater"], ["Comet", "Tail"]],
+      "difficulty": 3
+    },
+    {
+      "id": "set-never-has",
+      "relationshipLabel": "the one thing it can never have",
+      "explanation": "A shadow has no weight, and a ghost leaves no footprint — each is defined by the thing it must lack.",
+      "pairs": [["Shadow", "Weight"], ["Ghost", "Footprint"]],
+      "difficulty": 4
+    }
+  ]
+}

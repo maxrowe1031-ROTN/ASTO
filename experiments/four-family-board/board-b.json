@@ -1,0 +1,34 @@
+{
+  "id": "exp-kitchen-b",
+  "title": "Kitchen, Board B",
+  "sets": [
+    {
+      "id": "set-baked",
+      "relationshipLabel": "raw mixture baked into its food",
+      "explanation": "Dough goes into the oven and comes out bread, the way batter hits the pan and becomes a pancake.",
+      "pairs": [["Dough", "Bread"], ["Batter", "Pancake"]],
+      "difficulty": 1
+    },
+    {
+      "id": "set-dairy",
+      "relationshipLabel": "dairy turned into its solid form",
+      "explanation": "Milk is curdled into cheese; cream is churned into butter.",
+      "pairs": [["Milk", "Cheese"], ["Cream", "Butter"]],
+      "difficulty": 2
+    },
+    {
+      "id": "set-roasted-seed",
+      "relationshipLabel": "hard seed transformed by heat into the thing we consume",
+      "explanation": "A kernel pops into popcorn; a bean is roasted and brewed into coffee.",
+      "pairs": [["Kernel", "Popcorn"], ["Bean", "Coffee"]],
+      "difficulty": 3
+    },
+    {
+      "id": "set-slow-methods",
+      "relationshipLabel": "the slow method and what it yields",
+      "explanation": "Simmering is how you arrive at a stew, the way steeping is how you arrive at tea.",
+      "pairs": [["Simmer", "Stew"], ["Steep", "Tea"]],
+      "difficulty": 4
+    }
+  ]
+}

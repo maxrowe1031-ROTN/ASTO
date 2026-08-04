@@ -307,6 +307,61 @@ point these two are re-derived from the full set rather than grandfathered, **or
 built under them start drawing the *opposite* complaint (analogies too literal, greens too
 trivial), which would mean a rule overshot.
 
+### D-3 — The arrow finding, and the pipeline work it authorises (2026-08-04)
+
+**The finding, from two blind playtests.** Max noticed the boards felt samey and proposed
+generating relationship-first. Measured against the corpus he was right about the symptom:
+~80% of all 284 pairs ever authored are "one thing becomes/produces another". Two hand-made
+A/B experiments followed (`experiments/four-family-board/`, `experiments/arrow-round-2/`):
+
+- **Round 1 invalidated its own design.** A board drawing its four sets from four different
+  formal families of the Bejar/Chaffin/Embretson taxonomy read to Max as *"all the same — an
+  object moving forward in time somehow"*, and he demoted yellow, red **and** black to green:
+  *"once you notice one relationship you start to see the same relationship again quickly."*
+  Formal taxonomy diversity produced **zero** felt diversity, because every set still carried
+  a temporal/causal **arrow**.
+- **Round 2 replicated the corrected hypothesis, blind, with the letters flipped and an
+  equally evocative control.** The board mixing one arrowed on-ramp with three **arrowless**
+  relations — membership (`Constellation : Orion`), static feature (`Moon : Crater`), absence
+  (`Shadow : Weight`) — was approved as *"the best puzzle yet… This is ASTO"* and became the
+  first board in the corpus to score `good-unchanged + strong-reveal + difficulty-accurate +
+  feels-like-asto` on **all four sets**. The all-arrowed control was rejected, with Max naming
+  the effect himself while blind: *"another 'arrow' puzzle."*
+
+**The design rule, stated:** *the theme unifies the words; the relationships diversify the
+questions* — and the variable that makes questions feel different is **whether a set carries
+an arrow**, not which formal family it belongs to. Two supporting observations worth keeping:
+an arrowless set changes the player's *activity* (*"hunting around the board for the name of
+something till I found Venus"*), and the biggest reaction came from the set that **inverted**
+the rest, suggesting the Black slot may belong to the set running against the board's grain.
+
+**Status: n=2 — deliberately not law.** Max's instruction, and correct: *"lets make sure we
+don't view the revised principle as immutable."* Individual arrowed sets are still good
+(`Ember : Ash :: Echo : Silence` earned `strong-reveal` inside a rejected board) — the finding
+is about boards made *only* of them.
+
+**What this authorises next session, in order.** Nothing below is built yet:
+
+1. **Reword `rule-007`.** "A pair must be directional **and transformative**" literally
+   forbids `Brush : Painter`, `Nest : Bird` and `Dove : Peace` — three of the four sets on the
+   approved First Light board, and the whole class of arrowless sets Max just rated best. Its
+   real intent was to ban static *adjectives* (`Gulf Stream : warm`), which a rewrite must
+   keep.
+2. **Make `shape` a controlled vocabulary** drawn from the taxonomy in
+   `docs/research/semeval-2012-taxonomy.md`, each entry tagged **arrowed / arrowless**. This
+   also fixes a measurement bug found the same day: the field is free text, 48 distinct
+   strings for a 13-shape list, leaving **40% of authored pairs uncountable** by the variety
+   brief.
+3. **A board-composition rule for the builder** — not four sets of one texture; candidate
+   refinement is Black for the set that inverts the board.
+4. **Then real runs, judged in the existing review loop** — the machine's arrowless sets have
+   never been seen, and only Max's judgement says whether they are any good.
+
+**Reconsider-when:** a third and fourth board fail to reproduce the effect, **or** pipeline
+boards built to the rule draw the opposite complaint (incoherent, four unrelated puzzles
+sharing a theme) — at which point the unifying force is too weak and the theme has to do more
+work.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

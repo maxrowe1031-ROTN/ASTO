@@ -7,6 +7,20 @@
 - `current-attempt.json` at the run root is in the Studio spec's run-directory contract
   but has never been built (A1 or A3); `manifest.currentAttemptId` serves the purpose.
   Decide whether to build it or amend the spec.
+- ~~**The relationship monoculture, and the map for fixing it.**~~ **Answered 2026-08-04 by
+  two blind playtests — see design.md D-3**, which records the arrow finding and names the
+  four pieces of pipeline work it authorises (reword rule-007 · controlled shape vocabulary
+  tagged arrowed/arrowless · board-composition rule for the builder · then real runs judged in
+  the review loop). Taxonomy reference lives in `docs/research/semeval-2012-taxonomy.md`.
+  **This is the live next unit of work, not a parking-lot item.**
+- Still parked: **relationship-first generation** (name the relationship, then find words) as
+  a structural reorder. D-3's work may deliver most of its benefit without it — and it would
+  delete the Theme Grouper, which is where three of the pipeline's recent failures lived.
+  Revisit after D-3's real runs are judged.
+- The hand-made experiment boards are mock runs, so they are correctly excluded from the
+  variety index — but their feedback **is** in the corpus. When `rubric.md` is compiled,
+  separate judgements about *hand-made design experiments* from judgements about *pipeline
+  output*; conflating them would credit the pipeline with boards it did not build.
 - Two of the seventeen quick tags have still never been reached for: `valid-but-unfair` and
   `order-ambiguous`. `repetitive-shape` was the third until 2026-08-04, when Max used it on
   the basketball board — so silence is weak evidence of a wrong tag. Leave both; revisit at
