@@ -1,0 +1,86 @@
+{
+  "id": "board-birds-analogies",
+  "title": "For the Birds",
+  "sets": [
+    {
+      "id": "set-creature-possession-birds",
+      "relationshipLabel": "parent bird and the offspring that belongs to it",
+      "explanation": "Each pair names a parent bird alongside the special word for its young — swan/cygnet and goose/gosling.",
+      "pairs": [
+        [
+          "swan",
+          "cygnet"
+        ],
+        [
+          "goose",
+          "gosling"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "parent-offspring",
+        "farmyard-birds"
+      ]
+    },
+    {
+      "id": "set-taxonomic-birds",
+      "relationshipLabel": "broad bird category and a specific kind within it",
+      "explanation": "Raptor and songbird are umbrella categories, and eagle and sparrow are the familiar species living inside each one.",
+      "pairs": [
+        [
+          "raptor",
+          "eagle"
+        ],
+        [
+          "songbird",
+          "sparrow"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "category-example",
+        "bird-classification"
+      ]
+    },
+    {
+      "id": "set-activity-stage-birds",
+      "relationshipLabel": "preliminary stage and the larger reproductive activity it leads into",
+      "explanation": "Courtship sets up mating, and nest-building sets up breeding — each first pair is the ritual that opens the door to the second.",
+      "pairs": [
+        [
+          "courtship",
+          "mating"
+        ],
+        [
+          "nest-building",
+          "breeding"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "reproductive-cycle",
+        "activity-buildup"
+      ]
+    },
+    {
+      "id": "set-before-after-birds",
+      "relationshipLabel": "two facing moments across one span of bird life",
+      "explanation": "Hatch and fledge bookend a chick's growth, while depart and return bookend a migration — both pairs mark the opening and closing moment of the same journey.",
+      "pairs": [
+        [
+          "hatch",
+          "fledge"
+        ],
+        [
+          "depart",
+          "return"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "migration-cycle",
+        "growth-milestones"
+      ]
+    }
+  ]
+}
