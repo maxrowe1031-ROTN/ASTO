@@ -56,10 +56,18 @@ export function buildPrompt(input = {}, context) {
     task: [
       `Author ${count} candidate pairs.`,
       theme ? `Theme to work within: ${theme}.` : 'No theme is imposed; choose freely.',
+      // Author in matched twos, not just spread across stances. A SET is two
+      // pairs sharing ONE relationship, and a stance is a category of
+      // relationships, not a relationship — so a pool can satisfy a stance
+      // quota completely and still be ungroupable. That is what killed the
+      // `paris` run: four stances, but eleven shapes used exactly once, so
+      // nothing could pair up and the grouper searched until it truncated.
+      'Author your pairs in MATCHED TWOS. Every relationship you use must be carried by at least two pairs, because a puzzle set is exactly two pairs sharing one relationship — a lone pair no other pair matches cannot become a set, however good it is.',
       stanceQuotas.length > 0
-        ? `Spread the pairs across these stances — different kinds of question — with at least two pairs in each: ${stanceQuotas.join(', ')}. ` +
+        ? `You need at least four such matched groups, and they must span these four stances — different kinds of question: ${stanceQuotas.join(', ')}. ` +
+          'So: pick a relationship, author two pairs that share it, and repeat until you have at least one matched group in each stance. ' +
           'A pair that fits its stance but breaks the theme\'s world is a bad pair; stay inside the theme and vary the stance, not the register.'
-        : '',
+        : 'You need at least four matched groups, spanning at least four different stances.',
       relationshipShapes.length > 0
         ? `Favour these relationship shapes, which are underused in the library so far: ${relationshipShapes.join(', ')}.`
         : '',
@@ -77,6 +85,7 @@ export function buildPrompt(input = {}, context) {
       'Return { "pairs": [ ... ] }, optionally with "shortfall".',
       'Each pair is { "a", "b", "relationshipLabel", "shape" }, where "relationshipLabel" states the relation precisely',
       '(for example "small origin becomes larger result") and "shape" is an id from the vocabulary above (for example "conversion").',
+      'Pairs meant to form a set together carry the SAME "shape" — that is how the grouper finds them.',
       JSON_ONLY,
     ].join(' '),
   });
@@ -112,32 +121,56 @@ const noSelfPairs = (output) =>
     )
     .filter(Boolean);
 
-// A board is four sets of four DIFFERENT stances (design.md D-3), and this is
-// the only stage that creates — a pool spanning three stances leaves the
-// grouper mathematically unable to compose a board, discovered two stages and
-// real money later. Checked here, the retry has the vocabulary in front of it.
+// A board is four sets, each two pairs sharing ONE relationship, spanning four
+// different stances (design.md D-3). This is the only stage that creates, so
+// the pool has to be groupable before it leaves — and "groupable" is a
+// stronger property than "spans four stances", which is what this check used
+// to test.
 //
-// Four distinct stances among the pairs, not per the quotas specifically: an
-// author who reached for `dimension` or `reference` unprompted has still
-// diversified the pool, and the quota list is not in scope here anyway
-// (validateOutput never sees the brief — deliberately, so a fixture and a live
-// reply are judged identically).
+// The distinction cost a real run. On 2026-08-05 the `paris` pool spanned all
+// four quota'd stances and passed the old check, but used ELEVEN shapes
+// exactly once each: no two pairs shared a relationship, so no set could form
+// without the grouper searching for pairs to force together. It thought past
+// 24,000 tokens and truncated. Measured across three runs, the correlation is
+// monotonic and explosive — groupable shapes 7 / 3 / 1 gave grouping times of
+// 18s / 129s / truncation.
+//
+// So the requirement is counted on MATCHED shapes: at least four relationships
+// carried by two or more pairs, and those four must span four stances. Anything
+// less is a pool that cannot become a board, caught here where a retry costs
+// one cheap stage instead of dying two stages downstream.
+const MIN_SETS = 4;
 const MIN_STANCES = 4;
 
-const spansEnoughStances = (output) => {
-  const stances = new Set(output.pairs.map((pair) => stanceOf(pair.shape)).filter(Boolean));
-  return stances.size >= MIN_STANCES
-    ? []
-    : [
-        {
-          path: 'pairs',
-          message:
-            `the pairs span only ${stances.size} stance(s) (${[...stances].sort().join(', ') || 'none'}); ` +
-            `a board needs four different kinds of question, so author pairs in at least ${MIN_STANCES} stances`,
-        },
-      ];
+const poolCanBecomeABoard = (output) => {
+  const byShape = new Map();
+  for (const pair of output.pairs) {
+    byShape.set(pair.shape, (byShape.get(pair.shape) ?? 0) + 1);
+  }
+
+  const matched = [...byShape.entries()].filter(([, count]) => count >= 2).map(([shape]) => shape);
+  const orphans = [...byShape.entries()].filter(([, count]) => count < 2).map(([shape]) => shape);
+  const stances = new Set(matched.map((shape) => stanceOf(shape)).filter(Boolean));
+
+  if (matched.length >= MIN_SETS && stances.size >= MIN_STANCES) return [];
+
+  // The feedback names both numbers and the orphans, because a retry told only
+  // "not groupable" is a re-roll. An orphaned relationship is one partner pair
+  // away from being a set, which is the cheapest thing the model can fix.
+  return [
+    {
+      path: 'pairs',
+      message:
+        `only ${matched.length} relationship(s) are carried by two or more pairs, spanning ${stances.size} stance(s) — ` +
+        `a board needs ${MIN_SETS} sets across ${MIN_STANCES} stances, and a set is two pairs sharing ONE relationship. ` +
+        (orphans.length > 0
+          ? `These shapes have just one pair and cannot become a set: ${orphans.join(', ')}. ` +
+            'Give each one a partner pair sharing the same relationship, or replace it with a pair that partners something you already have.'
+          : 'Author more pairs so each relationship you use is carried by two of them.'),
+    },
+  ];
 };
 
 export function validateOutput(output) {
-  return validateAgainst(output, SCHEMA, [noReversedDuplicates, noSelfPairs, spansEnoughStances]);
+  return validateAgainst(output, SCHEMA, [noReversedDuplicates, noSelfPairs, poolCanBecomeABoard]);
 }
