@@ -32,6 +32,7 @@ import {
   maxTokensFor,
   retriesFor,
 } from './pipeline-config.js';
+import { stanceOf } from './corpus/vocabulary.js';
 import { validatePuzzle } from '../src/source/validate-puzzle.js';
 import { checkBoard } from '../src/engine/board-integrity.js';
 import { deriveWords } from '../src/engine/arrangements.js';
@@ -51,7 +52,15 @@ const GATE_STAGE = '04a-integrity';
 const STAGE_INPUTS = {
   '01-pair-author': (board, { manifest }) => ({ brief: manifest.brief, theme: manifest.theme }),
   '02-theme-grouper': (board) => ({ pairs: board.get('01-pair-author')?.pairs ?? [] }),
-  '03-difficulty-rater': (board) => ({ sets: board.get('02-theme-grouper')?.sets ?? [] }),
+  // Sets are handed to the rater with their stance made explicit: the kind of
+  // question a set asks changes what the player does (design.md D-3), so it is
+  // difficulty-relevant context, not decoration the rater should re-derive.
+  '03-difficulty-rater': (board) => ({
+    sets: (board.get('02-theme-grouper')?.sets ?? []).map((set) => ({
+      ...set,
+      stance: stanceOf(set.shape) ?? 'unknown',
+    })),
+  }),
   [BOARD_STAGE]: (board) => ({ gradedSets: gradedSets(board) }),
   '05-analogy-validator': (board) => ({ board: boardOf(board) }),
   '06-adversarial-solver': (board) => ({

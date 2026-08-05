@@ -36,13 +36,17 @@ test('every model the config can name is priced — an unpriced model under-coun
   }
 });
 
-test('the approved spec\'s model tiering is what ships', () => {
-  // docs/superpowers/specs/2026-08-02-asto-studio-design.md, "Budget and
-  // execution limits": sonnet for reasoning agents, haiku for narrow checkers.
+test('the shakedown model tiering is what ships', () => {
+  // The spec's tiering (sonnet for reasoning, haiku for narrow checkers) was
+  // amended for the taxonomy shakedown, 2026-08-04 with Max: 03 has never
+  // returned a 4 and now weighs stance's effect on play; 08 gained the unity
+  // verdict — taste calls, not the checks Haiku was priced for. 05 stays the
+  // narrow checker it always was. Revisit at the slim-down lap.
   assert.equal(modelFor('01-pair-author', DEFAULT_CONFIG), 'claude-sonnet-5');
   assert.equal(modelFor('04-board-builder', DEFAULT_CONFIG), 'claude-sonnet-5');
-  assert.equal(modelFor('03-difficulty-rater', DEFAULT_CONFIG), 'claude-haiku-4-5-20251001');
-  assert.equal(modelFor('08-style-guide', DEFAULT_CONFIG), 'claude-haiku-4-5-20251001');
+  assert.equal(modelFor('03-difficulty-rater', DEFAULT_CONFIG), 'claude-sonnet-5');
+  assert.equal(modelFor('08-style-guide', DEFAULT_CONFIG), 'claude-sonnet-5');
+  assert.equal(modelFor('05-analogy-validator', DEFAULT_CONFIG), 'claude-haiku-4-5-20251001');
 });
 
 // Adaptive thinking is on by default for the Claude 5 family and shares the
@@ -69,19 +73,15 @@ test('the gate stage has no effort — it never calls a model', () => {
 });
 
 test('effort follows what a stage actually has to work out', () => {
-  // These started from the handbook's crew post-mortem (section 3: "assembling
-  // 4 sets is constraint satisfaction, and it's where the pipeline actually
-  // failed"), which put the board builder at the top. That was true of THEIR
-  // builder, which assembled from a raw pool. Ours selects and ranks from a
-  // pre-graded pool of five, and since 2026-08-03 does not verify uniqueness
-  // either. Measurement, not the analogy, decides.
-  //
-  // 01 was the last one held at high, on the reading that generation is the
-  // harder end. Its own numbers did not support the price: ~44% of a run, and
-  // 2,681 / 2,825 / 12,008 output tokens across three runs at identical
-  // settings. Effort that swings 4.5× is not buying a reproducible depth.
-  assert.equal(effortFor('01-pair-author', DEFAULT_CONFIG), 'medium');
-  assert.equal(effortFor('02-theme-grouper', DEFAULT_CONFIG), 'medium');
+  // The lean-2 numbers (01/02/04 at medium) were measured against the OLD
+  // asks. The taxonomy shakedown (2026-08-04, with Max) returns 01 and 02 to
+  // high: authoring and grouping across four stances inside one theme is the
+  // hardest ask either has carried, and judging the new design at settings
+  // tuned for the old jobs would confound "the design doesn't work" with "the
+  // model had no room to think". 04 holds at medium — its job barely
+  // hardened; the stance check is mechanical, at the gate.
+  assert.equal(effortFor('01-pair-author', DEFAULT_CONFIG), 'high');
+  assert.equal(effortFor('02-theme-grouper', DEFAULT_CONFIG), 'high');
   assert.equal(effortFor('04-board-builder', DEFAULT_CONFIG), 'medium');
   // The exception, and the reason there is one: 06 is the last thing between a
   // flawed board and Max's time. Cheapening it would move cost onto him.
@@ -94,7 +94,7 @@ test('the effort profile changes whenever the effort map does', () => {
   // sharing one label would silently merge the two populations being compared,
   // so the assertion is pinned deliberately: changing the map above without
   // changing the string fails here.
-  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-08-03-lean-2');
+  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-08-04-taxonomy-shakedown');
 });
 
 test('every stage has small explicit retry limits for both failure classes', () => {

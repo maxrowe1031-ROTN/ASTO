@@ -50,6 +50,11 @@ export function buildPrompt(input = {}, context) {
       '  3 — the relationship is real but abstract, or the words carry a misleading surface reading.',
       '  4 — hard: abstract, easily mistaken for another grouping, or dependent on noticing direction.',
       'Judge clarity, abstraction, familiarity and misdirection. Grade each set on its own; you are not looking at a board.',
+      // The D-3 observation, handed to the rater rather than left to Max's
+      // memory: an arrowless set changes what the player DOES ("hunting around
+      // the board for the name of something till I found Venus"), so the kind
+      // of relationship is difficulty-relevant, not decoration.
+      'Each set carries a "stance" — the kind of question it asks (a cause unfolds, a possession is checked, a membership is hunted for). The stance changes what the player actually does, so weigh it: the relationship, the words and the stance together set the difficulty.',
       'Hard must never mean arbitrary. A grade-4 set still has to feel fair once revealed.',
       'If a set genuinely straddles two tiers, set "abstained": true, leave "difficulty" out, and say so in the rationale. Do not guess.',
       'Every set gets a one-line rationale.',
