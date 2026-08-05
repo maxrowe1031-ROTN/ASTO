@@ -416,12 +416,27 @@ does not carry felt variety; the kind of question does.**
    a named trigger: **if stance-floor retries at 02 fire on most runs after this lands, the
    pre-agreed fix is the merge** — which also deletes the stage where three recent failures
    lived. One variable at a time, so the next judged runs can attribute their result.
-7. **Shakedown profile `2026-08-04-taxonomy-shakedown`:** lean-2 was measured against the old
-   asks. 01/02 → high; 03/08 → Sonnet at medium (the rater has never returned a 4 and now
+7. **Shakedown profile `2026-08-04-taxonomy-shakedown-2`:** lean-2 was measured against the old
+   asks. 01 → high; 03/08 → Sonnet at medium (the rater has never returned a 4 and now
    weighs stance; 08 carries a taste call). Ceilings raised, not removed (Max: never shut a
    run down mid-test): stage 15 min / 600k tokens, attempt $20, run $60 — ~40× expected
    spend, still catching a wedged loop. **Slim-down trigger: ~10 judged boards under this
    profile**, then the lean-2 measurement pass again, caps and effort reverting together.
+
+   **Corrected 2026-08-05 — `02` was raised to high here and it was wrong.** It truncated the
+   first real run (`beach`) at 16k, then at 24k, for $0.71 and no board. Three findings, all
+   available before the run: 02's own six-run medium baseline was 3,756–4,435 tokens for a ~4k
+   JSON answer; `high` is fine on non-combinatorial stages (06 never truncates at high); and
+   the justification given — "02 composes under a stance floor now" — was backwards, since the
+   stance work had been moved *upstream* into 01's quotas, which the failed run confirmed
+   (01 delivered exactly the four quota'd stances). This is the same failure mode 04 came down
+   from xhigh for. **Also recorded: the wrong ceiling was raised** — `limits` bounds a runaway
+   run; `maxTokens` is the per-request ceiling thinking shares with the answer, and it was left
+   at 16k. *Open, deliberately:* at medium 02 still returned 13,645 tokens (85% of that
+   ceiling) on the retry — n=1 at a stage with documented 4.5× variance, so a signal to watch.
+   If it truncates again the lever is cutting 02's work (it is shown all 36 vocabulary entries
+   though its candidate pairs already carry shapes), not a bigger number — `llm.js` is
+   non-streaming with a 300s timeout, so the transport binds before the token ceiling does.
 
 **A known limit, pinned as a test rather than papered over**
 (`test/studio/pipeline/stance-composition.test.js`): round 1's kitchen board declares four

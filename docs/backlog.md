@@ -22,6 +22,14 @@
   stance is a per-shape proxy for the felt arrow and word choice can defeat it — round 1's
   kitchen board declares four stances yet played as one. If Max repeatedly rejects
   stance-diverse boards as "all the same", the proxy needs word-level teeth.
+- **Stage 02's headroom, and the transport that really binds it.** At medium with the
+  vocabulary in its prompt, 02 returned 13,645 tokens — 85% of the 16k `maxTokens` ceiling
+  (2026-08-05 beach retry; n=1, and the stage has documented 4.5× variance). The cheap lever if
+  it truncates again is cutting its work: 02 is shown all 36 vocabulary entries although its
+  candidate pairs already carry declared shapes. A bigger ceiling is *not* the lever —
+  `llm.js` is non-streaming with a 300s timeout, and at ~13.6k tokens per 129s a 24k ceiling
+  lands on that timeout. If a stage ever legitimately needs more thinking than 300s buys, the
+  answer is streaming.
 - **The shakedown slim-down lap** (~10 judged boards under `2026-08-04-taxonomy-shakedown`):
   re-run the lean-2 measurement pass — per-stage cost + thinking share against review verdicts
   — then re-aim effort, revisit 03/08's Sonnet upgrade, and revert the raised budget ceilings
