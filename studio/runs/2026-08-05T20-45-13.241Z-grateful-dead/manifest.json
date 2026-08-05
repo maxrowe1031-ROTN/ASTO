@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-05T20-45-13.241Z-grateful-dead",
+  "createdAt": "2026-08-05T20:45:13.241Z",
+  "theme": "Grateful Dead",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "event",
+      "possession"
+    ],
+    "mock": false
+  },
+  "status": "failed",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}

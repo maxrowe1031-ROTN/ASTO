@@ -1,0 +1,86 @@
+{
+  "id": "board-construction-analogies",
+  "title": "Building Blocks",
+  "sets": [
+    {
+      "id": "set-object-component-structures",
+      "relationshipLabel": "A thing and a feature it simply has",
+      "explanation": "A wall naturally has a window and a roof naturally has a chimney — each pair names a whole and a feature it possesses, no story required.",
+      "pairs": [
+        [
+          "wall",
+          "window"
+        ],
+        [
+          "roof",
+          "chimney"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "building-parts",
+        "possession"
+      ]
+    },
+    {
+      "id": "set-collection-member-crews",
+      "relationshipLabel": "A collection and the kind of thing it is made of",
+      "explanation": "A toolbox is made of wrenches and a crew is made of masons — both pairs link a collective noun to the unit that fills it.",
+      "pairs": [
+        [
+          "toolbox",
+          "wrench"
+        ],
+        [
+          "crew",
+          "mason"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "tool-worker-overlap",
+        "collective-nouns"
+      ]
+    },
+    {
+      "id": "set-location-activity-sites",
+      "relationshipLabel": "A place and the activity it exists for",
+      "explanation": "A site exists for construction and a workshop exists for woodworking — each place is defined by the activity it houses.",
+      "pairs": [
+        [
+          "site",
+          "construction"
+        ],
+        [
+          "workshop",
+          "woodworking"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "construction-theme",
+        "place-purpose"
+      ]
+    },
+    {
+      "id": "set-before-after-project",
+      "relationshipLabel": "Opening moment of a project facing its closing moment",
+      "explanation": "Groundbreaking opens a project as ribbon-cutting closes it, just as excavation begins a build and occupancy ends it — start paired against finish.",
+      "pairs": [
+        [
+          "groundbreaking",
+          "ribbon-cutting"
+        ],
+        [
+          "excavation",
+          "occupancy"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "ceremony-vs-function",
+        "project-timeline"
+      ]
+    }
+  ]
+}

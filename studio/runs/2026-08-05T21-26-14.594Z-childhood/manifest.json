@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-05T21-26-14.594Z-childhood",
+  "createdAt": "2026-08-05T21:26:14.595Z",
+  "theme": "childhood",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "plan",
+      "class-individual",
+      "enabling-agent"
+    ],
+    "avoidShapes": [
+      "before-after",
+      "location-activity"
+    ],
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "event",
+      "possession"
+    ],
+    "mock": false
+  },
+  "status": "awaiting-review",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

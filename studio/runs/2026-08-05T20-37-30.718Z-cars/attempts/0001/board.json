@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "Cars, Parts, and Time",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a worker and the tool central to their trade",
+      "explanation": "A driver's hands rest on the steering wheel just as a mechanic's grip on a wrench—each pair names a worker with their signature tool.",
+      "pairs": [
+        [
+          "driver",
+          "steering wheel"
+        ],
+        [
+          "mechanic",
+          "wrench"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "vehicle",
+        "tool"
+      ]
+    },
+    {
+      "id": "set-attachment",
+      "relationshipLabel": "a part and the place where it fastens on",
+      "explanation": "A mirror bolts onto a door and a license plate onto a bumper—each pair names a fitted part and its mounting point.",
+      "pairs": [
+        [
+          "mirror",
+          "door"
+        ],
+        [
+          "license plate",
+          "bumper"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "vehicle",
+        "part"
+      ]
+    },
+    {
+      "id": "set-collection-member",
+      "relationshipLabel": "a collection and the kind of vehicle it is made of",
+      "explanation": "A fleet is built of trucks and a convoy of vans—each pair names a group noun and the vehicle type that fills it.",
+      "pairs": [
+        [
+          "fleet",
+          "truck"
+        ],
+        [
+          "convoy",
+          "van"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "vehicle",
+        "group"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the opening moment and the closing moment of one span",
+      "explanation": "Ignition starts a drive as shutdown ends it, just as departure opens a journey that arrival closes—each pair frames a single span from its first moment to its last.",
+      "pairs": [
+        [
+          "ignition",
+          "shutdown"
+        ],
+        [
+          "departure",
+          "arrival"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "time",
+        "journey"
+      ]
+    }
+  ]
+}
