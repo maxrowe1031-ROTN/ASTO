@@ -26,3 +26,18 @@
 !decisions.jsonl
 !manifest.json
 !*/attempts/*/board.json
+
+# Verification runs are excluded again, whole.
+#
+# On 2026-08-05 four runs created to exercise the review UI were swept into the
+# corpus by `git add -A`, carrying feedback Claude had typed to drive the form.
+# Synthetic judgement is indistinguishable from Max's once it is in
+# feedback.jsonl, and that file is what `rubric.md` gets compiled from — so it
+# would have taught the pipeline from nobody's taste.
+#
+# `brief.mock` cannot be the filter: the hand-made design experiments and the
+# harbor fixture replay are all mock runs carrying Max's REAL judgement. The
+# separator has to be intent, so it is the slug. Any run created to test the
+# machinery rather than to judge a board is slugged `verify-…` and never
+# committed.
+*Z-verify-*/

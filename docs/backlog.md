@@ -30,6 +30,11 @@
   `llm.js` is non-streaming with a 300s timeout, and at ~13.6k tokens per 129s a 24k ceiling
   lands on that timeout. If a stage ever legitimately needs more thinking than 300s buys, the
   answer is streaming.
+- **Runs created to test the machinery are slugged `verify-…` and gitignored whole.** On
+  2026-08-05 four UI-verification runs were swept into the corpus by `git add -A`, carrying
+  feedback Claude had typed to drive the form; they were removed the same session. `brief.mock`
+  cannot be the filter — the design experiments and the harbor fixture are mock runs carrying
+  Max's real judgement — so the separator is intent, expressed in the slug.
 - **Rubric compilation must read version-1 set events by their TAGS, not their action.** Under
   the pre-2026-08-05 form a set inherited the board button, so 21 of 79 tagged set-events say
   `reject-set` while carrying only praise. Events from `formVersion` 2 onward carry their own

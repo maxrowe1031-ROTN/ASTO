@@ -69,6 +69,15 @@ auto-revise graduation trigger needs.
   brief recorded `edited` with the diff. End-to-end through the API: save → run stays
   reviewable → proposal → revision accepted (`202 → revising`).
 - **Max acceptance: OPEN.** He has not used the new form yet. That is the next thing.
+- **Caught at wrapup, in the corpus that had just been insured:** four runs created minutes
+  earlier to exercise the review UI had been swept into version control by `git add -A`,
+  carrying feedback *Claude* had typed to drive the form. Synthetic judgement is
+  indistinguishable from Max's once it is in `feedback.jsonl`, and that file is what
+  `rubric.md` compiles from — it would have taught the pipeline from nobody's taste. All four
+  removed from git and disk; **25 committed feedback files remain, all Max's**. `brief.mock`
+  cannot be the guard, since the design experiments and the harbor fixture are mock runs
+  carrying his real judgement — so the separator is intent: verification runs are slugged
+  `verify-…` and gitignored whole.
 
 - **Next:**
   1. **Review the next board with the new form** — the verdicts, the fix field, and whether the
