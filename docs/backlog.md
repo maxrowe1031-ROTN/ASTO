@@ -4,6 +4,17 @@
 > work only when Max pulls them into `design.md`'s plan. Mid-session ideas
 > land here so the session stays on task.
 
+- **`valid-but-unfair` is three tags wearing one name (2026-08-05).** Across one batch it meant
+  "a cross-reading also works", "the claim is overgeneral", and "this set is simply weak" —
+  three unrelated defects with three different fixes. It is the tag any cross-reading check must
+  be scored against, and it cannot be. Splitting it changes the feedback form, so it is Max's
+  call; until then, scoring against it needs the prose read by hand.
+- **The cross-reading check's semantic question needs a third attempt (design.md D-7).** The
+  enumerator and plumbing are sound; the model's answer is not. Round 2 flagged any tidy 2×2
+  grid as an analogy (13 spurious across six boards); round 3's anti-grid wording over-corrected
+  into near-silence (0 of 3 caught). Worth trying: ask it to name each half's relation as a
+  separate output field rather than folding both into one boolean, so the reasoning is visible
+  and scoreable rather than hidden behind a yes/no.
 - **The cross-reading check's gate-promotion trigger (design.md D-7).** It reports and does not
   block. If it agrees with Max's `valid-but-unfair` / `order-ambiguous` calls across roughly the
   next six boards, promote it to a blocking check at `04a`. If it disagrees, the question it

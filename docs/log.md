@@ -264,6 +264,52 @@ silently, because an inferred `proposal-verdict` is not evidence.
 describing these defects for weeks, filed by stage at the foot of the page, so Max rediscovered
 them by playing the boards.
 
+### The check did not work the first time, and the replay is why we know
+
+Replaying it over the six judged boards — the step that exists *because* Max's verdicts are an
+answer key — **three of six came back unparseable**, two failed validation, and the one that
+validated missed the defect he had found. Diagnosed on a single board:
+**`stop_reason max_tokens`, 16,000 output tokens, zero characters of text.**
+
+I had made 06 combinatorial and left it at `high`. **Third time this repo has met that
+failure** — 02 died on the `beach` run at high, 04 came down from xhigh with *"94% of its
+billed output was thinking behind an 876-token answer"* — and `pipeline-config.js` was carrying
+both notes when I walked into it.
+
+Fixed by shrinking the ask rather than raising the ceiling: checklist lines carry short ids
+(`set-b#1`) that the answer echoes instead of retyping four words — the old shape invited the
+model to send back the formatted *string* it had been shown, which is exactly what childhood-1
+did for all eight — and a `note` is required only on a reading that HOLDS. Then 06 came down to
+`medium`, over a pinned test whose reason was good (*"the last thing between a flawed board and
+Max's time"*) and which a stage returning nothing outranks. Same board after: **`end_turn`,
+6,234 output tokens, all eight readings answered.**
+
+**And then it still did not work.** Three rounds against the same six boards:
+
+| round | caught | spurious | behaviour |
+|---|---|---|---|
+| 1 — high effort, verbose shape | — | — | 3 of 6 unparseable, 16k thinking, no text |
+| 2 — compact shape, medium | 1 of 3 | 13 | flags any tidy 2×2 grid as an analogy |
+| 3 — plus an anti-grid instruction | 0 of 3 | 2 | quiet, misses what it was built for |
+
+Every round-2 false flag had one signature — *"guitarist and drummer are parallel musician
+roles"*, *"song and album are parallel categories"* — the model calling **symmetry** an analogy,
+which round 2's prompt already told it not to do. Round 3's sharper wording fixed that and
+over-corrected into silence.
+
+**The mechanism works and the judgement does not.** The enumerator is exact and pins both real
+defects as tests; the plumbing forces a complete answer and no longer truncates. What is
+unreliable, after two honest attempts at the wording, is the model's answer. It ships **quiet**
+— advisory, folded shut, ~2 false flags across six boards — and it is **nowhere near a gate**.
+I stopped there rather than spend more of Max's credit guessing at prompt wording.
+
+**A finding from building the answer key:** `valid-but-unfair` is three tags wearing one name.
+Across this batch it covers a cross-reading that also works (cars, grateful-dead), a claim that
+is overgeneral (*"not every crew contains a mason"*), and a set that is simply weak
+(*"technically works but… boring"*). My first score conflated all three and reported eight
+misses where the narrow key holds three. The rubric compiled from this corpus will conflate them
+the same way, and no automated check can be scored against a tag that means three things.
+
 ### What the measurement decided
 
 The obvious move — promote 05's `boardPasses` to a gate — is **wrong, and the numbers say so**:

@@ -642,6 +642,62 @@ The stance is not cursed, and the check must not be read as condemning it:
 `planting : felling :: budding : withering` drew *"I felt especially good about this one."* The
 difference is whether the cross-pairing is *also* strong, which is exactly the question asked.
 
+**And it did not work the first time.** Replaying it over the six judged boards — the step that
+exists because Max's verdicts are an answer key — three of six came back **unparseable**, two
+failed validation, and the one that validated missed the defect he had found. Diagnosed on a
+single board: **`stop_reason max_tokens`, 16,000 output tokens, zero characters of text.** The
+whole budget went to thinking.
+
+I had made 06 combinatorial and left it at `high`. That is the **third** time this repo has met
+that failure — 02 died on the `beach` run at high, 04 came down from xhigh with *"94% of its
+billed output was thinking behind an 876-token answer"* — and `pipeline-config.js` was already
+carrying both notes when I walked into it. The lesson generalises past any one stage: **raising
+effort on a stage whose ask has just become combinatorial does not buy convergence, it buys
+silence.**
+
+Fixed by shrinking the ask rather than raising the ceiling: checklist lines carry short ids
+(`set-b#1`) which the answer echoes instead of retyping four words — the old shape invited the
+model to send back the formatted *string* it had been shown, which is what it did — and a `note`
+is required only on a reading that HOLDS. Then 06 came down to `medium`, which its pinned test
+had forbidden for a good reason (*"the last thing between a flawed board and Max's time"*) that
+a stage returning nothing outranks. Same board after: `end_turn`, 6,234 output tokens, all eight
+readings answered.
+
+**And then it still did not work.** Three measured rounds over the same six boards:
+
+| round | caught | spurious | behaviour |
+|---|---|---|---|
+| 1 — high effort, verbose shape | — | — | 3 of 6 unparseable, 16k tokens of thinking, no text |
+| 2 — compact shape, medium | 1 of 3 | 13 | flags any tidy 2×2 grid as an analogy |
+| 3 — round 2 plus an anti-grid instruction | 0 of 3 | 2 | quiet, and misses what it was built for |
+
+Round 2's every false flag had one signature — *"guitarist and drummer are parallel musician
+roles"*, *"song and album are parallel categories"* — the model calling **symmetry** an analogy,
+which is precisely what round 2's prompt already told it not to do. Round 3's sharper wording
+fixed that and over-corrected into silence.
+
+**Conclusion, recorded rather than papered over: the mechanism works and the judgement does
+not.** The enumerator is exact, deterministic and pins both real defects as tests; the checklist
+plumbing forces a complete answer and no longer truncates. What is not reliable is the model's
+answer to the question, in either direction, after two honest attempts at the wording. It ships
+**quiet** (round 3) — advisory, folded shut, ~2 false flags across six boards — and it is
+**nowhere near a gate**. The reconsider-when above stands, with its bar restated: it must catch
+the defects Max describes in prose before it is trusted with a veto.
+
+#### The tag that turned out to be three tags
+
+Building the answer key exposed something about the corpus itself. `valid-but-unfair` is Max's
+catch-all for *"technically works but the player gets cheated"*, and across this batch it covers
+at least three unrelated defects: **a cross-reading also works** (cars, grateful-dead — he
+writes the reading out verbatim), **the claim is overgeneral** (*"not every crew contains a
+mason"*, *"many kinds of workshops"*), and **the set is simply weak** (*"technically works
+but… boring"*). My first score conflated all three and reported eight misses where the narrow
+answer key holds three.
+
+That matters beyond this measurement: **the rubric compiled from this corpus will conflate them
+too**, and no automated check can be scored against a tag that means three things. Splitting it
+is a change to the feedback form, so it is Max's call and sits in the backlog.
+
 #### Evocativeness, and Max's correction to it
 
 `not-evocative` was the top tag at **15 uses across four boards**, and the word appeared in **no

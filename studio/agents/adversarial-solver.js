@@ -68,7 +68,11 @@ const SCHEMA = {
         properties: {
           id: { type: 'string', minLength: 1 },
           valid: { type: 'boolean' },
-          note: { type: 'string', minLength: 1 },
+          // No minLength here on purpose: an empty note on a `false` answer is
+          // the model filling in a field it was told it did not need, which is
+          // harmless. Whether a note is REQUIRED is a semantic question about
+          // the answer, so it lives in the semantic check below.
+          note: { type: 'string' },
         },
       },
     },
@@ -124,10 +128,13 @@ export function buildPrompt(input = {}, context) {
       // The checklist. Every one of these must come back answered — an omission
       // fails validation and the stage is asked again.
       'SEPARATELY, answer the cross-reading checklist below. Each set on this board is two pairs; its four words can be regrouped in exactly two other ways, and both are listed for you. The engine REFUSES those readings, so if one of them is also a valid analogy, a player who sees it is marked wrong for being right. That is the worst failure this board can have.',
-      'For each listed line answer one question: read as written, is this a valid analogy — do both halves carry the same relationship?',
-      '  - "valid": true means a real player could reasonably read it and be satisfied. The set is broken. Add a "note" saying what the shared relationship is.',
-      '  - "valid": false means the reading does not hold. No note needed.',
-      'Judge only the reading in front of you. Do not soften an answer because the intended set is good, and do not mark a reading valid merely because the words are related — a shared topic is not a shared relationship.',
+      'Work each line the same way. A line reads W : X :: Y : Z. Name the relation that takes W to X. Name the relation that takes Y to Z. Mark it valid ONLY if those two are the SAME relation, and say which relation it is in the "note".',
+      '  - "valid": true means a real player could reasonably read it and be satisfied. The set is broken.',
+      '  - "valid": false means the two halves carry different relations, or one half carries none. No note needed.',
+      // The failure this instruction exists to stop, verbatim from the
+      // 2026-08-05 replay: 13 of 16 flags were this one mistake.
+      'The trap: two halves that are each a pair of SIMILAR THINGS do not share a relation. "song : album :: Truckin\' : American Beauty" is a pair of categories beside a pair of named works — the left half relates two kinds of thing, the right half relates a track to the record it is on. Those are different relations, so the answer is false. Likewise "guitarist : drummer :: guitar : drum kit" is two people beside two instruments: symmetry, not analogy. A grid that looks tidy is not a reading a player can solve.',
+      'Judge only the reading in front of you, and do not soften an answer because the intended set is good.',
       'This is a checklist, not a search: the candidates are already found, so answer them and move on. These answers belong in "crossReadings", not in "findings" — do not report them twice.',
     ].join('\n'),
     data: [
@@ -202,7 +209,7 @@ const everyReadingAnswered = (output, board) => {
   // one is a verdict Max cannot act on, exactly like a weak unity score with no
   // outliers named.
   for (const entry of output.crossReadings) {
-    if (entry.valid && !entry.note) {
+    if (entry.valid && !entry.note?.trim()) {
       errors.push({
         path: 'crossReadings',
         message: `${entry.id} is marked valid but says nothing — name the relationship both halves share`,
