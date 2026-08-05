@@ -2,6 +2,113 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-05 — The process, made legible: a shareable deck built from the record
+
+Max asked whether the way this project is documented would let someone go back, review
+everything, and build a deck out of it. The answer was yes without qualification, and the
+check itself is the finding: **the narrative did not have to be reconstructed, only
+assembled.** Two audits (this repo and `../maigd-course-handbook`) found the arc, the
+reversals, the dollar figures and the failures already written down in prose, with dates.
+The one real gap was visual — neither repo contained a single screenshot.
+
+Scope: a **LinkedIn portfolio piece**, to be shared alongside the finished game. Not the
+Class 13 peer deck, which is a different audience and a different cut.
+
+### Built
+
+- **`docs/presentation/index.html`** — a self-contained 15-slide HTML deck, ASTO's own
+  tokens copied inline (cream/ink/honey, the four tier triples, Bree Serif + Nunito with
+  the game's own system fallback, the `feTurbulence` grain). Full-viewport scroll-snap
+  sections on desktop, plain scrolling on phones (snap is disabled under 900px — every
+  slide is taller than a phone screen, so snapping only fights the reader), arrow-key
+  navigation, and a slide counter.
+- **`docs/presentation/assets/`** — four screenshots captured from the running game and
+  Review Studio: the board, the filled frame before Confirm, the win screen with all four
+  tiers, and the rebuilt feedback instrument. 416K total including the HTML.
+- **A hand-authored inline SVG** of the pipeline — the eight stages, the deterministic
+  gate sitting between 04 and 05, the bounded rebuild loop, the human editorial gate, and
+  the corpus feeding back into 01. The one thing no screenshot could show.
+- **One backlog line:** the game 404s `/favicon.ico` on every load. The deck carries an
+  inline data-URI icon; the game could take the same one-liner.
+
+### The argument the deck makes
+
+One thesis: *the game is the deliverable; the machine that authors it — and the governance
+around that machine — is the work.* The differentiator for this audience is not "I used
+AI" but **AI that was governed**: six decision records in the shape
+*recommendation → override → accepted risk → reconsider-when*, a rule retired rather than
+deleted, a finding deliberately held at n=2, and a graduation trigger written before the
+feature that would earn it. Slide 14 is a list of things that were wrong, including
+Claude's own method error and the synthetic-feedback near-miss.
+
+### What verification caught
+
+- **The suite was red when I started and I did not paper over it.** The first `npm test`
+  gave 783 pass / 3 fail — one a test-isolation clash, one a genuine mid-implementation
+  `409 vs 200` in the in-flight publish work. That killed the planned "811 tests green"
+  stat outright. By wrapup the other session's work had landed and the suite reads
+  **841 pass, 0 fail**, which is the number now on the slide.
+- **A Studio screenshot that was illegible at column width.** A 1280px capture rendered
+  into a ~370px column is decoration, not evidence. Slide 10's run list was replaced with
+  the A/B result rendered as real HTML; slide 11's form was moved full-width and cropped
+  to the block that carries the point.
+- **Numbers moved under me mid-build.** `puzzles/` went 3 → 6 boards, runs 38 → 40, D-6
+  landed and HR-2's deferral was discharged while the deck was being written. The planned
+  slide line "approved boards still have nowhere to land" was **false by the time it would
+  have shipped** and was rewritten. Every figure was re-sourced at wrapup.
+- **`git add -A` swept my work in, again.** Commit `de1de60` — a docs commit about the
+  publish seam — pulled five of my in-progress screenshots into itself, three of which I
+  had already discarded. This is the same scar the 2026-08-05 feedback-instrument entry
+  records, hit while writing the slide that describes it. History left alone; flagged for
+  Max rather than rewritten on a branch another session is working in.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **841 pass, 0 fail**. No board was added or edited,
+  so `check-board` had nothing new to gate; `test/content/board-integrity.test.js` re-gated
+  all shipped boards as part of that run.
+- **Claude-verifiable: PASSED WITH ONE NAMED GAP.** Verified in the browser at 390×844 and
+  1440×900: 15 sections, **no horizontal body overflow at either width**, all four images
+  load and render at 66–75% of natural size (crisp, not upscaled), the diagram and the
+  cost table scroll inside their own containers, console clean, and the page requests
+  **nothing but its own HTML, its four local PNGs and an inline SVG**. Slides 1, 5, 7 and
+  12 were confirmed visually, including a real bug the pixels caught: SVG `fill=`
+  presentation attributes lose to CSS classes, so "editorial gate" was rendering dark-on-dark
+  and invisible until the fills were moved into their own selectors. **The gap:** slides 10
+  and 11 were rebuilt late and screenshot capture then failed repeatedly in this environment
+  (the Browser pane reported a 0×0 viewport; Playwright timed out on every capture). Those
+  two are verified by computed style, box geometry and DOM placement — visible, correct
+  colors, correct contrast, crop applied, figure correctly in `.wrap` — but **not confirmed
+  pixel-by-pixel**. Worth Max's eye.
+- **Max acceptance: OPEN.** The story, the tone, and what slide 15 admits to are his call,
+  and this is a gate of the third kind. He has not seen it yet.
+- **Nothing in the game, the Studio or the tests was touched.** My changes are
+  `docs/presentation/**` plus one `docs/backlog.md` line and this entry.
+- **Locked decisions intact:** no code changed. The deck loads Google Fonts exactly as the
+  game's own `index.html` does, with the same designed system fallback — matching existing
+  project practice rather than departing from it, so no HR entry is owed. HR-1 is about
+  dependencies, and `package.json` still has none.
+
+### Phase status
+
+**This is not a phase gate.** Phase 5 is untouched and still in flight — five playable
+boards against a bar of ten, with the publish seam (D-6) only landed today. The deck is a
+portfolio artifact, deliberately outside the phase plan.
+
+- **Next:**
+  1. **Max reads the deck** at `http://localhost:8080/docs/presentation/index.html` and
+     rules on story, tone, and how much of slide 15's "not finished" to keep. Give slides
+     10 and 11 a look specifically — they are the two not visually confirmed.
+  2. **Decide where it lives.** It is committed but **not pushed and not merged** — the
+     branch it sits on carries another session's in-flight work, so publishing it is Max's
+     call, not a wrapup's. GitHub Pages next to the game is the obvious home.
+  3. **The deck's numbers are a snapshot** and will go stale as Phase 5 fills. Re-source
+     slide 15 before sharing if more than a few days pass.
+  4. Carried: the Class 13 peer cut is a *different* deck from this one, if he wants it ·
+     the game's missing favicon · rater abstention floor · rubric compilation must read
+     version-1 sets by TAGS not action · `README.md` never mentions `npm run studio:review`
+     · 05–08 concurrency · First Light `explanation` pass · GDD drift.
+
 ## 2026-08-05 — Approved boards reach the game
 
 Max ran and judged two more boards between sessions — **`birds` and `batman`, both approved**

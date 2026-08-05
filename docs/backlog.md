@@ -112,3 +112,6 @@
   resume, `POST /api/runs/:id/feedback`); fold them into the spec or drop them at B2.
 - `run.js` and the Studio can drive the same run concurrently; the lock protects the
   files but the UX is confusing. Documented as "one driver at a time" — consider enforcing.
+- The game's `index.html` declares no favicon, so every page load 404s `/favicon.ico`.
+  The process deck now carries an inline data-URI icon; the game could use the same
+  one-liner (no new asset, no request).
