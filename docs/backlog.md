@@ -38,6 +38,12 @@
   variety index — but their feedback **is** in the corpus. When `rubric.md` is compiled,
   separate judgements about *hand-made design experiments* from judgements about *pipeline
   output*; conflating them would credit the pipeline with boards it did not build.
+  **A third category as of 2026-08-05:** `2026-08-05T01-30-19.030Z-harbor` is approved with 8
+  feedback events, but it is the **fixture replay** — a hand-written mock board Claude authored
+  to verify the review surface, not pipeline output and not a design experiment. Max knew
+  (*"this was just the original puzzle that got edited to match the new pipeline"*) and his
+  three difficulty demotions there are signal about the *fixture's* authoring. Tag it out of
+  the rubric corpus, or archive the run.
 - Two of the seventeen quick tags have still never been reached for: `valid-but-unfair` and
   `order-ambiguous`. `repetitive-shape` was the third until 2026-08-04, when Max used it on
   the basketball board — so silence is weak evidence of a wrong tag. Leave both; revisit at
