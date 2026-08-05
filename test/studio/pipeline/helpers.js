@@ -82,11 +82,10 @@ export function boardReply(board, extra = {}) {
  * case; pass `valid` to flip a chosen reading.
  */
 export function solverReply(board, { valid = () => false } = {}) {
-  const crossReadings = enumerateCrossReadings(board).map(({ setId, reading }) => ({
-    setId,
-    reading,
+  const crossReadings = enumerateCrossReadings(board).map(({ id, setId, reading }) => ({
+    id,
     valid: valid(setId, reading),
-    note: 'Test fixture.',
+    ...(valid(setId, reading) ? { note: 'Test fixture.' } : {}),
   }));
   return { text: JSON.stringify({ noneFound: true, findings: [], crossReadings }) };
 }

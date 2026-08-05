@@ -30,14 +30,23 @@ import { JSON_ONLY, asJsonBlock, composePrompt, parseJson, validateAgainst } fro
 /** "ignition : departure :: shutdown : arrival" */
 const readingText = ([a, b, c, d]) => `${a} : ${b} :: ${c} : ${d}`;
 
-/** Every refused regrouping on the board, as { setId, reading } — two per set. */
+/**
+ * Every refused regrouping on the board — two per set, each with a short id.
+ *
+ * The id is what the answer echoes back. Asking the model to retype four words
+ * invited it to send the formatted line as a string instead of an array (it
+ * did), and every character it writes is a character it is not spending on the
+ * judgement. `set-b#1` is unambiguous and nearly free.
+ */
 export function enumerateCrossReadings(board) {
   return (board?.sets ?? []).flatMap((set) =>
-    crossPairings(set.pairs).map((reading) => ({ setId: set.id, reading })),
+    crossPairings(set.pairs).map((reading, index) => ({
+      id: `${set.id}#${index + 1}`,
+      setId: set.id,
+      reading,
+    })),
   );
 }
-
-const keyOf = ({ setId, reading }) => `${setId}|${reading.join('|')}`;
 
 export const id = 'adversarial-solver';
 export const stageId = '06-adversarial-solver';
@@ -47,14 +56,17 @@ const SCHEMA = {
   required: ['findings', 'noneFound', 'crossReadings'],
   properties: {
     noneFound: { type: 'boolean' },
+    // `note` is required only where it carries information — on a reading that
+    // HOLDS. Eight paragraphs explaining why eight non-analogies are not
+    // analogies is output spent on nothing, and output is the budget that ran
+    // out the first time this was built.
     crossReadings: {
       type: 'array',
       items: {
         type: 'object',
-        required: ['setId', 'reading', 'valid', 'note'],
+        required: ['id', 'valid'],
         properties: {
-          setId: { type: 'string', minLength: 1 },
-          reading: { type: 'array', items: { type: 'string', minLength: 1 } },
+          id: { type: 'string', minLength: 1 },
           valid: { type: 'boolean' },
           note: { type: 'string', minLength: 1 },
         },
@@ -112,29 +124,29 @@ export function buildPrompt(input = {}, context) {
       // The checklist. Every one of these must come back answered — an omission
       // fails validation and the stage is asked again.
       'SEPARATELY, answer the cross-reading checklist below. Each set on this board is two pairs; its four words can be regrouped in exactly two other ways, and both are listed for you. The engine REFUSES those readings, so if one of them is also a valid analogy, a player who sees it is marked wrong for being right. That is the worst failure this board can have.',
-      'For each listed reading answer one question: read as written, is this a valid analogy — do both halves carry the same relationship?',
-      '  - "valid": true means a real player could reasonably read it and be satisfied. The set is broken and must be reworded or replaced.',
-      '  - "valid": false means the reading does not hold. Say briefly why it falls apart.',
+      'For each listed line answer one question: read as written, is this a valid analogy — do both halves carry the same relationship?',
+      '  - "valid": true means a real player could reasonably read it and be satisfied. The set is broken. Add a "note" saying what the shared relationship is.',
+      '  - "valid": false means the reading does not hold. No note needed.',
       'Judge only the reading in front of you. Do not soften an answer because the intended set is good, and do not mark a reading valid merely because the words are related — a shared topic is not a shared relationship.',
-      'These answers belong in "crossReadings", not in "findings". Do not report them twice.',
+      'This is a checklist, not a search: the candidates are already found, so answer them and move on. These answers belong in "crossReadings", not in "findings" — do not report them twice.',
     ].join('\n'),
     data: [
       asJsonBlock('Board', board),
       integrity ? asJsonBlock('Mechanical integrity report (already proven — do not redo)', integrity) : '',
       candidates.length > 0
-        ? `Cross-reading checklist — answer every line:\n${candidates
-            .map(({ setId, reading }) => `  - [${setId}] ${readingText(reading)}`)
+        ? `Cross-reading checklist — answer every line by its id:\n${candidates
+            .map(({ id, reading }) => `  - ${id}: ${readingText(reading)}`)
             .join('\n')}`
         : '',
     ]
       .filter(Boolean)
       .join('\n\n'),
     outputRules: [
-      'Return { "findings": [ { "kind", "words", "severity", "note" } ], "noneFound": true or false, "crossReadings": [ { "setId", "reading", "valid", "note" } ] }.',
+      'Return { "findings": [ { "kind", "words", "severity", "note" } ], "noneFound": true or false, "crossReadings": [ { "id", "valid", "note" } ] }.',
       '"kind" is one of alternate-reading, cross-set-association, ambiguous-order, double-meaning, misleading-label, unfair.',
       '"words" is an array of the board words involved, "severity" is low, medium or high, and "note" says what a player would see.',
       'Rate each finding low, medium or high by how likely a real player is to be misled.',
-      '"crossReadings" must contain one entry for EVERY line of the checklist and nothing else. "reading" is that line\'s four words in the same order, "valid" is a boolean, "note" is one sentence.',
+      '"crossReadings" must contain one entry for EVERY line of the checklist and nothing else. "id" is that line\'s id exactly as written, "valid" is a boolean, and "note" is one sentence required only when "valid" is true.',
       '"noneFound" describes "findings" only — a cross-reading answer is not a finding.',
       JSON_ONLY,
     ].join(' '),
@@ -162,32 +174,40 @@ const noneFoundAgreesWithFindings = (output) => {
  */
 const everyReadingAnswered = (output, board) => {
   if (!board) return []; // called without input (tests, direct use) — shape only
-  const asked = new Map(enumerateCrossReadings(board).map((c) => [keyOf(c), c]));
-  const answered = new Set(output.crossReadings.map(keyOf));
+  const asked = new Map(enumerateCrossReadings(board).map((c) => [c.id, c]));
+  const answered = new Set(output.crossReadings.map((entry) => entry.id));
 
-  const missing = [...asked.keys()].filter((key) => !answered.has(key));
-  const invented = output.crossReadings.filter((c) => !asked.has(keyOf(c)));
+  const missing = [...asked.keys()].filter((id) => !answered.has(id));
+  const invented = output.crossReadings.filter((entry) => !asked.has(entry.id));
 
   const errors = [];
   if (missing.length > 0) {
     errors.push({
       path: 'crossReadings',
       message: `${missing.length} checklist reading(s) unanswered: ${missing
-        .map((key) => {
-          const { setId, reading } = asked.get(key);
-          return `[${setId}] ${readingText(reading)}`;
-        })
+        .map((id) => `${id} (${readingText(asked.get(id).reading)})`)
         .join('; ')}`,
     });
   }
   for (const entry of invented) {
     errors.push({
       path: 'crossReadings',
-      message: `[${entry.setId}] ${readingText(entry.reading)} is not on the checklist — answer the readings given, do not add your own`,
+      message: `"${entry.id}" is not a checklist id — answer the lines given, do not add your own`,
     });
   }
   if (answered.size !== output.crossReadings.length) {
     errors.push({ path: 'crossReadings', message: 'a reading was answered more than once' });
+  }
+  // A reading that HOLDS is the whole point of the checklist; an unexplained
+  // one is a verdict Max cannot act on, exactly like a weak unity score with no
+  // outliers named.
+  for (const entry of output.crossReadings) {
+    if (entry.valid && !entry.note) {
+      errors.push({
+        path: 'crossReadings',
+        message: `${entry.id} is marked valid but says nothing — name the relationship both halves share`,
+      });
+    }
   }
   return errors;
 };

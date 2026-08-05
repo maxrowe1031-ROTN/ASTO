@@ -28,12 +28,7 @@ const BOARD = {
 
 /** A complete, well-formed answer to the checklist BOARD produces. */
 const answered = () =>
-  solver.enumerateCrossReadings(BOARD).map(({ setId, reading }) => ({
-    setId,
-    reading,
-    valid: false,
-    note: 'Does not hold.',
-  }));
+  solver.enumerateCrossReadings(BOARD).map(({ id }) => ({ id, valid: false }));
 
 const output = (overrides = {}) => ({
   noneFound: true,
@@ -44,13 +39,18 @@ const output = (overrides = {}) => ({
 
 const validate = (value) => solver.validateOutput(value, { input: { board: BOARD } });
 
-test('the checklist is two readings per set, in board order', () => {
+test('the checklist is two readings per set, in board order, each with an id', () => {
   const candidates = solver.enumerateCrossReadings(BOARD);
   assert.equal(candidates.length, 4);
   assert.deepEqual(candidates[2], {
+    id: 'set-b#1',
     setId: 'set-b',
     reading: ['ignition', 'departure', 'shutdown', 'arrival'],
   });
+  // The id is what the answer echoes. Asking the model to retype four words
+  // invited it to send the formatted line as a string instead of an array —
+  // which is exactly what it did on the 2026-08-05 replay.
+  assert.deepEqual(candidates.map((c) => c.id), ['set-a#1', 'set-a#2', 'set-b#1', 'set-b#2']);
 });
 
 test('a complete answer validates', () => {
@@ -64,6 +64,7 @@ test('an answer that skips a reading is refused, and the message names it', () =
   assert.equal(result.ok, false);
   assert.match(JSON.stringify(result.errors), /unanswered/);
   // The message names the reading that went unasked, not just a count.
+  assert.match(JSON.stringify(result.errors), /set-b#2/);
   assert.match(JSON.stringify(result.errors), /ignition : arrival :: shutdown : departure/);
 });
 
@@ -73,21 +74,13 @@ test('an answer with no crossReadings at all is refused', () => {
 });
 
 // Without this, a model could satisfy the count by inventing readings that
-// were never asked about — answering a checklist it wrote itself. The reading
-// used here is the set's INTENDED order, which is the most tempting wrong
-// answer available: it is trivially "not valid as an alternative" because it is
-// not an alternative at all.
+// were never asked about — answering a checklist it wrote itself.
 test('a reading that was not on the checklist is refused', () => {
   const invented = answered();
-  invented.push({
-    setId: 'set-a',
-    reading: ['sports car', 'Corvette', 'muscle car', 'Mustang'],
-    valid: false,
-    note: 'The intended reading, answered as though it were a cross-reading.',
-  });
+  invented.push({ id: 'set-a#3', valid: false });
   const result = validate(output({ crossReadings: invented }));
   assert.equal(result.ok, false);
-  assert.match(JSON.stringify(result.errors), /not on the checklist/);
+  assert.match(JSON.stringify(result.errors), /not a checklist id/);
 });
 
 test('answering the same reading twice is refused', () => {
@@ -118,10 +111,10 @@ test('without the board it validates shape only, and does not pretend otherwise'
 test('the enumerated readings reach the prompt as a checklist', () => {
   const prompt = solver.buildPrompt({ board: BOARD }, {});
   assert.match(prompt, /Cross-reading checklist/);
-  assert.match(prompt, /\[set-b\] ignition : departure :: shutdown : arrival/);
-  assert.match(prompt, /\[set-b\] ignition : arrival :: shutdown : departure/);
+  assert.match(prompt, /set-b#1: ignition : departure :: shutdown : arrival/);
+  assert.match(prompt, /set-b#2: ignition : arrival :: shutdown : departure/);
   // The four readings, one line each.
-  assert.equal((prompt.match(/^ {2}- \[set-/gm) ?? []).length, 4);
+  assert.equal((prompt.match(/^ {2}- set-/gm) ?? []).length, 4);
 });
 
 test('noneFound still describes findings only, not the checklist', () => {
@@ -129,4 +122,22 @@ test('noneFound still describes findings only, not the checklist', () => {
   const found = answered();
   found[2] = { ...found[2], valid: true, note: 'It holds.' };
   assert.equal(validate(output({ noneFound: true, findings: [], crossReadings: found })).ok, true);
+});
+
+// A reading that HOLDS is the entire point of the checklist. An unexplained
+// one is a verdict Max cannot act on — the same discipline unity's outliers
+// and evocativeness's named words are held to.
+test('a reading marked valid must say what relationship both halves share', () => {
+  const found = answered();
+  found[2] = { id: found[2].id, valid: true };
+  const result = validate(output({ crossReadings: found }));
+  assert.equal(result.ok, false);
+  assert.match(JSON.stringify(result.errors), /says nothing/);
+});
+
+// Eight paragraphs explaining why eight non-analogies are not analogies is
+// output spent on nothing — and output is the budget that ran out when this
+// was first built: 16,000 tokens of thinking, stop_reason max_tokens, no text.
+test('a reading marked false needs no note', () => {
+  assert.equal(validate(output()).ok, true);
 });
