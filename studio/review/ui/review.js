@@ -7,7 +7,7 @@
 // create a second version that can be wrong.
 
 import { boardHtml } from './board-html.js';
-import { feedbackControls, collectFeedback } from './feedback.js';
+import { feedbackControls, collectFeedback, FORM_VERSION } from './feedback.js';
 import { STAGE_IDS_FOR_REVISION } from '../../stage-registry.js';
 // The same derivation the server publishes under, not a second copy of it: the
 // destination shown before the click has to be the destination.
@@ -679,7 +679,7 @@ async function showProposal(runId, attemptId) {
               schemaVersion: '1.0',
               id: `fb-${attemptId}-proposal-${Date.now()}`,
               attemptId,
-              formVersion: 2,
+              formVersion: FORM_VERSION,
               action: 'proposal-verdict',
               scope: { type: 'board' },
               tags: [],

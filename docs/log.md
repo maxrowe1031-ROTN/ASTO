@@ -303,12 +303,22 @@ unreliable, after two honest attempts at the wording, is the model's answer. It 
 — advisory, folded shut, ~2 false flags across six boards — and it is **nowhere near a gate**.
 I stopped there rather than spend more of Max's credit guessing at prompt wording.
 
-**A finding from building the answer key:** `valid-but-unfair` is three tags wearing one name.
-Across this batch it covers a cross-reading that also works (cars, grateful-dead), a claim that
-is overgeneral (*"not every crew contains a mason"*), and a set that is simply weak
-(*"technically works but… boring"*). My first score conflated all three and reported eight
-misses where the narrow key holds three. The rubric compiled from this corpus will conflate them
-the same way, and no automated check can be scored against a tag that means three things.
+**A finding from building the answer key, and Max split the tag the same day.**
+`valid-but-unfair` was three meanings wearing one name — and its own chip described a *fourth*
+(*"technically correct, but the player could not have known"*) that he had never used it for.
+Four of nine uses meant "the same four words regroup into a second analogy that also works",
+which had no chip at all; the other five were already covered by `not-always-true` and
+`not-evocative`.
+
+So the fix was **one precise tag and one retirement**, not three new chips: `second-valid-reading`
+now sits in the fairness group where the vague one was. `valid-but-unfair` stays in the
+vocabulary and validates forever — `schemas.js` already carried the rule, *"APPEND ONLY. A
+removed tag would orphan the events that already carry it"* — and a new `RETIRED_TAGS` set is
+what keeps it off the form. `FEEDBACK_FORM_VERSION` moved to 3, because the **absence** of that
+tag now means something different before and after today.
+
+Also collapsed a copy while there: `formVersion` was a literal `2` in `review.js` beside the
+real constant in `feedback.js`, one bump away from splitting a population by accident.
 
 ### What the measurement decided
 
@@ -326,7 +336,8 @@ auto-revise does. Its reconsider-when is recorded in D-7: agreement with Max's
 
 ### Session gate
 
-- **Automated: PASSED.** 841 → **872 tests, 0 fail.** The enumerator is pinned against both
+- **Automated: PASSED.** 841 → **882 tests, 0 fail.** Every one of the corpus's recorded
+  feedback events still validates, including the nine that carry the retired tag. The enumerator is pinned against both
   real defects as fixtures — cars' `ignition/shutdown` and the Grateful Dead's
   `formation/disbandment` — plus `planting : felling :: budding : withering`, the same stance
   Max loved, as the case that must still enumerate without being condemned.

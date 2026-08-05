@@ -695,8 +695,33 @@ but… boring"*). My first score conflated all three and reported eight misses w
 answer key holds three.
 
 That matters beyond this measurement: **the rubric compiled from this corpus will conflate them
-too**, and no automated check can be scored against a tag that means three things. Splitting it
-is a change to the feedback form, so it is Max's call and sits in the backlog.
+too**, and no automated check can be scored against a tag that means three things.
+
+**Split with Max the same day.** Reading the form changed the shape of the fix. The chip's own
+description was *"technically correct, but the player could not have known"* — a **fourth**
+meaning, and one he had never used it for. Sorting the nine uses:
+
+| what he meant | uses | chip that already covered it |
+|---|---|---|
+| the same four words regroup into a second analogy that also works | 4 | **none — the real gap** |
+| the claim is only sometimes true | 2 | `not-always-true` |
+| technically valid but flat | 3 | `not-evocative`, `weak-explanation` |
+
+So the work was **one precise tag and one retirement**, not three new chips — `second-valid-reading`,
+in the *fairness* group, where the vague one had been. Note that `order-ambiguous` is not the
+same thing (*A : B reads like B : A*, a direction problem); Max reached for it on the cars board
+because it was the closest available, which is itself the evidence for the gap.
+
+**Retiring is subtraction from the form, never from the record.** `schemas.js` already carried
+the rule — *"APPEND ONLY. A removed tag would orphan the events that already carry it"* — so
+`valid-but-unfair` stays in `QUICK_TAGS` and validates forever; a new `RETIRED_TAGS` set is what
+keeps it off the form. `FEEDBACK_FORM_VERSION` moved to 3, because the **absence** of that tag
+now means something different before and after this line, and rubric compilation has to segment
+on it exactly as it does for version 1's untrustworthy `action`.
+
+Why retire rather than keep a catch-all: a vague chip beside precise ones collects everything.
+That is the same failure that left `not-always-true` unused for four boards while Max ticked
+`relationship-does-not-click` and wrote the necessity argument in prose underneath.
 
 #### Evocativeness, and Max's correction to it
 

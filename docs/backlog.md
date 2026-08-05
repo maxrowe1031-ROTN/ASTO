@@ -4,11 +4,12 @@
 > work only when Max pulls them into `design.md`'s plan. Mid-session ideas
 > land here so the session stays on task.
 
-- **`valid-but-unfair` is three tags wearing one name (2026-08-05).** Across one batch it meant
-  "a cross-reading also works", "the claim is overgeneral", and "this set is simply weak" —
-  three unrelated defects with three different fixes. It is the tag any cross-reading check must
-  be scored against, and it cannot be. Splitting it changes the feedback form, so it is Max's
-  call; until then, scoring against it needs the prose read by hand.
+- ~~**`valid-but-unfair` is three tags wearing one name.**~~ **Split 2026-08-05 with Max — see
+  design.md D-7.** `second-valid-reading` added for the meaning that had no chip; the other two
+  went back to `not-always-true` and `not-evocative`, which already covered them. The old tag is
+  retired from the form and valid forever. What remains: **the nine historical events carrying
+  it cannot be re-sorted automatically** — their meaning is only in the prose, so a rubric
+  compiled across the version boundary has to read those by hand or exclude them.
 - **The cross-reading check's semantic question needs a third attempt (design.md D-7).** The
   enumerator and plumbing are sound; the model's answer is not. Round 2 flagged any tidy 2×2
   grid as an analogy (13 spurious across six boards); round 3's anti-grid wording over-corrected

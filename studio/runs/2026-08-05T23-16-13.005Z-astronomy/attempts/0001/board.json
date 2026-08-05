@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "Celestial Connections",
+  "sets": [
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a category of celestial object and one named instance of it",
+      "explanation": "Cassiopeia is a specific constellation and Andromeda is a specific galaxy, so each pair moves from the general class to a named example of it.",
+      "pairs": [
+        [
+          "constellation",
+          "Cassiopeia"
+        ],
+        [
+          "galaxy",
+          "Andromeda"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "astronomy-vocabulary",
+        "Andromeda-double-meaning"
+      ]
+    },
+    {
+      "id": "set-representation",
+      "relationshipLabel": "a thing and its made image",
+      "explanation": "A star chart maps the sky and an orrery models the solar system, so each pair links a real thing to a crafted representation of it.",
+      "pairs": [
+        [
+          "sky",
+          "star chart"
+        ],
+        [
+          "solar system",
+          "orrery"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "orrery-obscurity",
+        "instrument-confusion"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "an observer and the instrument of their trade",
+      "explanation": "An astronomer relies on a telescope and an astrophysicist relies on a spectrometer, pairing each specialist with their defining tool.",
+      "pairs": [
+        [
+          "astronomer",
+          "telescope"
+        ],
+        [
+          "astrophysicist",
+          "spectrometer"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "astronomer-astrophysicist-synonymy",
+        "telescope-generic-use"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "an instrument and the thing it blocks",
+      "explanation": "A coronagraph exists to block glare and an occulter exists to block starlight, so each device is defined by what it necessarily prevents.",
+      "pairs": [
+        [
+          "coronagraph",
+          "glare"
+        ],
+        [
+          "occulter",
+          "starlight"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "specialized-instrument-vocabulary",
+        "telescope-lookalike"
+      ]
+    }
+  ]
+}

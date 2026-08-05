@@ -8,11 +8,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  FORM_VERSION,
   QUICK_TAGS,
   collectFeedback,
   feedbackControls,
 } from '../../../studio/review/ui/feedback.js';
-import { validateFeedbackEvent } from '../../../studio/schemas.js';
+import { FEEDBACK_FORM_VERSION, validateFeedbackEvent } from '../../../studio/schemas.js';
 
 const BOARD = {
   id: 'asto-first-light',
@@ -329,7 +330,11 @@ test('a verdict alone is an opinion — no tag or note required', () => {
 test('every event carries the form version that produced it', () => {
   const events = collect([fakeBlock({ setId: 'set-a', difficulty: 1, tier: 3, note: 'x' })]);
   assert.ok(events.length >= 2);
-  for (const e of events) assert.equal(e.formVersion, 2);
+  // Read from the module rather than pinned to a literal: the number's job is
+  // to segment populations, and a test that had to be edited on every bump
+  // would be the second place it could drift.
+  for (const e of events) assert.equal(e.formVersion, FORM_VERSION);
+  assert.equal(FORM_VERSION, FEEDBACK_FORM_VERSION, 'the form and the schema disagree on the version');
 });
 
 // --- play telemetry -------------------------------------------------------
@@ -375,5 +380,36 @@ test('every event the new form emits validates against the schema', () => {
   for (const event of events) {
     const { ok, errors } = validateFeedbackEvent(event);
     assert.equal(ok, true, `${event.action}: ${JSON.stringify(errors)}`);
+  }
+});
+
+// --- the retirement of `valid-but-unfair` (2026-08-05) --------------------
+
+test('the retired chip is gone from the form, and the precise one took its place', () => {
+  const html = feedbackControls(BOARD);
+  assert.ok(!html.includes('valid-but-unfair'), 'a retired chip is still being offered');
+  assert.match(html, /second-valid-reading/);
+  // In "fairness", where the old chip lived — it is the fairness failure par
+  // excellence: the engine accepts one grouping and a player who finds the
+  // other is marked wrong for being right.
+  assert.match(html, /regroup into another analogy that also works/);
+});
+
+// The point of the retirement is that the two meanings which already HAD chips
+// go back to them. If these ever vanished from the form, the retirement would
+// have quietly deleted a third of what `valid-but-unfair` was carrying.
+test('the chips that absorbed the other two meanings are still on the form', () => {
+  const html = feedbackControls(BOARD);
+  for (const tag of ['not-always-true', 'weak-explanation', 'not-evocative']) {
+    assert.ok(html.includes(tag), `${tag} is what part of valid-but-unfair became`);
+  }
+});
+
+test('a judgement recorded today can still carry the new tag through validation', () => {
+  const events = collect([
+    fakeBlock({ setId: 'set-a', difficulty: 1, tags: ['second-valid-reading'], note: 'reorders' }),
+  ]);
+  for (const event of events) {
+    assert.equal(validateFeedbackEvent(event).ok, true, JSON.stringify(event));
   }
 });
