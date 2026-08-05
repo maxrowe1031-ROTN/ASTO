@@ -12,7 +12,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { analogyOf, boardHtml, tilesFor } from '../../../studio/review/ui/board-html.js';
+import {
+  analogyOf,
+  boardHtml,
+  boardShapeHtml,
+  setsHtml,
+  tilesFor,
+} from '../../../studio/review/ui/board-html.js';
 import { deriveWords } from '../../../src/engine/arrangements.js';
 
 const BOARD = {
@@ -228,4 +234,71 @@ test('the board header shows the stances and the unity verdict with its outliers
 
 test('a board with no stance data and no unity renders exactly as before', () => {
   assert.equal(/board-shape/.test(boardHtml(BOARD)), false);
+});
+
+// --- the evaluators, joined to their sets (design.md D-7) ---
+//
+// 05 and 06 had been describing real defects for weeks, filed by stage in a
+// collapsed panel at the foot of the page. Max rediscovered both by playing
+// the boards. Their findings are per-set, so they belong on the set.
+
+const NOTED = {
+  'set-homes': [
+    { source: 'also reads', level: 'high', text: 'ignition : departure :: shutdown : arrival — it holds.' },
+    { source: 'analogy validator', level: 'medium', text: 'Different grains.' },
+  ],
+};
+
+test('a set with machine notes carries them, folded shut', () => {
+  const html = setsHtml(BOARD, [], {}, NOTED);
+  assert.match(html, /<details class="machine-notes"/);
+  assert.ok(!/<details class="machine-notes"[^>]*\sopen/.test(html), 'notes are open by default');
+  assert.match(html, /2 machine notes/);
+  assert.match(html, /ignition : departure :: shutdown : arrival/);
+});
+
+test('a set with nothing said about it gets no disclosure at all', () => {
+  const html = setsHtml(BOARD, [], {}, NOTED);
+  const cards = html.split('<article').filter((chunk) => chunk.includes('data-set-id'));
+  const quiet = cards.filter((card) => !card.includes('machine-notes'));
+  assert.ok(quiet.length > 0, 'every card grew a disclosure');
+});
+
+test('a valid cross-reading raises the disclosure to high', () => {
+  const html = setsHtml(BOARD, [], {}, NOTED);
+  assert.match(html, /<details class="machine-notes" data-level="high"/);
+});
+
+test('machine notes are escaped like everything else on the card', () => {
+  const html = setsHtml(BOARD, [], {}, {
+    'set-homes': [{ source: '<img>', level: 'low', text: '<script>alert(1)</script>' }],
+  });
+  assert.ok(!html.includes('<script>'), 'a model-authored note reached the DOM as markup');
+  assert.match(html, /&lt;script&gt;/);
+});
+
+test('evocativeness renders beside unity, with the sharper word when there is one', () => {
+  const html = boardShapeHtml({
+    unity: { verdict: 'strong', reasoning: 'One world.', outliers: [] },
+    evocativeness: {
+      verdict: 'generic',
+      reasoning: 'The most obvious nouns for the subject.',
+      generic: [
+        { word: 'workshop', suggestion: 'woodshop', note: 'Too broad.' },
+        { word: 'crew', note: 'No sharper word offered.' },
+      ],
+    },
+  });
+  // Both verdicts, neither swallowing the other — the Grateful Dead state.
+  assert.match(html, /unity: <strong>strong<\/strong>/);
+  assert.match(html, /evocativeness: <strong>generic<\/strong>/);
+  assert.match(html, /workshop → <strong>woodshop<\/strong>/);
+  assert.match(html, /crew — No sharper word offered\./);
+});
+
+test('a board with only an evocativeness verdict still renders its line', () => {
+  const html = boardShapeHtml({
+    evocativeness: { verdict: 'adequate', reasoning: 'Near the middle.', generic: [] },
+  });
+  assert.match(html, /evocativeness: <strong>adequate<\/strong>/);
 });
