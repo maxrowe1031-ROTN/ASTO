@@ -2,6 +2,70 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-05 — The first great pipeline board, and the bug the other runs were hiding
+
+Max ran three real boards. One was **the best result the pipeline has ever produced**; one
+truncated. Diagnosing the failure found a design flaw in my own work from the day before.
+
+### The win — "Trees, Tools, and Time"
+
+> *"haha!! YES!! This one felt amazing. This was perfect, diverse in its puzzles, quizzical,
+> totally thematic, gave a sense of joy at every turn while still presenting a challenge."*
+
+Four sets, four stances, and **all four scored `good-unchanged + strong-reveal +
+difficulty-accurate + feels-like-asto`** — the **first pipeline board** ever to do that (round
+2's night board was the only other, and it was hand-made). D-3's Black-slot prediction landed
+too: the inverting set (`planting : felling :: budding : withering`) drew *"the opposite
+arrangement makes this analogy stand out from the rest… I felt especially good about this
+one."* And the changed *activity* showed up unprompted: *"i hunted around a bit before i got
+it."*
+
+### The bug — a set is two pairs sharing ONE relationship; a stance is a CATEGORY of them
+
+The `paris` run truncated stage 02 at 40,000 tokens and 300s. It had satisfied the stance
+quota perfectly — all four stances — while using **eleven shapes exactly once each**. No two
+pairs shared a relationship, so no set could form without the grouper searching for pairs to
+force together. Across the three runs the correlation is monotonic and explosive:
+
+| run | relationships carried by ≥2 pairs | orphans | stage 02 |
+|---|---|---|---|
+| a-tree | **7** | 0 | 1,893 tok · **18s** |
+| beach | **3** | 8 | 13,645 tok · 129s |
+| paris | **1** | 11 | 40,000 tok · **truncated** |
+
+**My quota was specified at the wrong granularity** — it enforced stance coverage but not
+*pairability*. Third instance of this repo's recurring scar: a rule enforced at one door and
+not the one downstream.
+
+**The fix:** `01` now requires four relationships each carried by two pairs, spanning four
+stances, stated in the prompt and enforced in `validateOutput`; the rejection names the
+orphaned shapes, since an orphan is one partner pair away from being a set. The real pools
+from all three runs are pinned as tests, so the check must keep sorting them the way the
+pipeline actually experienced them.
+
+**Verified on the theme that failed.** `paris-retry`: 7 matched shapes, 0 orphans; stage 02
+fell from 40,000 tokens/truncated to **1,392 tokens / 12s** — a 29× reduction — and the run
+completed at **$0.37** (vs $0.79) with four distinct stances and strong unity. Board:
+*"Paris, Piece by Piece"*. **779 tests green.**
+
+### Also settled
+
+`02-theme-grouper` went back to **medium** earlier in the session after it truncated the first
+`beach` run at high ($0.71, no board) — see the entry below. Worth noting the two fixes
+compound: the effort revert stopped 02 thinking unboundedly, and the matched-pairs floor
+stopped it *needing* to.
+
+- **Next:**
+  1. **More real runs.** Two boards approved, one of them outstanding; the pipeline now has a
+     groupable-pool floor, so watch whether stage 02 stays fast (a-tree 18s, paris-retry 12s)
+     or drifts back up.
+  2. **`paris-retry` and `beach-retry` await Max's judgement** in the review loop.
+  3. Carried: the rater can abstain the pool below four and nothing checks it · slim-down lap
+     at ~10 judged boards (02's numbers have changed enough that the lap should re-measure it)
+     · the fixture board's feedback needs separating when `rubric.md` is compiled · `README.md`
+     never mentions `npm run studio:review` · 05–08 concurrency · First Light `explanation`
+     pass · GDD drift upstream.
+
 ## 2026-08-05 — The first real run died at stage 02, and what it taught
 
 Max started the first real run under `2026-08-04-taxonomy-shakedown`. It failed: **`beach`,
