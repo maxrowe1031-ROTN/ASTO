@@ -86,6 +86,23 @@ export function validateManifest(manifest) {
 
 export const FEEDBACK_SCHEMA_VERSION = '1.0';
 
+// APPEND ONLY, like the tags: the corpus is the record of what Max thought at
+// the time, and every historical event must keep validating.
+//
+// The last four are the 2026-08-05 instrument (formVersion 2). The board
+// actions above them already carried the right meaning — Max's rule is that a
+// board verdict is about PUBLISHABILITY of the whole — but the set actions did
+// not, because the form stamped the board's button onto every set block. 21 of
+// 79 tagged set-events say `reject-set` while carrying only praise. The
+// set-scoped verdicts below are chosen per set and never inherited:
+//
+//   set-publishable  — this set is good as it stands
+//   set-needs-edit   — close; the fix belongs in `fixSuggestion`
+//   set-replace      — this one has to go
+//
+// `playthrough` records how a board was actually played (observed behaviour
+// outranks recalled opinion), and `proposal-verdict` records what Max did with
+// a Revision Proposer brief — the evidence its graduation trigger needs.
 export const FEEDBACK_ACTIONS = Object.freeze([
   'approve-board',
   'approve-set',
@@ -97,7 +114,20 @@ export const FEEDBACK_ACTIONS = Object.freeze([
   'change-difficulty',
   'change-label',
   'change-explanation',
+  'set-publishable',
+  'set-needs-edit',
+  'set-replace',
+  'playthrough',
+  'proposal-verdict',
 ]);
+
+// The instrument that produced an event. Stamped for the same reason
+// `effortProfile` is stamped on an attempt: the form changed on 2026-08-05, and
+// boards judged under two instruments are two populations. Rubric compilation
+// must segment on this rather than guess from dates — under version 1 a set's
+// `action` was inherited from the board button and cannot be trusted, though
+// its tags and note can.
+export const FEEDBACK_FORM_VERSION = 2;
 
 // The spec's thirteen, plus four added 2026-08-04 from the review corpus itself.
 //
@@ -155,6 +185,18 @@ const FEEDBACK_KEYS = new Set([
   'before',
   'after',
   'source',
+  // Stamped by run-store on append (`{ ...event, at: clock() }`), so it is
+  // absent when the server validates an incoming event and present in every
+  // stored one. Allowed here so a STORED event can be re-validated — which is
+  // what the corpus-replay test does, and what any future rubric compiler
+  // reading feedback.jsonl will need.
+  'at',
+  // 2026-08-05 (formVersion 2)
+  'formVersion',
+  'blockers',
+  'fixSuggestion',
+  'playthrough',
+  'proposal',
 ]);
 
 export function validateFeedbackEvent(event) {
@@ -214,6 +256,56 @@ export function validateFeedbackEvent(event) {
 
   if (event.source !== undefined && !isNonEmptyString(event.source)) {
     fail('source', 'must be a non-empty string when present');
+  }
+
+  // --- the 2026-08-05 instrument (formVersion 2) ---
+  //
+  // All optional, so every version-1 event in the corpus still validates.
+  if (event.formVersion !== undefined && !Number.isInteger(event.formVersion)) {
+    fail('formVersion', 'must be an integer when present');
+  }
+
+  // Which set(s) stop the board being publishable. Board-scoped only: naming a
+  // blocker is a statement about the whole, and it is what the Revision
+  // Proposer keys on.
+  if (event.blockers !== undefined) {
+    if (!Array.isArray(event.blockers)) fail('blockers', 'must be an array when present');
+    else if (event.scope?.type !== 'board') fail('blockers', 'only a board-scoped event names blockers');
+    else if (!event.blockers.every(isNonEmptyString)) fail('blockers', 'each blocker must be a set id');
+  }
+
+  // Max's own fix, in his words. His highest-value habit — two prose fixes
+  // became rule-011 and rule-012 — promoted from a note to a queryable field.
+  if (event.fixSuggestion !== undefined) {
+    if (typeof event.fixSuggestion !== 'string') fail('fixSuggestion', 'must be a string');
+    else if (event.fixSuggestion.length > MAX_NOTE_LENGTH) {
+      fail('fixSuggestion', `must be at most ${MAX_NOTE_LENGTH} characters`);
+    }
+  }
+
+  // How the board was actually played, captured by the Studio's own play page.
+  if (event.playthrough !== undefined) {
+    if (!isPlainObject(event.playthrough)) fail('playthrough', 'must be an object when present');
+    else {
+      const { solvedOrder, mistakes, soClose } = event.playthrough;
+      if (solvedOrder !== undefined && !Array.isArray(solvedOrder)) {
+        fail('playthrough.solvedOrder', 'must be an array of set ids');
+      }
+      for (const [key, value] of [['mistakes', mistakes], ['soClose', soClose]]) {
+        if (value !== undefined && !Number.isInteger(value)) {
+          fail(`playthrough.${key}`, 'must be an integer when present');
+        }
+      }
+    }
+  }
+
+  // What Max did with a Revision Proposer brief. `edited` carries the edited
+  // text, because the edit is precisely what the proposer got wrong.
+  if (event.proposal !== undefined) {
+    if (!isPlainObject(event.proposal)) fail('proposal', 'must be an object when present');
+    else if (!['accepted', 'edited', 'discarded'].includes(event.proposal.verdict)) {
+      fail('proposal.verdict', 'must be one of accepted, edited, discarded');
+    }
   }
 
   // A misspelled field would be silently dropped and read later as an absence

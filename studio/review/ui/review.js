@@ -292,19 +292,40 @@ function wirePlay(board) {
     if (event.target.dataset?.act !== 'play') return;
     // Loaded on demand: a reviewer who never presses Play never fetches the
     // game's views or controller.
-    const { startPlay } = await import('./play.js');
+    const { startPlay, createRecorder } = await import('./play.js');
     preview.hidden = true;
     bar.hidden = true;
     const host = document.createElement('div');
     panel.append(host);
+
+    // First completed playthrough only. A replay — showing someone, going back
+    // to re-check a set — is not a first read, and difficulty data contaminated
+    // by replays is worse than none. Later plays run normally; they just are
+    // not recorded, and the saved record says so.
+    const recorder = playthrough.record === null ? createRecorder() : null;
+
     session = startPlay(host, board, {
+      recorder,
       onExit: () => {
+        const result = recorder?.result() ?? null;
+        if (result && playthrough.record === null) {
+          playthrough.record = { ...result, play: 1 };
+        } else if (!result && recorder) {
+          // Played but not finished: nothing to calibrate against.
+          playthrough.plays += 1;
+        }
         stop();
         host.remove();
       },
     });
+    playthrough.plays += 1;
   });
 }
+
+// Per-attempt play state, read by the save handler. `record` is the first
+// COMPLETED playthrough; `plays` counts every time Play was pressed, so the
+// saved event can say whether a replay happened rather than hiding it.
+const playthrough = { record: null, plays: 0 };
 
 function wireDecisions(runId, attemptId) {
   const panel = document.getElementById('feedback');
@@ -315,8 +336,17 @@ function wireDecisions(runId, attemptId) {
     if (!action) return;
     event.preventDefault();
 
+    // The button is only the fallback now: if Max picked a board verdict in the
+    // form, that wins. His rule — a board verdict is about the publishability
+    // of the whole — and the set verdicts are chosen per set, never inherited.
     const defaultAction = { approve: 'approve-set', reject: 'reject-set' }[action] ?? 'revise-set';
-    const events = collectFeedback(panel, { attemptId, defaultAction });
+    const events = collectFeedback(panel, {
+      attemptId,
+      defaultAction,
+      playthrough: playthrough.record
+        ? { ...playthrough.record, replayed: playthrough.plays > 1 }
+        : null,
+    });
 
     try {
       if (action === 'save') {

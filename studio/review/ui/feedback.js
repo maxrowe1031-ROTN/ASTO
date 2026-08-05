@@ -31,12 +31,85 @@ export const QUICK_TAGS = [
 
 // Tags that read as praise, so the UI can tint them differently. Positive
 // feedback is signal too — the spec is explicit that approvals are recorded.
-const POSITIVE = new Set([
+//
+// Rendered as one row above the faults, because Max uses them as a SCORECARD:
+// all four on all four sets is his "this is ASTO" signal, and only two boards
+// have ever earned it. Scannable beats alphabetical.
+const POSITIVE = [
   'good-unchanged',
   'strong-reveal',
   'difficulty-accurate',
   'feels-like-asto',
-]);
+];
+
+// The faults, grouped by what kind of fault they are. Grouping is the whole
+// point: seventeen chips in one undifferentiated wall is how
+// `not-always-true` — added 2026-08-04 precisely because necessity failure is
+// Max's most common reason for killing a set — went unused for four boards
+// while he ticked `relationship-does-not-click` and wrote the necessity
+// argument in prose underneath.
+//
+// The pair stays SPLIT rather than merged. The split was a considered decision
+// with its reasoning recorded in schemas.js ("two different faults with two
+// different fixes deserve two tags"), it is one day old, and Max's own ruling
+// in the backlog is that silence is weak evidence of a wrong tag. What was
+// missing was findability, not a smaller vocabulary.
+const FAULT_GROUPS = [
+  {
+    label: 'the relationship',
+    tags: [
+      ['relationship-does-not-click', 'the link does not land, or the label reads badly'],
+      ['not-always-true', 'B does not follow from A necessarily — "telescope : discovery"'],
+      ['order-ambiguous', 'A : B reads much the same as B : A'],
+      ['weak-label', 'the relationship is right but the wording is not'],
+      ['weak-explanation', 'the reveal does not make it feel fair in hindsight'],
+    ],
+  },
+  {
+    label: 'difficulty',
+    tags: [
+      ['too-easy', 'lands below its tier'],
+      ['too-difficult', 'lands above its tier'],
+      ['too-obscure', 'the words, not the relationship, are the obstacle'],
+    ],
+  },
+  {
+    label: 'fairness',
+    tags: [
+      ['cross-set-association', 'a word pulls toward another set on the board'],
+      ['valid-but-unfair', 'technically correct, but the player could not have known'],
+    ],
+  },
+  {
+    label: 'the board as a whole',
+    tags: [
+      ['repetitive-shape', 'sets ask the same kind of question'],
+      ['no-unifying-theme', 'the sixteen words do not read as one world'],
+      ['not-evocative', 'nothing here is a pleasure to read'],
+    ],
+  },
+];
+
+const POSITIVE_SET = new Set(POSITIVE);
+
+// The three set verdicts, in Max's words: publishable / publishable with an
+// edit / replace it. Chosen per set and never inherited from the board button —
+// his stated rule is that rejecting a board says the WHOLE is not publishable,
+// while the individual analogies still deserve honest independent reads.
+const SET_VERDICTS = [
+  ['set-publishable', 'publishable', 'good as it stands'],
+  ['set-needs-edit', 'needs an edit', 'close — say how below'],
+  ['set-replace', 'replace', 'this one has to go'],
+];
+
+// The board verdict, tri-state. The middle state is the one the corpus kept
+// producing with nowhere to put it: both boards rejected on 2026-08-05 had
+// three of four sets praised and died on one blocking set.
+export const BOARD_VERDICTS = [
+  ['approve-board', 'publishable', 'ship it as it stands'],
+  ['revise-board', 'publishable after a fix', 'name the set(s) blocking it'],
+  ['reject-board', 'not publishable', 'the whole puzzle does not work'],
+];
 
 // Meaningless on a single set: a theme is a property of four sets together.
 // Offering it per-set would collect events nothing could act on.
@@ -55,16 +128,57 @@ const TIERS = [
 const escape = (value) =>
   String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
-export function tagChips(scopeKey, { boardOnly = false } = {}) {
-  return QUICK_TAGS.filter((tag) => boardOnly || !BOARD_ONLY.has(tag))
-    .map(
-      (tag) => `
-      <label class="chip${POSITIVE.has(tag) ? ' chip-positive' : ''}">
+const chip = (scopeKey, tag, title = '', extra = '') => `
+      <label class="chip${extra}"${title ? ` title="${escape(title)}"` : ''}>
         <input type="checkbox" data-scope="${escape(scopeKey)}" value="${escape(tag)}" />
         <span>${escape(tag)}</span>
-      </label>`,
-    )
+      </label>`;
+
+/**
+ * The tags for one scope: the positive scorecard row first, then the faults
+ * grouped by kind. `boardOnly` decides whether board-scoped tags appear —
+ * `no-unifying-theme` is meaningless on a single set, since a theme is a
+ * property of four sets together.
+ */
+export function tagChips(scopeKey, { boardOnly = false } = {}) {
+  const allowed = (tag) => (boardOnly ? true : !BOARD_ONLY.has(tag));
+
+  const positives = POSITIVE.filter(allowed)
+    .map((tag) => chip(scopeKey, tag, '', ' chip-positive'))
     .join('');
+
+  const groups = FAULT_GROUPS.map(({ label, tags }) => {
+    const chips = tags
+      .filter(([tag]) => allowed(tag))
+      .map(([tag, hint]) => chip(scopeKey, tag, hint))
+      .join('');
+    return chips ? `
+      <div class="fb-group">
+        <span class="fb-group-label">${escape(label)}</span>
+        <div class="chips">${chips}</div>
+      </div>` : '';
+  }).join('');
+
+  return `
+      <div class="fb-scorecard"><div class="chips">${positives}</div></div>
+      ${groups}`;
+}
+
+/** The three set verdicts as radios — a set gets one read, or none. */
+export function setVerdictPicker(setId) {
+  const options = SET_VERDICTS.map(
+    ([value, label, hint]) => `
+      <label class="chip chip-verdict" data-verdict="${escape(value)}" title="${escape(hint)}">
+        <input type="radio" name="verdict-${escape(setId)}" data-scope="${escape(setId)}"
+               data-role="verdict" value="${escape(value)}" />
+        <span>${escape(label)}</span>
+      </label>`,
+  ).join('');
+  return `
+      <div class="fb-verdict">
+        <span class="studio-muted">this set is</span>
+        <div class="chips">${options}</div>
+      </div>`;
 }
 
 /**
@@ -97,27 +211,59 @@ export function tierPicker(setId, difficulty) {
 
 /** One feedback block per set, plus one for the board as a whole. */
 export function feedbackControls(board) {
-  const sets = (board?.sets ?? [])
-    .slice()
-    .sort((a, b) => a.difficulty - b.difficulty)
+  const ordered = (board?.sets ?? []).slice().sort((a, b) => a.difficulty - b.difficulty);
+
+  const sets = ordered
     .map(
       (set) => `
       <section class="fb-block" data-set-id="${escape(set.id)}"
                data-difficulty="${escape(set.difficulty)}">
         <h4>${escape(set.id)} <span class="studio-muted">— ${escape(set.relationshipLabel)}</span></h4>
         <p class="fb-analogy">${escape(analogyOf(set))}</p>
+        ${setVerdictPicker(set.id)}
         ${tierPicker(set.id, set.difficulty)}
-        <div class="chips">${tagChips(set.id)}</div>
+        ${tagChips(set.id)}
         <textarea class="note" data-scope="${escape(set.id)}" rows="2"
           placeholder="What is wrong with this set — or right about it?"></textarea>
+        <textarea class="fix" data-scope="${escape(set.id)}" rows="2"
+          placeholder="How would you fix it? (e.g. &quot;spy is to alias as gun is to holster — one uses the other to stay hidden&quot;)"></textarea>
       </section>`,
     )
     .join('');
 
+  // Which set(s) stop the board being publishable. Only meaningful alongside
+  // the middle verdict, but always rendered: hiding it behind a radio would
+  // make it invisible until after the decision it belongs to.
+  const blockers = ordered
+    .map(
+      (set) => `
+      <label class="chip chip-blocker">
+        <input type="checkbox" data-role="blocker" value="${escape(set.id)}" />
+        <span>${escape(set.id)}</span>
+      </label>`,
+    )
+    .join('');
+
+  const verdicts = BOARD_VERDICTS.map(
+    ([value, label, hint]) => `
+      <label class="chip chip-verdict" data-verdict="${escape(value)}" title="${escape(hint)}">
+        <input type="radio" name="board-verdict" data-role="board-verdict" value="${escape(value)}" />
+        <span>${escape(label)}</span>
+      </label>`,
+  ).join('');
+
   return `
     <section class="fb-block fb-board" data-set-id="">
       <h4>The board as a whole</h4>
-      <div class="chips">${tagChips('', { boardOnly: true })}</div>
+      <div class="fb-verdict">
+        <span class="studio-muted">as a puzzle, this is</span>
+        <div class="chips">${verdicts}</div>
+      </div>
+      <div class="fb-blockers">
+        <span class="studio-muted">blocked by</span>
+        <div class="chips">${blockers}</div>
+      </div>
+      ${tagChips('', { boardOnly: true })}
       <textarea class="note" data-scope="" rows="2"
         placeholder="Overall: variety, fairness, whether it feels like ASTO."></textarea>
     </section>
@@ -125,58 +271,103 @@ export function feedbackControls(board) {
 }
 
 /**
- * Reads the controls into schema-valid events. Blocks with no tag, no note and
- * no tier change are skipped — an untouched set is not an opinion.
+ * Reads the controls into schema-valid events. A block with nothing said in it
+ * is skipped — an untouched set is not an opinion.
  *
- * A tier change is its own event rather than a field on the verdict, because
- * the schema already models it that way: `change-difficulty` with `before` and
- * `after` has been in studio/schemas.js since the corpus was designed, waiting
- * for a control. Keeping it separate also keeps it countable — "how often does
- * the rater disagree with Max, and in which direction" is one filter over the
- * corpus, not a scan of prose.
+ * The load-bearing change of formVersion 2: **a set's verdict is its own**.
+ * Version 1 stamped the board button's action onto every set block, so a set
+ * Max called "a great green" was recorded `reject-set` because the board it sat
+ * on was unpublishable. 21 of 79 tagged set-events in the corpus say that. His
+ * rule, and now the form's: a board verdict is about the publishability of the
+ * WHOLE; each set still gets an honest independent read, or none.
+ *
+ * A tier change stays its own event, as it has been since the corpus was
+ * designed — keeping it separate keeps it countable ("how often does the rater
+ * disagree with Max, and in which direction" is one filter, not a prose scan).
+ *
+ * @param defaultAction the board verdict when no radio was picked — the button
+ *                      Max pressed, so pressing Reject with no radio still
+ *                      records a rejection of the board.
  */
-export function collectFeedback(root, { attemptId, defaultAction = 'revise-set' }) {
+export function collectFeedback(root, { attemptId, defaultAction = 'revise-set', playthrough = null } = {}) {
   const events = [];
   let counter = 0;
   const nextId = () => `fb-${attemptId}-${(counter += 1)}-${Date.now()}`;
+  const base = () => ({
+    schemaVersion: '1.0',
+    id: nextId(),
+    attemptId,
+    formVersion: FORM_VERSION,
+    source: 'review-studio',
+  });
 
   for (const block of root.querySelectorAll('.fb-block')) {
     const setId = block.dataset.setId;
-    const tags = [...block.querySelectorAll('input[type=checkbox]:checked')].map((box) => box.value);
-    const note = block.querySelector('.note').value.trim();
-    const tierChange = tierChangeIn(block);
-    if (tags.length === 0 && note.length === 0 && tierChange === null) continue;
-
     const isBoard = setId === '';
-    if (tags.length > 0 || note.length > 0) {
+    const tags = [...block.querySelectorAll('input[type=checkbox][data-scope]:checked')].map(
+      (box) => box.value,
+    );
+    const note = block.querySelector('.note').value.trim();
+    const fix = block.querySelector('.fix')?.value.trim() ?? '';
+    const tierChange = tierChangeIn(block);
+    const verdict = isBoard ? boardVerdictIn(root) : setVerdictIn(block);
+    const blockers = isBoard ? blockersIn(root) : [];
+
+    const saidSomething =
+      tags.length > 0 || note.length > 0 || fix.length > 0 || verdict !== null || blockers.length > 0;
+
+    if (saidSomething) {
       events.push({
-        schemaVersion: '1.0',
-        id: nextId(),
-        attemptId,
-        action: isBoard ? boardActionFor(defaultAction) : defaultAction,
+        ...base(),
+        // A set with no verdict picked records the neutral `revise-set`: Max
+        // touched it without ruling on it. It never inherits the board's word.
+        action: isBoard ? (verdict ?? boardActionFor(defaultAction)) : (verdict ?? 'revise-set'),
         scope: isBoard ? { type: 'board' } : { type: 'set', setId },
         tags,
         ...(note.length > 0 ? { note } : {}),
-        source: 'review-studio',
+        ...(fix.length > 0 ? { fixSuggestion: fix } : {}),
+        ...(isBoard && blockers.length > 0 ? { blockers } : {}),
       });
     }
 
     if (tierChange !== null) {
       events.push({
-        schemaVersion: '1.0',
-        id: nextId(),
-        attemptId,
+        ...base(),
         action: 'change-difficulty',
         scope: { type: 'set', setId },
         tags: [],
         before: { difficulty: tierChange.before },
         after: { difficulty: tierChange.after },
-        source: 'review-studio',
       });
     }
   }
+
+  // How the board was actually played. Board-scoped, and only when a
+  // playthrough was recorded — see play.js for the first-play-only rule.
+  if (playthrough) {
+    events.push({
+      ...base(),
+      action: 'playthrough',
+      scope: { type: 'board' },
+      tags: [],
+      playthrough,
+      source: 'review-studio-play',
+    });
+  }
+
   return events;
 }
+
+const FORM_VERSION = 2;
+
+const setVerdictIn = (block) =>
+  block.querySelector('input[data-role=verdict]:checked')?.value ?? null;
+
+const boardVerdictIn = (root) =>
+  root.querySelector('input[data-role=board-verdict]:checked')?.value ?? null;
+
+const blockersIn = (root) =>
+  [...root.querySelectorAll('input[data-role=blocker]:checked')].map((box) => box.value);
 
 /**
  * The picked tier, or null when nothing was picked or the pick agrees with the

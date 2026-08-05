@@ -12,6 +12,7 @@ import {
   collectFeedback,
   feedbackControls,
 } from '../../../studio/review/ui/feedback.js';
+import { validateFeedbackEvent } from '../../../studio/schemas.js';
 
 const BOARD = {
   id: 'asto-first-light',
@@ -126,16 +127,22 @@ test('a set block records its current difficulty, so a change has an honest "bef
 // provide one. So the tests drive a stub that implements exactly the four
 // selectors the module uses — and THROWS on any other, so a changed selector
 // fails loudly here instead of silently collecting nothing in Max's browser.
-function fakeBlock({ setId, difficulty, tags = [], note = '', tier = null }) {
+function fakeBlock({ setId, difficulty, tags = [], note = '', tier = null, verdict = null, fix = '' }) {
   const one = (selector) => {
     if (selector === '.note') return { value: note };
+    if (selector === '.fix') return { value: fix };
     if (selector === 'input[data-role=tier]:checked') {
       return tier === null ? null : { value: String(tier) };
+    }
+    if (selector === 'input[data-role=verdict]:checked') {
+      return verdict === null ? null : { value: verdict };
     }
     throw new Error(`unexpected querySelector(${selector})`);
   };
   const many = (selector) => {
-    if (selector === 'input[type=checkbox]:checked') return tags.map((value) => ({ value }));
+    if (selector === 'input[type=checkbox][data-scope]:checked') {
+      return tags.map((value) => ({ value }));
+    }
     throw new Error(`unexpected querySelectorAll(${selector})`);
   };
   return {
@@ -145,15 +152,29 @@ function fakeBlock({ setId, difficulty, tags = [], note = '', tier = null }) {
   };
 }
 
-const fakeRoot = (blocks) => ({
+const fakeRoot = (blocks, { boardVerdict = null, blockers = [] } = {}) => ({
   querySelectorAll(selector) {
     if (selector === '.fb-block') return blocks;
+    if (selector === 'input[data-role=blocker]:checked') {
+      return blockers.map((value) => ({ value }));
+    }
     throw new Error(`unexpected querySelectorAll(${selector})`);
+  },
+  querySelector(selector) {
+    if (selector === 'input[data-role=board-verdict]:checked') {
+      return boardVerdict === null ? null : { value: boardVerdict };
+    }
+    throw new Error(`unexpected querySelector(${selector})`);
   },
 });
 
-const collect = (blocks, options = {}) =>
-  collectFeedback(fakeRoot(blocks), { attemptId: '0001', ...options });
+const collect = (blocks, options = {}) => {
+  const { boardVerdict, blockers, ...rest } = options;
+  return collectFeedback(fakeRoot(blocks, { boardVerdict, blockers }), {
+    attemptId: '0001',
+    ...rest,
+  });
+};
 
 test('a block with nothing on it is not an opinion', () => {
   assert.deepEqual(collect([fakeBlock({ setId: 'set-growth', difficulty: 1 })]), []);
@@ -215,4 +236,144 @@ test('every tag the UI offers is one the schema will accept', async () => {
   // this is the test that keeps the duplication honest.
   const { QUICK_TAGS: SCHEMA_TAGS } = await import('../../../studio/schemas.js');
   assert.deepEqual([...QUICK_TAGS].sort(), [...SCHEMA_TAGS].sort());
+});
+
+// --- formVersion 2: the verdict semantics (2026-08-05) --------------------
+//
+// Max's rule, which the form now encodes: a BOARD verdict is about whether the
+// whole puzzle is publishable; each SET still gets an honest independent read.
+// Version 1 stamped the board button onto every set block, so 21 of 79 tagged
+// set-events in the corpus say `reject-set` while carrying only praise —
+// including sets he called "a great green".
+
+test('REGRESSION: rejecting a board does not reject the sets on it', () => {
+  // The exact shape of the bug: the spy board was not publishable, and three
+  // of its four sets were excellent.
+  const events = collect(
+    [
+      fakeBlock({ setId: '', note: 'one set breaks it' }),
+      fakeBlock({
+        setId: 'set-specialist-tool',
+        difficulty: 1,
+        tags: ['good-unchanged', 'strong-reveal', 'feels-like-asto'],
+        note: 'a great green',
+        verdict: 'set-publishable',
+      }),
+    ],
+    { boardVerdict: 'reject-board', defaultAction: 'reject-set' },
+  );
+
+  const board = events.find((e) => e.scope.type === 'board');
+  const set = events.find((e) => e.scope.setId === 'set-specialist-tool');
+  assert.equal(board.action, 'reject-board', 'the board verdict is Max\'s, not the button\'s');
+  assert.equal(set.action, 'set-publishable', 'the praised set was rejected by inheritance again');
+});
+
+test('a set Max did not rule on records the neutral verdict, never the board\'s', () => {
+  const events = collect([fakeBlock({ setId: 'set-a', difficulty: 2, tags: ['too-easy'] })], {
+    defaultAction: 'reject-set',
+  });
+  assert.equal(events[0].action, 'revise-set');
+});
+
+test('the board verdict in the form beats the button that was pressed', () => {
+  const events = collect([fakeBlock({ setId: '', note: 'ship it' })], {
+    boardVerdict: 'approve-board',
+    defaultAction: 'reject-set',
+  });
+  assert.equal(events[0].action, 'approve-board');
+});
+
+test('the button still decides when no board verdict was picked', () => {
+  const events = collect([fakeBlock({ setId: '', note: 'no radio touched' })], {
+    defaultAction: 'approve-set',
+  });
+  assert.equal(events[0].action, 'approve-board');
+});
+
+test('blockers name which sets stop the board being publishable, board-scoped only', () => {
+  const events = collect(
+    [
+      fakeBlock({ setId: '', note: 'good but for one' }),
+      fakeBlock({ setId: 'set-bad', difficulty: 4, verdict: 'set-replace' }),
+    ],
+    { boardVerdict: 'revise-board', blockers: ['set-bad'] },
+  );
+  const board = events.find((e) => e.scope.type === 'board');
+  const set = events.find((e) => e.scope.type === 'set');
+  assert.deepEqual(board.blockers, ['set-bad']);
+  assert.equal(set.blockers, undefined, 'a set-scoped event must not carry blockers');
+});
+
+test('a fix suggestion is its own field, not buried in the note', () => {
+  const events = collect([
+    fakeBlock({
+      setId: 'set-role-marker',
+      difficulty: 4,
+      verdict: 'set-needs-edit',
+      note: 'close but the relationship does not hold',
+      fix: 'spy is to alias as gun is to holster — one uses the other to stay hidden',
+    }),
+  ]);
+  assert.equal(events.length, 1);
+  assert.match(events[0].fixSuggestion, /holster/);
+  assert.match(events[0].note, /does not hold/);
+});
+
+test('a verdict alone is an opinion — no tag or note required', () => {
+  const events = collect([fakeBlock({ setId: 'set-a', difficulty: 1, verdict: 'set-publishable' })]);
+  assert.equal(events.length, 1);
+  assert.equal(events[0].action, 'set-publishable');
+});
+
+test('every event carries the form version that produced it', () => {
+  const events = collect([fakeBlock({ setId: 'set-a', difficulty: 1, tier: 3, note: 'x' })]);
+  assert.ok(events.length >= 2);
+  for (const e of events) assert.equal(e.formVersion, 2);
+});
+
+// --- play telemetry -------------------------------------------------------
+
+test('a playthrough is recorded as one board-scoped event', () => {
+  const events = collect([], {
+    playthrough: { solvedOrder: ['set-a', 'set-b'], mistakes: 1, soClose: 1, replayed: false },
+  });
+  assert.equal(events.length, 1);
+  assert.equal(events[0].action, 'playthrough');
+  assert.deepEqual(events[0].scope, { type: 'board' });
+  assert.deepEqual(events[0].playthrough.solvedOrder, ['set-a', 'set-b']);
+  assert.equal(events[0].source, 'review-studio-play');
+});
+
+test('no playthrough, no event — an unplayed board claims nothing', () => {
+  assert.deepEqual(collect([]), []);
+});
+
+// --- the whole form still produces schema-valid events --------------------
+
+test('every event the new form emits validates against the schema', () => {
+  const events = collect(
+    [
+      fakeBlock({ setId: '', tags: ['no-unifying-theme'], note: 'board note' }),
+      fakeBlock({
+        setId: 'set-a',
+        difficulty: 1,
+        tags: ['good-unchanged'],
+        note: 'n',
+        fix: 'f',
+        tier: 3,
+        verdict: 'set-needs-edit',
+      }),
+    ],
+    {
+      boardVerdict: 'revise-board',
+      blockers: ['set-a'],
+      playthrough: { solvedOrder: ['set-a'], mistakes: 0, soClose: 0 },
+    },
+  );
+  assert.ok(events.length >= 4);
+  for (const event of events) {
+    const { ok, errors } = validateFeedbackEvent(event);
+    assert.equal(ok, true, `${event.action}: ${JSON.stringify(errors)}`);
+  }
 });
