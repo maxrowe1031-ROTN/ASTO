@@ -1,5 +1,28 @@
-# Generated run directories stay out of git (see the spec's Git and
-# artifact policy). Demonstration runs are copied into committed fixtures
-# deliberately, never accumulated here.
+# Generated run artifacts stay out of git — prompts, responses, requests and
+# blackboards are bulky machine output, reproducible from the pipeline.
+#
+# The EXCEPTIONS below are not machine output. They are Max's editorial
+# judgement and the record of what he judged, and they existed in exactly one
+# place: this disk. `rules.json` carries the rules distilled from them, but the
+# evidence behind every rule — the whole corpus `rubric.md` will be compiled
+# from — was uninsured until 2026-08-05. A dead drive would have erased five
+# days of irreplaceable judgement. So these are versioned with everything else:
+#
+#   feedback.jsonl  — every verdict, tag and note Max has written
+#   decisions.jsonl — approve / reject / revise, and attempt outcomes
+#   board.json      — the board each judgement is ABOUT (feedback references
+#                     sets by id; without the board it is unreadable)
+#   manifest.json   — theme, status, and `brief.mock`, which is what separates
+#                     real editorial signal from a fixture replay
+#
+# ~400KB of text across ~20 runs. The bulk stays ignored.
+#
+# `!*/` comes first because git will not descend into an ignored directory:
+# without it the negations below are never reached.
 *
+!*/
 !.gitignore
+!feedback.jsonl
+!decisions.jsonl
+!manifest.json
+!*/attempts/*/board.json

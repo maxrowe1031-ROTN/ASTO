@@ -1,0 +1,87 @@
+{
+  "id": "board-weather-causation",
+  "title": "Weather's Cause and Effect",
+  "sets": [
+    {
+      "id": "set-intensification",
+      "relationshipLabel": "mild instance of a phenomenon intensifies into its severe counterpart",
+      "explanation": "A gentle breeze can escalate into a gale, just as a light drizzle can build into a downpour.",
+      "pairs": [
+        [
+          "Breeze",
+          "Gale"
+        ],
+        [
+          "Drizzle",
+          "Downpour"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "weather-severity",
+        "escalation"
+      ]
+    },
+    {
+      "id": "set-violent-aftermath",
+      "relationshipLabel": "violent weather event leaves scattered physical destruction",
+      "explanation": "A storm leaves wreckage behind just as a tornado scatters debris in its wake.",
+      "pairs": [
+        [
+          "Storm",
+          "Wreckage"
+        ],
+        [
+          "Tornado",
+          "Debris"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "destruction",
+        "aftermath"
+      ]
+    },
+    {
+      "id": "set-accumulation-destruction",
+      "relationshipLabel": "gradual accumulation causes sudden destructive event",
+      "explanation": "Rain accumulates into a flood, and snow accumulates into an avalanche, both tipping over into sudden disaster.",
+      "pairs": [
+        [
+          "Rain",
+          "Flood"
+        ],
+        [
+          "Snow",
+          "Avalanche"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "accumulation",
+        "disaster-trigger"
+      ]
+    },
+    {
+      "id": "set-fueling-formation",
+      "relationshipLabel": "an underlying condition supplies the fuel that lets a larger phenomenon form",
+      "explanation": "Humidity is the hidden fuel behind fog, just as warm ocean water is the hidden fuel behind a hurricane.",
+      "pairs": [
+        [
+          "Humidity",
+          "Fog"
+        ],
+        [
+          "Warm Ocean Water",
+          "Hurricane"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "fuel",
+        "formation",
+        "scale-shift"
+      ]
+    }
+  ]
+}

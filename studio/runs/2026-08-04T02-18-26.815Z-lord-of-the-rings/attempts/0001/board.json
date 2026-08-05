@@ -1,0 +1,86 @@
+{
+  "id": "board-lotr-analogies",
+  "title": "Middle-earth Transformations",
+  "sets": [
+    {
+      "id": "set-power-base-destroyed",
+      "relationshipLabel": "a decisive assault necessarily destroys the enemy's power base",
+      "explanation": "Both the Ring's destruction and the Ents' march on Isengard represent a single decisive strike that permanently ends the enemy's stronghold and power.",
+      "pairs": [
+        [
+          "One Ring's destruction",
+          "Sauron's downfall"
+        ],
+        [
+          "Ents' march on Isengard",
+          "Isengard's ruin"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "causation",
+        "war-outcome"
+      ]
+    },
+    {
+      "id": "set-fallen-identity",
+      "relationshipLabel": "a fallen figure adopts a diminished identity after ruin",
+      "explanation": "Sméagol's corruption into Gollum and Saruman's fall into the petty 'Sharkey' both show a once-notable figure reduced to a lesser, degraded self.",
+      "pairs": [
+        [
+          "Sméagol",
+          "Gollum"
+        ],
+        [
+          "Saruman",
+          "Sharkey"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "identity-shift",
+        "lore-obscurity"
+      ]
+    },
+    {
+      "id": "set-elevated-rebirth",
+      "relationshipLabel": "a figure emerges transformed into a stronger, elevated form and takes a new identity",
+      "explanation": "Gandalf's return as the White and Aragorn's coronation as Elessar both mark a hero's ascension into a greater, renamed form of themselves.",
+      "pairs": [
+        [
+          "Gandalf the Grey",
+          "Gandalf the White"
+        ],
+        [
+          "Aragorn",
+          "Elessar"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "rebirth",
+        "royal-symbolism"
+      ]
+    },
+    {
+      "id": "set-crafted-object",
+      "relationshipLabel": "raw or broken material is worked into a finished, purposeful object",
+      "explanation": "Narsil's shards were reforged into Andúril just as raw mithril ore was wrought into Frodo's mail shirt, each transformation turning ruin or raw stuff into a crafted, functional item.",
+      "pairs": [
+        [
+          "Narsil",
+          "Andúril"
+        ],
+        [
+          "Mithril ore",
+          "Frodo's mail shirt"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "crafting",
+        "reforging"
+      ]
+    }
+  ]
+}

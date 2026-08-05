@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-trees-01",
+  "title": "Trees, Tools, and Time",
+  "sets": [
+    {
+      "id": "set-taxonomic-wood-root",
+      "relationshipLabel": "A category of material or plant part, and a specific kind within it",
+      "explanation": "Wood and root are general terms; hardwood and taproot name a specific kind within each category.",
+      "pairs": [
+        [
+          "wood",
+          "hardwood"
+        ],
+        [
+          "root",
+          "taproot"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "tree-parts",
+        "material"
+      ]
+    },
+    {
+      "id": "set-agent-object-craftsmen",
+      "relationshipLabel": "A craftsman and the product their craft is about",
+      "explanation": "A carpenter's craft yields furniture, just as a papermaker's craft yields paper.",
+      "pairs": [
+        [
+          "carpenter",
+          "furniture"
+        ],
+        [
+          "papermaker",
+          "paper"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "profession",
+        "tools"
+      ]
+    },
+    {
+      "id": "set-object-component-tree-parts",
+      "relationshipLabel": "A plant part and a feature it inherently has",
+      "explanation": "A trunk inherently has rings, just as a leaf inherently has veins — an internal feature, not a subtype.",
+      "pairs": [
+        [
+          "trunk",
+          "rings"
+        ],
+        [
+          "leaf",
+          "vein"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "tree-parts",
+        "material"
+      ]
+    },
+    {
+      "id": "set-before-after-lifecycle",
+      "relationshipLabel": "The opening and closing moments of a tree's or season's life-span",
+      "explanation": "Planting begins a tree's life as felling ends it, just as budding begins a season's growth as withering ends it.",
+      "pairs": [
+        [
+          "planting",
+          "felling"
+        ],
+        [
+          "budding",
+          "withering"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "seasons",
+        "lifecycle"
+      ]
+    }
+  ]
+}

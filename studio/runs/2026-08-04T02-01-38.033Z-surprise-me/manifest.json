@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-04T02-01-38.033Z-surprise-me",
+  "createdAt": "2026-08-04T02:01:38.033Z",
+  "theme": "forests",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "young-mature",
+      "container-contents",
+      "creator-creation"
+    ],
+    "avoidShapes": [
+      "transformation",
+      "cause-effect"
+    ]
+  },
+  "status": "revising",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}

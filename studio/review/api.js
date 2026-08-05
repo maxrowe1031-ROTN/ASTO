@@ -27,6 +27,8 @@ import { buildRelationshipIndex, buildStanceQuotas, buildVarietyBrief } from '..
 // see pipeline-config.js for why the floor is where it is.
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-config.js';
 import { pickSubject } from '../corpus/subjects.js';
+import { proposalFile, proposeRevision, wantsProposal } from './proposer.js';
+import { defaultTransport } from './runner.js';
 
 // The shape createRun builds: an ISO timestamp with ':' replaced by '-',
 // then the slug.
@@ -71,7 +73,15 @@ export function createApi({
   buildBrief = ({ count }) => buildVarietyBrief({ index: buildRelationshipIndex({ store }), count }),
   buildQuotas = () => buildStanceQuotas({ index: buildRelationshipIndex({ store }) }),
   chooseSubject = pickSubject,
+  // The Revision Proposer's transport and learning package. Injected the same
+  // way the runner's are, so a test replays a fixture and a mock run never
+  // reaches the API.
+  makeTransport = defaultTransport,
+  loadContext = () => ({}),
 }) {
+  // runId → the in-flight proposal, so a second rejection cannot start two.
+  const proposalsInFlight = new Map();
+
   const runExists = (runId) => store.listRuns().includes(runId);
 
   const currentBoard = (runId) => {
@@ -310,6 +320,15 @@ export function createApi({
     const problem = checkFeedback(runId, body.events);
     if (problem) return problem;
     for (const event of body.events) store.appendFeedback(runId, event);
+
+    // "Publishable after a fix" is saved, not decided: it leaves the run in
+    // `awaiting-review`, which is the only status a revision can be requested
+    // from. The proposal is built here so the brief is waiting by the time Max
+    // has finished writing his notes.
+    if (wantsProposal(body.events)) {
+      const { currentAttemptId } = store.readManifest(runId);
+      startProposal(runId, currentAttemptId, body.events);
+    }
     return ok({ count: body.events.length });
   }
 
@@ -329,7 +348,59 @@ export function createApi({
     store.appendDecision(runId, { type: action, attemptId: currentAttemptId, at: clock() });
     for (const event of events) store.appendFeedback(runId, event);
 
+    // No proposal here: approve and reject are both terminal decisions, and a
+    // rejected run leads only to `archived`. A brief proposing a revision that
+    // cannot be requested is spend with nothing to buy — see proposer.js.
     return ok({ status: store.readManifest(runId).status });
+  }
+
+  // Fire and forget, like `runner.start`: a proposal takes seconds, and the
+  // page polls for it. Errors are swallowed here because proposer.js already
+  // records them as artifacts — an unhandled rejection would take the server
+  // down over an advisory nicety.
+  function startProposal(runId, attemptId, events) {
+    proposalsInFlight.set(
+      runId,
+      proposeRevision({
+        store,
+        runId,
+        attemptId,
+        feedback: events,
+        transport: makeTransport({ mock: isMockRun(runId) }),
+        context: loadContext(),
+      })
+        .catch(() => null)
+        .finally(() => proposalsInFlight.delete(runId)),
+    );
+  }
+
+  const isMockRun = (runId) => {
+    try {
+      return store.readManifest(runId).brief?.mock === true;
+    } catch {
+      return false;
+    }
+  };
+
+  /**
+   * The revision brief for the current attempt, if one exists yet.
+   *
+   * Three distinguishable answers, because "not ready" and "never coming" ask
+   * different things of the page: `working` while the model is out, `null`
+   * when the proposer ran and could not produce one, and the proposal itself.
+   */
+  function readProposal(runId) {
+    if (!runExists(runId)) return notFound(`no run ${runId}`);
+    const { currentAttemptId } = store.readManifest(runId);
+    if (!currentAttemptId) return ok({ proposal: null, working: false });
+    try {
+      return ok({
+        proposal: store.readRunArtifact(runId, proposalFile(currentAttemptId)),
+        working: false,
+      });
+    } catch {
+      return ok({ proposal: null, working: proposalsInFlight.has(runId) });
+    }
   }
 
   // --- dispatch ---
@@ -343,6 +414,7 @@ export function createApi({
     ['GET', /^\/api\/runs\/([^/]+)\/attempts\/([^/]+)$/, (m) => readAttempt(m[1], m[2])],
     ['POST', /^\/api\/runs\/([^/]+)\/revisions$/, (m, { body }) => requestRevision(m[1], body)],
     ['POST', /^\/api\/runs\/([^/]+)\/feedback$/, (m, { body }) => appendFeedback(m[1], body)],
+    ['GET', /^\/api\/runs\/([^/]+)\/proposal$/, (m) => readProposal(m[1])],
     ['POST', /^\/api\/runs\/([^/]+)\/approve$/, (m, { body }) => decide(m[1], 'approve', body)],
     ['POST', /^\/api\/runs\/([^/]+)\/reject$/, (m, { body }) => decide(m[1], 'reject', body)],
   ];

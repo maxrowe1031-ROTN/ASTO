@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-02T23-56-10.347Z-surprise-me",
+  "createdAt": "2026-08-02T23:56:10.348Z",
+  "theme": null,
+  "brief": {
+    "count": 8,
+    "relationshipShapes": [
+      "container-contents",
+      "creator-creation",
+      "double-meaning"
+    ],
+    "avoidShapes": [
+      "transformation",
+      "cause-effect"
+    ],
+    "mock": false
+  },
+  "status": "failed",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

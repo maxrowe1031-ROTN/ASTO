@@ -1,0 +1,87 @@
+{
+  "id": "board-animal-architecture",
+  "title": "Nature's Blueprints",
+  "sets": [
+    {
+      "id": "set-maturation",
+      "relationshipLabel": "young form matures into adult form",
+      "explanation": "Cubs grow into bears and fawns grow into deer — each young animal simply becomes its adult self.",
+      "pairs": [
+        [
+          "Cub",
+          "Bear"
+        ],
+        [
+          "Fawn",
+          "Deer"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": []
+    },
+    {
+      "id": "set-product-container",
+      "relationshipLabel": "structure holds the product its resident leaves within it",
+      "explanation": "A beehive holds the honey bees make, and a nest holds the eggs laid inside it — the structure exists to contain the product.",
+      "pairs": [
+        [
+          "Beehive",
+          "Honey"
+        ],
+        [
+          "Nest",
+          "Eggs"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "Nest",
+        "Anthill",
+        "Burrow"
+      ]
+    },
+    {
+      "id": "set-inhabitant-shelter",
+      "relationshipLabel": "structure shelters the creature that lives inside it",
+      "explanation": "An anthill houses ants and a burrow houses a rabbit — the structure's purpose is to shelter its resident, not to store what it makes.",
+      "pairs": [
+        [
+          "Anthill",
+          "Ants"
+        ],
+        [
+          "Burrow",
+          "Rabbit"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "Beehive",
+        "Nest",
+        "Cavity",
+        "Mound"
+      ]
+    },
+    {
+      "id": "set-excavated-dwelling",
+      "relationshipLabel": "creator excavates or builds a dwelling structure",
+      "explanation": "A woodpecker carves out a cavity and termites build a mound — both creatures construct their own dwelling from scratch rather than simply occupying one.",
+      "pairs": [
+        [
+          "Woodpecker",
+          "Cavity"
+        ],
+        [
+          "Termite",
+          "Mound"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "Anthill",
+        "Burrow",
+        "Nest"
+      ]
+    }
+  ]
+}

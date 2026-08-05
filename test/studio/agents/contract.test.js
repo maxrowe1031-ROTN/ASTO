@@ -42,6 +42,32 @@ test('every agent stage in the registry has a module', () => {
   }
 });
 
+// The Revision Proposer is not a pipeline stage — it runs at review time when
+// Max rejects a board — so the stage-driven loop below skips it. It is an
+// agent by every other measure, and the purity half of the contract is the
+// half that matters most for it: it is the only agent whose input includes a
+// human's judgement, and it must still touch nothing.
+test('the revision proposer is registered and pure, though it is not a stage', () => {
+  const agent = loadAgent('revision-proposer');
+  for (const fn of ['buildPrompt', 'getOutputSchema', 'parse', 'validateOutput']) {
+    assert.equal(typeof agent[fn], 'function', `revision-proposer.${fn} is not a function`);
+  }
+  assert.equal(agent.id, 'revision-proposer');
+  assert.equal(
+    STAGES.some((s) => s.agent === 'revision-proposer'),
+    false,
+    'the proposer must not become a pipeline stage without a decision to make it one',
+  );
+
+  const source = readFileSync(
+    new URL('../../../studio/agents/revision-proposer.js', import.meta.url),
+    'utf8',
+  );
+  assert.doesNotMatch(source, /\bfetch\s*\(/, 'agents must not call fetch');
+  assert.doesNotMatch(source, /node:fs|node:http|node:net/, 'agents must not do I/O');
+  assert.doesNotMatch(source, /from '\.\.\/llm\.js'/, 'agents must not import the transport');
+});
+
 for (const id of AGENT_IDS) {
   test(`${id}: exports the four contract functions plus its stage id`, () => {
     const agent = loadAgent(id);

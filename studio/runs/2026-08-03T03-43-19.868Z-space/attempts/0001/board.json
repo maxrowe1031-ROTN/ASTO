@@ -1,0 +1,86 @@
+{
+  "id": "board-celestial-transformations",
+  "title": "Celestial Transformations",
+  "sets": [
+    {
+      "id": "set-stellar-remnant",
+      "relationshipLabel": "an aging star sheds mass and collapses into a dense stellar remnant",
+      "explanation": "Each pair traces what a dying star becomes: a Sun-like red giant sheds its outer layers to leave a white dwarf, while a truly massive star collapses catastrophically into a black hole.",
+      "pairs": [
+        [
+          "Red giant",
+          "White dwarf"
+        ],
+        [
+          "Massive star",
+          "Black hole"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "massive-star~solar-flare",
+        "black-hole~crater"
+      ]
+    },
+    {
+      "id": "set-reshape-earth",
+      "relationshipLabel": "a celestial body's force physically reshapes Earth's land or water",
+      "explanation": "Each pair shows a celestial body literally reshaping Earth: an asteroid's impact carves out a crater, while the Moon's pull raises and lowers the tides.",
+      "pairs": [
+        [
+          "Asteroid",
+          "Crater"
+        ],
+        [
+          "Moon",
+          "Tide"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "asteroid~comet",
+        "moon~satellite",
+        "crater~black-hole"
+      ]
+    },
+    {
+      "id": "set-luminous-display",
+      "relationshipLabel": "a cosmic energy release produces a luminous atmospheric display",
+      "explanation": "Each pair shows a cosmic event lighting up Earth's sky: a comet's shed debris ignites a meteor shower, while a solar flare's charged particles spark an aurora.",
+      "pairs": [
+        [
+          "Comet",
+          "Meteor shower"
+        ],
+        [
+          "Solar flare",
+          "Aurora"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "comet~asteroid",
+        "solar-flare~massive-star"
+      ]
+    },
+    {
+      "id": "set-tool-information",
+      "relationshipLabel": "an observing or communicating instrument yields an information output",
+      "explanation": "Each pair shows an instrument converting observation into information: a telescope's gaze yields a discovery, while a satellite's transmission yields a signal.",
+      "pairs": [
+        [
+          "Telescope",
+          "Discovery"
+        ],
+        [
+          "Satellite",
+          "Signal"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "satellite~moon"
+      ]
+    }
+  ]
+}

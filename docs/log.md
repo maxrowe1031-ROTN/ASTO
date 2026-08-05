@@ -2,6 +2,86 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-05 — The instrument that measures Max's taste, rebuilt
+
+Two more real boards, both **rejected as wholes with three of four sets praised** — and the
+form could not say that. Diagnosing it turned into a rebuild of the feedback instrument, plus
+the fixer agent Max asked for. Recorded as **D-4** and **D-5** in `docs/design.md`.
+
+### What the 141-event corpus said
+
+- **21 of 79 tagged set-events say `reject-set` while carrying only praise** — the board button
+  stamped its action onto every set block. Sets he called *"a great green"* are logged as
+  rejected, in the corpus `rubric.md` will be compiled from.
+- His richest signal is prose: 103 notes, 112 chars average, carrying **fix proposals 6×**,
+  emotion 10×, solve order 5×, cross-set comparison 14×.
+- Three tags never used; seventeen chips in one undifferentiated wall.
+- **Stages 05 and 06 had already found both defects he found.** 06 flagged
+  `[medium] cross-set-association: Museum, Louvre…` — *"Louvre and Musée d'Orsay are themselves
+  extremely famous museums"* — and `[high] unfair: spy, alias, operative, cyanide pill` —
+  *"near-synonyms… stock spy-gear items"*. Both are his complaints, almost verbatim. Nothing
+  routed them anywhere.
+
+### Built
+
+**The corpus is insured.** `studio/runs/.gitignore` was `*`; all 141 events lived on one disk.
+Judgement files are now versioned, machine output still ignored, and a test replays every
+historical event against the current schema.
+
+**The form** now follows his rule — *board rejection = the whole is unpublishable; sets still
+get honest independent reads*: tri-state board verdict (with blockers), per-set verdicts that
+are never inherited, a first-class "how would you fix it?" field, tags grouped by kind, and
+`formVersion` on everything so two instruments are not read as one population.
+
+**Play telemetry** rides the existing view contract — a recorder is a view that renders to a
+data structure — so solve order, mistakes and so-close events are captured with no change to
+the game. First completed playthrough only.
+
+**The Revision Proposer**: a pure agent, deliberately not a pipeline stage, reading his
+judgement first and the evaluators' second, proposing never authoring, editable before sending.
+Every brief records accepted / **edited with the text** / discarded — the evidence its
+auto-revise graduation trigger needs.
+
+### What verification caught (all of it, before Max saw any of it)
+
+- **A terminal-status flaw of my own design:** `rejected` leads only to `archived`, so a
+  proposal offered after a rejection had a "Request revision" button that could never work.
+  Corrected: *publishable after a fix* now **saves** rather than decides, keeping the run in
+  `awaiting-review` — the only status a revision can be requested from.
+- **Three architectural corrections from run-store**, each of them right: it refuses an
+  unregistered stage id, and refuses any write into a completed attempt. An attempt directory
+  records what the *pipeline* did; a review-time brief is not that. Proposals became run
+  artifacts via a new `writeRunArtifact`.
+- **A fixture bug the agent's own validator caught** — my proposal fixture named the spy
+  board's sets while mock runs replay First Light, and `setsExistOnTheBoard` rejected it.
+- **A latent state bug:** the playthrough record was module-level and never reset, so one
+  board's play could have attached to another — the exact contamination the first-play-only
+  rule exists to prevent, arriving by a different door.
+
+### Session gate
+
+- **Automated: PASSED.** 779 → **811 tests, 0 fail.** Every one of the 141 historical feedback
+  events still validates.
+- **Claude-verifiable: PASSED.** In the browser: all new controls render; a mixed review
+  recorded `revise-board` + blockers alongside `set-publishable` on a praised set **while the
+  Reject button was pressed** (the regression is dead); an approved board spent no proposal;
+  the proposal panel rendered with its fixes, protected sets and pre-filled brief; editing the
+  brief recorded `edited` with the diff. End-to-end through the API: save → run stays
+  reviewable → proposal → revision accepted (`202 → revising`).
+- **Max acceptance: OPEN.** He has not used the new form yet. That is the next thing.
+
+- **Next:**
+  1. **Review the next board with the new form** — the verdicts, the fix field, and whether the
+     grouped tags make `not-always-true` findable at last. If it still goes unused after a few
+     boards with grouping, that is real evidence rather than the one-day silence.
+  2. **Judge a Revision Proposer brief.** Mark one publishable-after-fix and see whether the
+     brief is worth sending. Accept/edit/discard is the graduation evidence.
+  3. **Approved boards still have nowhere to land** — HR-2's approval-into-`puzzles/` deferral,
+     now with three approved boards behind it. Should headline a session soon.
+  4. Carried: rater abstention floor · slim-down lap at ~10 judged boards · rubric compilation
+     must read version-1 sets by TAGS not action · `README.md` never mentions
+     `npm run studio:review` · 05–08 concurrency · First Light `explanation` pass · GDD drift.
+
 ## 2026-08-05 — The first great pipeline board, and the bug the other runs were hiding
 
 Max ran three real boards. One was **the best result the pipeline has ever produced**; one

@@ -421,6 +421,20 @@ Browser validation is a convenience, not the authority.
 > stance + paradigm + failure mode per set. Models: 03 and 08 moved Haiku → Sonnet for
 > the taxonomy shakedown, to be re-measured at the slim-down lap.
 
+> **Amendment 6, 2026-08-05 — the feedback instrument, and a ninth agent.** The form
+> now separates the two questions Max was answering with one control: a BOARD verdict
+> is tri-state (publishable / publishable after a fix, naming blockers / not
+> publishable) and each SET carries its own verdict, never inherited — the old form
+> stamped the board button onto every set block, leaving 21 of 79 tagged set-events
+> recorded as rejected while carrying only praise. Adds a first-class "how would you
+> fix it?" field, tags grouped by kind, `formVersion` on every event, and play
+> telemetry captured by a recorder that is simply a view. Adds the **Revision
+> Proposer**: a ninth agent module held to the same contract as the eight but NOT a
+> pipeline stage — it runs at review time on "publishable after a fix", reads Max's
+> judgement first and the evaluators' second, and proposes a brief for the existing
+> requestRevision machinery. Its proposals are RUN artifacts (`writeRunArtifact`),
+> because an attempt is immutable once complete. See design.md D-4 and D-5.
+
 **Visual relationship with ASTO (amendment 2):** the UI links the game's `tokens.css` /
 `base.css` / `components.css` — typefaces, paper palette, tile and card styles are
 inherited. Board markup is **intentionally duplicated** (~40 lines of static markup

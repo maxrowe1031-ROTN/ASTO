@@ -24,6 +24,17 @@ export const STAGES = deepFreeze([
   { id: '08-style-guide', kind: 'agent', agent: 'style-guide' },
 ]);
 
+// The stages a revision may re-enter at: the ones that AUTHOR the board.
+// Re-entering at 05 or later would re-evaluate the same board and change
+// nothing, and the gate is deterministic code with nothing to redo.
+//
+// Lived hard-coded in the review UI's <select> until 2026-08-05, when the
+// Revision Proposer needed the same list to choose a re-entry point — which is
+// what this registry exists to prevent two copies of.
+export const STAGE_IDS_FOR_REVISION = deepFreeze(
+  STAGES.filter((stage) => stage.kind === 'agent' && stage.id < '05').map((stage) => stage.id),
+);
+
 const INDEX_BY_ID = new Map(STAGES.map((stage, i) => [stage.id, i]));
 
 const indexOf = (stageId) => {

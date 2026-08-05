@@ -1,0 +1,70 @@
+{
+  "id": "exp-night-a",
+  "title": "Night, Board A",
+  "sets": [
+    {
+      "id": "set-sends-out",
+      "relationshipLabel": "what it sends out into the dark",
+      "explanation": "A lighthouse throws its beam the way a star throws its twinkle — each sends its own light into the night.",
+      "pairs": [
+        [
+          "Lighthouse",
+          "Beam"
+        ],
+        [
+          "Star",
+          "Twinkle"
+        ]
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "set-hatched-from",
+      "relationshipLabel": "the night flier and the shell it came from",
+      "explanation": "A moth emerges from its cocoon the way an owl hatches from its egg.",
+      "pairs": [
+        [
+          "Cocoon",
+          "Moth"
+        ],
+        [
+          "Egg",
+          "Owl"
+        ]
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "set-fades-into",
+      "relationshipLabel": "what it fades into",
+      "explanation": "An ember dies down to ash; an echo dies away to silence.",
+      "pairs": [
+        [
+          "Ember",
+          "Ash"
+        ],
+        [
+          "Echo",
+          "Silence"
+        ]
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "set-left-by-morning",
+      "relationshipLabel": "what it quietly leaves behind by morning",
+      "explanation": "The night leaves dew on the grass the way sleep leaves a dream in your head.",
+      "pairs": [
+        [
+          "Night",
+          "Dew"
+        ],
+        [
+          "Sleep",
+          "Dream"
+        ]
+      ],
+      "difficulty": 4
+    }
+  ]
+}

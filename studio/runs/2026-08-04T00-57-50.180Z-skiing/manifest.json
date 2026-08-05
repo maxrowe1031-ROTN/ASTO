@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-04T00-57-50.180Z-skiing",
+  "createdAt": "2026-08-04T00:57:50.181Z",
+  "theme": "skiing",
+  "brief": {
+    "count": 14,
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

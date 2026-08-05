@@ -90,7 +90,52 @@ class BannerView {
  *   the container. The views hold listeners only on nodes inside it, so
  *   clearing it is enough; there is nothing bound to document or window.
  */
-export function startPlay(container, board, { onExit } = {}) {
+/**
+ * A view that renders to a data structure instead of the DOM.
+ *
+ * The playtest literature is consistent that what a player DOES outranks what
+ * they recall afterwards, and Max plays every board here, through the game's
+ * real controller — so the observation is free. He narrates solve order by hand
+ * in about a third of his notes ("this was the second puzzle i solved"); this
+ * records it every time, and gives the difficulty rater a ground-truth target
+ * to be calibrated against.
+ *
+ * It is a view, which is the whole trick: the contract is `update(state,
+ * outcome)`, views are read-only by the boundary law, and the controller
+ * already awaits each in turn. Nothing about the game changes to be watched.
+ */
+export function createRecorder() {
+  const solvedOrder = [];
+  let mistakes = 0;
+  let soClose = 0;
+  let submissions = 0;
+  let finished = null;
+
+  return {
+    async update(state, outcome) {
+      if (outcome?.type === 'solved' && outcome.setId && !solvedOrder.includes(outcome.setId)) {
+        solvedOrder.push(outcome.setId);
+      }
+      // `so-close` carries no setId on purpose (the outcome must not leak which
+      // set was nearly right), so it is counted, not attributed.
+      if (outcome?.type === 'so-close') soClose += 1;
+      if (outcome?.type === 'so-close' || outcome?.type === 'miss') mistakes += 1;
+      if (outcome?.type && outcome.type !== 'invalid' && outcome.type !== 'already-tried') {
+        submissions += 1;
+      }
+      if (state?.status === 'won' || state?.status === 'lost') {
+        finished = state.status;
+      }
+    },
+    /** The record, or null if the board was never actually played to a finish. */
+    result() {
+      if (!finished) return null;
+      return { solvedOrder, mistakes, soClose, submissions, outcome: finished };
+    },
+  };
+}
+
+export function startPlay(container, board, { onExit, recorder = null } = {}) {
   container.innerHTML = playScaffold();
   const at = (name) => container.querySelector(`[data-play="${name}"]`);
 
@@ -118,6 +163,8 @@ export function startPlay(container, board, { onExit } = {}) {
     new BoardView(at('board'), { onTileTap: (term) => controller.tileTapped(term) }),
     new SolvedSetsView(at('solved')),
     new BannerView(at('banner'), { onPlayAgain: () => controller.restart() }),
+    // Last, so it observes the state every visible view has already rendered.
+    ...(recorder ? [recorder] : []),
   ];
 
   controller = new GameController(board, views);

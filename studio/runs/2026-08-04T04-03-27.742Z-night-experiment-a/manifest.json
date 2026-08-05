@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-04T04-03-27.742Z-night-experiment-a",
+  "createdAt": "2026-08-04T04:03:27.747Z",
+  "theme": "the night (hand-made experiment, round 2)",
+  "brief": {
+    "count": 14,
+    "mock": true
+  },
+  "status": "rejected",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

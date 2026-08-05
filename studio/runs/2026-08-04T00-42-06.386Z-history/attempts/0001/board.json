@@ -1,0 +1,88 @@
+{
+  "id": "asto-board-001",
+  "title": "From Old to New: Chains of Transformation",
+  "sets": [
+    {
+      "id": "set-tech-evolution",
+      "relationshipLabel": "early technology evolves into a refined modern successor",
+      "explanation": "Each pair shows an early tool or medium being refined into its modern, more capable form.",
+      "pairs": [
+        [
+          "Musket",
+          "Rifle"
+        ],
+        [
+          "Telegraph",
+          "Internet"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "technology",
+        "progression"
+      ]
+    },
+    {
+      "id": "set-political-transformation",
+      "relationshipLabel": "old form of rule or status transforms into a new political form",
+      "explanation": "A colony becomes a nation and a monarchy becomes a republic — each pair marks a shift from an old political condition to a new one.",
+      "pairs": [
+        [
+          "Colony",
+          "Nation"
+        ],
+        [
+          "Monarchy",
+          "Republic"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "politics",
+        "governance"
+      ]
+    },
+    {
+      "id": "set-invention-enables-movement",
+      "relationshipLabel": "a new technology enables the rise of a large-scale societal force",
+      "explanation": "The printing press fueled the Reformation and gunpowder fueled imperial expansion — each invention unlocked a sweeping historical movement.",
+      "pairs": [
+        [
+          "Printing Press",
+          "Reformation"
+        ],
+        [
+          "Gunpowder",
+          "Empire"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "invention",
+        "causation",
+        "history"
+      ]
+    },
+    {
+      "id": "set-precursor-to-modern-system",
+      "relationshipLabel": "an early economic system or network gives way to its modern equivalent",
+      "explanation": "Feudalism gave rise to capitalism and the Silk Road gave rise to globalization — each pair traces an early economic structure into its contemporary descendant.",
+      "pairs": [
+        [
+          "Feudalism",
+          "Capitalism"
+        ],
+        [
+          "Silk Road",
+          "Globalization"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "economics",
+        "systems",
+        "history"
+      ]
+    }
+  ]
+}

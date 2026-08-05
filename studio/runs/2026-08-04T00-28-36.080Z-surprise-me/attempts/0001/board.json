@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "Parts, Symbols, and Reversed Roles",
+  "sets": [
+    {
+      "id": "set-mechanical-parts",
+      "relationshipLabel": "component part to the whole it belongs to",
+      "explanation": "A wheel is a functional piece of a bicycle, just as a keyboard is a functional piece of a laptop — each part serves the larger machine it belongs to.",
+      "pairs": [
+        [
+          "Wheel",
+          "Bicycle"
+        ],
+        [
+          "Keyboard",
+          "Laptop"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "mechanical",
+        "concrete-object"
+      ]
+    },
+    {
+      "id": "set-animal-symbols",
+      "relationshipLabel": "animal standing for the abstract concept it represents",
+      "explanation": "A dove has long stood for peace and an owl for wisdom — each animal is shorthand for the human idea it's come to symbolize.",
+      "pairs": [
+        [
+          "Dove",
+          "Peace"
+        ],
+        [
+          "Owl",
+          "Wisdom"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "symbolism",
+        "animal"
+      ]
+    },
+    {
+      "id": "set-transactional-role-reversal",
+      "relationshipLabel": "transactional role reversed into its counterpart role",
+      "explanation": "A buyer implies a seller and a debtor implies a creditor — each pair names the two opposing sides of the same exchange.",
+      "pairs": [
+        [
+          "Buyer",
+          "Seller"
+        ],
+        [
+          "Debtor",
+          "Creditor"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "transaction",
+        "reversal"
+      ]
+    },
+    {
+      "id": "set-social-role-reversal",
+      "relationshipLabel": "active role reversed into the passive counterpart it acts upon",
+      "explanation": "A predator acts upon its prey and a teacher acts upon a student — each first word names the actor whose role only makes sense against the second word's reciprocal role.",
+      "pairs": [
+        [
+          "Predator",
+          "Prey"
+        ],
+        [
+          "Teacher",
+          "Student"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "social",
+        "reversal"
+      ]
+    }
+  ]
+}

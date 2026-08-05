@@ -30,6 +30,14 @@
   `llm.js` is non-streaming with a 300s timeout, and at ~13.6k tokens per 129s a 24k ceiling
   lands on that timeout. If a stage ever legitimately needs more thinking than 300s buys, the
   answer is streaming.
+- **Rubric compilation must read version-1 set events by their TAGS, not their action.** Under
+  the pre-2026-08-05 form a set inherited the board button, so 21 of 79 tagged set-events say
+  `reject-set` while carrying only praise. Events from `formVersion` 2 onward carry their own
+  per-set verdict and can be read directly. Guarded by a test in `schemas.feedback.test.js`.
+- **The Revision Proposer's graduation trigger:** at ~10 briefs with `proposal-verdict` events
+  recorded (accepted / edited+diff / discarded), evaluate agreement. If Max accepts briefs
+  substantially unedited, propose the bounded auto-revise loop — his stated aspiration, gated
+  on evidence rather than on enthusiasm (design.md D-5).
 - **The shakedown slim-down lap** (~10 judged boards under `2026-08-04-taxonomy-shakedown`):
   re-run the lean-2 measurement pass — per-stage cost + thinking share against review verdicts
   — then re-aim effort, revisit 03/08's Sonnet upgrade, and revert the raised budget ceilings

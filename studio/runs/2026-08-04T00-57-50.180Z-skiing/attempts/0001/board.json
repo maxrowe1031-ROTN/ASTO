@@ -1,0 +1,86 @@
+{
+  "id": "asto-ski-board-01",
+  "title": "On the Slopes",
+  "sets": [
+    {
+      "id": "set-weather-transforms-snow",
+      "relationshipLabel": "weather event transforms the snow surface",
+      "explanation": "A storm blankets the mountain in fresh powder, while sun softens it into slush — each weather event reshapes the snow's texture in a predictable way.",
+      "pairs": [
+        [
+          "Storm",
+          "Powder"
+        ],
+        [
+          "Sun",
+          "Slush"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "snow-condition",
+        "weather"
+      ]
+    },
+    {
+      "id": "set-technique-control",
+      "relationshipLabel": "technique causes immediate motion control",
+      "explanation": "A snowplow brings a skier to a stop and a pole plant triggers a turn — each technique produces an instant, controlled change in motion.",
+      "pairs": [
+        [
+          "Snowplow",
+          "Stop"
+        ],
+        [
+          "Pole plant",
+          "Turn"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "ski-technique",
+        "motion"
+      ]
+    },
+    {
+      "id": "set-equipment-modification",
+      "relationshipLabel": "equipment modification enhances performance",
+      "explanation": "Waxing a ski improves its glide and sharpening its edge improves its grip — both are equipment tweaks that boost a specific performance trait.",
+      "pairs": [
+        [
+          "Wax",
+          "Glide"
+        ],
+        [
+          "Sharpened edge",
+          "Grip"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "equipment",
+        "performance"
+      ]
+    },
+    {
+      "id": "set-process-peak-achievement",
+      "relationshipLabel": "a sustained process culminates in a pinnacle result",
+      "explanation": "Riding the chairlift ends at the summit, and a downhill run can end in a gold medal — each sustained effort builds toward its defining peak moment.",
+      "pairs": [
+        [
+          "Chairlift",
+          "Summit"
+        ],
+        [
+          "Downhill run",
+          "Gold medal"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "achievement",
+        "culmination"
+      ]
+    }
+  ]
+}

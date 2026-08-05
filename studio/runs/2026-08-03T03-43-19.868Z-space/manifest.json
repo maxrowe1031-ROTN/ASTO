@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-03T03-43-19.868Z-space",
+  "createdAt": "2026-08-03T03:43:19.868Z",
+  "theme": "space",
+  "brief": {
+    "count": 14,
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

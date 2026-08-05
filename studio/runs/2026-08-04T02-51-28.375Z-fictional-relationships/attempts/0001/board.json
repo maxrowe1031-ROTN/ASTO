@@ -1,0 +1,86 @@
+{
+  "id": "board-story-transformations",
+  "title": "Transformed by Story",
+  "sets": [
+    {
+      "id": "set-royal-elevation",
+      "relationshipLabel": "a catalyst elevates the protagonist from lowly origins to royal status",
+      "explanation": "Both Simba and Cinderella rise from humble circumstance to a royal title through a defining turn of fortune.",
+      "pairs": [
+        [
+          "Simba",
+          "King"
+        ],
+        [
+          "Cinderella",
+          "Princess"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "royalty",
+        "rags-to-riches"
+      ]
+    },
+    {
+      "id": "set-destined-duty",
+      "relationshipLabel": "an external event thrusts an unavoidable, destined role onto the protagonist",
+      "explanation": "Neither Frodo nor Harry chose their burden—prophecy and circumstance handed each of them a role they could not refuse.",
+      "pairs": [
+        [
+          "Frodo Baggins",
+          "Ring-bearer"
+        ],
+        [
+          "Harry Potter",
+          "The Chosen One"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "prophecy",
+        "chosen one"
+      ]
+    },
+    {
+      "id": "set-virtue-restores-form",
+      "relationshipLabel": "an act of virtue transforms a non-human or cursed being into a true, living form",
+      "explanation": "Love breaks the Beast's curse and honesty earns Pinocchio his humanity—virtue is the mechanism, not magic alone.",
+      "pairs": [
+        [
+          "Beast",
+          "Prince"
+        ],
+        [
+          "Pinocchio",
+          "Real Boy"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "royalty",
+        "curse"
+      ]
+    },
+    {
+      "id": "set-alter-ego-trigger",
+      "relationshipLabel": "an internal or chemical trigger unleashes an uncontrollable alternate persona",
+      "explanation": "Rage and a fateful potion each strip away control, revealing a darker second self neither man can suppress.",
+      "pairs": [
+        [
+          "Bruce Banner",
+          "Hulk"
+        ],
+        [
+          "Dr. Jekyll",
+          "Mr. Hyde"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "secret identity",
+        "transformation"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-03T04-11-05.778Z-weather",
+  "createdAt": "2026-08-03T04:11:05.779Z",
+  "theme": "weather",
+  "brief": {
+    "count": 14,
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

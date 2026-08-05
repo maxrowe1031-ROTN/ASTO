@@ -1,0 +1,86 @@
+{
+  "id": "asto-ocean-transformations",
+  "title": "Ocean Transformations",
+  "sets": [
+    {
+      "id": "set-growth",
+      "relationshipLabel": "early biological form matures into its distinct adult form",
+      "explanation": "Both pairs show an immature stage developing into its recognizable adult counterpart.",
+      "pairs": [
+        [
+          "Polyp",
+          "Jellyfish"
+        ],
+        [
+          "Larva",
+          "Barnacle"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "biological-stage",
+        "obvious-maturation"
+      ]
+    },
+    {
+      "id": "set-extraction",
+      "relationshipLabel": "raw natural source yields an extracted product",
+      "explanation": "Each pair pulls a refined product out of a raw natural source through processing.",
+      "pairs": [
+        [
+          "Seawater",
+          "Salt"
+        ],
+        [
+          "Whale",
+          "Oil"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "natural-source",
+        "harvested-product"
+      ]
+    },
+    {
+      "id": "set-accumulation",
+      "relationshipLabel": "small particles or organisms accumulate into a larger geological feature",
+      "explanation": "Tiny particles or organisms pile up over time to form a larger geological structure.",
+      "pairs": [
+        [
+          "Sediment",
+          "Delta"
+        ],
+        [
+          "Shells",
+          "Sand"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "gradual-buildup",
+        "looks-like-extraction"
+      ]
+    },
+    {
+      "id": "set-causation",
+      "relationshipLabel": "a sudden geological event triggers a resulting oceanic phenomenon",
+      "explanation": "A sudden geological disturbance sets off a distinct, larger-scale oceanic consequence.",
+      "pairs": [
+        [
+          "Earthquake",
+          "Tsunami"
+        ],
+        [
+          "Underwater volcano",
+          "Island"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "looks-like-creation",
+        "misdirective-outcome"
+      ]
+    }
+  ]
+}

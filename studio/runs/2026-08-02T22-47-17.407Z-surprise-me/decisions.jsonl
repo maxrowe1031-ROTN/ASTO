@@ -1,0 +1,1 @@
+{"type":"attempt-failed","attemptId":"0001","category":"terminal-content","message":"03-difficulty-rater produced invalid output after 3 round(s)","stageId":"03-difficulty-rater","errors":[{"path":"grades","message":"required"}],"at":"2026-08-02T22:49:55.188Z"}

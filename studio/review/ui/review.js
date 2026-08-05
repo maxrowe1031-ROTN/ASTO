@@ -8,6 +8,7 @@
 
 import { boardHtml } from './board-html.js';
 import { feedbackControls, collectFeedback } from './feedback.js';
+import { STAGE_IDS_FOR_REVISION } from '../../stage-registry.js';
 
 const view = document.getElementById('view');
 const POLL_MS = 2500;
@@ -226,6 +227,8 @@ async function renderRun(runId) {
         : ''
     }
 
+    <section class="panel" id="proposal-panel" hidden></section>
+
     ${reportPanel('Difficulty rater', attempt.reports['03-difficulty-rater'])}
     ${reportPanel('Integrity gate', attempt.reports['04a-integrity'])}
     ${reportPanel('Analogy validator', attempt.reports['05-analogy-validator'])}
@@ -246,9 +249,7 @@ async function renderRun(runId) {
              <div class="revise">
                <label>Revise from
                  <select id="from-stage">
-                   ${['01-pair-author', '02-theme-grouper', '03-difficulty-rater', '04-board-builder']
-                     .map((s) => `<option value="${s}">${s}</option>`)
-                     .join('')}
+                   ${STAGE_IDS_FOR_REVISION.map((s) => `<option value="${s}">${s}</option>`).join('')}
                  </select>
                </label>
                <button class="pill" data-act="revise" ${decidable ? '' : 'disabled'}>Request revision</button>
@@ -260,8 +261,10 @@ async function renderRun(runId) {
     <details class="panel report"><summary>Feedback so far (${detail.feedback.length})</summary>
       ${feedbackList(detail.feedback)}</details>`;
 
+  resetPlaythroughFor(runId, attemptId);
   wireDecisions(runId, attemptId);
   wirePlay(attempt.board);
+  showProposal(runId, attemptId);
   schedulePoll(working, runId);
 }
 
@@ -292,18 +295,49 @@ function wirePlay(board) {
     if (event.target.dataset?.act !== 'play') return;
     // Loaded on demand: a reviewer who never presses Play never fetches the
     // game's views or controller.
-    const { startPlay } = await import('./play.js');
+    const { startPlay, createRecorder } = await import('./play.js');
     preview.hidden = true;
     bar.hidden = true;
     const host = document.createElement('div');
     panel.append(host);
+
+    // First completed playthrough only. A replay — showing someone, going back
+    // to re-check a set — is not a first read, and difficulty data contaminated
+    // by replays is worse than none. Later plays run normally; they just are
+    // not recorded, and the saved record says so.
+    const recorder = playthrough.record === null ? createRecorder() : null;
+
     session = startPlay(host, board, {
+      recorder,
       onExit: () => {
+        const result = recorder?.result() ?? null;
+        if (result && playthrough.record === null) {
+          playthrough.record = { ...result, play: 1 };
+        } else if (!result && recorder) {
+          // Played but not finished: nothing to calibrate against.
+          playthrough.plays += 1;
+        }
         stop();
         host.remove();
       },
     });
+    playthrough.plays += 1;
   });
+}
+
+// Play state for ONE attempt: `record` is the first COMPLETED playthrough,
+// `plays` counts every time Play was pressed so the saved event can say a
+// replay happened rather than hiding it.
+//
+// Keyed by run and attempt, and reset when either changes. Module-level state
+// that outlived its attempt would attach one board's playthrough to another —
+// the same contamination the first-play-only rule exists to prevent, arriving
+// by a different door.
+let playthrough = { key: null, record: null, plays: 0 };
+
+function resetPlaythroughFor(runId, attemptId) {
+  const key = `${runId}/${attemptId}`;
+  if (playthrough.key !== key) playthrough = { key, record: null, plays: 0 };
 }
 
 function wireDecisions(runId, attemptId) {
@@ -311,12 +345,31 @@ function wireDecisions(runId, attemptId) {
   if (!panel) return;
 
   panel.addEventListener('click', async (event) => {
-    const action = event.target.dataset?.act;
+    let action = event.target.dataset?.act;
     if (!action) return;
     event.preventDefault();
 
+    // "Publishable after a fix" is not a terminal decision. `rejected` leads
+    // only to `archived`, so deciding here would strand the board in a status
+    // no revision can be requested from — which is exactly what the fix is
+    // for. It saves instead, leaving the run in `awaiting-review`, and the
+    // Revision Proposer picks it up from the save.
+    const boardVerdict = panel.querySelector('input[data-role=board-verdict]:checked')?.value;
+    if (boardVerdict === 'revise-board' && (action === 'reject' || action === 'approve')) {
+      action = 'save';
+    }
+
+    // The button is only the fallback now: if Max picked a board verdict in the
+    // form, that wins. His rule — a board verdict is about the publishability
+    // of the whole — and the set verdicts are chosen per set, never inherited.
     const defaultAction = { approve: 'approve-set', reject: 'reject-set' }[action] ?? 'revise-set';
-    const events = collectFeedback(panel, { attemptId, defaultAction });
+    const events = collectFeedback(panel, {
+      attemptId,
+      defaultAction,
+      playthrough: playthrough.record
+        ? { ...playthrough.record, replayed: playthrough.plays > 1 }
+        : null,
+    });
 
     try {
       if (action === 'save') {
@@ -360,6 +413,134 @@ const notesFor = (events) =>
     .map((e) => `${e.scope.type === 'set' ? `${e.scope.setId}: ` : ''}${[...e.tags, e.note ?? ''].filter(Boolean).join('; ')}`)
     .join('\n')
     .slice(0, 2000);
+
+/**
+ * The Revision Proposer's brief, once there is one.
+ *
+ * It renders below the board rather than above it, and only after a rejection,
+ * because an unbiased first read is the thing the review loop exists to
+ * capture — putting the machine's framing in front of Max before he plays
+ * would spend the very signal this is trying to make cheaper.
+ *
+ * The brief is editable in place. That is deliberate: what he changes is
+ * precisely what the proposer got wrong, and `proposal-verdict` records the
+ * edit as the evidence the auto-revise graduation trigger needs.
+ */
+async function showProposal(runId, attemptId) {
+  const panel = document.getElementById('proposal-panel');
+  if (!panel) return;
+
+  let proposal = null;
+  let working = false;
+  try {
+    ({ proposal, working } = await api(`/runs/${encodeURIComponent(runId)}/proposal`));
+  } catch {
+    return; // an older run with no proposal endpoint answer is simply silent
+  }
+
+  if (working) {
+    panel.hidden = false;
+    panel.innerHTML = '<h2>Suggested fix</h2><p class="studio-muted">Working on a revision brief…</p>';
+    schedulePoll(true, runId);
+    return;
+  }
+  if (!proposal) return;
+
+  const fixes = proposal.fixes
+    .map(
+      (fix) => `
+        <li>
+          <strong>${escape(fix.setId)}</strong>
+          <span class="proposal-source" data-source="${escape(fix.source)}">${escape(fix.source)}</span>
+          <div>${escape(fix.problem)}</div>
+          <ul class="proposal-candidates">
+            ${fix.candidates.map((c) => `<li>${escape(c)}</li>`).join('')}
+          </ul>
+        </li>`,
+    )
+    .join('');
+
+  panel.hidden = false;
+  panel.innerHTML = `
+    <h2>Suggested fix</h2>
+    <p>${escape(proposal.summary)}</p>
+    <ul class="proposal-fixes">${fixes}</ul>
+    ${
+      proposal.doNotChange?.length
+        ? `<p class="studio-muted">Leave alone: ${proposal.doNotChange.map(escape).join(' · ')}</p>`
+        : ''
+    }
+    <label class="proposal-brief">Revision brief — edit before sending if it has it wrong
+      <textarea id="proposal-notes" rows="4">${escape(briefText(proposal))}</textarea>
+    </label>
+    <div class="decisions">
+      <button class="pill primary" data-act="propose-revise">Request revision with this brief</button>
+      <button class="pill" data-act="propose-discard">Discard</button>
+      <span class="studio-muted">re-enters at ${escape(proposal.fromStage)}</span>
+    </div>`;
+
+  const original = briefText(proposal);
+  panel.addEventListener('click', async (event) => {
+    const act = event.target.dataset?.act;
+    if (act !== 'propose-revise' && act !== 'propose-discard') return;
+    event.preventDefault();
+
+    const notes = document.getElementById('proposal-notes').value.trim();
+    // Three outcomes, and the middle one is the valuable one: an edited brief
+    // is a labelled example of where the proposer was wrong.
+    const verdict = act === 'propose-discard' ? 'discarded' : notes === original ? 'accepted' : 'edited';
+
+    try {
+      await api(`/runs/${encodeURIComponent(runId)}/feedback`, {
+        method: 'POST',
+        body: JSON.stringify({
+          events: [
+            {
+              schemaVersion: '1.0',
+              id: `fb-${attemptId}-proposal-${Date.now()}`,
+              attemptId,
+              formVersion: 2,
+              action: 'proposal-verdict',
+              scope: { type: 'board' },
+              tags: [],
+              proposal: { verdict, ...(verdict === 'edited' ? { edited: notes } : {}) },
+              source: 'review-studio',
+            },
+          ],
+        }),
+      });
+
+      if (act === 'propose-revise') {
+        await api(`/runs/${encodeURIComponent(runId)}/revisions`, {
+          method: 'POST',
+          body: JSON.stringify({ fromStage: proposal.fromStage, notes }),
+        });
+        notify('Revision requested.', 'ok');
+      } else {
+        panel.hidden = true;
+        notify('Brief discarded — recorded.', 'info');
+      }
+      route();
+    } catch (error) {
+      notify(error.message, 'error');
+    }
+  });
+}
+
+/** The proposal as the plain text a revision actually travels as. */
+function briefText(proposal) {
+  return [
+    proposal.summary,
+    ...proposal.fixes.map(
+      (fix) => `- ${fix.setId}: ${fix.problem}\n  Try: ${fix.candidates.join('\n  Or: ')}`,
+    ),
+    proposal.doNotChange?.length
+      ? `Do not change: ${proposal.doNotChange.join(', ')} — these were approved.`
+      : '',
+  ]
+    .filter(Boolean)
+    .join('\n');
+}
 
 function schedulePoll(working, runId) {
   clearTimeout(pollTimer);

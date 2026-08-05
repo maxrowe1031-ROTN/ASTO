@@ -469,6 +469,82 @@ floor fires on most runs (→ the 01+02 merge), or the kitchen-board limit start
 boards (Max repeatedly rejects stance-diverse boards as "all the same"), at which point the
 proxy needs word-level teeth, not more prompt.
 
+### D-4 — The feedback instrument, rebuilt around how Max judges (2026-08-05)
+
+**What prompted it.** Two boards (`paris-retry`, `spy`) were rejected as *wholes* while three
+of four sets on each drew praise — and the form could not say that. Analysis of all **141
+feedback events** found the instrument drifting from the judgement:
+
+- **21 of 79 tagged set-events record `reject-set` while carrying only praise**, including sets
+  Max called *"a great green"*. The board button stamped its action onto every set block.
+- His richest signal was prose: 103 notes averaging 112 characters, carrying **fix proposals 6×**
+  (two of which became rules 011/012), emotion 10×, solve order 5×, cross-set comparison 14×.
+- Three tags had never been used; the vocabulary was seventeen undifferentiated chips.
+- **Stages 05/06 had already found both defects he found** — 06 named the Louvre/Museum
+  collision almost in his words — and nothing routed that anywhere.
+
+**Max's rule, now the design law of the form:** *a board rejection means something prevents the
+whole puzzle from being publishable; the individual analogies still get honest independent
+reads.* Severity and quality are different questions — standard playtest triage, and the same
+publishability line NYT Connections' editorial process draws.
+
+**What was built.**
+
+1. **Board verdict, tri-state:** publishable · **publishable after a fix** (naming the blocking
+   sets) · not publishable. The middle state is what the corpus kept producing with nowhere to
+   put it.
+2. **Set verdicts, decoupled:** `set-publishable` / `set-needs-edit` / `set-replace`, chosen per
+   set and never inherited. The inheritance bug is dead and guarded by a regression test.
+3. **"How would you fix it?"** is its own field — his highest-value habit, promoted from prose
+   to a queryable place, and the Revision Proposer's primary input.
+4. **Tags grouped by kind**, positives as a scorecard row. **`not-always-true` stays split**
+   from `relationship-does-not-click` despite four boards of disuse: the split is one day old
+   with its reasoning recorded, and Max's own ruling is that silence is weak evidence. What was
+   missing was findability, not vocabulary.
+5. **Play telemetry**, riding the existing view contract — a recorder is a view that renders to
+   a data structure — so solve order, mistakes and so-close events are captured with no change
+   to the game and no extra clicks. First completed playthrough only; a replay is not a first
+   read. Observed behaviour outranks recalled opinion.
+6. **`formVersion` on every event.** Boards judged under two instruments are two populations;
+   rubric compilation segments on this rather than guessing from dates. Under version 1 a set's
+   `action` is untrustworthy — its tags and note are not.
+7. **The Revision Proposer** (see below).
+
+**The corpus is now under version control.** `studio/runs/.gitignore` was `*`, so all 141
+events existed only on one disk. `feedback.jsonl`, `decisions.jsonl`, `board.json` and
+`manifest.json` are versioned; machine output stays ignored. A test replays every historical
+event against the current schema, so a change that orphaned one fails loudly.
+
+### D-5 — The Revision Proposer, and its graduation trigger (2026-08-05)
+
+**Why:** Max was re-deriving by hand what the pipeline had already written down. It is a pure
+agent held to the same contract as the eight, but **deliberately not a pipeline stage** — it
+runs once at review time.
+
+**Authority ordering, and the reason for it:** his judgement is read **first**, the evaluators'
+findings second. On the paris board 05 failed and 06 flagged `[high] unfair` the set he liked
+*best*; an agent keyed to machine findings alone would have "fixed" what he loved. Every set he
+praised is named untouchable in the brief.
+
+**It proposes, never authors** (the D-1 guardrail). Output is a brief for the existing
+`requestRevision` machinery, **editable in place** before sending.
+
+**Triggered by "publishable after a fix" only.** `rejected` is a terminal status leading only to
+`archived`, so a brief offered after a hard rejection proposes a revision that cannot be
+requested. The middle verdict therefore *saves* rather than decides, leaving the run in
+`awaiting-review`. Approve and reject spend nothing.
+
+**Graduation trigger (Max's stated aspiration, gated on evidence):** every brief records a
+`proposal-verdict` — accepted / **edited, with the text** / discarded. The edit is precisely
+what the proposer got wrong. At **~10 briefs with verdicts recorded**, evaluate agreement; if he
+is accepting them substantially unedited, propose the bounded auto-revise loop then.
+
+**Three architectural corrections the storage layer forced, all of them right:** run-store
+refuses an unregistered stage id, and refuses any write into a completed attempt ("completed
+work is never rewritten"). An attempt directory records what the *pipeline* did; a review-time
+brief is not that. Proposals are run artifacts beside `feedback.jsonl`, written through the new
+`writeRunArtifact` — run-store stays the only writer.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

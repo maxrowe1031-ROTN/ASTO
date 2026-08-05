@@ -7,6 +7,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {
   FEEDBACK_SCHEMA_VERSION,
@@ -33,7 +36,10 @@ test('a well-formed event validates', () => {
   assert.deepEqual(validateFeedbackEvent(good()), { ok: true, errors: [] });
 });
 
-test('the spec\'s ten in-scope actions are all accepted', () => {
+test('the action vocabulary is the spec\'s ten plus the 2026-08-05 instrument', () => {
+  // APPEND ONLY. The last five arrived with formVersion 2: three set-scoped
+  // verdicts that are chosen per set rather than inherited from the board
+  // button, plus the playthrough record and the proposer's verdict.
   assert.deepEqual(
     [...FEEDBACK_ACTIONS].sort(),
     [
@@ -43,10 +49,15 @@ test('the spec\'s ten in-scope actions are all accepted', () => {
       'change-difficulty',
       'change-explanation',
       'change-label',
+      'playthrough',
+      'proposal-verdict',
       'reject-board',
       'reject-set',
       'revise-board',
       'revise-set',
+      'set-needs-edit',
+      'set-publishable',
+      'set-replace',
     ],
   );
   for (const action of FEEDBACK_ACTIONS) {
@@ -159,4 +170,53 @@ test('a non-object is rejected without throwing', () => {
   for (const value of [null, undefined, 'x', 42, []]) {
     assert.equal(validateFeedbackEvent(value).ok, false);
   }
+});
+
+// --- the corpus itself, as the regression test ---------------------------
+//
+// The feedback corpus is now versioned (2026-08-05), which makes it available
+// as a fixture — and it is the only fixture that matters here. A schema change
+// that orphaned a historical event would silently discard Max's judgement, so
+// every event he has ever written is replayed against the current validator.
+test('every feedback event ever recorded still validates', () => {
+  const runsDir = fileURLToPath(new URL('../../studio/runs/', import.meta.url));
+  if (!existsSync(runsDir)) return; // a fresh clone with no corpus yet
+
+  let checked = 0;
+  for (const runId of readdirSync(runsDir)) {
+    const file = join(runsDir, runId, 'feedback.jsonl');
+    if (!existsSync(file)) continue;
+    for (const [i, line] of readFileSync(file, 'utf8').split('\n').entries()) {
+      if (!line.trim()) continue;
+      const { ok, errors } = validateFeedbackEvent(JSON.parse(line));
+      assert.equal(ok, true, `${runId} line ${i + 1}: ${JSON.stringify(errors)}`);
+      checked += 1;
+    }
+  }
+  assert.ok(checked >= 100, `only ${checked} events replayed — is the corpus still committed?`);
+});
+
+test('version-1 set events are exactly the ones whose action cannot be trusted', () => {
+  // Recorded as a test so rubric compilation cannot forget it: under the old
+  // form a set inherited the board button, so 21 tagged set-events say
+  // `reject-set` while carrying only praise. Their TAGS are honest; their
+  // action is not. Anything without a formVersion is version 1.
+  const runsDir = fileURLToPath(new URL('../../studio/runs/', import.meta.url));
+  if (!existsSync(runsDir)) return;
+
+  const POSITIVE = new Set(['good-unchanged', 'strong-reveal', 'difficulty-accurate', 'feels-like-asto']);
+  let contradictory = 0;
+  for (const runId of readdirSync(runsDir)) {
+    const file = join(runsDir, runId, 'feedback.jsonl');
+    if (!existsSync(file)) continue;
+    for (const line of readFileSync(file, 'utf8').split('\n')) {
+      if (!line.trim()) continue;
+      const e = JSON.parse(line);
+      if (e.formVersion !== undefined) continue; // version 2 records its own verdict
+      const tags = new Set(e.tags ?? []);
+      const onlyPraise = tags.size > 0 && [...tags].every((t) => POSITIVE.has(t));
+      if (e.action === 'reject-set' && onlyPraise) contradictory += 1;
+    }
+  }
+  assert.ok(contradictory > 0, 'the version-1 contradiction should still be visible in the corpus');
 });

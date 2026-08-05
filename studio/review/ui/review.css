@@ -362,3 +362,54 @@ textarea { width: 100%; resize: vertical; }
   margin-top: 2px;
   font-style: italic;
 }
+
+/*
+  The Revision Proposer's brief. Below the board and only after a rejection:
+  an unbiased first read is what the review loop exists to capture, so the
+  machine's framing must not arrive before Max has played.
+*/
+.proposal-fixes { margin: 8px 0; padding-left: 18px; }
+.proposal-fixes > li { margin-bottom: 10px; }
+.proposal-candidates { margin: 4px 0 0; padding-left: 18px; }
+.proposal-candidates > li { font-family: var(--font-body); font-size: 0.86rem; }
+
+/* Whose judgement a fix rests on — Max's reads are authority, the
+   evaluators' are evidence, and the brief says which. */
+.proposal-source {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--milk, #faf6ec);
+  color: var(--soft-ink);
+}
+.proposal-source[data-source='max'] { font-weight: 700; color: var(--ink, #40342a); }
+
+.proposal-brief { display: block; margin-top: 10px; font-size: 0.86rem; color: var(--soft-ink); }
+.proposal-brief textarea { width: 100%; margin-top: 4px; }
+
+/*
+  The feedback form's grouped faults and the two verdict rows. Seventeen chips
+  in one undifferentiated wall is how `not-always-true` went unused for four
+  boards while Max wrote the necessity argument in prose underneath.
+*/
+.fb-scorecard { margin-bottom: 6px; }
+.fb-group { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; }
+.fb-group-label {
+  flex: 0 0 8.5rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--soft-ink);
+}
+.fb-verdict, .fb-blockers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.chip-verdict { font-weight: 700; }

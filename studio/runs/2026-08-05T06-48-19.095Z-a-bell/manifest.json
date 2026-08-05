@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-05T06-48-19.095Z-a-bell",
+  "createdAt": "2026-08-05T06:48:19.095Z",
+  "theme": "a bell",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "event",
+      "possession"
+    ],
+    "mock": true
+  },
+  "status": "awaiting-review",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}
