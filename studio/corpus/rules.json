@@ -2,7 +2,9 @@
   "schemaVersion": "1.0",
   "_comment": [
     "Editorial rules handed to every agent. Seeded from GDD section 10.2 \u2014",
-    "Max's own editorial standards, verbatim \u2014 plus four rules carried over",
+    "Max's own editorial standards (rules 001-005 verbatim; 006 adapted from",
+    "the GDD's human-review standard into an instruction aimed at the model",
+    "that will be read by that reviewer) \u2014 plus four rules carried over",
     "from the retired prototype crew (source 'prototype-crew'), each of which",
     "exists because a live run produced the bad board it describes. Adopted",
     "with Max on 2026-08-03 rather than rediscovered across thirty reviews;",
@@ -60,12 +62,14 @@
     {
       "id": "rule-007",
       "text": "A pair must be directional and transformative: B is an entity or outcome that A maps to, never a static adjective or property. \"Caterpillar : Butterfly\" and \"Grape : Wine\" work; \"Gulf Stream : warm\" does not.",
-      "status": "approved",
+      "status": "retired",
       "source": "prototype-crew",
       "provenance": {
         "document": "maigd-course-handbook/projects/asto/crew/lessons-learned.md",
         "section": "2",
-        "note": "a live run produced \"Gulf Stream : warm\""
+        "note": "a live run produced \"Gulf Stream : warm\"",
+        "retirement": "Eliminated by Max 2026-08-04 (design.md D-3). The word 'transformative' overreached: read literally it forbade Brush : Painter, Nest : Bird and Dove : Peace — three of the four sets on the approved First Light board — and the whole arrowless class rated best in the two blind experiments (experiments/four-family-board, experiments/arrow-round-2). Likely the mechanical cause of ~80% of all authored pairs being one-thing-becomes-another. Its real intent — no static adjectives, B must be a thing — is enforced by the controlled shape vocabulary, which contains no adjective-shaped relation types.",
+        "retiredAt": "2026-08-04"
       },
       "createdAt": "2026-08-03"
     },

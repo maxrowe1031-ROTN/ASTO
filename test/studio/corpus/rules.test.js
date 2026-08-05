@@ -60,23 +60,50 @@ test('the shipped rules file is valid and every rule names an adopted source', (
   );
 });
 
-test('the prototype crew\'s four hard-won content rules are carried forward', () => {
+test('the prototype crew\'s three surviving content rules are carried forward', () => {
   // maigd-course-handbook/projects/asto/crew/lessons-learned.md section 2:
   // each of these exists because a live run produced the bad case. Adopted
   // 2026-08-03 with Max, rather than rediscovering them over thirty boards.
+  // The fourth — "directional and transformative" — was retired 2026-08-04;
+  // see the retirement tests below.
   const texts = loadRules()
     .filter((r) => r.source === 'prototype-crew')
     .map((r) => r.text.toLowerCase());
-  assert.equal(texts.length, 4, `expected four, got ${texts.length}`);
+  assert.equal(texts.length, 3, `expected three, got ${texts.length}`);
 
   for (const [what, pattern] of [
-    ['directional & transformative', /adjective|property/],
     ['parallel precision', /grain/],
     ['no progression chains', /chain/],
     ['no unintended alternate pairings', /alternate|second/],
   ]) {
     assert.ok(texts.some((text) => pattern.test(text)), `${what} rule is missing`);
   }
+});
+
+test('no approved rule demands "transformative" pairs — rule-007 stays retired', () => {
+  // The word that caused the relationship monoculture (design.md D-3): read
+  // literally it forbade three of the four sets on the approved First Light
+  // board and every arrowless relation Max rated best in two blind playtests.
+  // Its real intent — B must be a thing, never an adjective — is enforced by
+  // the controlled shape vocabulary instead. This guard is what keeps the
+  // wording from ever reaching a prompt again.
+  for (const r of loadRules()) {
+    assert.doesNotMatch(r.text, /transformative/i, `${r.id} resurrects rule-007's wording`);
+  }
+});
+
+test('rule-007 survives as a retired record, not a deletion', () => {
+  // Retired, never deleted: the rule and the evidence that killed it stay
+  // auditable. loadRules() filtering on status is what removes it from
+  // prompts; the record itself must remain.
+  const raw = loadRules(RULES_PATH, { includeProposed: true });
+  const retired = raw.find((r) => r.id === 'rule-007');
+  assert.ok(retired, 'rule-007 was deleted instead of retired');
+  assert.equal(retired.status, 'retired');
+  assert.ok(retired.provenance?.retirement, 'the retirement carries no reasoning');
+  assert.ok(retired.provenance?.retiredAt, 'the retirement is undated');
+  // And the approved set must not contain it.
+  assert.ok(!loadRules().some((r) => r.id === 'rule-007'));
 });
 
 test('the first two rules compiled from Max\'s own reviews are adopted', () => {
@@ -105,11 +132,14 @@ test('the first two rules compiled from Max\'s own reviews are adopted', () => {
   }
 });
 
-test('the shipped file has no rule Max has not approved', () => {
+test('the shipped file holds only rules Max has ruled on — approved or retired', () => {
+  // 'proposed' is a waiting room for the review workflow, not a place a
+  // shipped rule lives: everything in the corpus either reaches prompts
+  // (approved) or is a kept record of an elimination (retired).
   withRulesFile(null, () => {
     const raw = loadRules(RULES_PATH, { includeProposed: true });
     assert.ok(
-      raw.every((r) => r.status === 'approved'),
+      raw.every((r) => r.status === 'approved' || r.status === 'retired'),
       'a proposed rule is sitting in the shipped corpus',
     );
   });
