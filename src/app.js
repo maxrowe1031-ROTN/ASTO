@@ -23,9 +23,29 @@ import { TitleView } from './view/title-view.js';
 import { TutorialOverlay } from './view/tutorial-overlay.js';
 
 const TUTORIAL_PATH = 'puzzles/tutorial.json';
-const PUZZLE_PATH = 'puzzles/first-light.json';
+const DEFAULT_PUZZLE = 'first-light';
+
+// `?puzzle=<slug>` picks a board out of puzzles/ instead of the default one.
+//
+// This is the seed of Phase 5's routing, deliberately pulled early and kept to
+// its smallest useful form: the Studio can now publish an approved board into
+// puzzles/, and without this there would be no way to actually PLAY what it
+// published — a published board would be verified only as far as "the file
+// validates", which is not the same claim. The select screen, the manifest and
+// per-puzzle results are still Phase 5's.
+//
+// The slug is matched against the same pattern the publisher enforces, so a
+// crafted query string cannot reach outside puzzles/.
+const SLUG = /^[a-z0-9][a-z0-9-]{0,63}$/;
+
+function requestedPuzzlePath() {
+  const slug = new URLSearchParams(globalThis.location?.search ?? '').get('puzzle');
+  return `puzzles/${slug && SLUG.test(slug) ? slug : DEFAULT_PUZZLE}.json`;
+}
 
 async function main() {
+  const PUZZLE_PATH = requestedPuzzlePath();
+
   const source = new LocalJsonSource();
   const storage = new Storage();
   const router = new ScreenRouter();

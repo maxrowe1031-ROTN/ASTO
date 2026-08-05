@@ -7,6 +7,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import { buildRelationshipIndex, buildStanceQuotas, buildVarietyBrief, SHAPES } from '../../studio/variety.js';
 import { PORTABLE_STANCES, STANCES, resolveShape } from '../../studio/corpus/vocabulary.js';
@@ -240,6 +243,65 @@ test('a run with no pair-author output degrades to unknown rather than failing',
     const index = buildRelationshipIndex({ store });
     assert.ok(index.unknown >= 1, 'an unjoinable set was not counted as unknown');
   } finally {
+    cleanup();
+  }
+});
+
+// Publishing an approved board into puzzles/ must not disturb the index. Its
+// shapes are already counted through its RUN, joined from the pair author's
+// declarations — the reliable path. The puzzles/ walk exists only for the two
+// hand-authored boards, which predate the `shape` field and are hand-labelled
+// in the vocabulary. A published board has no hand label and needs none;
+// counting it as `unknown` would have added four to that tally per board and
+// slowly told every future brief that the corpus is unreadable.
+test('a published board does not disturb the index — its run already counted it', () => {
+  const { store, cleanup } = makeStore();
+  const puzzlesDir = mkdtempSync(join(tmpdir(), 'asto-puzzles-'));
+  try {
+    const before = buildRelationshipIndex({ store, puzzlesDir });
+    assert.equal(before.unknown, 0, 'the empty puzzles dir should contribute nothing');
+
+    writeFileSync(
+      join(puzzlesDir, 'birds.json'),
+      JSON.stringify({
+        id: 'asto-birds',
+        title: 'Birds',
+        sets: [
+          { id: 's1', relationshipLabel: 'x', explanation: 'e', pairs: [['A', 'B'], ['C', 'D']], difficulty: 1 },
+          { id: 's2', relationshipLabel: 'y', explanation: 'e', pairs: [['E', 'F'], ['G', 'H']], difficulty: 2 },
+        ],
+      }),
+    );
+
+    const after = buildRelationshipIndex({ store, puzzlesDir });
+    assert.equal(after.unknown, 0, 'a published board was counted as unknown');
+    assert.deepEqual(after.counts, before.counts, 'a published board moved the shape counts');
+  } finally {
+    rmSync(puzzlesDir, { recursive: true, force: true });
+    cleanup();
+  }
+});
+
+test('a hand-authored board is still counted through its labels', () => {
+  const { store, cleanup } = makeStore();
+  const puzzlesDir = mkdtempSync(join(tmpdir(), 'asto-puzzles-'));
+  try {
+    // Same id as the shipped board, so the hand labels in the vocabulary apply.
+    writeFileSync(
+      join(puzzlesDir, 'first-light.json'),
+      JSON.stringify({
+        id: 'asto-first-light',
+        title: 'First Light',
+        sets: [
+          { id: 'set-tools', relationshipLabel: 'x', explanation: 'e', pairs: [['A', 'B'], ['C', 'D']], difficulty: 1 },
+        ],
+      }),
+    );
+
+    const index = buildRelationshipIndex({ store, puzzlesDir });
+    assert.equal(index.counts['agent-instrument'], 1, 'a hand-labelled set stopped counting');
+  } finally {
+    rmSync(puzzlesDir, { recursive: true, force: true });
     cleanup();
   }
 });

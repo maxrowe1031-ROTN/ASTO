@@ -1,2 +1,4 @@
 {"type":"attempt-completed","attemptId":"0001","boardId":"batman-analogy-board-01","at":"2026-08-05T07:16:47.343Z"}
 {"type":"approve","attemptId":"0001","at":"2026-08-05T07:25:56.505Z"}
+{"type":"publish","attemptId":"0001","boardId":"batman-analogy-board-01","publishedAs":"batman.json","publishedId":"asto-batman","republished":false,"at":"2026-08-05T20:06:56.986Z"}
+{"type":"publish","attemptId":"0001","boardId":"batman-analogy-board-01","publishedAs":"gotham-connections.json","publishedId":"asto-gotham-connections","republished":false,"at":"2026-08-05T20:15:04.370Z"}

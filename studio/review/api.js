@@ -29,6 +29,8 @@ import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-
 import { pickSubject } from '../corpus/subjects.js';
 import { proposalFile, proposeRevision, wantsProposal } from './proposer.js';
 import { defaultTransport } from './runner.js';
+import { createPuzzleStore, PublishRefused } from '../storage/puzzle-store.js';
+import { slugify } from '../slug.js';
 
 // The shape createRun builds: an ISO timestamp with ':' replaced by '-',
 // then the slug.
@@ -78,6 +80,10 @@ export function createApi({
   // reaches the API.
   makeTransport = defaultTransport,
   loadContext = () => ({}),
+  // The only writer into `puzzles/`. Injected for the same reason the run
+  // store is: a test publishes into a throwaway directory, never into the
+  // game's real content.
+  puzzles = createPuzzleStore(),
 }) {
   // runId → the in-flight proposal, so a second rejection cannot start two.
   const proposalsInFlight = new Map();
@@ -354,6 +360,82 @@ export function createApi({
     return ok({ status: store.readManifest(runId).status });
   }
 
+  /**
+   * Publishes an approved board into `puzzles/` — the game's own content.
+   *
+   * Publication is RECORDED, not transitioned. The run stays `approved`;
+   * `approved → archived` remains the only move out of it, so this adds no
+   * state to the machine and no field to the manifest. The record lives in
+   * `decisions.jsonl` beside the approval it followed, and it is also what
+   * tells a second publish of the same run that it is a republish rather than
+   * a collision with somebody else's board.
+   *
+   * Everything about the board itself — schema, integrity, slug shape,
+   * occupancy — is the puzzle store's to refuse. This maps those refusals onto
+   * statuses and re-implements none of them.
+   */
+  // Last-resort fallback: `2026-08-05T07-12-44.975Z-batman` → `batman`, for a
+  // board whose title slugs to nothing at all.
+  const slugOfRun = (runId) => runId.slice(runId.indexOf('Z-') + 2);
+
+  function publishRun(runId, body) {
+    if (!isPlainObject(body)) return bad('body must be an object');
+    for (const key of Object.keys(body)) {
+      if (key !== 'slug') return bad(`unknown field: ${key}`);
+    }
+
+    const manifest = store.readManifest(runId);
+    if (manifest.status !== 'approved') {
+      return conflict(
+        `only an approved run can be published — run ${runId} is ${manifest.status}`,
+      );
+    }
+
+    const board = currentBoard(runId);
+    if (!board) return conflict(`run ${runId} has no board to publish`);
+
+    // Default: the board's own title. A run slug is a lifecycle name —
+    // `beach-retry` records that the first beach run truncated — and baking
+    // that into a puzzle id would make the game's content remember the
+    // Studio's accidents. `asto-first-light` is the precedent to join.
+    const slug = body.slug ?? slugify(board.title) ?? slugOfRun(runId);
+
+    // A republish is this run reclaiming its own file. Another run claiming an
+    // occupied slug is a collision, and the store refuses it.
+    const replace = store
+      .readDecisions(runId)
+      .some((event) => event.type === 'publish' && event.publishedAs === `${slug}.json`);
+
+    let published;
+    try {
+      published = puzzles.publish({ board, slug, replace });
+    } catch (error) {
+      if (!(error instanceof PublishRefused)) throw error;
+      // A malformed slug is a bad request; everything else is a conflict with
+      // the state of the board or of the puzzles directory.
+      const refusal = {
+        error: error.message,
+        reason: error.reason,
+        ...(error.errors ? { errors: error.errors } : {}),
+      };
+      return error.reason === 'bad-slug'
+        ? { status: 400, body: refusal }
+        : { status: 409, body: refusal };
+    }
+
+    store.appendDecision(runId, {
+      type: 'publish',
+      attemptId: manifest.currentAttemptId,
+      boardId: published.originalId,
+      publishedAs: published.filename,
+      publishedId: published.id,
+      republished: replace,
+      at: clock(),
+    });
+
+    return ok({ published });
+  }
+
   // Fire and forget, like `runner.start`: a proposal takes seconds, and the
   // page polls for it. Errors are swallowed here because proposer.js already
   // records them as artifacts — an unhandled rejection would take the server
@@ -417,6 +499,7 @@ export function createApi({
     ['GET', /^\/api\/runs\/([^/]+)\/proposal$/, (m) => readProposal(m[1])],
     ['POST', /^\/api\/runs\/([^/]+)\/approve$/, (m, { body }) => decide(m[1], 'approve', body)],
     ['POST', /^\/api\/runs\/([^/]+)\/reject$/, (m, { body }) => decide(m[1], 'reject', body)],
+    ['POST', /^\/api\/runs\/([^/]+)\/publish$/, (m, { body }) => publishRun(m[1], body)],
   ];
 
   async function handle({ method, path, body = null }) {
@@ -457,9 +540,3 @@ export function createApi({
 
   return { handle };
 }
-
-export const slugify = (text) => {
-  if (typeof text !== 'string') return null;
-  const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-  return slug.length > 0 ? slug : null;
-};

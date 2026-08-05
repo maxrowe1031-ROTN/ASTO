@@ -9,6 +9,9 @@
 import { boardHtml } from './board-html.js';
 import { feedbackControls, collectFeedback } from './feedback.js';
 import { STAGE_IDS_FOR_REVISION } from '../../stage-registry.js';
+// The same derivation the server publishes under, not a second copy of it: the
+// destination shown before the click has to be the destination.
+import { slugify } from '../../slug.js';
 
 const view = document.getElementById('view');
 const POLL_MS = 2500;
@@ -204,6 +207,8 @@ async function renderRun(runId) {
       }
     </section>
 
+    ${publishPanel(runId, manifest, detail.decisions, attempt.board)}
+
     ${
       attempt.board
         ? `<section class="panel board-panel" id="board-panel">
@@ -262,10 +267,82 @@ async function renderRun(runId) {
       ${feedbackList(detail.feedback)}</details>`;
 
   resetPlaythroughFor(runId, attemptId);
+  wirePublish(runId);
   wireDecisions(runId, attemptId);
   wirePlay(attempt.board);
   showProposal(runId, attemptId);
   schedulePoll(working, runId);
+}
+
+/**
+ * Publishing an approved board into `puzzles/` — the last step of the loop.
+ *
+ * Only appears once a run is approved, because that is the only status the
+ * server will publish from. It is a separate panel from the feedback controls
+ * on purpose: those record a judgement, this ships content, and the two should
+ * never be one absent-minded click apart.
+ *
+ * The published state is read from the run's own decisions rather than
+ * remembered here — same rule as the rest of this page.
+ */
+function publishPanel(runId, manifest, decisions, board) {
+  if (manifest.status !== 'approved') return '';
+
+  const published = (decisions ?? []).filter((event) => event.type === 'publish').at(-1);
+  const slug =
+    published?.publishedAs?.replace(/\.json$/, '') ?? slugify(board?.title) ?? slugOfRun(runId);
+
+  return `
+    <section class="panel" id="publish">
+      <h2>Publish</h2>
+      ${
+        published
+          ? `<p>Published as <code>puzzles/${escape(published.publishedAs)}</code>
+               as <code>${escape(published.publishedId)}</code>.</p>
+             <p class="studio-muted">
+               Play it at
+               <a href="http://localhost:8080/?puzzle=${encodeURIComponent(slug)}" target="_blank" rel="noreferrer"
+                 >localhost:8080/?puzzle=${escape(slug)}</a>
+               (needs <code>npm run serve</code>).
+             </p>`
+          : `<p class="studio-muted">This board is approved but has not reached the game yet.
+               It would land at <code>puzzles/${escape(slug)}.json</code> as
+               <code>asto-${escape(slug)}</code>.</p>`
+      }
+      <div class="decisions">
+        <button class="pill ${published ? '' : 'primary'}" data-act="publish">
+          ${published ? 'Republish' : 'Publish to puzzles/'}
+        </button>
+      </div>
+    </section>`;
+}
+
+// The server's last-resort fallback, mirrored so the preview matches it.
+const slugOfRun = (runId) => runId.slice(runId.indexOf('Z-') + 2);
+
+function wirePublish(runId) {
+  const panel = document.getElementById('publish');
+  if (!panel) return;
+
+  panel.addEventListener('click', async (event) => {
+    if (event.target.dataset?.act !== 'publish') return;
+    event.preventDefault();
+    event.target.disabled = true;
+    try {
+      const { published } = await api(`/runs/${encodeURIComponent(runId)}/publish`, {
+        method: 'POST',
+        body: JSON.stringify({}),
+      });
+      notify(
+        `Published as puzzles/${published.filename} — integrity ${published.integrity.acceptedCount}/${published.integrity.expectedAccepted}.`,
+        'info',
+      );
+      route();
+    } catch (error) {
+      event.target.disabled = false;
+      notify(error.message);
+    }
+  });
 }
 
 /**

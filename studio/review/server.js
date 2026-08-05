@@ -71,12 +71,15 @@ const MOUNTS = [
   ['/src/engine/', join(REPO, 'src', 'engine')],
   ['/src/view/', join(REPO, 'src', 'view')],
   ['/src/controller/', join(REPO, 'src', 'controller'), new Set(['game-controller.js'])],
-  // Last, and allowlisted to one file: the prefixes above are more specific and
-  // match first, and `studio/` holds llm.js and env.js, which must stay
+  // Last, and allowlisted file by file: the prefixes above are more specific
+  // and match first, and `studio/` holds llm.js and env.js, which must stay
   // unreachable. The registry is here because the review page's revision
   // <select> and the Revision Proposer must offer the same re-entry stages, and
-  // that list belongs in the registry rather than in two copies.
-  ['/studio/', join(REPO, 'studio'), new Set(['stage-registry.js'])],
+  // that list belongs in the registry rather than in two copies. `slug.js` is
+  // here for the same reason: the destination the publish panel SHOWS and the
+  // destination the server publishes to must be one derivation, and a puzzle
+  // id is the last thing that should be computed twice.
+  ['/studio/', join(REPO, 'studio'), new Set(['stage-registry.js', 'slug.js'])],
 ];
 
 const send = (res, status, body, type = 'text/plain; charset=utf-8') => {

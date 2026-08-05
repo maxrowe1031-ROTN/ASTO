@@ -26,6 +26,7 @@ import { loadRules } from './corpus/rules.js';
 import { loadEnv } from './env.js';
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from './pipeline-config.js';
 import { pickSubject } from './corpus/subjects.js';
+import { slugify } from './slug.js';
 
 const RUNS_DIR = fileURLToPath(new URL('./runs/', import.meta.url));
 const FIXTURES_DIR = fileURLToPath(new URL('./fixtures/responses/', import.meta.url));
@@ -81,15 +82,6 @@ export function parseArgv(argv) {
     brief: { count },
   };
 }
-
-const slugify = (text) => {
-  if (!text) return null;
-  const slug = text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  return slug.length > 0 ? slug : null;
-};
 
 async function main(argv) {
   const options = parseArgv(argv);

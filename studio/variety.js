@@ -72,7 +72,17 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
     }
   };
 
-  // Shipped boards: hand-labelled, since they predate the `shape` field.
+  // Hand-authored boards: hand-labelled, since they predate the `shape` field.
+  //
+  // A board with NO label entry is skipped, not counted as unknown. Since
+  // 2026-08-05 puzzles/ also holds published pipeline boards, and those are
+  // already counted below through their run — joined from the pair author's
+  // declarations, which is the reliable path and the one that knows about
+  // aliases. Counting them here would add four to `unknown` per published
+  // board and steadily tell every future brief that the corpus is unreadable.
+  //
+  // A labelled board with an unlabelled SET still records unknown: that is a
+  // real gap in the hand-labelling, and the tally is where it should show.
   if (existsSync(puzzlesDir)) {
     for (const file of readdirSync(puzzlesDir).filter((name) => name.endsWith('.json')).sort()) {
       let board;
@@ -81,7 +91,8 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
       } catch {
         continue;
       }
-      const labels = SHIPPED_LABELS[board.id] ?? {};
+      const labels = SHIPPED_LABELS[board.id];
+      if (!labels) continue;
       for (const set of board.sets ?? []) record(labels[set.id]);
     }
   }

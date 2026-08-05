@@ -7,7 +7,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
+import { existsSync, mkdtempSync, readdirSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 import { createApi } from '../../../studio/review/api.js';
+import { createPuzzleStore } from '../../../studio/storage/puzzle-store.js';
 import { makeStore } from '../pipeline/helpers.js';
 
 // Deliberately not the real profile strings: the route must report whatever
@@ -561,6 +566,197 @@ test('POST /api/runs accepts a count with slack for pairs the grouper discards',
   try {
     const { status } = await api.handle({ method: 'POST', path: '/api/runs', body: { count: 12 } });
     assert.equal(status, 202);
+  } finally {
+    cleanup();
+  }
+});
+
+// --- publishing ---
+//
+// Approval used to be the end of the line: a board Max liked stayed in its run
+// directory and never reached the game. Publishing is the step that closes
+// that loop, and the rules it has to keep are that only an approved board can
+// take it, that publication is recorded rather than transitioned, and that the
+// puzzle store's refusals are honoured rather than reinterpreted here.
+
+const withPuzzles = (runnerOptions) => {
+  const puzzlesDir = mkdtempSync(join(tmpdir(), 'asto-api-puzzles-'));
+  const base = setup(runnerOptions, { puzzles: createPuzzleStore({ rootDir: puzzlesDir }) });
+  return {
+    ...base,
+    puzzlesDir,
+    cleanup: () => {
+      rmSync(puzzlesDir, { recursive: true, force: true });
+      base.cleanup();
+    },
+  };
+};
+
+const approve = (api, runId) =>
+  api.handle({ method: 'POST', path: `/api/runs/${runId}/approve`, body: {} });
+
+// The board's TITLE, not the run's slug. A run slug is a lifecycle name —
+// `beach-retry` records that the first beach run truncated — and publishing
+// under it would make the game's permanent content ids remember the Studio's
+// accidents.
+test('an approved board is published under its title, not the run slug', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store, { slug: 'beach-retry' }); // board title: "Lantern"
+    await approve(api, runId);
+
+    const { status, body } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: {},
+    });
+
+    assert.equal(status, 200);
+    assert.equal(body.published.filename, 'lantern.json');
+    assert.equal(body.published.id, 'asto-lantern');
+    assert.ok(existsSync(join(puzzlesDir, 'lantern.json')), 'nothing was written');
+    assert.ok(!existsSync(join(puzzlesDir, 'beach-retry.json')), 'the run slug reached the game');
+  } finally {
+    cleanup();
+  }
+});
+
+test('an explicit slug overrides the title', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store, { slug: 'beach-retry' });
+    await approve(api, runId);
+    const { status, body } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: { slug: 'by-the-shore' },
+    });
+    assert.equal(status, 200);
+    assert.equal(body.published.id, 'asto-by-the-shore');
+  } finally {
+    cleanup();
+  }
+});
+
+test('publication is recorded in decisions.jsonl, and the run stays approved', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store, { slug: 'batman' });
+    await approve(api, runId);
+    await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+
+    // No new status: `approved → archived` is still the only move out.
+    assert.equal(store.readManifest(runId).status, 'approved');
+
+    const record = store.readDecisions(runId).find((event) => event.type === 'publish');
+    assert.ok(record, 'publication left no record');
+    assert.equal(record.publishedAs, 'lantern.json');
+    assert.equal(record.publishedId, 'asto-lantern');
+    // Provenance the puzzle file deliberately does not carry.
+    assert.equal(record.boardId, 'asto-lantern');
+    assert.equal(record.attemptId, '0001');
+    assert.equal(record.republished, false);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a run that has not been approved cannot be published', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store, { slug: 'batman' }); // awaiting-review
+    const { status, body } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: {},
+    });
+
+    assert.equal(status, 409);
+    assert.match(body.error, /only an approved run/);
+    assert.deepEqual(readdirSync(puzzlesDir), [], 'an unapproved board reached puzzles/');
+  } finally {
+    cleanup();
+  }
+});
+
+test('a rejected run cannot be published either', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store, { slug: 'spy' });
+    await api.handle({ method: 'POST', path: `/api/runs/${runId}/reject`, body: {} });
+    const { status } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: {},
+    });
+    assert.equal(status, 409);
+  } finally {
+    cleanup();
+  }
+});
+
+// The republish signal is the run's own publish record, not a flag from the
+// page: a tab that has been open a while must not be able to claim a slug it
+// never published.
+test('a run republishing its own slug replaces; another run claiming it is 409', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId: first } = seedReviewable(store, { slug: 'batman' });
+    await approve(api, first);
+    await api.handle({ method: 'POST', path: `/api/runs/${first}/publish`, body: {} });
+
+    const again = await api.handle({ method: 'POST', path: `/api/runs/${first}/publish`, body: {} });
+    assert.equal(again.status, 200, 'a run could not republish its own board');
+    assert.equal(
+      store.readDecisions(first).filter((event) => event.type === 'publish').at(-1).republished,
+      true,
+    );
+
+    // A second run whose board carries the same title lands on the same slug —
+    // the realistic collision, since two runs on one theme is how retries work.
+    const { runId: second } = seedReviewable(store, { slug: 'other' });
+    await approve(api, second);
+    const collision = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${second}/publish`,
+      body: {},
+    });
+    assert.equal(collision.status, 409);
+    assert.equal(collision.body.reason, 'occupied');
+  } finally {
+    cleanup();
+  }
+});
+
+test('a malformed slug is a bad request, not a conflict', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store, { slug: 'batman' });
+    await approve(api, runId);
+    const { status, body } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: { slug: '../../etc/passwd' },
+    });
+    assert.equal(status, 400);
+    assert.equal(body.reason, 'bad-slug');
+  } finally {
+    cleanup();
+  }
+});
+
+test('publish takes no fields beyond an optional slug', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store, { slug: 'batman' });
+    await approve(api, runId);
+    const { status, body } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: { slug: 'batman', id: 'asto-something-else' },
+    });
+    assert.equal(status, 400);
+    assert.match(body.error, /unknown field: id/);
   } finally {
     cleanup();
   }

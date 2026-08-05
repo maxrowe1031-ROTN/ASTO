@@ -1,0 +1,86 @@
+{
+  "id": "asto-by-the-shore",
+  "title": "By the Shore",
+  "sets": [
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "a general category and a specific kind within it",
+      "explanation": "A seagull is a type of seabird, and a clam is a type of mollusk—each pair moves from broad class to a familiar example.",
+      "pairs": [
+        [
+          "seabird",
+          "seagull"
+        ],
+        [
+          "mollusk",
+          "clam"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "category",
+        "classification"
+      ]
+    },
+    {
+      "id": "set-time-activity",
+      "relationshipLabel": "a time of day or season and the activity that belongs to it",
+      "explanation": "Summer calls for swimming and evening calls for a bonfire—each time period naturally hosts its paired activity.",
+      "pairs": [
+        [
+          "summer",
+          "swimming"
+        ],
+        [
+          "evening",
+          "bonfire"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "time",
+        "routine"
+      ]
+    },
+    {
+      "id": "set-agent-object",
+      "relationshipLabel": "a worker and the thing their work is about",
+      "explanation": "A lifeguard's job centers on the swimmer, just as a surfer's ride centers on the wave—each worker is defined by what they engage with.",
+      "pairs": [
+        [
+          "lifeguard",
+          "swimmer"
+        ],
+        [
+          "surfer",
+          "wave"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "role",
+        "interaction"
+      ]
+    },
+    {
+      "id": "set-attachment",
+      "relationshipLabel": "a thing and where it fastens or attaches",
+      "explanation": "A leash clips onto a surfboard just as a hermit crab clips itself into a shell—each pair names a thing and its point of attachment.",
+      "pairs": [
+        [
+          "leash",
+          "surfboard"
+        ],
+        [
+          "hermit crab",
+          "shell"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "fastening",
+        "habitat"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "asto-gotham-connections",
+  "title": "Gotham Connections",
+  "sets": [
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a broad category and one specific named example of it",
+      "explanation": "Joker is a specific villain and the Batmobile is a specific vehicle—each pair links a general category to its famous instance.",
+      "pairs": [
+        [
+          "villain",
+          "Joker"
+        ],
+        [
+          "vehicle",
+          "Batmobile"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "Batman",
+        "Batarang"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "the hero/villain and the signature tool of their trade",
+      "explanation": "Batman is never without his Batarang, and Catwoman is defined by her whip—each hero or villain paired with the tool that marks them.",
+      "pairs": [
+        [
+          "Batman",
+          "Batarang"
+        ],
+        [
+          "Catwoman",
+          "whip"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "villain",
+        "vehicle"
+      ]
+    },
+    {
+      "id": "set-cause-effect",
+      "relationshipLabel": "a substance and the effect it necessarily produces",
+      "explanation": "Bane's Venom always grants superhuman strength and Scarecrow's toxin always induces fear hallucinations—each substance guarantees its effect.",
+      "pairs": [
+        [
+          "Bane's Venom",
+          "superhuman strength"
+        ],
+        [
+          "Scarecrow toxin",
+          "fear hallucinations"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "Catwoman",
+        "whip"
+      ]
+    },
+    {
+      "id": "set-time-activity",
+      "relationshipLabel": "the time of day and the activity that belongs to it",
+      "explanation": "Night is when patrol happens and dusk is when a stakeout begins—each time of day paired with the activity it typically brings, not one it must.",
+      "pairs": [
+        [
+          "night",
+          "patrol"
+        ],
+        [
+          "dusk",
+          "stakeout"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "Batarang",
+        "Bane's Venom"
+      ]
+    }
+  ]
+}
