@@ -2,6 +2,78 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-04 — The pipeline learns the arrow finding: vocabulary, stances, unity
+
+D-3's authorised work, built — with the design sharpened twice by Max mid-planning and once
+by a failing verification test. The goal, in his words, now leads the design record: *a
+puzzle unified by theme and words, varied in execution by different kinds of relationships.*
+
+### What was decided (all with Max, recorded in design.md's D-3 amendment)
+
+- **rule-007 eliminated**, not reworded — it was inherited from the retired crew, and its
+  word *transformative* forbade three of approved First Light's four sets. Retired with
+  provenance; its real intent (B is a thing, never an adjective) now lives in what the
+  vocabulary contains.
+- **Two axes, not one:** research (Herrmann & Chaffin 1984, same authors as the taxonomy —
+  element agreement predicts felt similarity r=.707; family alone leaves r=.355 unexplained)
+  agreed with the playtests: family carries library **coverage**, **stance** — the kind of
+  question a set asks — carries board **composition**. Family is never enforced per board;
+  it would have rejected Night B.
+- **Pipeline structure: quotas now, merge armed.** Stance quotas land at the creation door
+  (01's brief, both drivers); the 01+02 set-first merge stays parked behind a named trigger.
+- **Shakedown profile** `2026-08-04-taxonomy-shakedown`: 01/02 high, 03/08 Haiku→Sonnet,
+  ceilings raised ~40× not removed (Max: never shut a run down mid-test). Slim-down lap at
+  ~10 judged boards reverts caps and effort together, by measurement.
+
+### What was built
+
+- `studio/corpus/relationship-index.json` v2.0 + `vocabulary.js`: 36 Bejar relation types —
+  family · stance · paradigm pair · failure mode · Chaffin elements; legacy aliases keep
+  history countable (the free-text field had left 40% of pairs invisible to the brief).
+- **Eight stances**, because the verification test refused seven: with absence folded into
+  possession, Night B — the best board in the corpus — failed its own rule. `absence` is
+  its own kind of question now.
+- Enforcement at every door: brief quotas → pair-author span check → grouper floor → 04a
+  gate (four distinct stances, named on rejection). The builder is told, and told that the
+  set inverting the board's grain is a Black candidate.
+- **Unity scored, never gating:** 08 judges "do the sixteen words read as one world",
+  outliers named or the output is invalid; shown in the Review Studio header. The review
+  card **teaches while it shows** — stance, paradigm, failure mode per set — so more kinds
+  of output widen Max's checklist instead of outrunning it.
+
+### Session gate
+
+- **Automated: PASSED.** 741 → **771 tests, 0 fail**; `check-board` clean on both shipped
+  boards. The retirement is proven on the wire (no agent prompt contains *transformative* —
+  read from the prompt.txt a run wrote, all eight carried it before).
+- **The machine reproduces Max's blind verdicts:** Night A refused at the grouper with the
+  setAside hint; Night B completes. Pinned as tests, alongside the **KNOWN LIMIT** that
+  round 1's kitchen board declares four stances yet played as one — stance is a proxy word
+  choice can defeat; the card showing claimed stances is the second line.
+- **Claude-verifiable: PASSED.** Mock harbor run through the Studio API: brief carries
+  quotas, board renders with stance lines + unity header, and plays through the game's own
+  controller (green set solved in-browser, console clean).
+- **Max acceptance: NOT YET.** Nothing here has produced a real board. That is deliberately
+  the next session, and the whole point.
+- **Locked decisions intact:** schema v1.0 untouched — stance/family live in Studio
+  artifacts, never on a puzzle. Zero deps. `src/`, `styles/`, `puzzles/` unchanged except
+  nothing at all.
+
+- **Next:**
+  1. **Real runs under the new pipeline — D-3 item 4, the Max-acceptance gate.** Start 2–3
+     themed runs (~$0.5 each at shakedown settings), judge them in the review loop. The
+     machine's arrowless sets have never been seen; only Max's judgement says whether they
+     are any good. Watch for: the grouper stance floor firing repeatedly (→ the named 01+02
+     merge trigger) and the opposite complaint (incoherent — unity's job to catch).
+  2. **The rater can abstain the pool below four and nothing checks it** — carried; stage 02
+     has a floor, stage 03 still does not.
+  3. **Keep the loop toward ~30 boards → rubric.md**, and at **~10 boards under
+     `2026-08-04-taxonomy-shakedown`**, run the slim-down measurement lap (effort, 03/08
+     models, budget ceilings revert together).
+  4. Carried: `README.md` never mentions `npm run studio:review` · 05–08 concurrency ·
+     First Light `explanation` pass · GDD drift to propose upstream · the mock run marked
+     `approved` in the corpus, flagged for Max.
+
 ## 2026-08-04 — Two blind playtests, and the thing that actually makes a board feel varied
 
 Continuation of the session below, after its work was merged. Max raised a design question

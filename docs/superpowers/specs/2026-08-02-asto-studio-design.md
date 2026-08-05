@@ -409,6 +409,17 @@ Browser validation is a convenience, not the authority.
 > The endpoint reports the config **the runner is holding** — never a re-read of the
 > file, which would always agree with the repo and so report a stale server as current
 > — and the run list shows it beside the button that spends money under it.
+>
+> **Amendment 5, 2026-08-04 — the controlled relationship vocabulary supersedes the
+> eight-shape list.** This spec's "eight shapes" and the free-text `shape` field are
+> retired (design.md D-3 amendment): `studio/corpus/relationship-index.json` v2.0 is
+> the vocabulary — 36 Bejar/Chaffin/Embretson relation types, each with family
+> (coverage axis), stance (composition axis), paradigm pair and failure mode — and
+> `shape` is an enum of its ids everywhere an agent declares one. Briefs carry stance
+> quotas; the grouper floors on ≥4 stances; the 04a gate requires four distinct
+> stances per board; stage 08 adds the advisory unity verdict; the review card shows
+> stance + paradigm + failure mode per set. Models: 03 and 08 moved Haiku → Sonnet for
+> the taxonomy shakedown, to be re-measured at the slim-down lap.
 
 **Visual relationship with ASTO (amendment 2):** the UI links the game's `tokens.css` /
 `base.css` / `components.css` — typefaces, paper palette, tile and card styles are

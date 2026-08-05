@@ -7,16 +7,25 @@
 - `current-attempt.json` at the run root is in the Studio spec's run-directory contract
   but has never been built (A1 or A3); `manifest.currentAttemptId` serves the purpose.
   Decide whether to build it or amend the spec.
-- ~~**The relationship monoculture, and the map for fixing it.**~~ **Answered 2026-08-04 by
-  two blind playtests — see design.md D-3**, which records the arrow finding and names the
-  four pieces of pipeline work it authorises (reword rule-007 · controlled shape vocabulary
-  tagged arrowed/arrowless · board-composition rule for the builder · then real runs judged in
-  the review loop). Taxonomy reference lives in `docs/research/semeval-2012-taxonomy.md`.
-  **This is the live next unit of work, not a parking-lot item.**
-- Still parked: **relationship-first generation** (name the relationship, then find words) as
-  a structural reorder. D-3's work may deliver most of its benefit without it — and it would
-  delete the Theme Grouper, which is where three of the pipeline's recent failures lived.
-  Revisit after D-3's real runs are judged.
+- ~~**The relationship monoculture, and the map for fixing it.**~~ **Built 2026-08-04 — see
+  design.md D-3 and its amendment.** rule-007 eliminated (retired, not deleted) · the
+  controlled vocabulary landed (36 types, family + stance + paradigm + failure mode) · stance
+  composition enforced at brief, author, grouper and gate · unity scored by 08 and shown,
+  never gating. What remains is D-3 item 4: **real runs, judged by Max in the review loop** —
+  the machine's arrowless sets have never been seen.
+- Still parked: **relationship-first generation** (the 01+02 set-first merge), now behind a
+  **named trigger** (design.md D-3 amendment §6): if the grouper's stance floor fires on most
+  runs after the vocabulary lands, the merge is the pre-agreed fix — it also deletes the stage
+  where three of the pipeline's recent failures lived. Revisit when the trigger fires or at
+  the slim-down lap, whichever first.
+- **The kitchen-board limit** (pinned as a KNOWN LIMIT test in stance-composition.test.js):
+  stance is a per-shape proxy for the felt arrow and word choice can defeat it — round 1's
+  kitchen board declares four stances yet played as one. If Max repeatedly rejects
+  stance-diverse boards as "all the same", the proxy needs word-level teeth.
+- **The shakedown slim-down lap** (~10 judged boards under `2026-08-04-taxonomy-shakedown`):
+  re-run the lean-2 measurement pass — per-stage cost + thinking share against review verdicts
+  — then re-aim effort, revisit 03/08's Sonnet upgrade, and revert the raised budget ceilings
+  (stage 15min/600k · attempt $20 · run $60) together with the effort map.
 - The hand-made experiment boards are mock runs, so they are correctly excluded from the
   variety index — but their feedback **is** in the corpus. When `rubric.md` is compiled,
   separate judgements about *hand-made design experiments* from judgements about *pipeline

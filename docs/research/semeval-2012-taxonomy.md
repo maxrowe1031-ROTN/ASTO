@@ -159,3 +159,36 @@ each; 1, 3 (except Conversion), 5, 6 never.
 | 10d | Plan | recipe:cake, syllabus:course, blueprint:building |
 | 10e | Knowledge | psychology:minds, astronomy:stars, ballistics:projectiles |
 | 10f | Concealment | alias:name, camouflage:location, disguise:identity |
+
+---
+
+## Appendix — Relation Definition Theory, and why ASTO has stances (added 2026-08-04)
+
+**Source:** Herrmann & Chaffin (1984), *Relation Definition Theory*, Psychonomic Society
+(ERIC ED267408, https://files.eric.ed.gov/fulltext/ED267408.pdf), building on Chaffin &
+Herrmann (1984), *The similarity and diversity of semantic relations*, Memory & Cognition
+12(2), 134–141. Same research programme as the Bejar taxonomy above.
+
+**The theory.** Semantic relations are not atomic — each decomposes into simple **relation
+elements** in four groups (orientation of meaning · substance of meaning · qualification ·
+amount). Contrary antonymy = shared *dimension* + *bilateral position* + *symmetry*. Their
+Table 2 lists ~30 elements; Table 1 decomposes 31 relations into them.
+
+**The three numbers that matter to ASTO:**
+
+- Element agreement predicts perceived relation similarity: **r = .707** (df = 463, p < .001).
+- With family membership held constant, the partial correlation is still **r = .355**
+  (p < .001) — family does not explain felt similarity on its own. This is round 1's result,
+  measured in 1984.
+- Within-family agreement varies: contrasts **r = .751**, part-wholes **r = .329** — the
+  weakest of five. Part-whole is precisely where Max's two most-different-feeling sets
+  (`Moon : Crater`, `Shadow : Weight`) share a family.
+
+**What ASTO took from it.** The vocabulary's **stance** level groups relation types by their
+dominant elements — the kind of question a set asks — and each entry records its elements for
+audit. Composition is enforced on stance, coverage on family, per design.md D-3's amendment.
+
+**Honest limit.** The element analysis covers five families (contrasts, similars, class
+inclusion, case relations, part-wholes). Bejar families 8, 9 and 10 are not decomposed there,
+so the element grounding is thinnest exactly where ~80% of ASTO's historical output lives; the
+stances for those families are ASTO's own extension, tagged as such by their entries.
