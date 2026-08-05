@@ -73,19 +73,29 @@ test('the gate stage has no effort — it never calls a model', () => {
 });
 
 test('effort follows what a stage actually has to work out', () => {
-  // The lean-2 numbers (01/02/04 at medium) were measured against the OLD
-  // asks. The taxonomy shakedown (2026-08-04, with Max) returns 01 and 02 to
-  // high: authoring and grouping across four stances inside one theme is the
-  // hardest ask either has carried, and judging the new design at settings
-  // tuned for the old jobs would confound "the design doesn't work" with "the
-  // model had no room to think". 04 holds at medium — its job barely
-  // hardened; the stance check is mechanical, at the gate.
+  // The lean-2 numbers were measured against the OLD asks, so the taxonomy
+  // shakedown (2026-08-04, with Max) raised 01: authoring across four stances
+  // inside one theme is the hardest ask it has carried, and judging the new
+  // design at settings tuned for the old job would confound "the design
+  // doesn't work" with "the model had no room to think".
   assert.equal(effortFor('01-pair-author', DEFAULT_CONFIG), 'high');
-  assert.equal(effortFor('02-theme-grouper', DEFAULT_CONFIG), 'high');
+  // 04 holds at medium — its job barely hardened; the stance check is
+  // mechanical, at the gate.
   assert.equal(effortFor('04-board-builder', DEFAULT_CONFIG), 'medium');
   // The exception, and the reason there is one: 06 is the last thing between a
   // flawed board and Max's time. Cheapening it would move cost onto him.
   assert.equal(effortFor('06-adversarial-solver', DEFAULT_CONFIG), 'high');
+});
+
+test('the theme grouper stays at medium — high truncated it on a real run', () => {
+  // Raised to high with 01 on 2026-08-04, reverted 2026-08-05 after the
+  // `beach` run died: truncated at max_tokens 16000, then again at 24000,
+  // $0.71 for no board. Its own baseline is the argument — six real runs at
+  // medium produced 3,756-4,435 output tokens in 36-42s, and the answer is
+  // ~4k of JSON either way. High did not buy a better grouping; it bought
+  // thinking that never converged on a combinatorial task, which is the same
+  // reason 04 came down from xhigh.
+  assert.equal(effortFor('02-theme-grouper', DEFAULT_CONFIG), 'medium');
 });
 
 test('the effort profile changes whenever the effort map does', () => {
@@ -94,7 +104,7 @@ test('the effort profile changes whenever the effort map does', () => {
   // sharing one label would silently merge the two populations being compared,
   // so the assertion is pinned deliberately: changing the map above without
   // changing the string fails here.
-  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-08-04-taxonomy-shakedown');
+  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-08-04-taxonomy-shakedown-2');
 });
 
 test('every stage has small explicit retry limits for both failure classes', () => {

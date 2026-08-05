@@ -2,6 +2,71 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-05 — The first real run died at stage 02, and what it taught
+
+Max started the first real run under `2026-08-04-taxonomy-shakedown`. It failed: **`beach`,
+stage 02 truncated at max_tokens 16000, then again at 24000** after `llm.js` raised it —
+**$0.71 and ~7 minutes for no board.**
+
+### The cause was mine, and the evidence was already on disk
+
+- **02's own baseline refuted the bump.** Six real runs at `medium`: **3,756 / 3,814 / 4,123 /
+  4,277 / 4,314 / 4,435** output tokens, 36–42s each. The answer 02 writes is ~4k of JSON. At
+  `high` the *thinking* ran past 24,000 without converging — 163s, then 255s.
+- **`high` was not the problem; 02 was.** Stage 06 runs at `high` across six runs
+  (3,474–7,044) and never truncates; 01 at `high` produced a clean pool. What breaks is high
+  on a **combinatorial** stage — the same reason `pipeline-config.js` records 04 coming down
+  from xhigh ("94% of its billed output was thinking behind an 876-token answer"). I applied
+  that lesson backwards.
+- **My stated reason for the bump was checkably wrong.** I raised 02 because it "composes
+  under a stance floor now" — but the stance work had deliberately been moved *upstream* into
+  01's quotas. The failed run proves it: 01 delivered exactly the four quota'd stances
+  (inclusion 4, time 3, event 4, possession 3). **02's job got easier, not harder.**
+- **I also raised the wrong ceiling.** Max asked for no run-killing limits; I raised `limits`
+  (the runaway-run caps) and left `maxTokens: 16_000`, the per-request ceiling that thinking
+  and the answer *share*. That is the one that killed it — the failure `pipeline-config.js`
+  warns about in its own comments.
+
+### The fix, and a real board
+
+`02-theme-grouper` → `medium`; profile → `2026-08-04-taxonomy-shakedown-2` (the map changed,
+so the corpus must not merge two populations). **772 tests green.**
+
+Then a real `beach` run at the new setting — **complete**: *"By the Shore"*, four sets in
+**four distinct stances** (inclusion `seabird : seagull`, time `summer : swimming`, event
+`lifeguard : swimmer`, possession `leash : surfboard`), unity **strong**, and the unity pass
+caught a genuine trap unprompted — `shell` pulling toward the clam/mollusk set. The whole
+pipeline downstream of 02 ran on real output for the first time.
+
+### Two things the run refuted, recorded rather than smoothed over
+
+1. **I predicted 02 at medium would return to ~4k / ~40s. It came in at 13,645 tokens /
+   129s — 85% of the 16,000 ceiling.** The vocabulary block I called a "secondary,
+   contributing" cause is doing more than I judged. Caveat in both directions: 01 also swung
+   5,340 → 12,226 at *identical* settings, and the config already documents 4.5× run-to-run
+   variance at this stage — so this is **n=1 and a signal to watch, not a measurement**. But
+   the margin is thin enough that a harder theme could truncate at medium too.
+2. **My argument against raising `maxTokens` was weaker than I stated it.** I argued a bigger
+   ceiling only buys a slower failure, because the request sat at 255s of `llm.js`'s 300s
+   non-streaming timeout. That was true *at high effort*. At medium the same stage took 129s,
+   leaving real room — so Max's instinct for headroom has better support than my pushback did.
+   Unresolved deliberately: at ~13.6k tokens per 129s, a 24k ceiling lands near the 300s
+   timeout, so the honest answer is that **the transport, not the number, is the binding
+   constraint**.
+
+Cost of the successful run: **$0.79, 8.7 min, 9 requests** — above the ~$0.5 estimate, with
+01 (12,226) and 07 (11,537) the other heavy stages.
+
+- **Next:**
+  1. **Max judges "By the Shore" in the review loop** — D-3 item 4, still the open acceptance
+     gate. It is the first pipeline board built to the arrow finding.
+  2. **Watch 02's headroom.** If a run truncates at medium, the fix is not a bigger ceiling
+     (see above) but cutting 02's work: it is shown all 36 vocabulary entries when its
+     candidate pairs already carry declared shapes. Trimming that is the cheapest lever.
+  3. Carried: the rater can abstain the pool below four and nothing checks it · slim-down lap
+     at ~10 judged boards · `README.md` never mentions `npm run studio:review` · 05–08
+     concurrency · First Light `explanation` pass · GDD drift upstream.
+
 ## 2026-08-04 — The pipeline learns the arrow finding: vocabulary, stances, unity
 
 D-3's authorised work, built — with the design sharpened twice by Max mid-planning and once
