@@ -167,6 +167,63 @@ const reportPanel = (title, value) =>
          <pre>${escape(JSON.stringify(value, null, 2))}</pre>
        </details>`;
 
+/**
+ * The evaluators' findings, regrouped from stage-shaped to set-shaped.
+ *
+ * 05 and 06 have been describing real defects for weeks, filed by stage in a
+ * collapsed panel at the foot of the page — so Max rediscovered them by
+ * playing the boards instead. Their findings were per-set all along; this is
+ * only a regrouping, and `board-html.js` stays ignorant of which stage said
+ * what.
+ *
+ * A cross-reading answered `valid: true` is the loudest thing on the page,
+ * because it is the one defect that makes a board actively unfair: the engine
+ * refuses that reading, so a player who finds it is marked wrong for being
+ * right. Answered `false` is silent — a checklist item that passed is not news.
+ */
+function machineNotesBySet(attempt) {
+  const notes = {};
+  const add = (setId, note) => {
+    if (!setId) return;
+    (notes[setId] ??= []).push(note);
+  };
+
+  for (const verdict of attempt.reports['05-analogy-validator']?.verdicts ?? []) {
+    // Only the failures. A pass note says the set works, which is what the set
+    // already looks like — it would be noise on every card.
+    if (verdict.pass === false) {
+      add(verdict.setId, { source: 'analogy validator', level: 'medium', text: verdict.notes });
+    }
+  }
+
+  const solver = attempt.reports['06-adversarial-solver'];
+  const setIdsByWord = new Map();
+  for (const set of attempt.board?.sets ?? []) {
+    for (const word of (set.pairs ?? []).flat()) setIdsByWord.set(word, set.id);
+  }
+  for (const finding of solver?.findings ?? []) {
+    // A finding names words, not a set. It belongs to a set when all its words
+    // come from one; anything spanning sets is a board-level observation and
+    // stays in the panel below rather than being filed under a set arbitrarily.
+    const owners = new Set((finding.words ?? []).map((word) => setIdsByWord.get(word)));
+    if (owners.size === 1) {
+      const [setId] = [...owners];
+      add(setId, { source: finding.kind, level: finding.severity, text: finding.note });
+    }
+  }
+  for (const reading of solver?.crossReadings ?? []) {
+    if (!reading.valid) continue;
+    const [a, b, c, d] = reading.reading;
+    add(reading.setId, {
+      source: 'also reads',
+      level: 'high',
+      text: `${a} : ${b} :: ${c} : ${d} — ${reading.note} The engine refuses this reading, so a player who finds it loses a mistake.`,
+    });
+  }
+
+  return notes;
+}
+
 async function renderRun(runId) {
   const detail = await api(`/runs/${encodeURIComponent(runId)}`);
   const { manifest } = detail;
@@ -226,6 +283,8 @@ async function renderRun(runId) {
                    (attempt.reports['02-theme-grouper']?.sets ?? []).map((set) => [set.id, set.shape]),
                  ),
                  unity: attempt.reports['08-style-guide']?.unity ?? null,
+                 evocativeness: attempt.reports['08-style-guide']?.evocativeness ?? null,
+                 notesBySet: machineNotesBySet(attempt),
                },
              )}</div>
            </section>`
@@ -462,6 +521,33 @@ function wireDecisions(runId, attemptId) {
             body: JSON.stringify({ events }),
           });
         }
+
+        // Defer to the brief when there is one — or when one is on its way.
+        //
+        // On 2026-08-05 the Revision Proposer wrote its first brief and it was
+        // right: it named the cross-pairing as the only blocker, chose
+        // 01-pair-author, offered three candidate fixes, and listed the three
+        // praised sets as untouchable. It was never sent, because this button
+        // sat next to it and answered first. The revision that went instead
+        // carried raw tag-and-note text with no protection list, churned the
+        // three good sets, and came back with the identical broken one.
+        //
+        // The brief is not sent silently in its place: Max still accepts, edits
+        // or discards it in the panel below, which is the only way a
+        // `proposal-verdict` means anything. This just stops the raw path from
+        // winning a race it should not have been in.
+        const pending = await proposalPending(runId);
+        if (pending) {
+          notify(
+            pending === 'working'
+              ? 'Writing a revision brief — it will appear below in a moment.'
+              : 'A revision brief is ready below — send, edit or discard it there.',
+            'info',
+          );
+          route();
+          return;
+        }
+
         await api(`/runs/${encodeURIComponent(runId)}/revisions`, {
           method: 'POST',
           body: JSON.stringify({
@@ -481,6 +567,23 @@ function wireDecisions(runId, attemptId) {
       notify(error.message);
     }
   });
+}
+
+/**
+ * Is a revision brief ready, or still being written?
+ *
+ * `'ready'`, `'working'`, or null. A run whose proposal endpoint errors — an
+ * older run, a server mid-restart — answers null, so the raw path still works
+ * and the button never becomes unclickable because of an advisory nicety.
+ */
+async function proposalPending(runId) {
+  try {
+    const { proposal, working } = await api(`/runs/${encodeURIComponent(runId)}/proposal`);
+    if (proposal) return 'ready';
+    return working ? 'working' : null;
+  } catch {
+    return null;
+  }
 }
 
 // The revision prompt gets the notes Max just wrote, so the rerun is actually

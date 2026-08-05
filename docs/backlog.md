@@ -4,6 +4,18 @@
 > work only when Max pulls them into `design.md`'s plan. Mid-session ideas
 > land here so the session stays on task.
 
+- **The cross-reading check's gate-promotion trigger (design.md D-7).** It reports and does not
+  block. If it agrees with Max's `valid-but-unfair` / `order-ambiguous` calls across roughly the
+  next six boards, promote it to a blocking check at `04a`. If it disagrees, the question it
+  asks needs sharpening before it is trusted with a veto.
+- **Stage 05 flags almost exactly two sets per board.** Across 36 attempts the distribution is
+  0/1/2/3 fails at 5/10/19/2 — 2 is the mode at 53%, and it was 2 on every board of the
+  2026-08-05 batch. `boardPasses` is therefore false on 31 of 36 attempts (86%) and agrees with
+  Max on 54% of sets. Its prose is often excellent and its verdict carries almost no
+  information; worth asking whether the stage should return severities rather than a boolean.
+- **The evocativeness verdict has no answer key yet.** It is shown, never enforced, and nothing
+  measures whether it agrees with Max's `not-evocative` tag. At ~6 judged boards, compare — it
+  is the same graduation question the cross-reading check has.
 - **Un-publishing has no route.** Removing a published board is `git revert` plus deleting the
   file — deliberate (reversibility for generated artifacts is version control, not
   application-level undo), but if boards start being pulled often, the Studio should say so

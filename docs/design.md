@@ -595,6 +595,104 @@ for. Measured against the real corpus after publishing: published boards contrib
 **Reversibility is git**, not an un-publish route ([[version-control-for-agents]]): a published
 board is a file in a commit, and removing one is a revert plus a deletion.
 
+### D-7 — The two axes the pipeline was missing (2026-08-05)
+
+**What prompted it:** Max ran six boards in parallel and approved none — three rejected, one
+failed, two left in revise. The worst batch since the taxonomy work, and the most useful,
+because the complaints were consistent enough to name causes.
+
+#### An instruction is a request; a check is not
+
+The finding that set the method. I read the actual `prompt.txt` that produced the cars defect.
+**All twelve compiled editorial rules were present verbatim**, including rule-010 (*"check
+whether any four of its words form another valid analogy"*), rule-011 (*"B must follow from A
+necessarily, not occasionally"*) and rule-008 (same grain). All three were broken. And that was
+the **revision** attempt, whose notes *also* named the specific defect — and it returned
+`ignition : shutdown :: departure : arrival`, the identical four words.
+
+So: **validity defects get a mechanical check, not a thirteenth rule.** Taste keeps using
+instruction, because nothing else can judge it — but even there the output is a scored, visible
+verdict rather than an exhortation.
+
+#### The cross-reading check
+
+Six of six before-after / sequence sets in the batch were rejected; two were outright fairness
+bugs. `ignition : shutdown :: departure : arrival` also reads `ignition : departure :: shutdown
+: arrival`, and because the engine refuses that reading, **a player who sees it is marked wrong
+for being right**. `board-integrity.js` says in its own header that exhaustive search cannot
+catch this (risk 1): the sixteen words *are* distinct, so the sweep sees a clean board.
+
+`crossPairings` (in `src/engine/arrangements.js`, beside the accepted-order algebra it is the
+complement of) enumerates the two refused groupings of a set's own four words — four words
+admit exactly three pairings, so this is finite, deterministic and pure. `06` receives them as
+a checklist with one closed question each, and its validator refuses an answer that skipped
+one, invented one, or answered one twice. That required the pipeline to hand a stage's **input**
+to `validateOutput`, which it never did: a validator that cannot see the question can only
+check that the answer is well-formed.
+
+**It reports; it does not gate.** Measured first, because "just enforce the validator" was the
+obvious move and the numbers refute it: `05`'s `boardPasses` is **false on 31 of 36 attempts
+ever (86%)** and agrees with Max on **13 of 24 sets (54%)**, flagging 4 he called publishable
+and missing 7 he rejected. A signal that fires 86% of the time cannot gate anything.
+**Reconsider-when:** if the cross-reading check agrees with Max's `valid-but-unfair` /
+`order-ambiguous` calls across roughly the next six boards, promote it to a blocking check at
+`04a`. It earns its gate the way D-5's auto-revise does — on evidence.
+
+The stance is not cursed, and the check must not be read as condemning it:
+`planting : felling :: budding : withering` drew *"I felt especially good about this one."* The
+difference is whether the cross-pairing is *also* strong, which is exactly the question asked.
+
+#### Evocativeness, and Max's correction to it
+
+`not-evocative` was the top tag at **15 uses across four boards**, and the word appeared in **no
+agent prompt anywhere**. Stage 08 rated the board Max called *"an absolute snooze"* as
+**`unity: strong`** — *"every word sits comfortably inside one coherent world"*. Both readings
+were correct: **unity and evocativeness are orthogonal**, a board of a subject's most obvious
+nouns is perfectly unified *by construction*, and only one axis was being measured.
+
+**Max's correction is the load-bearing part.** I framed it as one axis, generic ←→ obscure, with
+the target in the middle. He corrected it: *obscurity comes from overgeneralisation too*, and
+his own notes prove it — *"so boring and **unspecific** the puzzles barely make sense"*, and
+*"Theres many kinds of **workshops**… if you had said **woodshop** : carpentry, that would have
+worked a lot better."*
+
+So one root cause produces three complaints. A word chosen too general is **boring**
+(`not-evocative`), **untrue** (`valid-but-unfair`, `not-always-true` — *"to state that every
+crew contains a mason?"*), and **vague** (`too-obscure` — of the batch's six uses only "squit"
+was an esoteric word; the rest were vagueness). His fix is always the *more specific* word,
+which repairs all three at once.
+
+The instruction is therefore not "be evocative" but **"prefer the most specific word your
+reader will still recognise"**, with all three failure modes named — and the rarer opposite
+failure named too, scaled to difficulty: an easy set wants words anyone knows, a hard set may
+ask for the word an enthusiast knows, never one they would look up. `01`'s theme line stopped
+being `Theme to work within: X`, and its *"prefer familiar words"* line stopped saying
+*familiar* when it meant *recognisable* — common is exactly the generic middle.
+
+`08` scores the result beside unity, naming the flat words and the sharper ones. Shown, never
+enforced — same treatment as unity, and for the same reason.
+
+#### The Revision Proposer worked and lost to the button beside it
+
+`cars` produced the first brief ever, and it was right: correct root cause (pair selection, not
+layout), correct re-entry stage, three candidate fixes, and the three praised sets listed under
+`doNotChange`. It was never sent. The plain "Request revision" button answered first, carrying
+raw tag-and-note text and no protection list — so the revision churned the three good sets and
+reproduced the defect. **Zero `proposal-verdict` events existed in the whole corpus**, which is
+the only thing D-5's graduation trigger was ever waiting on.
+
+The button now defers to the brief when one exists or is being written. It does not send the
+brief silently in its place: Max still accepts, edits or discards it, because an inferred
+verdict is not evidence.
+
+#### And the evaluators moved to the sets they are about
+
+`05` and `06` had been describing these defects in prose for weeks, filed by stage in a
+collapsed panel at the foot of the page — so Max rediscovered them by playing the boards. Their
+findings are per-set, so they now render on the set card, **folded shut**: the review loop
+exists to capture an unbiased first read, so the machine's opinion is one click away rather
+than in the way.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

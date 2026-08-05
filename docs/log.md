@@ -195,6 +195,116 @@ portfolio artifact, deliberately outside the phase plan.
      version-1 sets by TAGS not action · `README.md` never mentions `npm run studio:review`
      · 05–08 concurrency · First Light `explanation` pass · GDD drift.
 
+## 2026-08-05 — Six boards, no approvals, and the two axes that were missing
+
+Max ran six boards in parallel — `cars`, `grateful-dead`, `shadows`, `construction` and two on
+`childhood` — and approved **none**. Three rejected, one failed, two left in revise. The worst
+batch since the taxonomy work landed, and the most useful: 36 feedback events consistent
+enough to name causes rather than symptoms. Recorded as **D-7** in `docs/design.md`.
+
+### What the corpus said
+
+- **`not-evocative` was the top tag at 15 uses, across four boards.** The recurring shape of
+  his complaint is *"technically works, but…"* — *"boring as a blank wall"*, *"the MOST BASIC
+  terms relating to childhood, slapped on the page"*, *"is this what anyone thinks when they
+  imagine their childhood?"*
+- **Every single before-after / sequence set was rejected — six of six.**
+- **Stage 08 rated the "absolute snooze" board `unity: strong`** — *"every word sits comfortably
+  inside one coherent world"*. Both were right. Unity and evocativeness are orthogonal, a board
+  of a subject's most obvious nouns is unified *by construction*, and only unity was measured.
+  The word "evocative" appeared in the feedback form's tags, in the docs, and in **no agent
+  prompt anywhere**.
+
+### The finding that decided the method
+
+I read the actual `prompt.txt` that produced the cars defect. **All twelve editorial rules were
+present verbatim** — including *"check whether any four of its words form another valid
+analogy"* and *"B must follow from A necessarily, not occasionally"* — and three of them were
+broken. That was the **revision** attempt, whose notes also named the specific defect, and it
+returned `ignition : shutdown :: departure : arrival`: the identical four words.
+
+So validity defects got a **mechanical check, not a thirteenth rule**. An instruction is a
+request; a validation failure sends the stage back.
+
+### Built
+
+**The cross-reading check.** `ignition : shutdown :: departure : arrival` also reads
+`ignition : departure :: shutdown : arrival` — and because the engine refuses that reading, a
+player who sees it is **marked wrong for being right**. `board-integrity.js` says in its own
+header it cannot catch this: the sixteen words *are* distinct, so the sweep sees a clean board.
+`crossPairings` now enumerates the two refused groupings of every set — pure, in the engine,
+beside the accepted-order algebra it is the complement of — and 06 answers them as a checklist
+of closed questions. Its validator refuses an answer that skipped one, invented one, or
+answered one twice, which meant teaching the pipeline to hand a stage's **input** to
+`validateOutput`: a validator that cannot see the question can only check that the answer is
+well-formed.
+
+**Specificity, and Max's correction.** I framed it as one axis — generic ←→ obscure, aim for
+the middle. He corrected it: *obscurity comes from overgeneralisation too*. His own notes prove
+it — *"so boring and **unspecific** the puzzles barely make sense"*. One root cause, three
+tags: a too-general word is boring (`not-evocative`), stops being true (`valid-but-unfair`,
+*"to state that every crew contains a mason?"*), and reads as vague (`too-obscure` — of six
+uses only "squit" was genuinely an esoteric word). So the instruction is not "be evocative" but
+**"prefer the most specific word your reader will still recognise"**, with all three failure
+modes named. 01's theme line stopped being `Theme to work within: X`, and its *"prefer familiar
+words"* line stopped saying *familiar* when it meant *recognisable*.
+
+**The evocativeness verdict** now sits beside unity in 08, naming the flat words and the
+sharper ones where it can — the form Max's own best note took (*"replacing 'Steal Your Face
+logo' with 'Stealie'"*). Shown, never enforced.
+
+**The Revision Proposer's brief now wins.** `cars` produced the first brief ever and it was
+right — correct root cause, correct stage, three candidate fixes, the three praised sets under
+`doNotChange`. It was never sent: the plain Request-revision button answered first, carrying
+raw notes and no protection list, so the revision churned the good sets and reproduced the
+defect. The button now defers to the brief rather than racing it — but does not send it
+silently, because an inferred `proposal-verdict` is not evidence.
+
+**05 and 06 moved to the sets they are about**, folded shut on the card. They had been
+describing these defects for weeks, filed by stage at the foot of the page, so Max rediscovered
+them by playing the boards.
+
+### What the measurement decided
+
+The obvious move — promote 05's `boardPasses` to a gate — is **wrong, and the numbers say so**:
+
+| | |
+|---|---|
+| `boardPasses: false` | **31 of 36 attempts ever (86%)**; 7 of 7 this batch |
+| set-level agreement with Max | **13 of 24 (54%)** |
+| precision when it flags | 8 of 12 — 4 sets he called publishable, 7 rejections missed |
+
+So the cross-reading check **reports and does not gate**, and earns its gate the way D-5's
+auto-revise does. Its reconsider-when is recorded in D-7: agreement with Max's
+`valid-but-unfair` / `order-ambiguous` calls across roughly the next six boards.
+
+### Session gate
+
+- **Automated: PASSED.** 841 → **872 tests, 0 fail.** The enumerator is pinned against both
+  real defects as fixtures — cars' `ignition/shutdown` and the Grateful Dead's
+  `formation/disbandment` — plus `planting : felling :: budding : withering`, the same stance
+  Max loved, as the case that must still enumerate without being condemned.
+- **Claude-verifiable: PASSED.** In the browser, the `ignition : shutdown :: departure :
+  arrival` card now carries 05's grain-mismatch note under a folded "1 machine note"
+  disclosure, and the two clean sets carry none. The enumerator produces **48 closed questions
+  across the six boards**, including Max's two verbatim.
+- **Max acceptance: OPEN.** The question the next batch answers is whether `not-evocative`
+  drops.
+- **Corpus insured first**, before any analysis was acted on: the whole batch was uncommitted
+  at session start — the same exposure as the 2026-08-05 scar.
+
+- **Next:**
+  1. **A fresh batch is the test.** Watch `not-evocative`, and watch whether the cross-reading
+     check agrees with his `valid-but-unfair` calls — that agreement is what promotes it to a
+     gate at `04a`.
+  2. **Judge a Revision Proposer brief.** Still zero `proposal-verdict` events; the path is
+     now clear, so the next revise-board should record one.
+  3. **Phase 5's select screen.** Six boards in `puzzles/`, ten needed — and the three older
+     approvals (`music`, `weather`, `history`) are still held back for a re-read.
+  4. Carried: rater abstention floor · slim-down lap at ~10 judged boards · rubric compilation
+     must read version-1 sets by TAGS not action · `README.md` never mentions
+     `npm run studio:review` · 05–08 concurrency · First Light `explanation` pass · GDD drift.
+
 ## 2026-08-05 — Approved boards reach the game
 
 Max ran and judged two more boards between sessions — **`birds` and `batman`, both approved**
