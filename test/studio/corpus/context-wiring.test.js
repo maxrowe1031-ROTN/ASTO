@@ -140,3 +140,50 @@ test('the server hands the same rules to a run as the CLI does', async () => {
     cleanup();
   }
 });
+
+test('retired rule-007\'s wording reaches no prompt — the retirement is real on the wire', async () => {
+  // Before 2026-08-04 every agent prompt carried "directional and
+  // transformative". Retiring the rule only matters if the wording actually
+  // left the prompts a run sends, so this reads what was written to disk
+  // rather than trusting the loadRules filter.
+  const { store, rootDir, cleanup } = makeStore();
+  try {
+    const runId = seedRun(store);
+    const rules = loadRules();
+    const result = await runPipeline({
+      runId,
+      store,
+      transport: mockTransport(),
+      context: { rules: rules.map((rule) => rule.text) },
+      ...fastTime(),
+    });
+    assert.equal(result.status, 'complete', result.failure?.message);
+
+    for (const stageId of AGENT_STAGES) {
+      const prompt = promptFor(rootDir, runId, result.attemptId, stageId);
+      assert.equal(
+        /transformative/i.test(prompt),
+        false,
+        `${stageId} still tells the model pairs must be transformative`,
+      );
+    }
+  } finally {
+    cleanup();
+  }
+});
+
+test('the stance quotas reach the pair author\'s prompt', async () => {
+  const { store, rootDir, cleanup } = makeStore();
+  try {
+    const runId = seedRun(store, {
+      brief: { count: 8, stanceQuotas: ['inclusion', 'possession', 'event', 'time'] },
+    });
+    const result = await runPipeline({ runId, store, transport: mockTransport(), ...fastTime() });
+    assert.equal(result.status, 'complete', result.failure?.message);
+    const prompt = promptFor(rootDir, runId, result.attemptId, '01-pair-author');
+    assert.match(prompt, /inclusion, possession, event, time/);
+    assert.match(prompt, /at least two pairs in each/i);
+  } finally {
+    cleanup();
+  }
+});

@@ -146,6 +146,9 @@ export function createApi({
   // The stages whose output the review page shows. The gate is read from its
   // human-facing integrity.json rather than its output.json duplicate.
   const REPORT_STAGES = [
+    // Read for its declared shapes — the review card teaches each set's
+    // stance (paradigm + failure mode) joined from these by set id.
+    ['02-theme-grouper', 'output.json'],
     ['03-difficulty-rater', 'output.json'],
     // Read for its "promotions" — which sets were labelled harder than they
     // were graded. The board itself comes from board.json.
