@@ -95,7 +95,10 @@ function gradedSets(blackboard) {
   );
   return sets.map((set) => {
     const grade = grades.get(set.id);
-    return grade ? { ...set, difficulty: grade.difficulty, abstained: grade.abstained, rationale: grade.rationale } : set;
+    const withStance = { ...set, stance: stanceOf(set.shape) ?? 'unknown' };
+    return grade
+      ? { ...withStance, difficulty: grade.difficulty, abstained: grade.abstained, rationale: grade.rationale }
+      : withStance;
   });
 }
 
@@ -555,9 +558,17 @@ function gateReport(blackboard) {
     );
   }
 
+  const stances = stanceComposition(output.board, blackboard);
+  if (!stances.ok) {
+    reasons.push(
+      `the four sets ask only ${stances.distinct} kind(s) of question (${stances.summary}); ` +
+      `a board needs ${MIN_DISTINCT_STANCES} different stances — swap sets so no kind repeats`,
+    );
+  }
+
   // `ok` last, and derived from the reasons: `...integrity` carries an `ok` of
   // its own that would otherwise silently win and re-admit the board.
-  return { ...integrity, schema, variety, reasons, ok: reasons.length === 0 };
+  return { ...integrity, schema, variety, stances, reasons, ok: reasons.length === 0 };
 }
 
 // Four sets that all express the same kind of relationship make a board that
@@ -582,6 +593,42 @@ function relationVariety(board) {
   };
 }
 
+// Four sets in four different STANCES — kinds of question — is the board
+// composition rule from the two blind playtests (design.md D-3): the board
+// mixing four stances was "the best puzzle yet"; both single-stance boards
+// were rejected as one trick repeated. The stance comes from the grouper's
+// declared shape, joined by set id, so the puzzle schema stays untouched.
+//
+// A known limit, recorded rather than papered over: stance is a per-shape
+// proxy for the felt "arrow", and word choice can defeat it — round 1's
+// kitchen board declares four stances under this vocabulary yet Max read it
+// as one. The gate catches the worst case (a monostance board); the review
+// card shows the claimed stances so Max's eye covers the rest.
+//
+// Enforced only when every set's stance is known. The grouper's enum makes
+// that the normal case; a revision replaying an older attempt may not carry
+// shapes, and a gate that guessed would reject boards on missing data.
+const MIN_DISTINCT_STANCES = 4;
+
+function stanceComposition(board, blackboard) {
+  const grouped = new Map(
+    (blackboard.get('02-theme-grouper')?.sets ?? []).map((set) => [set.id, set]),
+  );
+  const bySet = Object.fromEntries(
+    board.sets.map((set) => [set.id, stanceOf(grouped.get(set.id)?.shape) ?? null]),
+  );
+  const known = Object.values(bySet).filter(Boolean);
+  const distinct = new Set(known).size;
+  const allKnown = known.length === board.sets.length;
+  return {
+    ok: !allKnown || distinct >= MIN_DISTINCT_STANCES,
+    enforced: allKnown,
+    distinct,
+    bySet,
+    summary: board.sets.map((set) => `${set.id}: ${bySet[set.id] ?? 'unknown'}`).join(', '),
+  };
+}
+
 const describe = (error) => `${error.path ? `${error.path}: ` : ''}${error.message}`;
 
 const gateFeedback = (report) =>
@@ -590,6 +637,7 @@ const gateFeedback = (report) =>
     ...report.reasons.map((reason) => `- ${reason}`),
     'A board must accept exactly four ordered readings per set and nothing else. If two sets can be regrouped into another valid analogy, choose different sets.',
     `The four sets must also express ${MIN_DISTINCT_RELATIONS} genuinely different relationships. Reusing one relationship across sets is legal and dull; pick sets whose relationships differ in kind, not only in wording.`,
+    `And they must ask ${MIN_DISTINCT_STANCES} different kinds of question — each candidate set carries a "stance"; no stance may appear twice on the board.`,
   ].join('\n');
 
 // --- failure ------------------------------------------------------------
