@@ -26,6 +26,7 @@
 import { canonicalOrder, deriveWords } from '../../../src/engine/arrangements.js';
 import { difficultyToTier } from '../../../src/engine/tiers.js';
 import { fisherYates, mulberry32 } from '../../../src/engine/rng.js';
+import { resolveShape } from '../../corpus/vocabulary.js';
 
 // A board is model output. It is rendered, so it is escaped.
 const escape = (value) =>
@@ -82,14 +83,36 @@ export function tilesHtml(board) {
 }
 
 /**
+ * The stance line for one set: the kind of question it asks, taught beside
+ * the set rather than assumed known. More kinds of output make faults harder
+ * to spot, so the card carries the checklist — the vocabulary's paradigm pair
+ * and its named failure mode — turning "is this good?" into "is this a good
+ * example of THAT kind?", which is a question the reviewer can answer.
+ */
+function stanceHtml(shapeId) {
+  const shape = resolveShape(shapeId);
+  if (!shape) return '';
+  return [
+    `\n    <div class="stance" data-stance="${escape(shape.stance)}">`,
+    `      <span class="stance-name">${escape(shape.stance)}</span> · ${escape(shape.description)}, like <em>${escape(shape.paradigm)}</em>`,
+    `      <div class="stance-failure">⚠ ${escape(shape.failureMode)}</div>`,
+    '    </div>',
+  ].join('\n');
+}
+
+/**
  * The four sets as the game reveals them once solved.
  *
  * `promotions` is the one thing here a player never sees. The builder may
  * label its hardest available set Black even when the rater graded it lower,
  * and that judgement is exactly what the review loop is meant to sharpen — so
  * it is shown to the reviewer rather than absorbed into a tier badge.
+ *
+ * `shapesBySet` (set id → declared shape id, from the grouper's output) adds
+ * the stance line the same way: a judgement the reviewer cannot see is one
+ * he cannot correct.
  */
-export function setsHtml(board, promotions = []) {
+export function setsHtml(board, promotions = [], shapesBySet = {}) {
   const promotedBy = new Map(
     (promotions ?? []).map((promotion) => [promotion.setId, promotion]),
   );
@@ -111,14 +134,47 @@ export function setsHtml(board, promotions = []) {
         `    <span class="tier-badge">${escape(tier)}</span>${promotionHtml}`,
         `    <div class="analogy">${escape(analogy)}</div>`,
         `    <div class="relationship">${escape(set.relationshipLabel)}</div>`,
-        `    <div class="explanation">${escape(set.explanation)}</div>`,
+        `    <div class="explanation">${escape(set.explanation)}</div>${stanceHtml(shapesBySet[set.id])}`,
         '  </article>',
       ].join('\n');
     })
     .join('\n');
 }
 
-export function boardHtml(board, promotions = []) {
+/**
+ * The board's intended shape, readable before playing: its four stances and
+ * the style guide's unity verdict with any words it flagged as outside the
+ * world. Unity is advisory by design — shown, never a gate.
+ */
+export function boardShapeHtml({ shapesBySet = {}, unity = null } = {}) {
+  const stances = [
+    ...new Set(
+      Object.values(shapesBySet)
+        .map((shapeId) => resolveShape(shapeId)?.stance)
+        .filter(Boolean),
+    ),
+  ];
+  if (stances.length === 0 && !unity) return '';
+
+  const outliers = (unity?.outliers ?? [])
+    .map((outlier) => `      <div class="unity-outlier">⚠ ${escape(outlier.word)} — ${escape(outlier.note)}</div>`)
+    .join('\n');
+  return [
+    '  <div class="board-shape">',
+    stances.length > 0
+      ? `    <div class="board-stances">stances: ${stances.map((s) => `<span class="stance-name">${escape(s)}</span>`).join(' · ')}</div>`
+      : '',
+    unity
+      ? `    <div class="unity" data-verdict="${escape(unity.verdict)}">unity: <strong>${escape(unity.verdict)}</strong> — ${escape(unity.reasoning)}</div>${outliers ? `\n${outliers}` : ''}`
+      : '',
+    '  </div>',
+  ]
+    .filter(Boolean)
+    .join('\n');
+}
+
+export function boardHtml(board, promotions = [], { shapesBySet = {}, unity = null } = {}) {
   if (!board?.sets) return '';
-  return `${tilesHtml(board)}\n<div class="solved-sets">\n${setsHtml(board, promotions)}\n</div>`;
+  const shape = boardShapeHtml({ shapesBySet, unity });
+  return `${shape ? `${shape}\n` : ''}${tilesHtml(board)}\n<div class="solved-sets">\n${setsHtml(board, promotions, shapesBySet)}\n</div>`;
 }

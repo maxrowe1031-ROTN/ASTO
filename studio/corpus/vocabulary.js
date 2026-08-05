@@ -8,17 +8,12 @@
 // place that file is read, so the pipeline, the agents and the variety brief
 // all agree on what a shape is.
 //
-// Pure in the studio sense: one static corpus read at module load, no run
-// artifacts, no fetch.
+// A JSON import rather than node:fs, deliberately: the review page teaches
+// each set's stance on its card, so this module must resolve identically
+// under node (agents, tests) and in the browser (board-html.js), the same
+// dual life the engine modules already lead.
 
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-
-export const VOCABULARY_PATH = fileURLToPath(
-  new URL('./relationship-index.json', import.meta.url),
-);
-
-const vocabulary = JSON.parse(readFileSync(VOCABULARY_PATH, 'utf8'));
+import vocabulary from './relationship-index.json' with { type: 'json' };
 
 /** Every declarable shape, frozen: { id, taxonomy, family, familyName, stance, elements, paradigm, description, failureMode }. */
 export const SHAPES = Object.freeze(vocabulary.shapes.map((shape) => Object.freeze(shape)));

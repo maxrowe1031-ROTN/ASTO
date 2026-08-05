@@ -213,6 +213,14 @@ async function renderRun(runId) {
              <div id="board-preview">${boardHtml(
                attempt.board,
                attempt.reports['04-board-builder']?.promotions ?? [],
+               {
+                 // Set id → declared shape, from the grouper — the card
+                 // teaches each set's stance beside its paradigm pair.
+                 shapesBySet: Object.fromEntries(
+                   (attempt.reports['02-theme-grouper']?.sets ?? []).map((set) => [set.id, set.shape]),
+                 ),
+                 unity: attempt.reports['08-style-guide']?.unity ?? null,
+               },
              )}</div>
            </section>`
         : ''

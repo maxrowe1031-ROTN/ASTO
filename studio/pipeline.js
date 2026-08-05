@@ -75,6 +75,9 @@ const STAGE_INPUTS = {
     const puzzle = boardOf(board);
     return {
       title: puzzle?.title ?? null,
+      // The sixteen words, for the unity verdict: 08 judges whether they read
+      // as one world, which it cannot do from labels and explanations alone.
+      words: puzzle ? deriveWords(puzzle.sets) : [],
       items: (puzzle?.sets ?? []).map((set) => ({
         setId: set.id,
         relationshipLabel: set.relationshipLabel,
