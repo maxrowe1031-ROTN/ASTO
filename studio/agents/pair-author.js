@@ -51,11 +51,29 @@ export function buildPrompt(input = {}, context) {
       'You are the Pair Author for ASTO, a word puzzle built on analogies of the form A : B :: C : D. ' +
       'You author candidate pairs — two words in a specific order — each carrying one precise relationship label. ' +
       'The goal of a finished board: the theme unifies the words, the relationships diversify the questions. ' +
-      'Sixteen words that feel like one world; four sets that feel like four different kinds of question about it.',
+      'Sixteen words that feel like one world; four sets that feel like four different kinds of question about it. ' +
+      'Unity is the floor, not the goal — a board can be perfectly unified and completely lifeless. ' +
+      'The board should make someone who cares about the subject feel recognised.',
     context,
     task: [
       `Author ${count} candidate pairs.`,
-      theme ? `Theme to work within: ${theme}.` : 'No theme is imposed; choose freely.',
+      // The theme instruction used to read "Theme to work within: X", which
+      // asks only that words stay inside a boundary — and the safest place
+      // inside a boundary is the middle. That is what produced the 2026-08-05
+      // batch: childhood as toy, game, caregiver, child, infant, kid. Every
+      // one of them is on theme, and Max's verdict was "the MOST BASIC terms
+      // relating to childhood, slapped on the page". See design.md D-7.
+      theme
+        ? [
+            `Theme: ${theme}. Do not merely stay inside it — evoke it.`,
+            'Reach for the most specific word that your reader will still recognise: the word someone who actually loves this subject would reach for. "Stealie", not "Steal Your Face logo". "Woodshop", not "workshop". "Cygnet", not "baby swan".',
+            'A too-general word is not the safe choice. It fails three ways at once:',
+            "  - it is boring — a board of a subject's most obvious nouns tells the player nothing they did not already know;",
+            '  - it stops being TRUE — every toolbox holds a wrench, but not every crew holds a mason, and not every workshop is for woodworking. Generality is where "necessarily" quietly becomes "sometimes";',
+            '  - it reads as vague rather than simple — a word that points at nothing concrete gives the player nothing to grip.',
+            'The opposite failure is real but rarer: a word nobody outside the subject could know is not specific, it is obscure. The test is recognition, not fame — and it scales with difficulty. An easy set wants words anyone knows; a hard set may ask for the word an enthusiast knows, never one they would have to look up.',
+          ].join('\n')
+        : 'No theme is imposed; choose freely.',
       // Author in matched twos, not just spread across stances. A SET is two
       // pairs sharing ONE relationship, and a stance is a category of
       // relationships, not a relationship — so a pool can satisfy a stance
@@ -75,7 +93,12 @@ export function buildPrompt(input = {}, context) {
         ? `Avoid these shapes — recent boards have leaned on them: ${avoidShapes.join(', ')}.`
         : '',
       'The order of a pair must matter: A : B should not read the same as B : A. A pair whose direction is reversible is a weak pair.',
-      'Prefer familiar words. The challenge is the relationship, never the vocabulary.',
+      // This line used to read "Prefer familiar words", full stop — which a
+      // model reasonably hears as "prefer common words", and common is exactly
+      // the generic middle the instruction above is trying to leave. Familiar
+      // is about RECOGNITION, not frequency, and the two come apart precisely
+      // where the interesting words live.
+      'The challenge must be the relationship, never the vocabulary — so a word has to be recognisable. Recognisable is not the same as commonplace: prefer the vivid, specific word your reader will still know over the flat, general one they would never have to think about.',
       `If you cannot reach ${count} pairs at this quality, return fewer and explain in "shortfall". Never pad with weak pairs.`,
     ]
       .filter(Boolean)

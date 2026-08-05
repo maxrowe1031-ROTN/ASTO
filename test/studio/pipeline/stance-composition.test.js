@@ -27,6 +27,7 @@ import {
   fastTime,
   fixturesWith,
   boardReply,
+  solverReply,
 } from './helpers.js';
 
 const experiment = (name) =>
@@ -73,6 +74,9 @@ const runBoard = async (board) => {
     '02-theme-grouper': grouperReply(board),
     '03-difficulty-rater': raterReply(board),
     '04-board-builder': [boardReply(board)],
+    // The solver's checklist is derived from the board it judges, so a swapped
+    // board needs a swapped reply — same reason the grouper and rater do.
+    '06-adversarial-solver': solverReply(board),
   });
   const result = await runPipeline({
     runId: seedRun(store),
@@ -206,6 +210,7 @@ test('KNOWN LIMIT: round 1\'s kitchen board declares four stances yet Max read i
     },
     '03-difficulty-rater': raterReply(kitchen),
     '04-board-builder': [boardReply(kitchen)],
+    '06-adversarial-solver': solverReply(kitchen),
   });
   const result = await runPipeline({
     runId: seedRun(store),
