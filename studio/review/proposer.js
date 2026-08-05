@@ -17,6 +17,11 @@ import { resolveShape } from '../corpus/vocabulary.js';
 
 export const PROPOSER_STAGE = '09-revision-proposer';
 
+// One brief per attempt, at run level: an attempt is immutable once complete,
+// and the proposal is written after review, so it belongs beside feedback.jsonl
+// rather than inside the attempt whose work it comments on.
+export const proposalFile = (attemptId) => `revision-proposal-${attemptId}.json`;
+
 // The evaluator outputs the proposer reads as evidence. The gate is left out:
 // it is deterministic and a board that reached review already passed it.
 const EVALUATOR_STAGES = [
@@ -26,8 +31,17 @@ const EVALUATOR_STAGES = [
   '08-style-guide',
 ];
 
-/** The verdicts that mean "this board is not publishable as it stands". */
-export const REJECTING_ACTIONS = new Set(['reject-board', 'revise-board']);
+/**
+ * The one verdict worth proposing on: "publishable after a fix".
+ *
+ * Not a hard rejection, deliberately. `rejected` is a TERMINAL run status —
+ * it leads only to `archived` — so a board Max has rejected outright has no
+ * revision to request, and a brief proposing one would be spend with nothing
+ * to buy. "Publishable after a fix" is precisely the state where a revision is
+ * both possible and wanted, and it is the state his own rule describes: the
+ * whole is not publishable yet, the individual analogies are mostly fine.
+ */
+export const REJECTING_ACTIONS = new Set(['revise-board']);
 
 /** True when a batch of feedback contains a board verdict worth proposing on. */
 export const wantsProposal = (events = []) =>
@@ -115,10 +129,19 @@ export async function proposeRevision({
         : parsed.failure;
 
       if (parsed.ok && validation.ok) {
-        store.writeStageText(runId, attemptId, PROPOSER_STAGE, 'prompt.txt', request.prompt);
-        store.writeStageText(runId, attemptId, PROPOSER_STAGE, 'response.txt', text);
-        store.writeStageArtifact(runId, attemptId, PROPOSER_STAGE, 'output.json', parsed.value);
-        store.writeAttemptArtifact(runId, attemptId, 'revision-proposal.json', parsed.value);
+        // A RUN artifact, and the store taught this the hard way twice: it
+        // refuses an unregistered stage id (the proposer is deliberately not a
+        // pipeline stage) and refuses any write into a completed attempt
+        // ("completed work is never rewritten"). Both are right — an attempt
+        // directory records what the PIPELINE did, and a brief written during
+        // review is not that. So it lives at run level beside feedback.jsonl,
+        // with the prompt along for the audit every stage keeps.
+        store.writeRunArtifact(runId, proposalFile(attemptId), {
+          ...parsed.value,
+          attemptId,
+          prompt: request.prompt,
+          model: request.model,
+        });
         return parsed.value;
       }
       feedbackForRetry = `Your previous reply was rejected: ${
@@ -131,7 +154,8 @@ export async function proposeRevision({
   } catch (error) {
     // Recorded, never thrown: the review page must still save Max's feedback,
     // which is the irreplaceable half of this transaction.
-    store.writeStageArtifact(runId, attemptId, PROPOSER_STAGE, 'failure.json', {
+    store.writeRunArtifact(runId, `revision-proposal-${attemptId}-failure.json`, {
+      attemptId,
       message: error.message,
       category: error.category ?? 'unknown',
     });

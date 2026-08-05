@@ -1,0 +1,85 @@
+{
+  "id": "asto-first-light",
+  "title": "First Light",
+  "date": "2026-08-01",
+  "sets": [
+    {
+      "id": "set-growth",
+      "relationshipLabel": "Small origin becomes larger result",
+      "explanation": "A seed grows into a tree the way a spark grows into a fire.",
+      "pairs": [
+        [
+          "Seed",
+          "Tree"
+        ],
+        [
+          "Spark",
+          "Fire"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "nature"
+      ]
+    },
+    {
+      "id": "set-tools",
+      "relationshipLabel": "Profession and the tool of its trade",
+      "explanation": "A painter works with a brush the way a sculptor works with a chisel.",
+      "pairs": [
+        [
+          "Painter",
+          "Brush"
+        ],
+        [
+          "Sculptor",
+          "Chisel"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "craft"
+      ]
+    },
+    {
+      "id": "set-homes",
+      "relationshipLabel": "Home and the animal kept by it",
+      "explanation": "A nest is where a bird lives, the way a den is where a bear lives.",
+      "pairs": [
+        [
+          "Nest",
+          "Bird"
+        ],
+        [
+          "Den",
+          "Bear"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "nature",
+        "animal"
+      ]
+    },
+    {
+      "id": "set-seasons",
+      "relationshipLabel": "Season and the farm work that belongs to it",
+      "explanation": "Sowing belongs to spring the way harvest belongs to autumn.",
+      "pairs": [
+        [
+          "Spring",
+          "Sowing"
+        ],
+        [
+          "Autumn",
+          "Harvest"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "nature",
+        "time"
+      ]
+    }
+  ]
+}

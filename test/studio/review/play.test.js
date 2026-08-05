@@ -10,7 +10,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-import { playScaffold } from '../../../studio/review/ui/play.js';
+import { createRecorder, playScaffold } from '../../../studio/review/ui/play.js';
+import { initGame, submit } from '../../../src/engine/engine.js';
+import { canonicalOrder, deriveWords } from '../../../src/engine/arrangements.js';
+import firstLight from '../../../puzzles/first-light.json' with { type: 'json' };
 
 const SOURCE = readFileSync(
   fileURLToPath(new URL('../../../studio/review/ui/play.js', import.meta.url)),
@@ -68,4 +71,95 @@ test('the game\'s EndView is deliberately not used', () => {
   // which the review page already shows below, and which Max has usually read
   // before pressing Play.
   assert.equal(SOURCE.includes('end-view.js'), false);
+});
+
+// --- the playthrough recorder --------------------------------------------
+//
+// A recorder is a VIEW that renders to a data structure instead of the DOM,
+// which is the whole trick: the view contract is `update(state, outcome)`, so
+// watching a playthrough needs no change to the game and no DOM at all. That
+// also makes it testable against the REAL engine here rather than only in the
+// browser — so these drive actual play through the engine's own reducer.
+
+test('the recorder is a view — update(state, outcome) and nothing else', () => {
+  const recorder = createRecorder();
+  assert.equal(typeof recorder.update, 'function');
+  assert.equal(typeof recorder.result, 'function');
+});
+
+test('an unfinished playthrough records nothing — half a game calibrates nothing', async () => {
+  const recorder = createRecorder();
+  await recorder.update({ status: 'playing' }, { type: 'solved', setId: 'set-a' });
+  assert.equal(recorder.result(), null);
+});
+
+test('a real win through the engine is recorded in solve order', async () => {
+  // Driven by the engine itself: initGame, then submit each set in a
+  // deliberate order with one wrong submission first.
+  const recorder = createRecorder();
+  let state = initGame(firstLight);
+
+  const submitTo = async (terms) => {
+    const next = submit(state, terms);
+    state = next.state;
+    await recorder.update(state, next.outcome);
+  };
+
+  const sets = firstLight.sets;
+  const wordsOf = (set) => canonicalOrder(set.pairs);
+
+  // A miss first: two words from one set, two from another.
+  await submitTo([...wordsOf(sets[0]).slice(0, 2), ...wordsOf(sets[1]).slice(0, 2)]);
+  // Then solve them out of difficulty order, hardest first.
+  for (const set of [...sets].reverse()) await submitTo(wordsOf(set));
+
+  const result = recorder.result();
+  assert.equal(result.outcome, 'won');
+  assert.equal(result.mistakes, 1, 'the deliberate miss was not counted');
+  assert.deepEqual(
+    result.solvedOrder,
+    [...sets].reverse().map((s) => s.id),
+    'solve order is the point — it is what Max narrates by hand',
+  );
+});
+
+test('a so-close counts as a mistake and is also counted on its own', async () => {
+  // "So close" costs a mistake by design (GDD §8), and it carries no setId on
+  // purpose so the view cannot leak which set was nearly right — so it can be
+  // counted but never attributed.
+  const recorder = createRecorder();
+  let state = initGame(firstLight);
+  const [a, b, c, d] = canonicalOrder(firstLight.sets[0].pairs);
+
+  const wrongOrder = submit(state, [a, c, b, d]);
+  state = wrongOrder.state;
+  await recorder.update(state, wrongOrder.outcome);
+
+  assert.equal(wrongOrder.outcome.type, 'so-close', 'the fixture no longer produces a so-close');
+  for (const set of firstLight.sets) {
+    const next = submit(state, canonicalOrder(set.pairs));
+    state = next.state;
+    await recorder.update(state, next.outcome);
+  }
+
+  const result = recorder.result();
+  assert.equal(result.soClose, 1);
+  assert.equal(result.mistakes, 1, 'a so-close is a mistake as well as a so-close');
+});
+
+test('a loss is recorded too — how a board defeats a player is calibration data', async () => {
+  const recorder = createRecorder();
+  let state = initGame(firstLight);
+  const words = deriveWords(firstLight.sets);
+
+  // Four submissions that are neither solves nor near-misses.
+  for (let i = 0; i < 4; i += 1) {
+    const next = submit(state, [words[0], words[5], words[10], words[15 - i]]);
+    state = next.state;
+    await recorder.update(state, next.outcome);
+  }
+
+  const result = recorder.result();
+  assert.equal(result.outcome, 'lost');
+  assert.deepEqual(result.solvedOrder, []);
 });

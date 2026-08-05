@@ -27,7 +27,7 @@ import { buildRelationshipIndex, buildStanceQuotas, buildVarietyBrief } from '..
 // see pipeline-config.js for why the floor is where it is.
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-config.js';
 import { pickSubject } from '../corpus/subjects.js';
-import { proposeRevision, wantsProposal } from './proposer.js';
+import { proposalFile, proposeRevision, wantsProposal } from './proposer.js';
 import { defaultTransport } from './runner.js';
 
 // The shape createRun builds: an ISO timestamp with ':' replaced by '-',
@@ -320,6 +320,15 @@ export function createApi({
     const problem = checkFeedback(runId, body.events);
     if (problem) return problem;
     for (const event of body.events) store.appendFeedback(runId, event);
+
+    // "Publishable after a fix" is saved, not decided: it leaves the run in
+    // `awaiting-review`, which is the only status a revision can be requested
+    // from. The proposal is built here so the brief is waiting by the time Max
+    // has finished writing his notes.
+    if (wantsProposal(body.events)) {
+      const { currentAttemptId } = store.readManifest(runId);
+      startProposal(runId, currentAttemptId, body.events);
+    }
     return ok({ count: body.events.length });
   }
 
@@ -339,13 +348,9 @@ export function createApi({
     store.appendDecision(runId, { type: action, attemptId: currentAttemptId, at: clock() });
     for (const event of events) store.appendFeedback(runId, event);
 
-    // Max's judgement is stored FIRST and unconditionally: it is the
-    // irreplaceable half. The proposal is a convenience built on top, so it
-    // runs after, never blocks the response, and cannot fail the save.
-    if (action === 'reject' && wantsProposal(events)) {
-      startProposal(runId, currentAttemptId, events);
-    }
-
+    // No proposal here: approve and reject are both terminal decisions, and a
+    // rejected run leads only to `archived`. A brief proposing a revision that
+    // cannot be requested is spend with nothing to buy — see proposer.js.
     return ok({ status: store.readManifest(runId).status });
   }
 
@@ -390,7 +395,7 @@ export function createApi({
     if (!currentAttemptId) return ok({ proposal: null, working: false });
     try {
       return ok({
-        proposal: store.readAttemptArtifact(runId, currentAttemptId, 'revision-proposal.json'),
+        proposal: store.readRunArtifact(runId, proposalFile(currentAttemptId)),
         working: false,
       });
     } catch {

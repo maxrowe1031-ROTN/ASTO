@@ -261,6 +261,7 @@ async function renderRun(runId) {
     <details class="panel report"><summary>Feedback so far (${detail.feedback.length})</summary>
       ${feedbackList(detail.feedback)}</details>`;
 
+  resetPlaythroughFor(runId, attemptId);
   wireDecisions(runId, attemptId);
   wirePlay(attempt.board);
   showProposal(runId, attemptId);
@@ -324,19 +325,39 @@ function wirePlay(board) {
   });
 }
 
-// Per-attempt play state, read by the save handler. `record` is the first
-// COMPLETED playthrough; `plays` counts every time Play was pressed, so the
-// saved event can say whether a replay happened rather than hiding it.
-const playthrough = { record: null, plays: 0 };
+// Play state for ONE attempt: `record` is the first COMPLETED playthrough,
+// `plays` counts every time Play was pressed so the saved event can say a
+// replay happened rather than hiding it.
+//
+// Keyed by run and attempt, and reset when either changes. Module-level state
+// that outlived its attempt would attach one board's playthrough to another —
+// the same contamination the first-play-only rule exists to prevent, arriving
+// by a different door.
+let playthrough = { key: null, record: null, plays: 0 };
+
+function resetPlaythroughFor(runId, attemptId) {
+  const key = `${runId}/${attemptId}`;
+  if (playthrough.key !== key) playthrough = { key, record: null, plays: 0 };
+}
 
 function wireDecisions(runId, attemptId) {
   const panel = document.getElementById('feedback');
   if (!panel) return;
 
   panel.addEventListener('click', async (event) => {
-    const action = event.target.dataset?.act;
+    let action = event.target.dataset?.act;
     if (!action) return;
     event.preventDefault();
+
+    // "Publishable after a fix" is not a terminal decision. `rejected` leads
+    // only to `archived`, so deciding here would strand the board in a status
+    // no revision can be requested from — which is exactly what the fix is
+    // for. It saves instead, leaving the run in `awaiting-review`, and the
+    // Revision Proposer picks it up from the save.
+    const boardVerdict = panel.querySelector('input[data-role=board-verdict]:checked')?.value;
+    if (boardVerdict === 'revise-board' && (action === 'reject' || action === 'approve')) {
+      action = 'save';
+    }
 
     // The button is only the fallback now: if Max picked a board verdict in the
     // form, that wins. His rule — a board verdict is about the publishability

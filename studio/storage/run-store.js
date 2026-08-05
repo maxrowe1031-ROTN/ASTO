@@ -251,6 +251,29 @@ export function createRunStore({ rootDir, clock = () => new Date().toISOString()
       );
     },
 
+    // Run-level documents, written AFTER an attempt is finished — the review
+    // side of a run, alongside feedback.jsonl and decisions.jsonl.
+    //
+    // These exist because an attempt is immutable once complete ("completed
+    // work is never rewritten"), which is right: an attempt directory is the
+    // record of what the pipeline did, and a review-time artifact is not that.
+    // The Revision Proposer runs when Max rejects a board, so its brief has
+    // nowhere honest to live inside the attempt and lives here instead.
+    writeRunArtifact(runId, filename, value) {
+      return withLock(runDir(runId), () => {
+        readManifest(runId); // a run that does not exist cannot hold artifacts
+        writeJsonAtomic(join(runDir(runId), filename), value);
+      });
+    },
+
+    readRunArtifact(runId, filename) {
+      return readJson(join(runDir(runId), filename), `${filename} of run ${runId}`);
+    },
+
+    hasRunArtifact(runId, filename) {
+      return existsSync(join(runDir(runId), filename));
+    },
+
     listAttempts(runId) {
       const dir = join(runDir(runId), 'attempts');
       if (!existsSync(dir)) return [];
