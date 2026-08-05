@@ -89,6 +89,32 @@ Claude's own method error and the synthetic-feedback near-miss.
   project practice rather than departing from it, so no HR entry is owed. HR-1 is about
   dependencies, and `package.json` still has none.
 
+### Published — and a broken deploy found on the way
+
+Max's call: merge the whole branch rather than cherry-pick the deck, so the D-6 publish
+seam and the five new boards ship with it. Gate re-run on exactly what was about to land —
+**841 pass, 0 fail**, and `check-board` clean on **all six** shipped boards. Merged
+fast-forward and pushed `dce10aa..bb3b611`.
+
+`git checkout main` refused, because the other session holds an uncommitted
+`decisions.jsonl`. Rather than stash another session's work, `main`'s ref was advanced
+in place with `git fetch . work/publish-approved-boards:main` — a fast-forward that never
+touches the working tree. Their four in-flight runs stayed exactly where they were.
+
+**Then the deploy did not appear, and the reason was already there.** `/ASTO/` returned 200
+but `/ASTO/docs/presentation/` 404'd. The Pages API tells the real story: **five
+consecutive `Page build failed` errors going back to 2026-08-05T03:34Z.** The live site has
+been serving a stale build for most of today, and nothing surfaced it — the game still
+loads, so a broken deploy is invisible from the outside.
+
+**Cause:** Pages runs a legacy Jekyll build, and Jekyll parses Liquid in committed HTML and
+Markdown. `docs/asto-gdd.html` contains `{{ toc }}` and `{{ t.num }}`; `docs/governance.md`
+contains `{{PLACEHOLDER}}`. Eleven tracked files carry `{{` or `{%`.
+
+**Fix: a root `.nojekyll`.** ASTO uses no Jekyll — it is hand-written HTML/CSS/ESM served
+verbatim. Disabling the processor removes this entire class of failure permanently rather
+than escaping braces file by file, and it matches HR-1's zero-machinery stance.
+
 ### Phase status
 
 **This is not a phase gate.** Phase 5 is untouched and still in flight — five playable
