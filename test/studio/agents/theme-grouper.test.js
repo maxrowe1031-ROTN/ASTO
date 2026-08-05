@@ -12,19 +12,21 @@ import assert from 'node:assert/strict';
 
 import * as themeGrouper from '../../../studio/agents/theme-grouper.js';
 
-const set = (id, pairs) => ({
+const set = (id, pairs, shape = 'conversion') => ({
   id,
   relationshipLabel: `label ${id}`,
-  shape: 'transformation',
+  shape,
   pairs,
 });
 
+// Four sets in four different stances — the smallest pool the stance floor
+// admits, mirroring what the 04a gate will demand of the finished board.
 const fourSets = () => ({
   sets: [
-    set('set-a', [['Seed', 'Tree'], ['Spark', 'Fire']]),
-    set('set-b', [['Brush', 'Painter'], ['Chisel', 'Sculptor']]),
-    set('set-c', [['Nest', 'Bird'], ['Den', 'Bear']]),
-    set('set-d', [['Dough', 'Bread'], ['Clay', 'Pottery']]),
+    set('set-a', [['Seed', 'Tree'], ['Spark', 'Fire']], 'conversion'), // cause
+    set('set-b', [['Painter', 'Brush'], ['Sculptor', 'Chisel']], 'agent-instrument'), // event
+    set('set-c', [['Nest', 'Bird'], ['Den', 'Bear']], 'item-location'), // possession
+    set('set-d', [['Spring', 'Sowing'], ['Autumn', 'Harvest']], 'time-activity'), // time
   ],
 });
 
@@ -103,4 +105,45 @@ test('a pool with five distinct labels still validates', () => {
 test('the requirement is stated in the prompt, not only enforced after the fact', () => {
   const prompt = themeGrouper.buildPrompt({ pairs: [] }, {});
   assert.match(prompt, /different relationship/i);
+});
+
+// --- the stance floor (design.md D-3) ---
+//
+// A board is four sets in four different STANCES — kinds of question. A pool
+// spanning fewer reaches the 04a gate unable to compose a legal board, where
+// the only retry is a re-roll against the same pairs. Caught here instead.
+
+test('a pool whose sets all share one stance is rejected, naming the shortfall', () => {
+  const output = {
+    sets: [
+      set('set-a', [['Seed', 'Tree'], ['Spark', 'Fire']], 'conversion'),
+      set('set-b', [['Grape', 'Wine'], ['Milk', 'Cheese']], 'cause-effect'),
+      set('set-c', [['Match', 'Candle'], ['Key', 'Engine']], 'enabling-agent'),
+      set('set-d', [['Cloud', 'Rain'], ['Wave', 'Foam']], 'location-product'),
+    ],
+  };
+  // Four sets, four distinct labels, four distinct shapes — and every shape is
+  // the cause stance. This is exactly the all-arrowed board Max rejected.
+  const result = themeGrouper.validateOutput(output);
+  assert.equal(result.ok, false);
+  const message = result.errors.map((e) => e.message).join(' ');
+  assert.match(message, /stance/i);
+  assert.match(message, /set.?aside|set aside/i, 'the retry is not told where to look');
+});
+
+test('four sets in four stances satisfy the floor', () => {
+  assert.equal(themeGrouper.validateOutput(fourSets()).ok, true);
+});
+
+test('a free-text shape is rejected by the schema — the vocabulary is closed', () => {
+  const output = fourSets();
+  output.sets[0].shape = 'transformation-of-things';
+  const result = themeGrouper.validateOutput(output);
+  assert.equal(result.ok, false);
+  assert.ok(result.errors.some((e) => /must be one of/.test(e.message)));
+});
+
+test('the stance requirement is stated in the prompt', () => {
+  const prompt = themeGrouper.buildPrompt({ pairs: [] }, {});
+  assert.match(prompt, /four different stances/i);
 });

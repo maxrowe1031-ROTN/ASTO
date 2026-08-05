@@ -64,6 +64,9 @@ const MIME = {
 // is deliberately not reachable.
 const MOUNTS = [
   ['/studio/review/ui/', UI_DIR],
+  // The vocabulary, so the review card can teach each set's stance beside its
+  // paradigm pair. Corpus files are editorial data — nothing secret lives here.
+  ['/studio/corpus/', join(REPO, 'studio', 'corpus')],
   ['/styles/', join(REPO, 'styles')],
   ['/src/engine/', join(REPO, 'src', 'engine')],
   ['/src/view/', join(REPO, 'src', 'view')],

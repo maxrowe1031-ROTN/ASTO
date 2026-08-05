@@ -103,6 +103,12 @@ export function buildPrompt(input = {}, context) {
       // grouper now refuses to produce duplicates at all; this line means that
       // if one ever reaches here, the builder knows to choose around it.
       'Your four sets must carry four different relationships. If two candidates share a relationship label, at most one of them can be on the board — a checker enforces this immediately after you.',
+      // The board composition rule from the two blind playtests (design.md
+      // D-3): four sets in one stance is one trick repeated four times, and
+      // Max rejected both boards built that way. The checker enforces it, so
+      // like the label rule above, the builder is told rather than left to
+      // discover it at the gate.
+      'Your four sets must also carry four different STANCES — each candidate names its stance, the kind of question it asks. No stance may appear twice on the board; the same checker enforces this. The goal: one world, four different kinds of question about it. If a set inverts the board\'s grain (an absence among havings), it is a strong candidate for the hardest slot.',
       'Engineer deliberate false trails: words that look like they belong to another set on first read, and pull the player off the true grouping. Record each one you intended.',
       // Was: "prove no two sets could be regrouped into another valid
       // analogy". That is a combinatorial obligation over sixteen words, and

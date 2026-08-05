@@ -213,7 +213,7 @@ test('the gate runs before the four taste stages, never after', async () => {
 // a prompt can only ask.
 const inventedBoard = {
   ...board,
-  // The graded pool is set-growth / set-tools / set-homes / set-material.
+  // The graded pool is set-growth / set-tools / set-homes / set-seasons.
   sets: board.sets.map((set, i) => (i === 3 ? { ...set, id: 'set-invented' } : set)),
 };
 
@@ -240,8 +240,8 @@ test('a promoted set is not an invented one — a rated set relabelled Black pas
   const promoted = {
     ...board,
     sets: board.sets
-      .filter((set) => set.id !== 'set-material')
-      .concat([{ ...board.sets.find((s) => s.id === 'set-material'), difficulty: 4 }]),
+      .filter((set) => set.id !== 'set-seasons')
+      .concat([{ ...board.sets.find((s) => s.id === 'set-seasons'), difficulty: 4 }]),
   };
   const { result, cleanup } = await runWith([boardReply(promoted)]);
   try {

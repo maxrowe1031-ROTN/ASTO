@@ -8,7 +8,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildRelationshipIndex, buildVarietyBrief, SHAPES } from '../../studio/variety.js';
+import { buildRelationshipIndex, buildStanceQuotas, buildVarietyBrief, SHAPES } from '../../studio/variety.js';
+import { PORTABLE_STANCES, STANCES, resolveShape } from '../../studio/corpus/vocabulary.js';
 import { makeStore } from './pipeline/helpers.js';
 
 // A run whose pair author declared shapes, and whose board used two of them.
@@ -38,21 +39,45 @@ function seedRun(store, { slug, shapes, status = 'awaiting-review', mock = false
   return runId;
 }
 
-test('the taxonomy covers the spec\'s shapes and the GDD\'s relationship types', () => {
-  const ids = SHAPES.map((shape) => shape.id);
-  for (const required of [
-    'transformation',
-    'part-whole',
-    'tool-function',
-    'cause-effect',
-    'material-object',
-    'young-mature',
-    'container-contents',
-    'scale-degree',
-  ]) {
-    assert.ok(ids.includes(required), `taxonomy is missing ${required}`);
+test('every vocabulary entry carries its three levels and its teaching', () => {
+  // The controlled vocabulary (design.md D-3): each shape is a taxonomy
+  // relation type with a family (coverage axis), a stance (composition axis),
+  // a paradigm pair, and a failure mode for the review card.
+  assert.ok(SHAPES.length >= 30, `only ${SHAPES.length} shapes`);
+  const stanceIds = new Set(STANCES.map((stance) => stance.id));
+  for (const shape of SHAPES) {
+    assert.ok(shape.description, `${shape.id} has no description`);
+    assert.ok(shape.paradigm, `${shape.id} has no paradigm pair`);
+    assert.ok(shape.failureMode, `${shape.id} has no failure mode`);
+    assert.ok(shape.taxonomy, `${shape.id} has no taxonomy provenance`);
+    assert.ok(Number.isInteger(shape.family), `${shape.id} has no family`);
+    assert.ok(stanceIds.has(shape.stance), `${shape.id} has invented stance "${shape.stance}"`);
   }
-  assert.ok(SHAPES.every((shape) => shape.description), 'a shape has no description');
+});
+
+test('the portable stances are real stances, and reference is not among them', () => {
+  const stanceIds = new Set(STANCES.map((stance) => stance.id));
+  for (const stance of PORTABLE_STANCES) assert.ok(stanceIds.has(stance));
+  // `reference` reaches exactly one family — requiring it would make family
+  // 10 mandatory for every board.
+  assert.ok(!PORTABLE_STANCES.includes('reference'));
+});
+
+test('the retired 13-shape ids still resolve through the aliases', () => {
+  // History must stay countable: boards authored under the old free-text list
+  // declared these ids, and the index walks every run ever made.
+  for (const [legacy, expected] of [
+    ['transformation', 'conversion'],
+    ['tool-function', 'instrument-action'],
+    ['container-contents', 'item-location'],
+    ['place-occupant', 'item-location'],
+    ['scale-degree', 'dimensional-similarity'],
+  ]) {
+    assert.equal(resolveShape(legacy)?.id, expected, `${legacy} no longer resolves`);
+  }
+  // Free text stays unknown — that is the 40%-uncountable bug being measured,
+  // not silently absorbed.
+  assert.equal(resolveShape('a bounded region of space'), null);
 });
 
 test('the shipped boards are already counted — the library does not start empty', () => {
@@ -61,7 +86,10 @@ test('the shipped boards are already counted — the library does not start empt
     const index = buildRelationshipIndex({ store });
     const used = Object.values(index.counts).reduce((a, b) => a + b, 0);
     assert.ok(used >= 8, `only ${used} shipped sets counted`);
-    assert.ok(index.counts['tool-function'] >= 1, 'First Light\'s tool set is not counted');
+    assert.ok(index.counts['agent-instrument'] >= 1, 'First Light\'s tool set is not counted');
+    // The hand labels roll up to families and stances too.
+    assert.ok((index.familyCounts[7] ?? 0) >= 1, 'family counts not derived');
+    assert.ok((index.stanceCounts.event ?? 0) >= 1, 'stance counts not derived');
   } finally {
     cleanup();
   }
@@ -70,10 +98,22 @@ test('the shipped boards are already counted — the library does not start empt
 test('a run\'s shapes are derived by joining its board back to the pair author', () => {
   const { store, cleanup } = makeStore();
   try {
-    const before = buildRelationshipIndex({ store }).counts['container-contents'] ?? 0;
-    seedRun(store, { slug: 'one', shapes: ['container-contents', 'part-whole'] });
-    const after = buildRelationshipIndex({ store }).counts['container-contents'];
+    const before = buildRelationshipIndex({ store }).counts['sign-significant'] ?? 0;
+    seedRun(store, { slug: 'one', shapes: ['sign-significant', 'object-component'] });
+    const after = buildRelationshipIndex({ store }).counts['sign-significant'];
     assert.equal(after, before + 1, 'the run\'s shape was not picked up');
+  } finally {
+    cleanup();
+  }
+});
+
+test('a run that declared legacy shape ids still counts, through the aliases', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    const before = buildRelationshipIndex({ store }).counts['item-location'] ?? 0;
+    seedRun(store, { slug: 'legacy', shapes: ['container-contents', 'part-whole'] });
+    const after = buildRelationshipIndex({ store }).counts['item-location'];
+    assert.equal(after, before + 1, 'a legacy declaration fell out of the index');
   } finally {
     cleanup();
   }
@@ -86,9 +126,9 @@ test('a run\'s shapes are derived by joining its board back to the pair author',
 test('mock runs do not steer the brief — a fixture board is not editorial signal', () => {
   const { store, cleanup } = makeStore();
   try {
-    const before = buildRelationshipIndex({ store }).counts['container-contents'] ?? 0;
-    seedRun(store, { slug: 'fixture', shapes: ['container-contents', 'part-whole'], mock: true });
-    const after = buildRelationshipIndex({ store }).counts['container-contents'] ?? 0;
+    const before = buildRelationshipIndex({ store }).counts['sign-significant'] ?? 0;
+    seedRun(store, { slug: 'fixture', shapes: ['sign-significant', 'object-component'], mock: true });
+    const after = buildRelationshipIndex({ store }).counts['sign-significant'] ?? 0;
     assert.equal(after, before, 'a mock run was counted into the variety index');
   } finally {
     cleanup();
@@ -100,21 +140,52 @@ test('the brief asks for what is underused and steers away from what is not', ()
   try {
     // Lean hard on one shape.
     for (const slug of ['a', 'b', 'c']) {
-      seedRun(store, { slug, shapes: ['transformation', 'transformation'] });
+      seedRun(store, { slug, shapes: ['conversion', 'conversion'] });
     }
     const brief = buildVarietyBrief({ index: buildRelationshipIndex({ store }), count: 8 });
 
     assert.equal(brief.count, 8);
     assert.ok(brief.relationshipShapes.length >= 2);
-    assert.ok(brief.avoidShapes.includes('transformation'), 'the overused shape is not avoided');
+    assert.ok(brief.avoidShapes.includes('conversion'), 'the overused shape is not avoided');
     assert.equal(
-      brief.relationshipShapes.includes('transformation'),
+      brief.relationshipShapes.includes('conversion'),
       false,
       'the overused shape was also requested',
     );
   } finally {
     cleanup();
   }
+});
+
+test('the requested shapes spread across families rather than triple-dipping one', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    const brief = buildVarietyBrief({ index: buildRelationshipIndex({ store }), count: 8 });
+    const families = brief.relationshipShapes.map((id) => resolveShape(id).family);
+    assert.equal(new Set(families).size, families.length, `families repeat: ${families}`);
+  } finally {
+    cleanup();
+  }
+});
+
+test('every brief carries stance quotas drawn from the portable stances', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    const brief = buildVarietyBrief({ index: buildRelationshipIndex({ store }), count: 8 });
+    assert.equal(brief.stanceQuotas.length, 4);
+    for (const stance of brief.stanceQuotas) {
+      assert.ok(PORTABLE_STANCES.includes(stance), `${stance} is not portable`);
+    }
+  } finally {
+    cleanup();
+  }
+});
+
+test('stance quotas favour the least-used stances, deterministically', () => {
+  const quotas = buildStanceQuotas({
+    index: { stanceCounts: { cause: 40, event: 5, possession: 3, inclusion: 0, time: 1 } },
+  });
+  assert.deepEqual(quotas, ['inclusion', 'time', 'possession', 'event']);
 });
 
 test('requested and avoided shapes never overlap', () => {

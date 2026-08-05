@@ -22,7 +22,7 @@
 import { isValidStageId } from '../stage-registry.js';
 import { validateFeedbackEvent } from '../schemas.js';
 import { StudioFailure } from '../failures.js';
-import { buildRelationshipIndex, buildVarietyBrief } from '../variety.js';
+import { buildRelationshipIndex, buildStanceQuotas, buildVarietyBrief } from '../variety.js';
 // The pair-count bounds are the pipeline's arithmetic, not this API's policy —
 // see pipeline-config.js for why the floor is where it is.
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-config.js';
@@ -69,6 +69,7 @@ export function createApi({
   runner,
   clock = () => new Date().toISOString(),
   buildBrief = ({ count }) => buildVarietyBrief({ index: buildRelationshipIndex({ store }), count }),
+  buildQuotas = () => buildStanceQuotas({ index: buildRelationshipIndex({ store }) }),
   chooseSubject = pickSubject,
 }) {
   const runExists = (runId) => store.listRuns().includes(runId);
@@ -145,6 +146,9 @@ export function createApi({
   // The stages whose output the review page shows. The gate is read from its
   // human-facing integrity.json rather than its output.json duplicate.
   const REPORT_STAGES = [
+    // Read for its declared shapes — the review card teaches each set's
+    // stance (paradigm + failure mode) joined from these by set id.
+    ['02-theme-grouper', 'output.json'],
     ['03-difficulty-rater', 'output.json'],
     // Read for its "promotions" — which sets were labelled harder than they
     // were graded. The board itself comes from board.json.
@@ -217,11 +221,18 @@ export function createApi({
 
     // Surprise-me runs get a positive variety brief: which underused shapes to
     // reach for, which recent ones to leave alone (locked decision 6). Themed
-    // runs keep the theme as the steer.
+    // runs keep the theme as the steer — but EVERY brief carries stance
+    // quotas, because a board wants four kinds of question regardless of
+    // where its words came from (design.md D-3). What still marks a run as
+    // surprise-me is `relationshipShapes` on its manifest, which a themed run
+    // never carries.
     // `mock` is recorded on the run, not just passed to this launch: a
     // revision must not silently switch to the real API, and a fixture-derived
     // board must stay identifiable so it never counts as editorial signal.
-    const brief = { ...(theme === null ? buildBrief({ count }) : { count }), mock };
+    const brief = {
+      ...(theme === null ? buildBrief({ count }) : { count, stanceQuotas: buildQuotas() }),
+      mock,
+    };
     const { runId } = store.createRun({ slug, theme: runTheme, brief });
     // Fire and forget: a real run takes minutes, so the answer is 202 and the
     // UI follows manifest.status, which is already the state machine.

@@ -55,9 +55,12 @@ export const DEFAULT_CONFIG = deepFreeze({
   models: {
     default: REASONING,
     byStage: {
-      '03-difficulty-rater': CHECKER,
+      // 03 and 08 moved Haiku → Sonnet for the taxonomy shakedown
+      // (2026-08-04, decided with Max): the rater has never returned a 4 and
+      // now weighs stance's effect on play; 08 gained the unity verdict — a
+      // taste call, not the wording check Haiku was priced for. Revisit both
+      // at the slim-down lap (~10 judged boards under this profile).
       '05-analogy-validator': CHECKER,
-      '08-style-guide': CHECKER,
     },
   },
 
@@ -109,12 +112,27 @@ export const DEFAULT_CONFIG = deepFreeze({
   // at that variance a single run cannot prove the change worked, so the
   // evidence to look for is the size of the drop and the thinking share, not
   // the total.
+  // TAXONOMY SHAKEDOWN (2026-08-04, decided with Max). lean-2 was measured
+  // against the OLD asks; the controlled vocabulary changes the jobs at
+  // exactly the stages that were leaned. Judging the new design at settings
+  // tuned for the old one would confound "the design doesn't work" with "the
+  // model had no room to think" — during the shakedown, capacity must not be
+  // a suspect. 01 and 02 return to high (four stances inside one theme is the
+  // hardest ask either has carried); 03 and 08 gain entries because they are
+  // now Sonnet (effort is an error on Haiku — remove these lines if a
+  // slim-down returns them). 06 stays high for its original reason.
+  //
+  // Slim-down trigger: ~10 judged boards under this profile, then re-run the
+  // lean-2 measurement pass (per-stage cost + thinking share, read against
+  // review verdicts) and re-aim downward with data.
   effort: {
-    '01-pair-author': 'medium',
-    '02-theme-grouper': 'medium',
+    '01-pair-author': 'high',
+    '02-theme-grouper': 'high',
+    '03-difficulty-rater': 'medium',
     '04-board-builder': 'medium',
     '06-adversarial-solver': 'high',
     '07-test-player': 'medium',
+    '08-style-guide': 'medium',
   },
 
   // Bumped whenever the effort map above changes, for the same reason
@@ -125,7 +143,7 @@ export const DEFAULT_CONFIG = deepFreeze({
   // The string must change with the map, not just when it feels significant:
   // boards built under two different maps are two populations, and reusing one
   // label would merge them inside the very corpus meant to tell them apart.
-  effortProfile: '2026-08-03-lean-2',
+  effortProfile: '2026-08-04-taxonomy-shakedown',
 
   // Two bounds, because there are two failure classes and they are retried by
   // different owners. `transport` bounds llm.js's own loop (timeouts, 429s,
@@ -144,10 +162,16 @@ export const DEFAULT_CONFIG = deepFreeze({
 
   // An absent metric is not a cap. Cost caps only bite once every model in
   // play is priced — token and request caps are exact regardless.
+  //
+  // Raised for the shakedown (Max, 2026-08-04: a run must never be shut down
+  // mid-test the way earlier runs were). Raised, not removed: at ~40× the
+  // expected ~$0.5/run these never interrupt legitimate work, and what they
+  // still catch is a wedged retry loop — the one thing a cap is actually for.
+  // They revert with the effort map at the slim-down lap.
   limits: {
-    perStage: { requests: 12, tokens: 200_000, ms: 300_000 },
-    perAttempt: { requests: 60, tokens: 1_000_000, costUsd: 5, ms: 1_800_000 },
-    perRun: { requests: 240, tokens: 4_000_000, costUsd: 20, ms: 7_200_000 },
+    perStage: { requests: 12, tokens: 600_000, ms: 900_000 },
+    perAttempt: { requests: 60, tokens: 3_000_000, costUsd: 20, ms: 3_600_000 },
+    perRun: { requests: 240, tokens: 12_000_000, costUsd: 60, ms: 7_200_000 },
   },
 });
 

@@ -223,7 +223,7 @@ test('a completed stage records the ceiling and effort it ran under', async () =
     assert.equal(result.status, 'complete');
     const stageDir = join(rootDir, runId, 'attempts', result.attemptId, 'stages');
     const sonnet = JSON.parse(readFileSync(join(stageDir, '04-board-builder', 'request.json'), 'utf8'));
-    const haiku = JSON.parse(readFileSync(join(stageDir, '03-difficulty-rater', 'request.json'), 'utf8'));
+    const haiku = JSON.parse(readFileSync(join(stageDir, '05-analogy-validator', 'request.json'), 'utf8'));
 
     assert.equal(sonnet.effort, effortFor('04-board-builder'));
     assert.equal(sonnet.maxTokens, 16_000);

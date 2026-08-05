@@ -313,3 +313,52 @@ textarea { width: 100%; resize: vertical; }
   color: var(--soft-ink);
   font-style: italic;
 }
+
+/*
+  The stance line: the kind of question a set asks, taught beside the set —
+  the vocabulary's paradigm pair, and its named failure mode as the
+  reviewer's checklist. Studio-only, like .promotion above, and quiet for the
+  same reason: a stance is context to judge with, not an alarm.
+*/
+.stance {
+  margin-top: 6px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--soft-ink);
+}
+
+.stance-name {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.stance-failure {
+  margin-top: 2px;
+  font-style: italic;
+}
+
+/*
+  The board's intended shape, above the tiles: its stances, and the style
+  guide's unity verdict. Unity is advisory by design — the verdict colours
+  nothing and blocks nothing; it hands Max the intended shape of the puzzle
+  before he plays it.
+*/
+.board-shape {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--milk, #faf6ec);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--soft-ink);
+}
+
+.board-stances { letter-spacing: 0.02em; }
+
+.unity { margin-top: 4px; }
+
+.unity-outlier {
+  margin-top: 2px;
+  font-style: italic;
+}

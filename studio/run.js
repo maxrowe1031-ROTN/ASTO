@@ -21,7 +21,7 @@ import { createRunStore } from './storage/run-store.js';
 import { createAnthropicTransport } from './llm.js';
 import { createMockTransport } from './mock-transport.js';
 import { isValidStageId } from './stage-registry.js';
-import { buildRelationshipIndex, buildVarietyBrief } from './variety.js';
+import { buildRelationshipIndex, buildStanceQuotas, buildVarietyBrief } from './variety.js';
 import { loadRules } from './corpus/rules.js';
 import { loadEnv } from './env.js';
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from './pipeline-config.js';
@@ -102,11 +102,14 @@ async function main(argv) {
   let runId = options.runId;
   if (runId === null) {
     // Same brief the Review Studio builds, so a run started here and a run
-    // started from the web surface are the same kind of run.
+    // started from the web surface are the same kind of run. Every brief
+    // carries stance quotas (a board wants four kinds of question regardless
+    // of where its words came from); only surprise-me adds shape steering.
+    const index = buildRelationshipIndex({ store });
     const brief =
       options.theme === null
-        ? buildVarietyBrief({ index: buildRelationshipIndex({ store }), count: options.brief.count })
-        : options.brief;
+        ? buildVarietyBrief({ index, count: options.brief.count })
+        : { ...options.brief, stanceQuotas: buildStanceQuotas({ index }) };
     // A surprise-me run picks a subject too — the Studio does the same, and a
     // run started here must be the same kind of run as one started there.
     // The slug follows the subject so the run id names what the board is

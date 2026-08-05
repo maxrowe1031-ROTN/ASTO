@@ -362,6 +362,86 @@ boards built to the rule draw the opposite complaint (incoherent, four unrelated
 sharing a theme) — at which point the unifying force is too weak and the theme has to do more
 work.
 
+### D-3 amendment — the two-axis vocabulary, and the pipeline taught it (2026-08-04)
+
+**The goal, in Max's words, which every change serves:** *a puzzle unified by theme and words,
+varied in execution by different kinds of relationships.* Sixteen words that feel like one
+world; four sets that feel like four different questions about it. A line to walk, not a dial
+to max — the two failure modes are the arrow boards (too unified in kind) and four unrelated
+puzzles sharing a title (too varied).
+
+**Research grounding (docs/research/semeval-2012-taxonomy.md, appendix):** Herrmann & Chaffin's
+Relation Definition Theory (1984) — same authors as the adopted taxonomy — decomposes relations
+into ~30 elements and shows element agreement predicts *felt* relation similarity (r = .707)
+while family membership alone leaves variance unexplained (partial r = .355 with family held
+constant; part-whole weakest at r = .329). Max's playtests reproduced this: the four-family
+kitchen board felt like one question; the three-family night board felt like four. **Family
+does not carry felt variety; the kind of question does.**
+
+**What was adopted, decided over 2026-08-04's session:**
+
+1. **`rule-007` eliminated** (D-3 authorised a reword; Max chose removal). Retired in
+   `rules.json`, never deleted — provenance records the two experiments that refuted it. Its
+   real intent (B must be a thing, never an adjective) is enforced by the vocabulary's
+   contents instead of by a rule. *Accepted risk:* nothing else forbade `Gulf Stream : warm`
+   in the gap before the vocabulary landed (same session — the gap never shipped).
+2. **The controlled vocabulary** (`studio/corpus/relationship-index.json`, v2.0): 36 relation
+   types from the Bejar taxonomy, each carrying **family** (coverage axis) · **stance** (the
+   kind of question — composition axis) · paradigm pair · named failure mode · its Chaffin
+   elements for audit. Adjective-shaped types are absent by construction; families 5 and 6
+   excluded (their thing-shaped types add only stances covered three other ways, and their
+   vocabulary runs against rules 004/012). Legacy 13-shape ids resolve through aliases so
+   history stays countable — the field was free text, leaving **40% of pairs uncountable**.
+3. **Eight stances** — inclusion · possession · absence · dimension · event · cause ·
+   reference · time. `absence` is separate from `possession` because the verification test
+   demanded it: with them folded together, Night B (`Moon : Crater` + `Shadow : Weight`, both
+   PART-WHOLE) would have failed its own rule. The **portable five** (inclusion, possession,
+   event, cause, time — reachable from 4+ families) are what quotas draw from; `reference`
+   reaches one family and is never required.
+4. **Composition enforced at every door, creation first** (the repo's recurring scar is a rule
+   at one door only): stance quotas in every brief (both drivers, themed and surprise-me) →
+   pair author validates its own pool spans ≥4 stances → grouper floor (≥4 stances or the
+   retry is told to re-read setAside) → 04a gate rejects a board whose four sets repeat a
+   stance, naming them. **Family is never enforced at board level** — it would reject Night B,
+   and both the playtests and the 1984 partial correlation say it is the wrong axis. It stays
+   the coverage axis: the brief steers toward underused families, spreading requests across
+   them.
+5. **Unity scored, never gating:** stage 08 (now Sonnet) judges whether the sixteen words read
+   as one world — strong/adequate/weak with named outliers, a weak verdict that names no words
+   is invalid output. Shown on the review card beside the board; Max stays the authority.
+   **The card teaches while it shows:** each set carries its stance, paradigm pair and failure
+   mode, so more kinds of output widen Max's checklist instead of outrunning it.
+6. **Pipeline structure: quotas now, merge armed.** The stage skeleton holds. The 01+02
+   set-first merge (relationship-first generation, parked in the backlog) stays parked behind
+   a named trigger: **if stance-floor retries at 02 fire on most runs after this lands, the
+   pre-agreed fix is the merge** — which also deletes the stage where three recent failures
+   lived. One variable at a time, so the next judged runs can attribute their result.
+7. **Shakedown profile `2026-08-04-taxonomy-shakedown`:** lean-2 was measured against the old
+   asks. 01/02 → high; 03/08 → Sonnet at medium (the rater has never returned a 4 and now
+   weighs stance; 08 carries a taste call). Ceilings raised, not removed (Max: never shut a
+   run down mid-test): stage 15 min / 600k tokens, attempt $20, run $60 — ~40× expected
+   spend, still catching a wedged loop. **Slim-down trigger: ~10 judged boards under this
+   profile**, then the lean-2 measurement pass again, caps and effort reverting together.
+
+**A known limit, pinned as a test rather than papered over**
+(`test/studio/pipeline/stance-composition.test.js`): round 1's kitchen board declares four
+stances under this vocabulary (conversion, object-instrument, time-activity, sign-significant)
+yet Max read it as one arrow. Stance is a per-shape proxy for the felt arrow; word choice can
+defeat it. The gate catches monostance boards; the review card showing claimed stances is what
+covers the rest. If a refinement ever makes the machine agree with Max about that board, the
+test's assertion flips knowingly.
+
+**Verified:** 771 tests green · retired wording proven absent from all eight agent prompts
+(read from disk, not inferred from the filter) · the machine reproduces Max's blind round-2
+verdicts (Night A refused at the grouper, Night B completes) · a mock run rendered in the
+Review Studio with stance lines + unity header, and its board played through the game's own
+controller.
+
+**Reconsider-when (this amendment):** D-3's own trigger stands, plus — the grouper's stance
+floor fires on most runs (→ the 01+02 merge), or the kitchen-board limit starts biting on real
+boards (Max repeatedly rejects stance-diverse boards as "all the same"), at which point the
+proxy needs word-level teeth, not more prompt.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
@@ -414,7 +494,7 @@ the Core's seams (`run-store.js` as the only writer of run artifacts, pure agent
 injected transport) were designed for it from the first file — which is what the house
 rule actually asks for.
 
-**Interim verification surface:** `npm test` (741 tests as of 2026-08-04, including the
+**Interim verification surface:** `npm test` (771 tests as of 2026-08-04, including the
 storage, agent, pipeline and review suites) · `node tools/check-board.js` for content · the
 game itself in the preview browser · and, since A3, **`node studio/run.js --mock`** — a thin
 CLI adapter over the exported `runPipeline`, which starts, resumes and revises a run and

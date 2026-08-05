@@ -6,6 +6,7 @@
 // grouping — the GDD's stop condition.
 
 import { JSON_ONLY, asJsonBlock, composePrompt, parseJson, validateAgainst } from './agent-kit.js';
+import { SHAPE_IDS, renderVocabulary, stanceOf } from '../corpus/vocabulary.js';
 
 export const id = 'theme-grouper';
 export const stageId = '02-theme-grouper';
@@ -22,7 +23,7 @@ const SCHEMA = {
         properties: {
           id: { type: 'string', minLength: 1 },
           relationshipLabel: { type: 'string', minLength: 1 },
-          shape: { type: 'string', minLength: 1 },
+          shape: { type: 'string', enum: [...SHAPE_IDS] },
           pairs: {
             type: 'array',
             minItems: 2,
@@ -56,17 +57,20 @@ export function buildPrompt(input = {}, context) {
   return composePrompt({
     role:
       'You are the Theme Grouper for ASTO. A puzzle set is exactly two pairs that share one relationship, ' +
-      'read as A : B :: C : D. Your job is to find which candidate pairs belong together.',
+      'read as A : B :: C : D. Your job is to find which candidate pairs belong together. ' +
+      'The goal of a finished board: the theme unifies the words, the relationships diversify the questions — ' +
+      'four sets that feel like four different kinds of question about one world.',
     context,
     task: [
       'Cluster the candidate pairs into sets of exactly two pairs each.',
       'Both pairs in a set must share the same relationship in the same direction. If the second pair reverses the relation, they do not belong together.',
-      'Give each set one relationship label that is true of both pairs, and a general shape family.',
+      'Give each set one relationship label that is true of both pairs, and its shape id from the vocabulary below.',
       'Every set you return must carry a DIFFERENT relationship. Two sets with the same label are the same relationship found twice — they leave the Board Builder with fewer real choices than it needs.',
+      'Your sets must span at least four different STANCES — the vocabulary names each shape\'s stance. Four sets in one stance are four flavours of the same question, and a checker will refuse the pool.',
       'You must surface at least four sets — a board is exactly four, and the Board Builder cannot invent one you did not find. Five or six is better, so it has a choice.',
       'Any pair that does not belong in a coherent set goes in "setAside" with a reason. Never invent a theme to force a grouping.',
     ].join('\n'),
-    data: asJsonBlock('Candidate pairs', pairs),
+    data: [renderVocabulary(), asJsonBlock('Candidate pairs', pairs)].join('\n\n'),
     outputRules: [
       'Return { "sets": [ { "id", "relationshipLabel", "shape", "pairs" } ] }, optionally with "setAside".',
       // The candidate pairs arrive as {a, b} objects and must go back out as
@@ -160,11 +164,35 @@ const distinctRelationshipLabels = (output) => {
     .filter(Boolean);
 };
 
+// The stance floor (design.md D-3). The 04a gate requires four distinct
+// stances on the finished board; a pool that cannot supply them is fatal
+// there, where the only retry is a re-roll against the same pairs — the exact
+// shape of the cars-run failure (a constraint enforced at one stage and not
+// the next one downstream). Caught here, the retry has the setAside list and
+// the vocabulary to work with.
+const MIN_STANCES = 4;
+
+const enoughStancesToBuildABoard = (output) => {
+  const stances = new Set(output.sets.map((set) => stanceOf(set.shape)).filter(Boolean));
+  return stances.size >= MIN_STANCES
+    ? []
+    : [
+        {
+          path: 'sets',
+          message:
+            `the sets span only ${stances.size} stance(s) (${[...stances].sort().join(', ') || 'none'}); ` +
+            `a board needs four different kinds of question, so the pool must span at least ${MIN_STANCES} stances. ` +
+            'Re-read the pairs you set aside — a pair in an unused stance may be half of the set you are missing.',
+        },
+      ];
+};
+
 export function validateOutput(output) {
   return validateAgainst(output, SCHEMA, [
     uniqueSetIds,
     fourDistinctWordsPerSet,
     enoughSetsToBuildABoard,
     distinctRelationshipLabels,
+    enoughStancesToBuildABoard,
   ]);
 }

@@ -182,3 +182,50 @@ test('a set with no pairs renders as empty rather than throwing', () => {
 test('the board card still shows the analogy it always did', () => {
   assert.match(boardHtml(BOARD), /Seed : Tree :: Spark : Fire/);
 });
+
+// --- the stance line and the board shape (design.md D-3) ------------------
+//
+// More kinds of output make faults harder for the reviewer to spot, so the
+// card teaches each relation kind while showing it: the stance, its paradigm
+// pair, and its named failure mode. The board header shows the four stances
+// and the style guide's unity verdict — the intended shape of the puzzle,
+// visible before it is played. Unity is advisory: it renders, it never gates.
+
+test('a set card teaches its stance with the paradigm and the failure mode', () => {
+  const html = boardHtml(BOARD, [], {
+    shapesBySet: { 'set-growth': 'conversion' },
+  });
+  assert.match(html, /class="stance"/);
+  assert.match(html, /cause/);
+  assert.match(html, /grape : wine/);
+  assert.match(html, /class="stance-failure"/);
+});
+
+test('a legacy shape id still teaches, through the aliases', () => {
+  const html = boardHtml(BOARD, [], { shapesBySet: { 'set-growth': 'transformation' } });
+  assert.match(html, /grape : wine/, 'the legacy id did not resolve to its successor');
+});
+
+test('an unknown shape renders no stance line rather than a broken one', () => {
+  const html = boardHtml(BOARD, [], { shapesBySet: { 'set-growth': 'free text nobody controls' } });
+  assert.equal(/class="stance"/.test(html), false);
+});
+
+test('the board header shows the stances and the unity verdict with its outliers', () => {
+  const html = boardHtml(BOARD, [], {
+    shapesBySet: { 'set-growth': 'conversion', 'set-tools': 'agent-instrument' },
+    unity: {
+      verdict: 'adequate',
+      reasoning: 'One world, one word adrift.',
+      outliers: [{ word: 'Ghost', note: 'sits outside the register of the other fifteen' }],
+    },
+  });
+  assert.match(html, /class="board-shape"/);
+  assert.match(html, /data-verdict="adequate"/);
+  assert.match(html, /Ghost/);
+  assert.match(html, /register of the other fifteen/);
+});
+
+test('a board with no stance data and no unity renders exactly as before', () => {
+  assert.equal(/board-shape/.test(boardHtml(BOARD)), false);
+});
