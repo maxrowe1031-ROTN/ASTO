@@ -1,0 +1,87 @@
+{
+  "id": "asto-board-travel-analogies-01",
+  "title": "Travel & Transport Analogies",
+  "sets": [
+    {
+      "id": "set-vehicle-key-part",
+      "relationshipLabel": "whole travel vehicle necessarily contains this key structural/functional part",
+      "explanation": "An airplane always has a cockpit and a ship always has a hull — each vehicle necessarily includes this defining structural component.",
+      "pairs": [
+        [
+          "Airplane",
+          "Cockpit"
+        ],
+        [
+          "Ship",
+          "Hull"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "vehicle",
+        "part-whole"
+      ]
+    },
+    {
+      "id": "set-material-structural",
+      "relationshipLabel": "raw material becomes a structural travel-vehicle component",
+      "explanation": "Rubber is shaped into a tire and steel is rolled into rail — each raw material becomes a load-bearing part of a transport system.",
+      "pairs": [
+        [
+          "Rubber",
+          "Tire"
+        ],
+        [
+          "Steel",
+          "Rail"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "material",
+        "vehicle-part"
+      ]
+    },
+    {
+      "id": "set-noun-synonym-role",
+      "relationshipLabel": "travel-sense noun maps to its synonym meaning a role or agreement",
+      "explanation": "A charter is also a contract and a berth is also a position — each travel term hides a synonym describing an agreement or role.",
+      "pairs": [
+        [
+          "Charter",
+          "Contract"
+        ],
+        [
+          "Berth",
+          "Position"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "double-meaning",
+        "travel-term"
+      ]
+    },
+    {
+      "id": "set-compound-phrase",
+      "relationshipLabel": "travel-sense word becomes the modifying word in a familiar compound phrase",
+      "explanation": "Flight becomes 'flight of stairs' and terminal becomes 'terminal illness' — each travel word slides into a completely different familiar phrase.",
+      "pairs": [
+        [
+          "Flight",
+          "Staircase"
+        ],
+        [
+          "Terminal",
+          "Illness"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "double-meaning",
+        "travel-term",
+        "compound-phrase"
+      ]
+    }
+  ]
+}

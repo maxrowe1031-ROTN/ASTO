@@ -1,0 +1,4 @@
+{"type":"attempt-completed","attemptId":"0001","boardId":"asto-first-light","at":"2026-08-02T22:24:58.312Z"}
+{"type":"revision-requested","attemptId":"0002","parentAttemptId":"0001","fromStage":"04-board-builder","notes":"red set reads as a category","at":"2026-08-02T22:24:58.333Z"}
+{"type":"attempt-completed","attemptId":"0002","boardId":"asto-first-light","at":"2026-08-02T22:24:58.584Z"}
+{"type":"approve","attemptId":"0002","at":"2026-08-02T22:24:58.592Z"}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-04T02-39-14.917Z-game-of-thrones",
+  "createdAt": "2026-08-04T02:39:14.917Z",
+  "theme": "game of thrones",
+  "brief": {
+    "count": 14,
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

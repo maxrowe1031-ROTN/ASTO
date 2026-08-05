@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-auto-manufacturing",
+  "title": "From Raw Material to Running Engine",
+  "sets": [
+    {
+      "id": "set-trigger-response",
+      "relationshipLabel": "a triggering action necessarily and immediately causes a mechanical or safety response",
+      "explanation": "Turning the key or tripping a sensor isn't just correlated with the result — it's the direct, immediate cause of it.",
+      "pairs": [
+        [
+          "Ignition switch turn",
+          "Engine start"
+        ],
+        [
+          "Airbag sensor trigger",
+          "Airbag deployment"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "mechanical-causation",
+        "automotive-familiar"
+      ]
+    },
+    {
+      "id": "set-raw-material",
+      "relationshipLabel": "raw mineral material transformed into a manufactured rigid component",
+      "explanation": "Sand and bauxite are both raw minerals refined and shaped into hard, finished vehicle parts.",
+      "pairs": [
+        [
+          "Sand",
+          "Windshield glass"
+        ],
+        [
+          "Bauxite",
+          "Aluminum wheel"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "looks-like-process-product",
+        "material-transformation"
+      ]
+    },
+    {
+      "id": "set-component-effect",
+      "relationshipLabel": "installing a component necessarily produces a specific performance or output effect",
+      "explanation": "Each part is defined by the guaranteed effect it has on the car's performance once installed.",
+      "pairs": [
+        [
+          "Turbocharger",
+          "Increased horsepower"
+        ],
+        [
+          "Catalytic converter",
+          "Reduced emissions"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "looks-like-trigger-response",
+        "abstract-outcome"
+      ]
+    },
+    {
+      "id": "set-process-product",
+      "relationshipLabel": "an industrial process necessarily yields a finished product",
+      "explanation": "Whether refining crude or running an assembly line, the process is defined by the product it inevitably yields.",
+      "pairs": [
+        [
+          "Crude oil",
+          "Gasoline"
+        ],
+        [
+          "Assembly line",
+          "Mass-produced car"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "looks-like-raw-material",
+        "mixed-grain-misdirection"
+      ]
+    }
+  ]
+}

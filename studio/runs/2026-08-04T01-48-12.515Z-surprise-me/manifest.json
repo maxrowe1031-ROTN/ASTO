@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-04T01-48-12.515Z-surprise-me",
+  "createdAt": "2026-08-04T01:48:12.516Z",
+  "theme": "astronomy",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "young-mature",
+      "container-contents",
+      "creator-creation"
+    ],
+    "avoidShapes": [
+      "transformation",
+      "cause-effect"
+    ],
+    "mock": false
+  },
+  "status": "failed",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

@@ -1,0 +1,85 @@
+{
+  "id": "board-music-transformations-01",
+  "title": "Music in Motion",
+  "sets": [
+    {
+      "id": "set-draft-to-finished-artifact",
+      "relationshipLabel": "an unfinished creative draft becomes a finished, releasable artistic product",
+      "explanation": "A sketch is refined into a completed sonata just as a rough demo is polished into a released single.",
+      "pairs": [
+        [
+          "Sketch",
+          "Sonata"
+        ],
+        [
+          "Demo",
+          "Single"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "draft-emptiness-echo"
+      ]
+    },
+    {
+      "id": "set-unpleasant-to-resolved",
+      "relationshipLabel": "an unstructured or unresolved sound quality resolves into a pleasing, defined musical quality",
+      "explanation": "Raw noise settles into organized music the same way clashing dissonance resolves into harmony.",
+      "pairs": [
+        [
+          "Noise",
+          "Music"
+        ],
+        [
+          "Dissonance",
+          "Harmony"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "chord-harmony-overlap",
+        "note-music-overlap"
+      ]
+    },
+    {
+      "id": "set-pitch-units-to-structure",
+      "relationshipLabel": "a single pitch-based musical unit combines with others of its kind into a larger pitch-based structure",
+      "explanation": "A single note strings together into a melody just as a single chord strings together into a progression.",
+      "pairs": [
+        [
+          "Note",
+          "Melody"
+        ],
+        [
+          "Chord",
+          "Progression"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "vibration-note-overlap",
+        "chord-harmony-overlap"
+      ]
+    },
+    {
+      "id": "set-raw-phenomenon-to-named-element",
+      "relationshipLabel": "a raw physical or absent sound phenomenon becomes a specifically named musical element",
+      "explanation": "The physical absence of sound is notated as a rest, just as a raw vibration is heard and named as a tone.",
+      "pairs": [
+        [
+          "Silence",
+          "Rest"
+        ],
+        [
+          "Vibration",
+          "Tone"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "vibration-note-overlap",
+        "sketch-silence-overlap"
+      ]
+    }
+  ]
+}

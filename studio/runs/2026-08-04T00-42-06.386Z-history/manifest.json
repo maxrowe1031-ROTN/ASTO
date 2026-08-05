@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-04T00-42-06.386Z-history",
+  "createdAt": "2026-08-04T00:42:06.387Z",
+  "theme": "history",
+  "brief": {
+    "count": 14,
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

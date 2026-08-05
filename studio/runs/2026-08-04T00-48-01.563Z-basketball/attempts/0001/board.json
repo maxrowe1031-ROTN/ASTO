@@ -1,0 +1,83 @@
+{
+  "id": "asto-basketball-analogies-01",
+  "title": "Courtside Causality",
+  "sets": [
+    {
+      "id": "set-role-artifact",
+      "relationshipLabel": "a role or resource produces a branded functional artifact",
+      "explanation": "A coach designs the playbook a team runs, just as a sponsor's backing produces the jersey players wear.",
+      "pairs": [
+        [
+          "Coach",
+          "Playbook"
+        ],
+        [
+          "Sponsor",
+          "Jersey"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "role-to-object"
+      ]
+    },
+    {
+      "id": "set-created-opportunity",
+      "relationshipLabel": "a supportive or disruptive play creates a scoring/transition opportunity",
+      "explanation": "A screen clears space for an open shot, and a steal flips defense into offense by sparking a fast break — different plays, same pattern of manufacturing opportunity.",
+      "pairs": [
+        [
+          "Screen",
+          "Open shot"
+        ],
+        [
+          "Steal",
+          "Fast break"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "play-to-chance"
+      ]
+    },
+    {
+      "id": "set-rule-trigger",
+      "relationshipLabel": "a rule-defined event forces a mandatory game continuation",
+      "explanation": "A foul automatically sends a player to the line for a free throw, just as a tied buzzer forces the game into overtime — both are the rulebook mandating extra play.",
+      "pairs": [
+        [
+          "Foul",
+          "Free throw"
+        ],
+        [
+          "Buzzer",
+          "Overtime"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "rule-consequence"
+      ]
+    },
+    {
+      "id": "set-forced-sideline",
+      "relationshipLabel": "a negative game circumstance forces a player off the active court",
+      "explanation": "An injury sidelines a player to the bench, and a lopsided blowout does the same for starters, clearing the floor for bench players — both circumstances push someone out of active play.",
+      "pairs": [
+        [
+          "Injury",
+          "Bench"
+        ],
+        [
+          "Blowout",
+          "Bench players"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "forced-removal",
+        "near-duplicate-bench"
+      ]
+    }
+  ]
+}

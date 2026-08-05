@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-04T01-17-35.807Z-flags",
+  "createdAt": "2026-08-04T01:17:35.808Z",
+  "theme": "flags",
+  "brief": {
+    "count": 14,
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

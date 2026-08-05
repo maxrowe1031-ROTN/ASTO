@@ -1,0 +1,86 @@
+{
+  "id": "board-got-cause-effect",
+  "title": "Consequences of Westeros",
+  "sets": [
+    {
+      "id": "set-lethal-act-causes-death",
+      "relationshipLabel": "lethal act necessarily causes death",
+      "explanation": "A poisoning or a beheading isn't a maybe — it's a direct, guaranteed cause of the victim's death.",
+      "pairs": [
+        [
+          "The Strangler poison in the cup",
+          "Joffrey's death"
+        ],
+        [
+          "Beheading by Ice",
+          "Ned Stark's death"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "weapon",
+        "death-scene"
+      ]
+    },
+    {
+      "id": "set-oath-strips-claims",
+      "relationshipLabel": "binding oath necessarily strips prior claims",
+      "explanation": "Swearing into these orders isn't symbolic — it legally severs the oath-taker from family titles and inheritance alike.",
+      "pairs": [
+        [
+          "Taking the Night's Watch oath",
+          "Forfeiting family titles"
+        ],
+        [
+          "Joining the Kingsguard",
+          "Forfeiting inheritance rights"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "oath",
+        "renunciation"
+      ]
+    },
+    {
+      "id": "set-event-alters-political-order",
+      "relationshipLabel": "major political/military event necessarily produces a political outcome",
+      "explanation": "A rebellion's victory crowns a king, and a massacre at a wedding just as surely dissolves the alliance it was meant to seal.",
+      "pairs": [
+        [
+          "Robert's rebellion victory",
+          "Robert Baratheon crowned king"
+        ],
+        [
+          "The Red Wedding massacre",
+          "End of the Stark-Frey alliance"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "war",
+        "massacre"
+      ]
+    },
+    {
+      "id": "set-instrument-destroys-target",
+      "relationshipLabel": "magical instrument necessarily destroys or kills its intended target",
+      "explanation": "Whether forged blade or conjured shadow, each magical instrument is made to end exactly the target it was aimed at.",
+      "pairs": [
+        [
+          "Dragonglass blade",
+          "White Walker's destruction"
+        ],
+        [
+          "Melisandre's shadow birth",
+          "Renly's assassination"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "magic",
+        "assassination"
+      ]
+    }
+  ]
+}

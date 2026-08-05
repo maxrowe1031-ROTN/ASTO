@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-04T03-25-50.018Z-kitchen-experiment-b",
+  "createdAt": "2026-08-04T03:25:50.018Z",
+  "theme": "the kitchen (hand-made experiment)",
+  "brief": {
+    "count": 14,
+    "mock": true
+  },
+  "status": "rejected",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

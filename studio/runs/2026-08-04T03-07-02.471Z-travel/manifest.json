@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-04T03-07-02.471Z-travel",
+  "createdAt": "2026-08-04T03:07:02.471Z",
+  "theme": "travel",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "double-meaning",
+      "material-object",
+      "part-whole"
+    ],
+    "avoidShapes": [
+      "cause-effect",
+      "transformation"
+    ],
+    "mock": false
+  },
+  "status": "awaiting-review",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

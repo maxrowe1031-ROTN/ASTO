@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-03T03-30-11.587Z-music",
+  "createdAt": "2026-08-03T03:30:11.587Z",
+  "theme": "music",
+  "brief": {
+    "count": 14,
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

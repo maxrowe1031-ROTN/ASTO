@@ -1,0 +1,86 @@
+{
+  "id": "board-ocean-analogies-01",
+  "title": "From Tide Pool to Deep Sea: An Analogy Board",
+  "sets": [
+    {
+      "id": "set-life-stage",
+      "relationshipLabel": "an early life stage develops into the next life stage",
+      "explanation": "Both pairs show a young marine organism maturing into its next recognizable life stage.",
+      "pairs": [
+        [
+          "Fish egg",
+          "Fry"
+        ],
+        [
+          "Coral larva",
+          "Polyp colony"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "life-cycle",
+        "growth"
+      ]
+    },
+    {
+      "id": "set-landform-creation",
+      "relationshipLabel": "a geologic event or accumulation of material produces a new landform",
+      "explanation": "Both pairs turn a geologic process or buildup of material into a brand-new landform.",
+      "pairs": [
+        [
+          "Underwater volcanic eruption",
+          "Island"
+        ],
+        [
+          "River sediment",
+          "Delta"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "geology",
+        "landform"
+      ]
+    },
+    {
+      "id": "set-object-transformation",
+      "relationshipLabel": "an object is transformed by a biological or ecological process into something valuable or thriving",
+      "explanation": "Both pairs show time and living processes turning an inert, discarded object into a thriving or valuable structure.",
+      "pairs": [
+        [
+          "Sand grain",
+          "Pearl"
+        ],
+        [
+          "Shipwreck",
+          "Reef"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "ecology",
+        "transformation"
+      ]
+    },
+    {
+      "id": "set-global-consequence",
+      "relationshipLabel": "a local process drives a global or systemic consequence",
+      "explanation": "Both pairs trace a localized physical or chemical process escalating into a planetary-scale consequence.",
+      "pairs": [
+        [
+          "Glacier melt",
+          "Sea level rise"
+        ],
+        [
+          "Carbon dioxide absorption",
+          "Ocean acidification"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "climate",
+        "scale-shift"
+      ]
+    }
+  ]
+}

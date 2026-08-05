@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-03T02-44-09.138Z-surprise-me",
+  "createdAt": "2026-08-03T02:44:09.138Z",
+  "theme": null,
+  "brief": {
+    "count": 8,
+    "relationshipShapes": [
+      "part-whole",
+      "symbol-figure",
+      "synonym-antonym-reversal"
+    ],
+    "avoidShapes": [
+      "transformation",
+      "cause-effect"
+    ],
+    "mock": true
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

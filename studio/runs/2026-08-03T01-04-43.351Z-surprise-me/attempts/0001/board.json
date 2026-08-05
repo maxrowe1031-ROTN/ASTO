@@ -1,0 +1,88 @@
+{
+  "id": "board-concealed-connections",
+  "title": "Concealed Connections",
+  "sets": [
+    {
+      "id": "set-secure-valuables",
+      "relationshipLabel": "container holds the valuables secured within it",
+      "explanation": "Wallets and vaults are both built to keep something valuable safe: cash in one, treasure in the other.",
+      "pairs": [
+        [
+          "Wallet",
+          "Cash"
+        ],
+        [
+          "Vault",
+          "Treasure"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "Bakery-looks-like-a-container",
+        "Glass-looks-like-a-container"
+      ]
+    },
+    {
+      "id": "set-instinct-institution",
+      "relationshipLabel": "non-human or institutional producer creates the output it is characteristically known for",
+      "explanation": "A spider's web and a bakery's bread are simply the signature output each producer is known for making.",
+      "pairs": [
+        [
+          "Spider",
+          "Web"
+        ],
+        [
+          "Bakery",
+          "Bread"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "Bread-slang-for-money",
+        "Web-reads-as-internet",
+        "Spider-reads-as-just-an-animal"
+      ]
+    },
+    {
+      "id": "set-hidden-animal-2",
+      "relationshipLabel": "word's familiar meaning conceals its animal sense",
+      "explanation": "Ram and Mouse wear everyday disguises, a truck name and a computer part, that hide the animal categories they actually belong to: sheep and rodent.",
+      "pairs": [
+        [
+          "Ram",
+          "Sheep"
+        ],
+        [
+          "Mouse",
+          "Rodent"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "Ram-reads-as-vehicle",
+        "Mouse-reads-as-computer-part",
+        "Web-tech-echo"
+      ]
+    },
+    {
+      "id": "set-material-transformation",
+      "relationshipLabel": "raw material is transformed into its refined product through an intense physical process",
+      "explanation": "Coal and sand are ordinary raw materials that, under crushing pressure or searing heat, become the polished products we prize: diamond and glass.",
+      "pairs": [
+        [
+          "Coal",
+          "Diamond"
+        ],
+        [
+          "Sand",
+          "Glass"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "Diamond-reads-as-treasure",
+        "Glass-reads-as-drinking-vessel"
+      ]
+    }
+  ]
+}

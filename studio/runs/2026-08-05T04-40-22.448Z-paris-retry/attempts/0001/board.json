@@ -1,0 +1,86 @@
+{
+  "id": "asto-paris-board-01",
+  "title": "Paris, Piece by Piece",
+  "sets": [
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a category of place and a named instance of it",
+      "explanation": "Museum and Cathedral are categories; Centre Pompidou and Notre-Dame are the specific landmarks that fill them.",
+      "pairs": [
+        [
+          "Museum",
+          "Centre Pompidou"
+        ],
+        [
+          "Cathedral",
+          "Notre-Dame"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "landmark",
+        "institution"
+      ]
+    },
+    {
+      "id": "set-item-location",
+      "relationshipLabel": "a place and the specific thing kept there",
+      "explanation": "The Louvre and Musée d'Orsay are each defined by the single masterpiece everyone pictures inside them.",
+      "pairs": [
+        [
+          "Louvre",
+          "Mona Lisa"
+        ],
+        [
+          "Musée d'Orsay",
+          "Whistler's Mother"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "museum",
+        "artwork"
+      ]
+    },
+    {
+      "id": "set-time-activity",
+      "relationshipLabel": "a calendar moment and the activity that defines it",
+      "explanation": "Bastille Day means fireworks and Fashion Week means a runway show — each date is inseparable from what happens on it.",
+      "pairs": [
+        [
+          "Bastille Day",
+          "fireworks"
+        ],
+        [
+          "Fashion Week",
+          "runway show"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "event",
+        "calendar"
+      ]
+    },
+    {
+      "id": "set-location-activity",
+      "relationshipLabel": "a place and the activity it exists for",
+      "explanation": "An opera house exists to host performances just as a café exists to host conversation, even though only one of those links is truly exclusive.",
+      "pairs": [
+        [
+          "Café",
+          "conversation"
+        ],
+        [
+          "Opera house",
+          "performance"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "venue",
+        "purpose"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "id": "astoflagboard1",
+  "title": "Flags Born From Symbols and Struggles",
+  "sets": [
+    {
+      "id": "set-revolution-flag",
+      "relationshipLabel": "historical revolution that produced this national flag",
+      "explanation": "Each flag was born directly out of the revolution that created the nation it represents.",
+      "pairs": [
+        [
+          "American Revolution",
+          "Stars and Stripes"
+        ],
+        [
+          "French Revolution",
+          "French Tricolore"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "revolution",
+        "flag-origin"
+      ]
+    },
+    {
+      "id": "set-independence-flag",
+      "relationshipLabel": "independence movement that produced this national flag",
+      "explanation": "Both flags mark the moment a nation threw off old rule and adopted a new banner to match.",
+      "pairs": [
+        [
+          "Indian independence movement",
+          "Indian tricolor flag"
+        ],
+        [
+          "End of apartheid",
+          "post-1994 South African flag"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "tricolor",
+        "political-change"
+      ]
+    },
+    {
+      "id": "set-legend-celestial-symbol",
+      "relationshipLabel": "legendary or celestial symbol adopted onto this national flag",
+      "explanation": "A saint's legend and a constellation each became the defining emblem stitched into a nation's flag.",
+      "pairs": [
+        [
+          "Legend of St. Andrew's cross",
+          "Scottish Saltire"
+        ],
+        [
+          "Southern Cross constellation",
+          "Australian flag"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "star",
+        "cross",
+        "legend"
+      ]
+    },
+    {
+      "id": "set-symbol-incorporated-2",
+      "relationshipLabel": "national symbol incorporated into this country's flag",
+      "explanation": "An old cultural or religious emblem was folded directly into the country's official flag design.",
+      "pairs": [
+        [
+          "Star and crescent tradition",
+          "Turkish flag"
+        ],
+        [
+          "Golden eagle emblem",
+          "Mexican flag"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "emblem",
+        "tradition",
+        "eagle"
+      ]
+    }
+  ]
+}

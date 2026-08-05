@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-04T01-52-48.250Z-cars",
+  "createdAt": "2026-08-04T01:52:48.251Z",
+  "theme": "cars",
+  "brief": {
+    "count": 14,
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

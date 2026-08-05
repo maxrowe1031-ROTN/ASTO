@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "Tradecraft Analogies",
+  "sets": [
+    {
+      "id": "set-specialist-tool",
+      "relationshipLabel": "a specialist and the tool their work depends on",
+      "explanation": "A sniper needs a rifle and a safecracker needs a lockpick — each specialist is defined by the tool that makes their skill possible.",
+      "pairs": [
+        [
+          "sniper",
+          "rifle"
+        ],
+        [
+          "safecracker",
+          "lockpick"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "tool",
+        "agent"
+      ]
+    },
+    {
+      "id": "set-category-instrument",
+      "relationshipLabel": "a broad category and one specific kind within it",
+      "explanation": "A wig is a kind of disguise and a visa is a kind of document — each pair moves from the general category to one concrete example.",
+      "pairs": [
+        [
+          "disguise",
+          "wig"
+        ],
+        [
+          "document",
+          "visa"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "category",
+        "object"
+      ]
+    },
+    {
+      "id": "set-mission-bookends",
+      "relationshipLabel": "two mirrored moments that face each other across a mission",
+      "explanation": "Briefing mirrors debriefing and infiltration mirrors exfiltration — each pair marks the entry and exit points of the same operation.",
+      "pairs": [
+        [
+          "briefing",
+          "debriefing"
+        ],
+        [
+          "infiltration",
+          "exfiltration"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "mirror",
+        "sequence"
+      ]
+    },
+    {
+      "id": "set-role-marker",
+      "relationshipLabel": "a role and the object that marks someone as holding it",
+      "explanation": "An alias marks a spy and a cyanide pill marks an operative — each object is the quiet signature of the role someone occupies.",
+      "pairs": [
+        [
+          "spy",
+          "alias"
+        ],
+        [
+          "operative",
+          "cyanide pill"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "identity",
+        "possession"
+      ]
+    }
+  ]
+}
