@@ -158,6 +158,11 @@ export const DEFAULT_CONFIG = deepFreeze({
     '06-adversarial-solver': 'high',
     '07-test-player': 'medium',
     '08-style-guide': 'medium',
+    // Not a pipeline stage: it runs once at review time when Max rejects a
+    // board, reading his judgement plus the evaluators' findings. Medium
+    // because the thinking it has to do is small — the problem has already
+    // been identified by a human; the job is proposing the smallest fix.
+    '09-revision-proposer': 'medium',
   },
 
   // Bumped whenever the effort map above changes, for the same reason

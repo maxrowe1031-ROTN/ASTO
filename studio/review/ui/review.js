@@ -8,6 +8,7 @@
 
 import { boardHtml } from './board-html.js';
 import { feedbackControls, collectFeedback } from './feedback.js';
+import { STAGE_IDS_FOR_REVISION } from '../../stage-registry.js';
 
 const view = document.getElementById('view');
 const POLL_MS = 2500;
@@ -226,6 +227,8 @@ async function renderRun(runId) {
         : ''
     }
 
+    <section class="panel" id="proposal-panel" hidden></section>
+
     ${reportPanel('Difficulty rater', attempt.reports['03-difficulty-rater'])}
     ${reportPanel('Integrity gate', attempt.reports['04a-integrity'])}
     ${reportPanel('Analogy validator', attempt.reports['05-analogy-validator'])}
@@ -246,9 +249,7 @@ async function renderRun(runId) {
              <div class="revise">
                <label>Revise from
                  <select id="from-stage">
-                   ${['01-pair-author', '02-theme-grouper', '03-difficulty-rater', '04-board-builder']
-                     .map((s) => `<option value="${s}">${s}</option>`)
-                     .join('')}
+                   ${STAGE_IDS_FOR_REVISION.map((s) => `<option value="${s}">${s}</option>`).join('')}
                  </select>
                </label>
                <button class="pill" data-act="revise" ${decidable ? '' : 'disabled'}>Request revision</button>
@@ -262,6 +263,7 @@ async function renderRun(runId) {
 
   wireDecisions(runId, attemptId);
   wirePlay(attempt.board);
+  showProposal(runId, attemptId);
   schedulePoll(working, runId);
 }
 
@@ -390,6 +392,134 @@ const notesFor = (events) =>
     .map((e) => `${e.scope.type === 'set' ? `${e.scope.setId}: ` : ''}${[...e.tags, e.note ?? ''].filter(Boolean).join('; ')}`)
     .join('\n')
     .slice(0, 2000);
+
+/**
+ * The Revision Proposer's brief, once there is one.
+ *
+ * It renders below the board rather than above it, and only after a rejection,
+ * because an unbiased first read is the thing the review loop exists to
+ * capture — putting the machine's framing in front of Max before he plays
+ * would spend the very signal this is trying to make cheaper.
+ *
+ * The brief is editable in place. That is deliberate: what he changes is
+ * precisely what the proposer got wrong, and `proposal-verdict` records the
+ * edit as the evidence the auto-revise graduation trigger needs.
+ */
+async function showProposal(runId, attemptId) {
+  const panel = document.getElementById('proposal-panel');
+  if (!panel) return;
+
+  let proposal = null;
+  let working = false;
+  try {
+    ({ proposal, working } = await api(`/runs/${encodeURIComponent(runId)}/proposal`));
+  } catch {
+    return; // an older run with no proposal endpoint answer is simply silent
+  }
+
+  if (working) {
+    panel.hidden = false;
+    panel.innerHTML = '<h2>Suggested fix</h2><p class="studio-muted">Working on a revision brief…</p>';
+    schedulePoll(true, runId);
+    return;
+  }
+  if (!proposal) return;
+
+  const fixes = proposal.fixes
+    .map(
+      (fix) => `
+        <li>
+          <strong>${escape(fix.setId)}</strong>
+          <span class="proposal-source" data-source="${escape(fix.source)}">${escape(fix.source)}</span>
+          <div>${escape(fix.problem)}</div>
+          <ul class="proposal-candidates">
+            ${fix.candidates.map((c) => `<li>${escape(c)}</li>`).join('')}
+          </ul>
+        </li>`,
+    )
+    .join('');
+
+  panel.hidden = false;
+  panel.innerHTML = `
+    <h2>Suggested fix</h2>
+    <p>${escape(proposal.summary)}</p>
+    <ul class="proposal-fixes">${fixes}</ul>
+    ${
+      proposal.doNotChange?.length
+        ? `<p class="studio-muted">Leave alone: ${proposal.doNotChange.map(escape).join(' · ')}</p>`
+        : ''
+    }
+    <label class="proposal-brief">Revision brief — edit before sending if it has it wrong
+      <textarea id="proposal-notes" rows="4">${escape(briefText(proposal))}</textarea>
+    </label>
+    <div class="decisions">
+      <button class="pill primary" data-act="propose-revise">Request revision with this brief</button>
+      <button class="pill" data-act="propose-discard">Discard</button>
+      <span class="studio-muted">re-enters at ${escape(proposal.fromStage)}</span>
+    </div>`;
+
+  const original = briefText(proposal);
+  panel.addEventListener('click', async (event) => {
+    const act = event.target.dataset?.act;
+    if (act !== 'propose-revise' && act !== 'propose-discard') return;
+    event.preventDefault();
+
+    const notes = document.getElementById('proposal-notes').value.trim();
+    // Three outcomes, and the middle one is the valuable one: an edited brief
+    // is a labelled example of where the proposer was wrong.
+    const verdict = act === 'propose-discard' ? 'discarded' : notes === original ? 'accepted' : 'edited';
+
+    try {
+      await api(`/runs/${encodeURIComponent(runId)}/feedback`, {
+        method: 'POST',
+        body: JSON.stringify({
+          events: [
+            {
+              schemaVersion: '1.0',
+              id: `fb-${attemptId}-proposal-${Date.now()}`,
+              attemptId,
+              formVersion: 2,
+              action: 'proposal-verdict',
+              scope: { type: 'board' },
+              tags: [],
+              proposal: { verdict, ...(verdict === 'edited' ? { edited: notes } : {}) },
+              source: 'review-studio',
+            },
+          ],
+        }),
+      });
+
+      if (act === 'propose-revise') {
+        await api(`/runs/${encodeURIComponent(runId)}/revisions`, {
+          method: 'POST',
+          body: JSON.stringify({ fromStage: proposal.fromStage, notes }),
+        });
+        notify('Revision requested.', 'ok');
+      } else {
+        panel.hidden = true;
+        notify('Brief discarded — recorded.', 'info');
+      }
+      route();
+    } catch (error) {
+      notify(error.message, 'error');
+    }
+  });
+}
+
+/** The proposal as the plain text a revision actually travels as. */
+function briefText(proposal) {
+  return [
+    proposal.summary,
+    ...proposal.fixes.map(
+      (fix) => `- ${fix.setId}: ${fix.problem}\n  Try: ${fix.candidates.join('\n  Or: ')}`,
+    ),
+    proposal.doNotChange?.length
+      ? `Do not change: ${proposal.doNotChange.join(', ')} — these were approved.`
+      : '',
+  ]
+    .filter(Boolean)
+    .join('\n');
+}
 
 function schedulePoll(working, runId) {
   clearTimeout(pollTimer);

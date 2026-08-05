@@ -12,6 +12,10 @@ import * as analogyValidator from './analogy-validator.js';
 import * as adversarialSolver from './adversarial-solver.js';
 import * as testPlayer from './test-player.js';
 import * as styleGuide from './style-guide.js';
+// Not a pipeline stage — it runs at review time, when Max rejects a board —
+// but it is an agent by every other measure, so it is registered here and
+// held to the same contract as the eight.
+import * as revisionProposer from './revision-proposer.js';
 
 export const AGENTS = Object.freeze({
   'pair-author': pairAuthor,
@@ -22,6 +26,7 @@ export const AGENTS = Object.freeze({
   'adversarial-solver': adversarialSolver,
   'test-player': testPlayer,
   'style-guide': styleGuide,
+  'revision-proposer': revisionProposer,
 });
 
 export function loadAgent(agentId) {
