@@ -53,6 +53,35 @@ Ask:
 (`git status -sb` per branch — "ahead" means unpushed. GitHub Desktop shows
 this as "Push origin".)
 
+## "It's pushed, but the live site is still the old version"
+
+**This one hides.** Pushing and deploying are two different things. GitHub
+Pages rebuilds the site after each push, and **if that build fails, the
+previous version keeps serving** — the site still loads, still returns pages,
+still looks completely fine. Nothing tells you. `git status` says in sync,
+because it is.
+
+This happened on 2026-08-05: five builds failed in a row and the live game
+served a stale copy for most of a day before anyone noticed.
+
+Ask:
+
+> Did the last GitHub Pages build actually succeed?
+
+```bash
+gh api repos/:owner/:repo/pages/builds/latest --jq '"\(.status) \(.commit[0:7]) \(.error.message // "")"'
+```
+
+`built` is good. `errored` means the live site is **not** what is on `main`,
+no matter what git says. The same information is on GitHub under
+**Settings → Pages**.
+
+**Known cause, already fixed:** Pages ran a Jekyll build that tried to
+interpret `{{ ... }}` braces inside committed files (the GDD and governance
+docs contain them). The repo now has a root **`.nojekyll`** file that turns
+Jekyll off and serves everything exactly as written. **Do not delete it** —
+the builds fail again if it goes.
+
 ## "The game won't load"
 
 Almost always the file protocol. **ASTO cannot be opened with `file://`** — ES

@@ -115,3 +115,7 @@
 - The game's `index.html` declares no favicon, so every page load 404s `/favicon.ico`.
   The process deck now carries an inline data-URI icon; the game could use the same
   one-liner (no new asset, no request).
+- Nothing verifies that a push actually deployed. Pages can fail its build while the
+  previous version keeps serving, so a broken deploy is invisible from the outside
+  (2026-08-05: five failed builds, most of a day stale). `.nojekyll` fixed the cause;
+  the *detection* gap remains. A post-push build-status check would close it.

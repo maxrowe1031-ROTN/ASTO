@@ -2,6 +2,66 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-05 — The deploy failure gets a name in the recovery playbook
+
+Short follow-on to the entry below, which shipped the deck and found — while shipping it —
+that GitHub Pages had been failing its build since 03:34Z. `.nojekyll` fixed the *cause*
+in that entry. This one closes the *detection* gap, because the fix does not stop it
+happening again for some other reason.
+
+**Why this is worth a playbook section rather than a note.** The failure is silent by
+construction: a failed Pages build leaves the previous version serving, so the site keeps
+returning 200, the game keeps loading, and `git status -sb` correctly reports in sync. Every
+signal Max already checks says everything is fine. `docs/recovery.md` had **"Did everything
+make it to GitHub?"** — pushing — and nothing at all about deploying. Pushed and deployed
+are different things and the playbook treated them as one.
+
+- **`docs/recovery.md`** — new section, *"It's pushed, but the live site is still the old
+  version"*: what the failure looks like (it hides), the one command that answers it
+  (`gh api .../pages/builds/latest`), where the same thing lives in the GitHub UI, and a
+  standing warning not to delete `.nojekyll`.
+- **`docs/backlog.md`** — the detection gap recorded as its own item. `.nojekyll` removed
+  today's cause; nothing yet checks that a push actually deployed. A post-push build-status
+  check would close it, and that is a real change rather than a doc line.
+
+**Not made a house rule.** `.nojekyll` is deployment configuration, not a departure from a
+house default — no HR entry is owed, and `docs/design.md` is untouched. No locked decision
+moved: schema v1.0, zero dependencies and engine-first are all where they were.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **841 pass, 0 fail**. No board or code changed this
+  unit — docs only — so `check-board` had nothing new to gate.
+- **Claude-verifiable: PASSED, against the live site rather than localhost.** After the
+  fix, the Pages API reported **`status: built`, commit `4631f7b`, no error** — the first
+  successful build since 03:34Z. Live checks: `/ASTO/` 200, `/ASTO/docs/presentation/` 200,
+  all four deck assets 200, and the newly published boards (`trees-tools-and-time`,
+  `gotham-connections`) 200. The deployed page was loaded and inspected: 15 sections, zero
+  broken images, no horizontal overflow, and **no un-rendered `{{` left in the output** —
+  which is the direct proof that Jekyll is no longer touching the files.
+- **Max acceptance: OPEN, unchanged.** The deck's story and tone remain his call, and
+  slides 10 and 11 are still the two verified by computed style rather than pixels.
+- **The other session was never disturbed.** Its six in-flight run directories and its
+  uncommitted `decisions.jsonl` are untouched; `main` was advanced by ref rather than by
+  checkout precisely to avoid stashing another session's work.
+
+### Phase status
+
+**Still not a phase gate.** Phase 5 remains in flight — five playable boards against a bar
+of ten. What changed today is that the boards and the deck are now genuinely *live*, which
+had been quietly untrue all day.
+
+- **Next:**
+  1. **Max reads the deck** at `https://maxrowe1031-rotn.github.io/ASTO/docs/presentation/`
+     and rules on story and tone. Slides 10 and 11 want a human eye.
+  2. **Nothing links to the deck.** It is reachable only by pasting the URL. A link from
+     the title screen is one line, if he wants the game to point at it.
+  3. **Close the detection gap** (backlog) so a failed deploy cannot hide for a day again.
+  4. Carried: the Class 13 peer cut is a different deck from this one · the game's missing
+     favicon · rater abstention floor · rubric compilation must read version-1 sets by TAGS
+     not action · `README.md` never mentions `npm run studio:review` · 05–08 concurrency ·
+     First Light `explanation` pass · GDD drift.
+
 ## 2026-08-05 — The process, made legible: a shareable deck built from the record
 
 Max asked whether the way this project is documented would let someone go back, review
