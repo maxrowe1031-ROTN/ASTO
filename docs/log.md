@@ -55,9 +55,21 @@ puzzle unified by theme and words, varied in execution by different kinds of rel
   controller (green set solved in-browser, console clean).
 - **Max acceptance: NOT YET.** Nothing here has produced a real board. That is deliberately
   the next session, and the whole point.
-- **Locked decisions intact:** schema v1.0 untouched — stance/family live in Studio
-  artifacts, never on a puzzle. Zero deps. `src/`, `styles/`, `puzzles/` unchanged except
-  nothing at all.
+- **Locked decisions intact:** schema v1.0 untouched — stance and family live in Studio run
+  artifacts, never on a puzzle (verified: no `stance`/`family` key in `puzzles/`). Zero deps
+  (`package.json` unchanged). `git diff main..HEAD -- src/ styles/ index.html puzzles/` is
+  empty: the game itself was not touched this session.
+
+**Phase status: Phase 5 (puzzle select + content) — gate NOT met, and not claimed.** This
+session was Studio work that *unblocks* Phase 5's content, not Phase 5 itself: `puzzles/`
+still holds only First Light and the tutorial, and the phase gate (all boards green, select
+state survives reload, full §16 acceptance pass) is untouched. What this session closed is
+D-3's authorised pipeline work; what it opened is D-3 item 4, the real runs.
+
+*Left behind deliberately:* one mock run `2026-08-05T01-30-19.030Z-harbor` in the git-ignored
+`studio/runs/`, created to verify the review surface. It is `brief.mock: true`, so the variety
+index excludes it by construction — but it will appear in Max's run list. Delete it whenever;
+it is evidence, not state.
 
 - **Next:**
   1. **Real runs under the new pipeline — D-3 item 4, the Max-acceptance gate.** Start 2–3
