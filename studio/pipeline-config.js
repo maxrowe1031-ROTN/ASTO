@@ -117,17 +117,42 @@ export const DEFAULT_CONFIG = deepFreeze({
   // exactly the stages that were leaned. Judging the new design at settings
   // tuned for the old one would confound "the design doesn't work" with "the
   // model had no room to think" — during the shakedown, capacity must not be
-  // a suspect. 01 and 02 return to high (four stances inside one theme is the
-  // hardest ask either has carried); 03 and 08 gain entries because they are
-  // now Sonnet (effort is an error on Haiku — remove these lines if a
-  // slim-down returns them). 06 stays high for its original reason.
+  // a suspect. 03 and 08 carry entries because they are now Sonnet (effort is
+  // an error on Haiku — remove these lines if a slim-down returns them). 06
+  // stays high for its original reason.
+  //
+  // 02 WAS raised to high with 01, and that was wrong — reverted 2026-08-05
+  // after it killed the first real run (`beach`: truncated at max_tokens
+  // 16000, then again at 24000, $0.71 for no board). Three things the run
+  // settled:
+  //
+  //   * Its own baseline refutes the bump. Six real runs at medium: 3,756 /
+  //     3,814 / 4,123 / 4,277 / 4,314 / 4,435 output tokens, 36-42s each. The
+  //     answer is ~4k of JSON; at high the THINKING ran past 24,000 without
+  //     converging. 163s, then 255s.
+  //   * `high` is not the problem — 02 is. 06 runs high across six runs
+  //     (3,474-7,044) and never truncates; 01 at high produced a clean pool at
+  //     5,340. What breaks is high on a COMBINATORIAL stage: 02 clusters 14
+  //     pairs under label + stance + direction + grain constraints, which is
+  //     the same search 04 was dropped from xhigh for (see the note below —
+  //     "94% of its billed output was thinking"). Same lesson, applied
+  //     backwards.
+  //   * The reason given for the bump was checkably wrong. 02 was raised
+  //     because it "composes under a stance floor now", but the stance work
+  //     had deliberately been moved UPSTREAM into 01's quotas. The beach run
+  //     proves it: 01 delivered exactly the four quota'd stances (inclusion 4,
+  //     time 3, event 4, possession 3), so 02's job got easier, not harder.
+  //
+  // Not fixed by raising maxTokens, deliberately: that request was already at
+  // 255s of llm.js's 300s non-streaming timeout, so a bigger ceiling buys a
+  // slower failure. At medium no stage is near either bound.
   //
   // Slim-down trigger: ~10 judged boards under this profile, then re-run the
   // lean-2 measurement pass (per-stage cost + thinking share, read against
   // review verdicts) and re-aim downward with data.
   effort: {
     '01-pair-author': 'high',
-    '02-theme-grouper': 'high',
+    '02-theme-grouper': 'medium',
     '03-difficulty-rater': 'medium',
     '04-board-builder': 'medium',
     '06-adversarial-solver': 'high',
@@ -143,7 +168,7 @@ export const DEFAULT_CONFIG = deepFreeze({
   // The string must change with the map, not just when it feels significant:
   // boards built under two different maps are two populations, and reusing one
   // label would merge them inside the very corpus meant to tell them apart.
-  effortProfile: '2026-08-04-taxonomy-shakedown',
+  effortProfile: '2026-08-04-taxonomy-shakedown-2',
 
   // Two bounds, because there are two failure classes and they are retried by
   // different owners. `transport` bounds llm.js's own loop (timeouts, 429s,
