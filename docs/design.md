@@ -400,9 +400,21 @@ does not carry felt variety; the kind of question does.**
    reaches one family and is never required.
 4. **Composition enforced at every door, creation first** (the repo's recurring scar is a rule
    at one door only): stance quotas in every brief (both drivers, themed and surprise-me) →
-   pair author validates its own pool spans ≥4 stances → grouper floor (≥4 stances or the
+   pair author validates its own pool is **groupable** → grouper floor (≥4 stances or the
    retry is told to re-read setAside) → 04a gate rejects a board whose four sets repeat a
-   stance, naming them. **Family is never enforced at board level** — it would reject Night B,
+   stance, naming them.
+
+   **Corrected 2026-08-05 — the quota was at the wrong granularity.** A set is two pairs
+   sharing **one relationship**; a stance is a **category** of relationships. The original
+   check counted stances across all pairs, so a pool could satisfy the quota completely and
+   still be ungroupable — the `paris` run spanned all four stances using eleven shapes exactly
+   once each, and the grouper searched until it truncated at 40,000 tokens. Across three real
+   runs the correlation was monotonic and explosive: relationships carried by ≥2 pairs of
+   **7 / 3 / 1** gave grouping times of **18s / 129s / truncation**. 01 now requires **four
+   relationships each carried by two pairs, spanning four stances**, and names the orphaned
+   shapes on rejection. Verified on the failing theme: `paris-retry` fell from 40,000 tokens
+   truncated to 1,392 tokens in 12s, at half the cost. The three real pools are pinned as
+   tests. **Family is never enforced at board level** — it would reject Night B,
    and both the playtests and the 1984 partial correlation say it is the wrong axis. It stays
    the coverage axis: the brief steers toward underused families, spreading requests across
    them.

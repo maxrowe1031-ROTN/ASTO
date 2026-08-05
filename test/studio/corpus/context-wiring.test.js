@@ -182,7 +182,11 @@ test('the stance quotas reach the pair author\'s prompt', async () => {
     assert.equal(result.status, 'complete', result.failure?.message);
     const prompt = promptFor(rootDir, runId, result.attemptId, '01-pair-author');
     assert.match(prompt, /inclusion, possession, event, time/);
-    assert.match(prompt, /at least two pairs in each/i);
+    // The quotas ride on the matched-twos instruction: four MATCHED groups
+    // spanning the four stances, not four stances however scattered — the
+    // distinction the `paris` run cost us.
+    assert.match(prompt, /MATCHED TWOS/);
+    assert.match(prompt, /at least four such matched groups/i);
   } finally {
     cleanup();
   }
