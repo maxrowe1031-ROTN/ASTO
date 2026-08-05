@@ -4,6 +4,15 @@
 > work only when Max pulls them into `design.md`'s plan. Mid-session ideas
 > land here so the session stays on task.
 
+- **Un-publishing has no route.** Removing a published board is `git revert` plus deleting the
+  file — deliberate (reversibility for generated artifacts is version control, not
+  application-level undo), but if boards start being pulled often, the Studio should say so
+  rather than leaving Max to the filesystem.
+- **The three older approved boards** (`music`, `weather`, `history`) predate the taxonomy work
+  and the v1 feedback form. They are approved but deliberately unpublished, pending a re-read.
+  Publishing them is what takes `puzzles/` from six boards to nine against Phase 5's 10+.
+- **`puzzles/index.json` is a reserved name** — `check-board.js` skips it and `puzzle-store`
+  refuses to list it, both anticipating Phase 5's manifest. Nothing writes it yet.
 - `current-attempt.json` at the run root is in the Studio spec's run-directory contract
   but has never been built (A1 or A3); `manifest.currentAttemptId` serves the purpose.
   Decide whether to build it or amend the spec.
@@ -51,6 +60,9 @@
   variety index — but their feedback **is** in the corpus. When `rubric.md` is compiled,
   separate judgements about *hand-made design experiments* from judgements about *pipeline
   output*; conflating them would credit the pipeline with boards it did not build.
+  **Now also relevant to publication (2026-08-05):** four runs carry a `publish` decision, so
+  "approved" and "shipped" are no longer the same set — the rubric should be able to tell
+  which judgements are about boards that actually reached players.
   **A third category as of 2026-08-05:** `2026-08-05T01-30-19.030Z-harbor` is approved with 8
   feedback events, but it is the **fixture replay** — a hand-written mock board Claude authored
   to verify the review surface, not pipeline output and not a design experiment. Max knew

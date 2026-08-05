@@ -2,6 +2,103 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-05 — Approved boards reach the game
+
+Max ran and judged two more boards between sessions — **`birds` and `batman`, both approved**
+— using the new form. That took the count of approved pipeline boards to seven with nowhere
+to land, while `puzzles/` still held only the two hand-authored boards against Phase 5's 10+.
+The bottleneck had moved: the rubric loop was producing faster than the project could absorb.
+Recorded as **D-6** in `docs/design.md`.
+
+### What the two new boards proved
+
+- **D-4 works in his hands.** Both were approved *as wholes* while individual sets drew
+  `revise-set`, `set-needs-edit` and `change-difficulty`. That independence is exactly what
+  the old form could not express and what the 141-event corpus exposed. Max acceptance on the
+  rebuilt instrument: **passed in use**, not just in the browser.
+- **The `fix:` field went unused on all 13 events** — but the fix prose is there, inside the
+  notes: *"It would have been better and more challenging if it had been…"*. The field is not
+  wrong; it is not where his hands go. Two boards is not yet evidence.
+- **D-5 still has zero evidence.** Both boards were approved, so no Revision Proposer brief
+  was ever spent. The graduation trigger has not started counting.
+
+### Built — the loop closes
+
+There was no translator to write. A run's `board.json` is **already schema v1.0**;
+`check-board` passes a candidate board unmodified. What was missing was a seam.
+
+**`studio/storage/puzzle-store.js`** is the only module that writes into `puzzles/` — a second
+write seam beside `run-store`, separate on purpose because a run directory is the Studio's own
+record while `puzzles/` is what the shipped game loads. The gate lives in the store: the board
+is checked with the **game's own** validator and integrity sweep before a byte is written, a
+refusal writes nothing, and the slug is pattern-matched before it is joined onto a path.
+
+**`POST /api/runs/:id/publish`** is legal only from `approved`, and **records** publication
+rather than transitioning it — the run stays approved, and the record in `decisions.jsonl` is
+also what tells a second publish that it is a republish rather than a collision.
+
+**`?puzzle=<slug>`** in `app.js`, so a published board can actually be played. Phase 5's
+routing seed, pulled early on purpose: *the file validated* is not the same claim as *it
+reaches the player*, and without this the gate could only have been the weaker one.
+
+### The correction Max made mid-session, and why it mattered
+
+I proposed publishing under the **run** slug. Publishing the first board showed the flaw:
+`beach-retry` is a lifecycle name recording that the first beach run truncated, and the
+published id is the key Phase 5 will persist per-puzzle results under — renaming it later
+orphans saved progress. The repo's own precedent settled it: **`asto-first-light` is derived
+from the title "First Light"**. Max chose title-derivation; `batman.json` was republished as
+`gotham-connections.json` before anything depended on it.
+
+The derivation now lives in `studio/slug.js` and is **served to the review page**, so the
+destination shown before the click is the destination — the same reasoning that put the stage
+list in `stage-registry.js`. It replaced **three** drifting copies of the same function.
+
+### What verification caught
+
+- **`variety.js` would have poisoned its own brief.** Any board in `puzzles/` without a
+  `SHIPPED_LABELS` entry was counted as `unknown`. Publishing four boards would have added
+  **sixteen** to the tally the variety brief reads — while their shapes were already counted
+  through their runs, by the reliable path. Found before publishing, fixed with a failing test
+  first, then **measured against the real corpus afterwards: published boards contribute 0.**
+- **My integrity test asserted something impossible.** I wrote a "board fails the sweep" case;
+  the schema catches duplicate words first, and with four sets of sixteen distinct words 16/16
+  is arithmetic. The sweep is kept for what it actually guards — it samples the real
+  `engine.submit()`, so a future widening of acceptance stops publication instead of shipping
+  boards whose answers changed underneath them. The test now says that.
+
+### Session gate
+
+- **Automated: PASSED.** 811 → **841 tests, 0 fail.** `node tools/check-board.js`: **6 boards,
+  all clean, 16/16 accepted of 43,680 tuples each.** Published boards are globbed by
+  `test/content/board-integrity.test.js`, so they are re-gated by every future `npm test`.
+- **Claude-verifiable: PASSED.** End to end in the browser: the Publish panel showed the
+  destination *before* the click, publishing wrote the file and the decision record, the panel
+  then read "Published as …" and offered Republish. In the game at
+  `?puzzle=trees-tools-and-time` and `?puzzle=gotham-connections`: the board loads, plays, and
+  a set solves — **"Correct!"**, green tier revealed with its relationship label.
+- **Max acceptance: OPEN.** He chose the four boards and the id convention; he has not yet
+  played a published board as a player rather than as an editor.
+- **Corpus insured first.** The birds and batman judgement was uncommitted at session start —
+  13 events on one disk, the same exposure as 2026-08-05's scar. Committed by explicit path
+  before any other work; `.gitignore` admitted exactly the four exception kinds.
+
+**Now in `puzzles/`:** Trees, Tools, and Time · For the Birds · Gotham Connections · By the
+Shore · First Light · Warm Up (tutorial). **Six boards, four of them the pipeline's.**
+
+- **Next:**
+  1. **Phase 5's select screen.** There is now content to select, and `?puzzle=` is a query
+     param rather than a route. The manifest, `select-view.js` and per-puzzle persisted
+     results are the remaining Phase 5 work — and the persistence keys off the published ids
+     this session locked.
+  2. **Six boards, ten needed.** Three older approvals (`music`, `weather`, `history`) predate
+     the taxonomy work and form v1 and are held back for a re-read before they ship.
+  3. **Judge a Revision Proposer brief** — still zero. Mark one board publishable-after-a-fix
+     and see whether the brief is worth sending.
+  4. Carried: rater abstention floor · slim-down lap at ~10 judged boards · rubric compilation
+     must read version-1 sets by TAGS not action · `README.md` never mentions
+     `npm run studio:review` · 05–08 concurrency · First Light `explanation` pass · GDD drift.
+
 ## 2026-08-05 — The instrument that measures Max's taste, rebuilt
 
 Two more real boards, both **rejected as wholes with three of four sets praised** — and the

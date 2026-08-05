@@ -148,11 +148,14 @@ makes the Studio double as proof the architecture is clean.
   `127.0.0.1`, runs only during use, exposes only what the Studio needs, validates every
   incoming change, restricts filesystem paths, reuses the project's own core and
   validators, and never returns secrets to the browser.
-- **ASTO's status:** `studio/` is currently a headless pipeline (Core A1 + A2). The
-  Review Studio in Part B of the Studio spec is the planned surface, and the Core's seams
-  were designed for it from the first file — recorded as **HR-2** in `docs/design.md`
-  with its reconsider-when trigger. Until then the verification surface is `npm test`,
-  `tools/check-board.js`, and the game in the preview browser.
+- **ASTO's status:** `studio/` is the Core pipeline **plus the Review Studio (R1)** at
+  `npm run studio:review` — where Max starts runs, plays the candidate board, records
+  structured feedback, and **publishes an approved board into `puzzles/`** (D-6). Writing
+  game content goes through `storage/puzzle-store.js`, the only module allowed into
+  `puzzles/`, exactly as run artifacts go through `run-store.js`. **Hand-editing (B2) is
+  the only part of HR-2 still deferred.** The other verification surfaces remain `npm
+  test`, `tools/check-board.js`, and the game in the preview browser — a published board
+  is playable at `?puzzle=<slug>`.
 
 ## 7. Game rules that are easy to get wrong
 

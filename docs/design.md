@@ -545,6 +545,56 @@ work is never rewritten"). An attempt directory records what the *pipeline* did;
 brief is not that. Proposals are run artifacts beside `feedback.jsonl`, written through the new
 `writeRunArtifact` — run-store stays the only writer.
 
+### D-6 — Approved boards reach the game, and the id they carry (2026-08-05)
+
+**Why now:** the rubric loop had produced faster than the project could absorb. Four approved
+boards were sitting in run directories with nowhere to land while `puzzles/` still held only
+the two hand-authored boards, and Phase 5 needs 10+. This is HR-2's named deferral coming due.
+
+**No translator, because there is nothing to translate.** A run's `attempts/NNNN/board.json` is
+already schema v1.0 — `tools/check-board.js` passes a candidate board unmodified. Publishing is
+validate-then-write plus one decision: the id.
+
+**A second write seam, deliberately.** `studio/storage/puzzle-store.js` is the only module that
+writes into `puzzles/`, beside — never inside — `run-store.js`. They are separate because they
+answer to different laws: a run directory is the Studio's own record, while `puzzles/` is what
+the shipped game loads and what `test/content/board-integrity.test.js` re-gates on every
+`npm test`. The gate therefore lives in the store rather than in callers: the board is checked
+with the **game's own** `validatePuzzle` and `checkBoard` before a byte is written, a refusal
+writes nothing at all, and the slug is pattern-matched before it is joined onto a path.
+
+What the sweep actually guards, stated honestly: a board that passed schema v1.0 has four sets
+of sixteen distinct words, so 16/16 acceptance is arithmetic and no board defect can fail there.
+The sweep is kept because it samples the real `engine.submit()` — if the engine ever widened
+acceptance, publishing stops rather than shipping boards whose answers changed underneath them.
+
+**Publication is recorded, not transitioned.** The run stays `approved`; `approved → archived`
+remains the only move out of it. The record lands in `decisions.jsonl` beside the approval it
+followed, and it doubles as the republish signal — a run may replace its own file, while another
+run claiming an occupied slug is a 409.
+
+**The id comes from the board's TITLE.** Max first chose the theme slug; publishing the first
+board showed why that is wrong. A run slug is a *lifecycle* name — `beach-retry` records that
+the first beach run truncated — and the published id is the key Phase 5 will persist per-puzzle
+results under, so renaming it later orphans saved progress. The precedent settled it:
+`asto-first-light` is derived from the title "First Light". The derivation lives in
+`studio/slug.js` and is **served to the review page**, so the destination shown before the click
+is the destination — the same reasoning that put the stage list in `stage-registry.js`. It
+replaced three drifting copies of the same function.
+
+**Provenance stays out of the puzzle file.** Schema v1.0 is locked, and a published board must
+be indistinguishable from a hand-authored one. Which run it came from — and the model's original
+id — live in that run's `decisions.jsonl`, where the rest of its history already is.
+
+**A bug this uncovered, fixed before it could bite:** `variety.js` counted any board in
+`puzzles/` without a `SHIPPED_LABELS` entry as `unknown`. Publishing four boards would have
+added sixteen to the tally the variety brief reads, while their shapes were already counted
+through their runs. The `puzzles/` walk now counts only the hand-labelled boards it was written
+for. Measured against the real corpus after publishing: published boards contribute 0.
+
+**Reversibility is git**, not an un-publish route ([[version-control-for-agents]]): a published
+board is a file in a commit, and removing one is a revert plus a deletion.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
@@ -617,10 +667,16 @@ than the spec's implementation order lists it so the trigger does not fire. It h
 pipeline logic and shells out to nothing. R1 has since superseded it as the primary
 surface; the CLI remains for scripted and headless runs.
 
-**Status: largely discharged.** R1 delivers what this rule actually asks for — Max can
-see what the pipeline is doing and change things through the project's real public seams
-(`runPipeline`, `requestRevision`, `run-store`), which is also what proves those seams
-are clean. What remains deferred is bounded and named above.
+**Status: discharged, except hand-editing.** R1 delivers what this rule actually asks for
+— Max can see what the pipeline is doing and change things through the project's real
+public seams (`runPipeline`, `requestRevision`, `run-store`), which is also what proves
+those seams are clean.
+
+*Updated 2026-08-05:* **approval-into-`puzzles/` is no longer deferred** — see D-6. An
+approved board is published from the review page through a new seam
+(`storage/puzzle-store.js`), validated by the game's own validator and integrity sweep on
+the way, and is playable immediately at `?puzzle=<slug>`. Four boards have gone through
+it. **Hand-editing (B2) is the only part of this rule still outstanding.**
 
 *Sharpened 2026-08-04:* the playable board is the strongest evidence yet that the seams
 are real. `studio/review/ui/play.js` builds a live game from `GameController` and the
