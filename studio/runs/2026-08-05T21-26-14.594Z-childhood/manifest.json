@@ -22,7 +22,7 @@
     ],
     "mock": false
   },
-  "status": "awaiting-review",
+  "status": "rejected",
   "currentAttemptId": "0001",
   "attemptCount": 1,
   "revisionCount": 0

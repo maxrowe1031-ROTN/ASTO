@@ -13,7 +13,7 @@
     ],
     "mock": false
   },
-  "status": "awaiting-review",
+  "status": "rejected",
   "currentAttemptId": "0002",
   "attemptCount": 2,
   "revisionCount": 1
