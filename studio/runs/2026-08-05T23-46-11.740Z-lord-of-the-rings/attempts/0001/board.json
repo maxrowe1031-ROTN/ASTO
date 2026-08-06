@@ -1,0 +1,82 @@
+{
+  "id": "asto-lotr-board-01",
+  "title": "Middle-earth Relations",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a kind of fighter and the weapon of their craft",
+      "explanation": "Each race is defined by the weapon it is famous for wielding in battle.",
+      "pairs": [
+        [
+          "Elf",
+          "bow"
+        ],
+        [
+          "Dwarf",
+          "axe"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "weapon-word overlap with Herugrim"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a class of role and the named figure who holds it",
+      "explanation": "Each pair names a title and the specific character in the story who occupies it.",
+      "pairs": [
+        [
+          "Wizard",
+          "Saruman"
+        ],
+        [
+          "Steward",
+          "Denethor"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "role words overlap with King of Rohan/Gondor"
+      ]
+    },
+    {
+      "id": "set-sequence-events",
+      "relationshipLabel": "the pivotal event that ushers in the venture or age that follows",
+      "explanation": "Each first event is the turning point that directly sets the following venture or era into motion.",
+      "pairs": [
+        [
+          "Council of Elrond",
+          "Fellowship of the Ring"
+        ],
+        [
+          "Downfall of Sauron",
+          "Fourth Age"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "sounds like a title pairing, easy to confuse with class-individual"
+      ]
+    },
+    {
+      "id": "set-recipient-instrument",
+      "relationshipLabel": "a ruling role and the specific object that marks it",
+      "explanation": "Each kingship is symbolized by its own named regalia, the object that marks the ruler's authority.",
+      "pairs": [
+        [
+          "King of Rohan",
+          "Herugrim"
+        ],
+        [
+          "King of Gondor",
+          "Winged Crown"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "Herugrim reads like a weapon, tempting confusion with the fighter-weapon set"
+      ]
+    }
+  ]
+}

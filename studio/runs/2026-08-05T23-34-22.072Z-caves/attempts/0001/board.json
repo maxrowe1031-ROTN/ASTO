@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-caves-01",
+  "title": "Underground Connections",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "Cavers rely on headlamps and cave divers on guidelines — each role is defined by the gear that makes it possible.",
+      "pairs": [
+        [
+          "caver",
+          "headlamp"
+        ],
+        [
+          "cave diver",
+          "guideline"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "gear",
+        "occupation"
+      ]
+    },
+    {
+      "id": "set-time-activity",
+      "relationshipLabel": "a season and the activity that belongs to it",
+      "explanation": "Swarming happens in autumn and hibernation in winter — each season triggers its own predictable bat behavior.",
+      "pairs": [
+        [
+          "autumn",
+          "swarming"
+        ],
+        [
+          "winter",
+          "hibernation"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "season",
+        "behavior"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "a thing and a feature it simply has",
+      "explanation": "A cave has a mouth and a shaft has a collar — both are structural parts every such feature necessarily possesses.",
+      "pairs": [
+        [
+          "cave",
+          "mouth"
+        ],
+        [
+          "shaft",
+          "collar"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "structure",
+        "caving-terms"
+      ]
+    },
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "a broad category and a specific kind within it",
+      "explanation": "A stalactite is a kind of speleothem and a sinkhole is a kind of karst landform — each pair moves from general class to specific instance.",
+      "pairs": [
+        [
+          "speleothem",
+          "stalactite"
+        ],
+        [
+          "karst landform",
+          "sinkhole"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "category",
+        "geology-terms"
+      ]
+    }
+  ]
+}

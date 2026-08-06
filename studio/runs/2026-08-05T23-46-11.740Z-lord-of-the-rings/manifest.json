@@ -1,19 +1,19 @@
 {
   "schemaVersion": "1.0",
-  "runId": "2026-08-05T23-22-32.426Z-bicycles",
-  "createdAt": "2026-08-05T23:22:32.426Z",
-  "theme": "bicycles",
+  "runId": "2026-08-05T23-46-11.740Z-lord-of-the-rings",
+  "createdAt": "2026-08-05T23:46:11.740Z",
+  "theme": "Lord of the Rings",
   "brief": {
     "count": 14,
     "stanceQuotas": [
-      "inclusion",
       "time",
+      "inclusion",
       "event",
       "possession"
     ],
     "mock": false
   },
-  "status": "approved",
+  "status": "awaiting-review",
   "currentAttemptId": "0001",
   "attemptCount": 1,
   "revisionCount": 0
