@@ -63,6 +63,9 @@ const raterReply = (board) => ({
     grades: board.sets.map((set) => ({
       setId: set.id,
       difficulty: set.difficulty,
+      // Required on a graded set since 2026-08-05 (design.md D-8): a grade has
+      // to say whether it is hard by arrangement or by vocabulary.
+      difficultySource: 'arrangement',
       rationale: 'as played',
     })),
   }),
@@ -150,6 +153,7 @@ test('a builder that picks the same stance twice from a diverse pool is sent bac
         grades: poolSets.map((set, i) => ({
           setId: set.id,
           difficulty: Math.min(i + 1, 4),
+          difficultySource: 'arrangement',
           rationale: 'graded',
         })),
       }),

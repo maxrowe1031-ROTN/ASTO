@@ -211,6 +211,18 @@ function machineNotesBySet(attempt) {
       add(setId, { source: finding.kind, level: finding.severity, text: finding.note });
     }
   }
+  // 07 is blind by construction — it names words, never sets — so the mapping
+  // from word to set happens here, exactly as it does for 06's findings above.
+  // This is the detector for a set only its subject's fans can solve, which is
+  // the defect Max found by playing (design.md D-8).
+  for (const gated of attempt.reports['07-test-player']?.knowledgeGated ?? []) {
+    add(setIdsByWord.get(gated.word), {
+      source: 'needs knowledge',
+      level: 'medium',
+      text: `"${gated.word}" — ${gated.note}`,
+    });
+  }
+
   for (const reading of solver?.crossReadings ?? []) {
     if (!reading.valid) continue;
     const [a, b, c, d] = reading.reading;

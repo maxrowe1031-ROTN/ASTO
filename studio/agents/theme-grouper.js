@@ -68,6 +68,13 @@ export function buildPrompt(input = {}, context) {
       'Every set you return must carry a DIFFERENT relationship. Two sets with the same label are the same relationship found twice — they leave the Board Builder with fewer real choices than it needs.',
       'Your sets must span at least four different STANCES — the vocabulary names each shape\'s stance. Four sets in one stance are four flavours of the same question, and a checker will refuse the pool.',
       'You must surface at least four sets — a board is exactly four, and the Board Builder cannot invent one you did not find. Five or six is better, so it has a choice.',
+      // design.md D-8. 02 decides which sets exist at all — anything it sets
+      // aside is gone before the rater or the builder ever see it. A grouping
+      // of plain words whose difficulty is in the ARRANGEMENT is harder to
+      // spot and easier to discard than a tidy category-and-example, and on
+      // 2026-08-05 the boards arrived with the second kind everywhere and the
+      // first kind nowhere.
+      'When two candidate groupings compete for the same pairs, prefer the one whose difficulty would come from its ARRANGEMENT — ordinary words that have to be seen a particular way — over one whose interest is that a word is unusual. Both belong on a board, but the first kind is the scarcer resource and it is the one that gets lost here.',
       'Any pair that does not belong in a coherent set goes in "setAside" with a reason. Never invent a theme to force a grouping.',
     ].join('\n'),
     data: [renderVocabulary(), asJsonBlock('Candidate pairs', pairs)].join('\n\n'),

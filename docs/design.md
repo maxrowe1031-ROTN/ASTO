@@ -774,6 +774,115 @@ findings are per-set, so they now render on the set card, **folded shut**: the r
 exists to capture an unbiased first read, so the machine's opinion is one click away rather
 than in the way.
 
+### D-8 — Two kinds of hard, and why the pipeline could only make one (2026-08-05)
+
+**What prompted it:** Max ran seven boards and judged five. **Five approved, zero rejected**
+— the first batch with no rejections at all. And: *"while these are publishable, i didn't
+get the same rush or joyous reaction as a few of the earlier puzzles."* He asked whether he
+was simply going numb.
+
+**He was not, and his own scoring is the proof.** Praise-tags per set went 1.43 → **3.15**,
+and 15 of 20 sets scored all four — the *"this is ASTO"* signal `feedback.js` records as
+having been earned by only two boards ever. `not-evocative` **15 → 0**, `too-obscure`
+**6 → 0**, `valid-but-unfair` **9 → 0**. Numbness shows up as lower scores. Craft went up
+while delight went down: two axes, and the gap between them was the work.
+
+#### The diagnosis, after two corrections from Max
+
+My first reading was that the naming set had moved into the Black slot, so forbid that.
+Max: *"they can both be black, depending on the puzzle. I don't want to fall into a
+repetitive hole where only one type of puzzle is one difficulty."* The data agreed with
+him — this batch's Blacks were the **more** varied five shapes, against a-tree and birds
+both running `before-after`. A placement rule would have swapped one predictable pattern
+for another.
+
+Sorting every set in the batch by where its difficulty came from found the real gap:
+
+- *ordinary words, surprising arrangement* — `start line : finish line :: clip in : clip
+  out` — present, and **always easy** (Max: all four praise tags **and** `too-easy`);
+- *rare words, ordinary arrangement* — `coronagraph : glare`, `speleothem : stalactite` —
+  present, and **always the hard end**.
+
+Nothing in the batch was a plain-word set that was genuinely difficult. That is exactly
+what a-tree's Black had been — `planting : felling :: budding : withering`, four words a
+child knows — and Max's note on it names the mechanism: *"the opposite arrangement makes
+this analogy stand out from the rest."*
+
+**So the gap was a missing capability, not a misplaced set.** Difficulty and vocabulary had
+become the same lever. I caused part of it: the specificity instruction from D-7 said a
+hard set *"may ask for the word an enthusiast knows"* — one route up, and the pipeline took
+it every time. His tell, written twice: *"someone with cycling knowledge would probably be
+stoked."* He handed the delight to a hypothetical expert.
+
+#### The change: every agent that held a lever
+
+Max asked which agents could proliferate the fix rather than loading it all onto 01. Two
+were working against it:
+
+- **03, the difficulty rater** — told to judge *"clarity, abstraction, **familiarity** and
+  misdirection"*. To this agent a rare word simply **was** difficulty; the conflation was
+  in the measurement, not only in the authoring. Familiarity still moves a grade, but every
+  graded set now reports `difficultySource: arrangement | vocabulary | both`, enforced by a
+  semantic check.
+- **04, the board builder** — *"the hardest set you have becomes the Black"*, ranking by a
+  number that already had rarity folded into it. It now receives the source, is told a
+  board reads best when its difficulty does not all come from one place, and records
+  `blackSetReasoning`. **Guidance, not a rule** — decision 3 below.
+- **07, the test player** — a model, so it knows what `speleothem` is and plays a
+  knowledge-gated set as though it were open. The one agent whose job is *"how does this
+  feel to play"* could not detect the defect Max found by playing. It now plays as a
+  general-audience solver and reports `knowledgeGated` words. Blind by construction still:
+  it names words, never sets, and the review page maps word → set as it already does for
+  06's findings.
+- **02, the theme grouper** — chooses which sets exist at all, so anything it sets aside is
+  gone. Told that an arrangement-hard grouping is the scarcer resource when candidates
+  compete.
+- **01, the pair author** — both routes named as a palette, and one requirement about
+  *range*: at least one matched group must be hard through arrangement alone. The
+  recognition-scales-with-difficulty clause is gone.
+
+#### Variety by steering, never by rule
+
+Max's constraint, and the reason none of this is a gate: *"we need to create and arrange
+our agents in ways that allow for flexibility… variety is an important part of puzzle
+games. If it becomes too predictable, it's no longer fun."*
+
+So `variety.js` gained a second dimension beside shape usage: **how each board's hardest
+set earned its difficulty**. The brief leans against a rut — three boards in a row topped
+the same way — and says nothing otherwise. A mixed history produces no steer at all, which
+is pinned as a test, because a rule reserving Black for one kind is the failure this whole
+decision exists to avoid. Themed runs now receive that steer too (they had never received
+anything from the index but stance quotas), while `relationshipShapes` stays the
+surprise-me marker.
+
+**Honest limit of the fallback classifier.** For the thirty-odd boards graded before 03
+reported its source, the index falls back to the shape — the three `inclusion` shapes whose
+only lever for extra difficulty is a rarer name. Replayed against Max's verdicts it gets
+all four boards he loved right and **only 2 of the 5 he found flat**: `coronagraph : glare`
+is `prevention` and `perihelion : orbit` is `sequence`, so the shape cannot see that the
+words are rare. That is precisely why 03's own judgement is the primary source and the
+shape is only the fallback.
+
+#### What was deliberately not done
+
+- **The game rules are untouched.** Max: *"you don't have to solve every puzzle to have
+  fun. The challenging nature is what pushes people to want to try again."* `so-close` still
+  costs a mistake and the cap is still four. Recorded because the data tempted otherwise:
+  **0 wins in 8 recorded playthroughs**, every one ending at four mistakes, and on `cars`
+  all four mistakes were so-close. He loved boards he may also have lost, so losing is not
+  what kills the joy.
+- **No third style-guide verdict.** 08 returned `evocativeness: strong` on four of the five
+  boards Max said did not thrill him. It is not wrong — they *are* on theme — it simply
+  does not measure delight. A third score would be a third thing agreeing with itself,
+  which unity demonstrated and evocativeness has now repeated.
+- **Nothing in the `04a` gate.** A gate is a rule, and every rule here becomes the
+  predictability being avoided.
+
+**Reconsider-when:** if a fresh batch still arrives with every board topped the same way,
+the steer is too weak and the lever moves upstream to the stance quota — `inclusion` is
+quota'd on every run and is where all three nameable shapes live, which is why 8 of the 9
+boards before this carried exactly one naming set.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

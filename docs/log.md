@@ -2,6 +2,106 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-05 — Five approvals, no rush, and the lever that had become one
+
+Max ran seven boards and judged five. **Five approved, zero rejected** — the first batch
+with no rejections at all, against the previous batch's zero approvals. And then:
+*"while these are publishable, i didn't get the same rush or joyous reaction as a few of
+the earlier puzzles."* He asked to be told if he was going numb. Recorded as **D-8**.
+
+### He was not, and his own scoring proves it
+
+| batch | praise-tags per set | sets scoring all four |
+|---|---|---|
+| rounds 1–2 (Aug 2–4) | 1.33 | 6% |
+| Aug 5 early | 2.29 | 21% |
+| Aug 5 20:xx (zero approvals) | 1.43 | 25% |
+| **this batch** | **3.15** | **75%** |
+
+`feedback.js` records all-four-on-all-four as his *"this is ASTO"* signal, earned by only
+two boards ever; this batch put it on 15 of 20 sets. `not-evocative` **15 → 0**,
+`too-obscure` **6 → 0**, `valid-but-unfair` **9 → 0**. Numbness reads as lower scores.
+Craft went up while delight went down — two axes, and the gap between them was the work.
+
+### The diagnosis, after Max corrected it twice
+
+I first read it as the naming set moving into the Black slot, and proposed forbidding
+that. He refused: *"they can both be black, depending on the puzzle. I don't want to fall
+into a repetitive hole where only one type of puzzle is one difficulty."* The data agreed —
+this batch's Blacks were the **more** varied five shapes, against a-tree and birds both
+running `before-after`.
+
+Sorting every set by where its difficulty came from found the real gap. *Ordinary words,
+surprising arrangement* was present and **always easy**; *rare words, ordinary
+arrangement* was present and **always the hard end**. Nothing was a plain-word set that
+was genuinely difficult — which is exactly what a-tree's Black had been.
+
+**A missing capability, not a misplaced set.** Difficulty and vocabulary had become the
+same lever. I caused part of it: D-7's specificity instruction said a hard set *"may ask
+for the word an enthusiast knows"*, one route up, and the pipeline took it every time.
+
+### Built — the levers, agent by agent
+
+Max asked which agents could proliferate the fix rather than loading it onto 01. Two were
+working against it.
+
+- **03** was told to judge *"clarity, abstraction, **familiarity** and misdirection"* — so
+  a rare word literally **was** difficulty. The conflation was in the measurement. Every
+  graded set now reports `difficultySource`, enforced by a semantic check.
+- **04** ranked by that number and promoted the top of it. It now receives the source, is
+  told a board reads best when its difficulty is not all from one place, and records
+  `blackSetReasoning`.
+- **07** is a model — it knows what `speleothem` is, so it plays a knowledge-gated set as
+  though it were open. The one agent whose job is "how does this feel to play" could not
+  see the defect Max found by playing. It now plays as a general-audience solver and
+  reports `knowledgeGated`, still blind: words, never sets.
+- **02** decides which sets exist at all; told that arrangement-hard groupings are the
+  scarcer resource.
+- **01** gets both routes as a palette, plus one requirement about range — at least one
+  group hard through arrangement alone.
+
+**Variety by steering, never by rule.** `variety.js` gained a second dimension beside shape
+usage: how each board's hardest set earned its difficulty. The brief leans against a rut of
+three and says nothing otherwise; a mixed history produces no steer, pinned as a test,
+because a rule reserving Black for one kind is the failure this exists to avoid. Themed
+runs now get that steer too — they had never received anything from the index but stance
+quotas.
+
+### What verification caught
+
+- **The fallback classifier is weak, and the replay says so.** For boards graded before
+  `difficultySource` existed the index falls back to the shape. Against Max's verdicts it
+  gets all four boards he loved right and **only 2 of the 5 he found flat** — `coronagraph
+  : glare` is `prevention`, `perihelion : orbit` is `sequence`, and a shape id cannot see
+  that the words are rare. Which is why 03's judgement is primary and the shape is only a
+  fallback.
+- **A correction to my own finding.** I inferred from the telemetry that Max had judged the
+  boards he loved by reading rather than playing. He played them; a-tree predates the
+  recorder, which stores only completed playthroughs. What stands: **0 wins in 8 recorded
+  playthroughs**, all at four mistakes. Since he loved boards he may also have lost, losing
+  is not what kills the joy — which is why his "leave the rules alone" call is right.
+
+### Session gate
+
+- **Automated: PASSED.** 887 → **895 tests, 0 fail.**
+- **Claude-verifiable: PASSED.** A themed mock run round-trips all three new fields — 03
+  reporting `arrangement` per grade, 04 explaining its Black choice, 07 returning an empty
+  `knowledgeGated` (honestly: First Light's words are all ordinary). The steer is correctly
+  **silent** on the live corpus, whose last three boards are mixed.
+- **Max acceptance: OPEN.** A fresh batch answers it: does a set hard through arrangement
+  alone produce the reaction, and does the hardest set vary in kind across boards.
+
+- **Next:**
+  1. **A fresh batch is the test.** Watch whether any board tops out through arrangement
+     with ordinary words, and whether `knowledgeGated` starts naming the walls.
+  2. If every board still tops the same way, the lever moves upstream to the stance quota —
+     `inclusion` is quota'd every run and is where all three nameable shapes live.
+  3. **Judge a Revision Proposer brief** — still zero `proposal-verdict` events.
+  4. Carried: the cross-reading check's third attempt · rater abstention floor · rubric
+     compilation must read version-1 sets by TAGS not action · nine `valid-but-unfair`
+     events need reading by hand · `README.md` never mentions `npm run studio:review` ·
+     05–08 concurrency · Phase 5's select screen.
+
 ## 2026-08-05 — The deploy failure gets a name in the recovery playbook
 
 Short follow-on to the entry below, which shipped the deck and found — while shipping it —

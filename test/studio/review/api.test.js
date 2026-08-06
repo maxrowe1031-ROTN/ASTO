@@ -761,3 +761,57 @@ test('publish takes no fields beyond an optional slug', async () => {
     cleanup();
   }
 });
+
+// --- the difficulty-source steer reaches themed runs too (design.md D-8) ---
+//
+// Themed runs have never received anything from the variety index except stance
+// quotas — `relationshipShapes` is what marks a run as surprise-me. But the
+// difficulty steer is about a rut across boards, not about subject matter, so
+// it belongs on every run.
+
+test('a themed run carries the difficulty steer but not the surprise-me shapes', async () => {
+  const { api, cleanup } = setup(undefined, {
+    buildBrief: () => ({
+      count: 14,
+      relationshipShapes: ['conversion'],
+      avoidShapes: [],
+      stanceQuotas: ['time'],
+      varyHardestFrom: 'vocabulary',
+    }),
+    buildQuotas: () => ['inclusion', 'time', 'event', 'possession'],
+  });
+  try {
+    const { status } = await api.handle({
+      method: 'POST',
+      path: '/api/runs',
+      body: { theme: 'caves', count: 14 },
+    });
+    assert.equal(status, 202);
+    const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
+    const runId = body.runs[0].runId;
+    const detail = await api.handle({ method: 'GET', path: `/api/runs/${runId}` });
+    const { brief } = detail.body.manifest;
+
+    assert.equal(brief.varyHardestFrom, 'vocabulary', 'the steer did not reach a themed run');
+    // Still the surprise-me marker, and still not on a themed run.
+    assert.equal(brief.relationshipShapes, undefined);
+    assert.deepEqual(brief.stanceQuotas, ['inclusion', 'time', 'event', 'possession']);
+  } finally {
+    cleanup();
+  }
+});
+
+test('no rut, no steer — a themed brief stays exactly as it was', async () => {
+  const { api, cleanup } = setup(undefined, {
+    buildBrief: () => ({ count: 14, relationshipShapes: ['conversion'], avoidShapes: [], stanceQuotas: ['time'] }),
+    buildQuotas: () => ['inclusion', 'time', 'event', 'possession'],
+  });
+  try {
+    await api.handle({ method: 'POST', path: '/api/runs', body: { theme: 'caves' } });
+    const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
+    const detail = await api.handle({ method: 'GET', path: `/api/runs/${body.runs[0].runId}` });
+    assert.equal('varyHardestFrom' in detail.body.manifest.brief, false);
+  } finally {
+    cleanup();
+  }
+});

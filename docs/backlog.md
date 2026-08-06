@@ -10,6 +10,20 @@
   retired from the form and valid forever. What remains: **the nine historical events carrying
   it cannot be re-sorted automatically** — their meaning is only in the prose, so a rubric
   compiled across the version boundary has to read those by hand or exclude them.
+- **The difficulty-source fallback classifier is weak (design.md D-8).** For boards graded
+  before 03 reported `difficultySource`, the variety index guesses from the shape — and
+  replayed against Max's verdicts it caught all four boards he loved but only 2 of the 5 he
+  found flat. `coronagraph : glare` is `prevention` and `perihelion : orbit` is `sequence`;
+  a shape id cannot see that the words are rare. Harmless while 03's own judgement is
+  primary, but any analysis over historical boards must not trust it.
+- **If a fresh batch still tops out the same way every time, the lever is the stance quota.**
+  `inclusion` has been quota'd on every run ever and is where all three nameable shapes live
+  (`taxonomic`, `class-individual`, `synonymity`), which is why 8 of the 9 boards before
+  2026-08-05 carried exactly one naming set. Loosening that quota is the bigger, more
+  invasive move held in reserve behind D-8's steer.
+- **07's `knowledgeGated` has never fired on a real board.** It returned `[]` on the mock,
+  honestly — First Light's words are all ordinary. Its first real test is the next batch,
+  and its precision is unmeasured until then.
 - **The cross-reading check's semantic question needs a third attempt (design.md D-7).** The
   enumerator and plumbing are sound; the model's answer is not. Round 2 flagged any tidy 2×2
   grid as an analogy (13 spurious across six boards); round 3's anti-grid wording over-corrected

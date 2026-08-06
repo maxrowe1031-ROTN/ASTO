@@ -51,6 +51,16 @@ const isPlainObject = (value) =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 /**
+ * The parts of a variety brief a THEMED run should also carry.
+ *
+ * Not `relationshipShapes` — that is what marks a run as surprise-me on the
+ * manifest, and a themed run's steer is its theme. But the difficulty-source
+ * nudge is about ruts across boards rather than about subject matter, so it
+ * applies to every run.
+ */
+const steerOnly = ({ varyHardestFrom } = {}) => (varyHardestFrom ? { varyHardestFrom } : {});
+
+/**
  * Maps a throw from the store or the pipeline onto a status.
  *
  * Everything the store refuses on purpose — an illegal transition, a second
@@ -245,8 +255,15 @@ export function createApi({
     // `mock` is recorded on the run, not just passed to this launch: a
     // revision must not silently switch to the real API, and a fixture-derived
     // board must stay identifiable so it never counts as editorial signal.
+    // A themed run now takes the difficulty-source steer too (design.md D-8).
+    // It fires only when the last three boards all reached their hardest set
+    // the same way, and it is a nudge rather than a quota — so it belongs on
+    // every board, not only the ones with no theme. `relationshipShapes` stays
+    // the surprise-me marker.
     const brief = {
-      ...(theme === null ? buildBrief({ count }) : { count, stanceQuotas: buildQuotas() }),
+      ...(theme === null
+        ? buildBrief({ count })
+        : { count, stanceQuotas: buildQuotas(), ...steerOnly(buildBrief({ count })) }),
       mock,
     };
     const { runId } = store.createRun({ slug, theme: runTheme, brief });

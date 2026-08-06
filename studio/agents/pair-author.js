@@ -44,7 +44,7 @@ export function getOutputSchema() {
 
 export function buildPrompt(input = {}, context) {
   const { brief = {}, theme = null } = input;
-  const { relationshipShapes = [], count = 8, avoidShapes = [], stanceQuotas = [] } = brief;
+  const { relationshipShapes = [], count = 8, avoidShapes = [], stanceQuotas = [], varyHardestFrom = null } = brief;
 
   return composePrompt({
     role:
@@ -71,7 +71,7 @@ export function buildPrompt(input = {}, context) {
             "  - it is boring — a board of a subject's most obvious nouns tells the player nothing they did not already know;",
             '  - it stops being TRUE — every toolbox holds a wrench, but not every crew holds a mason, and not every workshop is for woodworking. Generality is where "necessarily" quietly becomes "sometimes";',
             '  - it reads as vague rather than simple — a word that points at nothing concrete gives the player nothing to grip.',
-            'The opposite failure is real but rarer: a word nobody outside the subject could know is not specific, it is obscure. The test is recognition, not fame — and it scales with difficulty. An easy set wants words anyone knows; a hard set may ask for the word an enthusiast knows, never one they would have to look up.',
+            'The opposite failure is real but rarer: a word nobody outside the subject could know is not specific, it is obscure. The test is recognition, not fame.',
           ].join('\n')
         : 'No theme is imposed; choose freely.',
       // Author in matched twos, not just spread across stances. A SET is two
@@ -92,7 +92,30 @@ export function buildPrompt(input = {}, context) {
       avoidShapes.length > 0
         ? `Avoid these shapes — recent boards have leaned on them: ${avoidShapes.join(', ')}.`
         : '',
+      // Set only when the last three boards all reached their hardest set the
+      // same way (design.md D-8). A nudge, not a quota: Max's rule is that
+      // either kind may top a board and that no kind gets reserved to a tier —
+      // so this fires on a RUT and is silent otherwise.
+      varyHardestFrom === 'vocabulary'
+        ? 'The last few boards all got their hardest set from an unusual WORD. Make sure this pool can reach its top tier through arrangement instead — ordinary words that have to be seen a particular way.'
+        : varyHardestFrom === 'arrangement'
+          ? 'The last few boards all got their hardest set from ARRANGEMENT. This pool may reach its top tier through a word that belongs to the subject instead, if the theme offers one worth knowing.'
+          : '',
       'The order of a pair must matter: A : B should not read the same as B : A. A pair whose direction is reversible is a weak pair.',
+      '',
+      // design.md D-8. The sentence removed from the theme block above said a
+      // hard set "may ask for the word an enthusiast knows" — one route up, and
+      // the pipeline took it every time. The 2026-08-05 batch reached Black
+      // through coronagraph, speleothem and Paris-Roubaix, and Max's verdict
+      // was "publishable" and "no rush", twice handing the delight to a
+      // hypothetical expert: "someone with cycling knowledge would probably be
+      // stoked".
+      //
+      // Both routes are wanted. What was missing is the first one.
+      'TWO KINDS OF HARD. A set can be difficult in two quite different ways, and you have both available:',
+      '  - ARRANGEMENT — ordinary words whose placement is the puzzle. "planting : felling :: budding : withering" is four words a child knows, and it is one of the hardest sets ever written for this game: the work is seeing that both pairs run start-to-end across different spans. Opposites facing each other, a shift of scale, a reversal, a pair that runs the other way.',
+      '  - VOCABULARY — a plain relationship carried by a word that belongs to the subject. "constellation : Cassiopeia" is a category and one of its members; the pleasure is the word. This is where a theme gets its colour, and it is not a lesser kind of set.',
+      'Neither is better and a good board wants both. But arrangement difficulty is the one that gets lost, so: at least one of your matched groups must be hard through its ARRANGEMENT ALONE — every word in it ordinary, the difficulty entirely in how the four sit together. Do not mark it, and do not assume it will be the hardest set on the board; that is decided downstream. Just make sure the board could reach its top tier without reaching for a rarer word.',
       // This line used to read "Prefer familiar words", full stop — which a
       // model reasonably hears as "prefer common words", and common is exactly
       // the generic middle the instruction above is trying to leave. Familiar

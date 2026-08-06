@@ -105,7 +105,17 @@ function gradedSets(blackboard) {
     const grade = grades.get(set.id);
     const withStance = { ...set, stance: stanceOf(set.shape) ?? 'unknown' };
     return grade
-      ? { ...withStance, difficulty: grade.difficulty, abstained: grade.abstained, rationale: grade.rationale }
+      ? {
+          ...withStance,
+          difficulty: grade.difficulty,
+          abstained: grade.abstained,
+          rationale: grade.rationale,
+          // Carried through so 04 can compose with WHERE the difficulty comes
+          // from, not just how much of it there is. Without this the builder
+          // ranks by number alone, and since a rare word reads as a high
+          // number, the vocabulary-hard set won every Black (design.md D-8).
+          difficultySource: grade.difficultySource,
+        }
       : withStance;
   });
 }

@@ -28,6 +28,7 @@ import {
   PORTABLE_STANCES,
   SHAPES,
   SHIPPED_LABELS,
+  isNameable,
   resolveShape,
 } from './corpus/vocabulary.js';
 
@@ -58,6 +59,7 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
   const familyCounts = {};
   const stanceCounts = {};
   const recent = [];
+  const hardestSources = [];
   let unknown = 0;
 
   const record = (declared) => {
@@ -108,15 +110,50 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
   // corpus since 2026-08-03, marked approved.
   for (const runId of store?.listRuns() ?? []) {
     if (isMockRun(store, runId)) continue;
-    for (const { board, shapeByWord } of attemptsOf(store, runId)) {
-      for (const set of board.sets ?? []) {
+    for (const { board, shapeByWord, grades } of attemptsOf(store, runId)) {
+      const shapeOf = (set) => {
         const shapes = wordsOf(set).map((word) => shapeByWord.get(word)).filter(Boolean);
-        record(shapes.length > 0 ? mostCommon(shapes) : null);
-      }
+        return shapes.length > 0 ? mostCommon(shapes) : null;
+      };
+      for (const set of board.sets ?? []) record(shapeOf(set));
+      recordHardestSource(board, shapeOf, grades);
     }
   }
 
-  return { counts, familyCounts, stanceCounts, recent, unknown, shapes: SHAPES };
+  return {
+    counts,
+    familyCounts,
+    stanceCounts,
+    recent,
+    unknown,
+    shapes: SHAPES,
+    // How the HARDEST set of each board earned its difficulty, newest last
+    // (design.md D-8). Not a count of shapes — a count of the two ways a board
+    // can be made hard, which is the thing that had quietly become one.
+    hardestSources,
+  };
+
+  /**
+   * Records whether this board's Black is hard by arrangement or by vocabulary.
+   *
+   * Prefers 03's own `difficultySource`, which is a judgement made while
+   * grading. Falls back to the shape for the thirty-odd boards graded before
+   * that field existed: the three nameable shapes are the ones whose only
+   * lever for extra difficulty is a rarer word.
+   */
+  function recordHardestSource(board, shapeOf, grades) {
+    const sets = board.sets ?? [];
+    if (sets.length === 0) return;
+    const hardest = sets.reduce((a, b) => (b.difficulty > a.difficulty ? b : a));
+    const declared = grades?.get(hardest.id)?.difficultySource;
+    if (declared === 'arrangement' || declared === 'vocabulary' || declared === 'both') {
+      hardestSources.push(declared);
+      return;
+    }
+    const shape = shapeOf(hardest);
+    if (!shape) return; // unjoinable — guessing here would be worse than silence
+    hardestSources.push(isNameable(shape) ? 'vocabulary' : 'arrangement');
+  }
 }
 
 // An unreadable manifest is treated as real, not as mock: the failure mode of
@@ -144,6 +181,17 @@ function* attemptsOf(store, runId) {
     } catch {
       continue; // no board: a run still working, or one that failed
     }
+    // 03's grades, for `difficultySource`. Absent on every run before
+    // 2026-08-05 and on revisions that reuse a parent stage, which is why the
+    // caller has a shape-based fallback.
+    let grades;
+    try {
+      const rated = store.readStageArtifact(runId, attemptId, '03-difficulty-rater', 'output.json');
+      grades = new Map((rated.grades ?? []).map((grade) => [grade.setId, grade]));
+    } catch {
+      grades = new Map();
+    }
+
     const shapeByWord = new Map();
     try {
       const authored = store.readStageArtifact(runId, attemptId, '01-pair-author', 'output.json');
@@ -156,7 +204,7 @@ function* attemptsOf(store, runId) {
       // A revision reuses the parent's pair author, so its own folder has no
       // output. The board still counts; its shapes just land as unknown.
     }
-    yield { board, shapeByWord };
+    yield { board, shapeByWord, grades };
   }
 }
 
@@ -231,5 +279,29 @@ export function buildVarietyBrief({ index, count = 8 } = {}) {
     relationshipShapes,
     avoidShapes,
     stanceQuotas: buildStanceQuotas({ index }),
+    ...leanAgainstRecentDifficulty(index),
   };
+}
+
+/**
+ * How many boards in a row have reached their hardest set the same way.
+ *
+ * The recent window only — this is about a rut, not about lifetime balance, and
+ * Max's instruction was that either kind may top a board: *"they can both be
+ * black, depending on the puzzle. I don't want to fall into a repetitive hole
+ * where only one type of puzzle is one difficulty."* So it fires on a RUN of
+ * sameness and says nothing otherwise.
+ */
+const RUT_LENGTH = 3;
+
+function leanAgainstRecentDifficulty(index) {
+  const sources = index?.hardestSources ?? [];
+  if (sources.length < RUT_LENGTH) return {};
+
+  const window = sources.slice(-RUT_LENGTH);
+  const [first] = window;
+  // `both` is already varied — a rut is one PURE kind repeated.
+  if (first === 'both' || !window.every((source) => source === first)) return {};
+
+  return { varyHardestFrom: first };
 }
