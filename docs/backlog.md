@@ -10,6 +10,14 @@
   retired from the form and valid forever. What remains: **the nine historical events carrying
   it cannot be re-sorted automatically** — their meaning is only in the prose, so a rubric
   compiled across the version boundary has to read those by hand or exclude them.
+- **D-8 probably makes D-1's promotion universal — watch it.** The reframed rater grades the
+  REASONING and names the vocabulary separately, so a set that used to score 4 for its rare
+  words now scores lower: on the caves board the real model graded the shipped Black
+  (`speleothem : stalactite`) a **1**, and returned no 4 at all. D-1 already exists because
+  "the Difficulty Rater has never returned a 4" and the builder promotes to fill the slot —
+  this likely widens that gap rather than closing it. Not a fault, but if every board is now
+  built on a promotion, D-1's open question ("should the Pair Author be asked for a hard set
+  in the first place?") gets its answer sooner than planned.
 - **The difficulty-source fallback classifier is weak (design.md D-8).** For boards graded
   before 03 reported `difficultySource`, the variety index guesses from the shape — and
   replayed against Max's verdicts it caught all four boards he loved but only 2 of the 5 he

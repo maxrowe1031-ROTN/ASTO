@@ -84,10 +84,21 @@ quotas.
 ### Session gate
 
 - **Automated: PASSED.** 887 → **895 tests, 0 fail.**
-- **Claude-verifiable: PASSED.** A themed mock run round-trips all three new fields — 03
-  reporting `arrangement` per grade, 04 explaining its Black choice, 07 returning an empty
-  `knowledgeGated` (honestly: First Light's words are all ordinary). The steer is correctly
-  **silent** on the live corpus, whose last three boards are mixed.
+- **Claude-verifiable: PASSED, and beyond the mocks.** A themed mock run round-trips all
+  three new fields, and the steer is correctly **silent** on the live corpus (its last three
+  boards are mixed). But mock fixtures replay canned answers and prove nothing about whether
+  the real model can satisfy a new instruction — the lesson 06 taught earlier the same day —
+  so both risky agents were also called for real, against the `caves` board:
+  - **03 validates, and the reframing works on the board that caused the complaint.**
+    `speleothem : stalactite` now grades **difficulty 1** — *"category-and-kind structure is
+    immediately obvious once the specialized terms are recognized"* — with its difficulty
+    attributed to `vocabulary`. The old rater made that set the Black. It labelled all four
+    caves sets `vocabulary`, which is itself the finding: that board had no arrangement-hard
+    set anywhere. 348 output tokens, `end_turn`.
+  - **07's detector names the walls.** `speleothem`, `karst landform`, `guideline`,
+    `collar`, `swarming` — five of the sixteen words on a board Max approved. It solved the
+    board with **0 mistakes**, which is the point: the model cannot feel a vocabulary wall,
+    but asked directly it can name one.
 - **Max acceptance: OPEN.** A fresh batch answers it: does a set hard through arrangement
   alone produce the reaction, and does the hardest set vary in kind across boards.
 
