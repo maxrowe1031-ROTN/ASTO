@@ -1,0 +1,90 @@
+{
+  "id": "board-yankees-baseball",
+  "title": "Yankees Baseball",
+  "sets": [
+    {
+      "id": "set-locationactivity",
+      "relationshipLabel": "place and the activity it exists for",
+      "explanation": "Both pairs name a spot on the field defined entirely by the practice it's built for.",
+      "pairs": [
+        [
+          "Bullpen",
+          "warm-up"
+        ],
+        [
+          "Batting cage",
+          "practice swings"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "location",
+        "activity",
+        "field"
+      ]
+    },
+    {
+      "id": "set-beforeafter",
+      "relationshipLabel": "first and final moments of one span",
+      "explanation": "Each pair marks the start and end bookending a single career or season.",
+      "pairs": [
+        [
+          "Opening Day",
+          "World Series"
+        ],
+        [
+          "Rookie season",
+          "retirement"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "timeline",
+        "career",
+        "season"
+      ]
+    },
+    {
+      "id": "set-objectcomponent",
+      "relationshipLabel": "garment and the marking it bears",
+      "explanation": "Each garment is instantly identified by the specific Yankees marking stitched onto it.",
+      "pairs": [
+        [
+          "Jersey",
+          "pinstripes"
+        ],
+        [
+          "Cap",
+          "interlocking NY"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "uniform",
+        "gear",
+        "logo"
+      ]
+    },
+    {
+      "id": "set-coordinates",
+      "relationshipLabel": "paired figures side by side in the same role",
+      "explanation": "Each duo batted back-to-back as one of the sport's iconic lineup pairings.",
+      "pairs": [
+        [
+          "Ruth",
+          "Gehrig"
+        ],
+        [
+          "Mantle",
+          "Maris"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "legends",
+        "lineup",
+        "duo"
+      ]
+    }
+  ]
+}

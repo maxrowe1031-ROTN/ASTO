@@ -1,0 +1,3 @@
+{"type":"attempt-completed","attemptId":"0001","boardId":"asto-board-001","at":"2026-08-06T02:26:02.244Z"}
+{"type":"approve","attemptId":"0001","at":"2026-08-06T02:51:17.935Z"}
+{"type":"publish","attemptId":"0001","boardId":"asto-board-001","publishedAs":"voyages-warnings-and-watery-wisdom.json","publishedId":"asto-voyages-warnings-and-watery-wisdom","republished":false,"at":"2026-08-06T02:52:05.432Z"}

@@ -122,3 +122,68 @@ test('multiple trials are allowed — several independent runs inform the grade'
   assert.equal(testPlayer.validateOutput(output).ok, true);
   assert.equal(output.trials.length, 2);
 });
+
+// --- orderGuessed (design.md D-9, 2026-08-06) ------------------------------
+//
+// The second detector, and the same argument as knowledgeGated one rung in: a
+// model does not experience a coin flip, it picks an order and writes a fluent
+// rationale for it. So the agent whose whole job is "how does this feel to
+// play" scores a set the player loses a mistake on as a clean solve, and has
+// to be asked about the order out loud.
+
+test('the prompt asks for orderGuessed, and names the keys its schema requires', () => {
+  const prompt = testPlayer.buildPrompt({ words, maxMistakes: 4 }, {});
+  assert.match(prompt, /"orderGuessed"/);
+  assert.match(prompt, /"words"/);
+  assert.match(prompt, /"note"/);
+});
+
+test('the prompt teaches the real engine rule — turn both halves or neither', () => {
+  const prompt = testPlayer.buildPrompt({ words, maxMistakes: 4 }, {});
+  // "order matters" alone does not explain why a consistent flip is free and an
+  // inconsistent one costs a life, which is the whole defect being detected.
+  assert.match(prompt, /B : A :: D : C is accepted/);
+  assert.match(prompt, /B : A :: C : D is a mistake/);
+});
+
+test('asking about order does not describe the board — blindness is preserved', () => {
+  // The guard that caught this instruction on its first draft: the word "pairs"
+  // tells a blind agent how the sixteen words are structured.
+  const prompt = testPlayer.buildPrompt({ words, maxMistakes: 4 }, {});
+  assert.ok(!/pairs/i.test(prompt), 'prompt mentions pairs structure');
+  assert.ok(!/set-\w+/.test(prompt), 'prompt contains a set id pattern');
+});
+
+test('an empty orderGuessed is named as a real answer, so silence is a verdict', () => {
+  const prompt = testPlayer.buildPrompt({ words, maxMistakes: 4 }, {});
+  assert.match(prompt, /empty (array|list) is a real answer/i);
+});
+
+test('orderGuessed validates as four words with a note, and rejects a short set', () => {
+  const trial = {
+    submissions: [{ words: ['a', 'b', 'c', 'd'], confidence: 0.5 }],
+    mistakes: 0,
+    solved: true,
+    reasoning: 'r',
+  };
+  const good = testPlayer.validateOutput({
+    trials: [trial],
+    orderGuessed: [{ words: ['Ruth', 'Gehrig', 'Mantle', 'Maris'], note: 'nothing says which leads' }],
+  });
+  assert.equal(good.ok, true, JSON.stringify(good.errors));
+
+  const short = testPlayer.validateOutput({
+    trials: [trial],
+    orderGuessed: [{ words: ['Ruth', 'Gehrig'], note: 'n' }],
+  });
+  assert.equal(short.ok, false);
+});
+
+test('omitting orderGuessed entirely still validates — it is not required', () => {
+  // An older attempt, or a revision replaying one, must not fail on a field
+  // that did not exist when it ran.
+  const result = testPlayer.validateOutput({
+    trials: [{ submissions: [{ words: ['a', 'b', 'c', 'd'], confidence: 0.5 }], mistakes: 0, solved: true, reasoning: 'r' }],
+  });
+  assert.equal(result.ok, true, JSON.stringify(result.errors));
+});

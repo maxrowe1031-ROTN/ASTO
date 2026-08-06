@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { createRunStore } from '../../../studio/storage/run-store.js';
 import { createMockTransport } from '../../../studio/mock-transport.js';
 import { enumerateCrossReadings } from '../../../studio/agents/adversarial-solver.js';
+import { isSymmetric } from '../../../studio/corpus/vocabulary.js';
 
 export const fixturesDir = fileURLToPath(
   new URL('../../../studio/fixtures/responses/', import.meta.url),
@@ -81,13 +82,35 @@ export function boardReply(board, extra = {}) {
  * the rater's. Answering every reading `valid: false` is the "clean board"
  * case; pass `valid` to flip a chosen reading.
  */
-export function solverReply(board, { valid = () => false } = {}) {
+export function solverReply(board, { valid = () => false, shapes = null, inferable = () => false } = {}) {
   const crossReadings = enumerateCrossReadings(board).map(({ id, setId, reading }) => ({
     id,
     valid: valid(setId, reading),
     ...(valid(setId, reading) ? { note: 'Test fixture.' } : {}),
   }));
-  return { text: JSON.stringify({ noneFound: true, findings: [], crossReadings }) };
+
+  // The order-fairness checklist since 2026-08-06 (design.md D-9), and
+  // board-specific for the same reason the cross-readings are: the gate flags
+  // a set whose declared shape is symmetric, and the solver's validator refuses
+  // an answer that skipped one. Pass `shapes` (set id → declared shape) when a
+  // test's board carries one; a board with no symmetric shape must answer
+  // NOTHING, since inventing an answer to an unasked question also fails.
+  const orderReadings = Object.entries(shapes ?? {})
+    .filter(([setId, shape]) => isSymmetric(shape) && board.sets.some((set) => set.id === setId))
+    .map(([setId]) => ({
+      setId,
+      inferable: inferable(setId),
+      ...(inferable(setId) ? { note: 'Test fixture.' } : {}),
+    }));
+
+  return {
+    text: JSON.stringify({
+      noneFound: true,
+      findings: [],
+      crossReadings,
+      ...(orderReadings.length > 0 ? { orderReadings } : {}),
+    }),
+  };
 }
 
 /**

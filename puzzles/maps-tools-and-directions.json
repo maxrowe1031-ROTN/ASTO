@@ -1,0 +1,87 @@
+{
+  "id": "asto-maps-tools-and-directions",
+  "title": "Maps, Tools, and Directions",
+  "sets": [
+    {
+      "id": "set-cardinal-axes",
+      "relationshipLabel": "two ends of one spatial axis",
+      "explanation": "North and south, east and west are the two opposing ends of the same compass axis.",
+      "pairs": [
+        [
+          "north",
+          "south"
+        ],
+        [
+          "east",
+          "west"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "directional",
+        "geography-adjacent"
+      ]
+    },
+    {
+      "id": "set-landform-examples",
+      "relationshipLabel": "a kind of geographic feature and a named example of it",
+      "explanation": "A strait is a category of waterway and Gibraltar names one; a peninsula is a category of landform and Florida names one.",
+      "pairs": [
+        [
+          "strait",
+          "Gibraltar"
+        ],
+        [
+          "peninsula",
+          "Florida"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "geography",
+        "class-example"
+      ]
+    },
+    {
+      "id": "set-navigation-tools",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "A surveyor relies on a theodolite and a navigator relies on a sextant, each the defining instrument of their profession.",
+      "pairs": [
+        [
+          "surveyor",
+          "theodolite"
+        ],
+        [
+          "navigator",
+          "sextant"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "tools",
+        "profession"
+      ]
+    },
+    {
+      "id": "set-enabling-parts",
+      "relationshipLabel": "the part that lets the device or system perform its function",
+      "explanation": "A needle is what actually lets a compass point, just as a satellite is what actually lets GPS locate you.",
+      "pairs": [
+        [
+          "needle",
+          "compass"
+        ],
+        [
+          "satellite",
+          "GPS"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "tools",
+        "navigation",
+        "component"
+      ]
+    }
+  ]
+}

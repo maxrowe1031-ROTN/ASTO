@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-06T02-11-45.671Z-medicine",
+  "createdAt": "2026-08-06T02:11:45.671Z",
+  "theme": "medicine",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "concealment",
+      "enabling-agent",
+      "directional"
+    ],
+    "avoidShapes": [
+      "recipient-instrument",
+      "sequence"
+    ],
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "event",
+      "possession"
+    ],
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

@@ -19,6 +19,16 @@
     "           recorded per entry in `elements` for audit.",
     "  shape  — the entry's own id. Measurement axis: what a pair declares.",
     "",
+    "`symmetric: true` marks a shape whose A-to-B relation IS its B-to-A",
+    "relation, so a player cannot tell which way round the author wrote it",
+    "(design.md D-9, 2026-08-06). The engine accepts a pair flip only when BOTH",
+    "pairs flip together, so a symmetric set asks the player to guess an",
+    "orientation and then mirror it — and charges a mistake for guessing wrong.",
+    "Two of the four entries already said so in their own failureMode before the",
+    "field existed. It is a REPORTING flag, never a blocklist: a symmetric shape",
+    "whose words carry a convention (north before south) is perfectly fair, and",
+    "saying which is 06's job, not this file's.",
+    "",
     "Selection rule for the list itself: B must be a THING — noun, agent,",
     "event, action or abstraction, never an adjective. Adjective-shaped types",
     "(5a, 6a, 'Gulf Stream : warm') are absent by construction; this is what",
@@ -157,7 +167,9 @@
       "elements": ["Inc", "Int", "BiI"],
       "paradigm": "car : auto",
       "description": "Two names for the same thing",
-      "failureMode": "fails when the two words differ in register or shade — near-synonyms make the order feel arbitrary"
+      "failureMode": "fails when the two words differ in register or shade — near-synonyms make the order feel arbitrary",
+      "symmetric": true,
+      "symmetricNote": "car : auto reads the same as auto : car — naming one thing twice is mutual"
     },
     {
       "id": "dimensional-similarity",
@@ -190,7 +202,9 @@
       "elements": ["Over", "Int", "Dis"],
       "paradigm": "ram : ewe",
       "description": "Two counterparts of the same kind, side by side",
-      "failureMode": "fails when the pairing has no axis — ram/ewe differ by sex; two random sheep differ by nothing nameable"
+      "failureMode": "fails when the pairing has no axis — ram/ewe differ by sex; two random sheep differ by nothing nameable",
+      "symmetric": true,
+      "symmetricNote": "ram : ewe reads the same as ewe : ram — counterparts side by side have no from/to"
     },
     {
       "id": "reverse",
@@ -212,7 +226,9 @@
       "elements": ["Dim", "BiP", "Dich", "Spa"],
       "paradigm": "front : back",
       "description": "Two ends of one spatial axis",
-      "failureMode": "fails when the two orders read the same — the pair must not be reversible without changing the claim"
+      "failureMode": "fails when the two orders read the same — the pair must not be reversible without changing the claim",
+      "symmetric": true,
+      "symmetricNote": "front : back reads the same as back : front — an axis has two ends, not a start"
     },
     {
       "id": "defective",
@@ -377,7 +393,9 @@
       "elements": ["Loc", "Attach"],
       "paradigm": "coast : ocean",
       "description": "Two things defined by touching — where one ends, the other begins",
-      "failureMode": "fails when the border is incidental — a coast is DEFINED by meeting the ocean; two adjacent fields just happen to touch"
+      "failureMode": "fails when the border is incidental — a coast is DEFINED by meeting the ocean; two adjacent fields just happen to touch",
+      "symmetric": true,
+      "symmetricNote": "coast : ocean reads the same as ocean : coast — touching is mutual by definition"
     },
     {
       "id": "attachment",

@@ -1,0 +1,86 @@
+{
+  "id": "asto-voyages-warnings-and-watery-wisdom",
+  "title": "Voyages, Warnings, and Watery Wisdom",
+  "sets": [
+    {
+      "id": "set-collection-member",
+      "relationshipLabel": "a collection and the creature it is made of",
+      "explanation": "A pod is made of dolphins just as a shoal is made of fish — each names the group, not the individual.",
+      "pairs": [
+        [
+          "pod",
+          "dolphin"
+        ],
+        [
+          "shoal",
+          "fish"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "sea-life",
+        "collective-nouns"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "something built or worn to stop a destructive outcome",
+      "explanation": "A breakwater exists to stop erosion and a life jacket exists to stop drowning — each is a countermeasure engineered against one specific harm.",
+      "pairs": [
+        [
+          "breakwater",
+          "erosion"
+        ],
+        [
+          "life jacket",
+          "drowning"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "nautical-safety",
+        "structures"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the moment a journey begins and the moment it ends",
+      "explanation": "To embark is to begin a voyage and disembark is to end it, just as casting off starts a sail and docking closes it.",
+      "pairs": [
+        [
+          "embark",
+          "disembark"
+        ],
+        [
+          "cast off",
+          "dock"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "sailing-verbs",
+        "journey"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "a written prediction or plan and the real event it describes",
+      "explanation": "A tide table predicts the tide and a float plan predicts a voyage — each document exists to be checked against the reality it forecasts.",
+      "pairs": [
+        [
+          "tide table",
+          "tide"
+        ],
+        [
+          "float plan",
+          "voyage"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "nautical-documents",
+        "forecasting"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "asto-board-medical-01",
+  "title": "Bedside Manor: Four Medical Analogies",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A surgeon wields a scalpel just as a phlebotomist wields a needle — each pair links a medical worker to the single instrument that defines their job.",
+      "pairs": [
+        [
+          "surgeon",
+          "scalpel"
+        ],
+        [
+          "phlebotomist",
+          "needle"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "needle-could-suggest-syringe-parts"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "start and end of a medical span",
+      "explanation": "Onset leads to remission and admission leads to discharge — each pair marks the opening and closing bookend of a clinical episode.",
+      "pairs": [
+        [
+          "onset",
+          "remission"
+        ],
+        [
+          "admission",
+          "discharge"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "could-be-mistaken-for-pure-opposites"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "a cover and the true thing hidden beneath it",
+      "explanation": "A bandage hides a wound and a cast hides a fracture — each pair is a visible covering standing in for the injury it conceals.",
+      "pairs": [
+        [
+          "bandage",
+          "wound"
+        ],
+        [
+          "cast",
+          "fracture"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "cast-could-suggest-anatomy-set",
+        "looks-like-simple-object-pairing"
+      ]
+    },
+    {
+      "id": "set-enabling-agent",
+      "relationshipLabel": "the device that lets a bodily process continue",
+      "explanation": "A stent keeps blood flowing and a pacemaker keeps the heart beating — each device doesn't just touch the body part, it causally sustains its function.",
+      "pairs": [
+        [
+          "stent",
+          "blood flow"
+        ],
+        [
+          "pacemaker",
+          "heartbeat"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "looks-like-simple-possession-of-a-body-part"
+      ]
+    }
+  ]
+}

@@ -51,6 +51,40 @@ const nameable = new Set(NAMEABLE_SHAPES);
 /** Could this shape's difficulty come from the word rather than the relation? */
 export const isNameable = (value) => nameable.has(resolveShape(value)?.id);
 
+/**
+ * Shapes whose A→B relation IS their B→A relation, so a player cannot read the
+ * intended orientation off the words (design.md D-9).
+ *
+ * Why this is a fairness question rather than a difficulty one. The engine
+ * accepts four orders — [A,B,C,D] [C,D,A,B] [B,A,D,C] [D,C,B,A] — so flipping
+ * BOTH pairs is fine and flipping ONE is a mistake. For `dawn : dusk :: birth :
+ * death` that costs nothing: the arrow of time tells you which end leads, and
+ * you mirror it without thinking. For `Ruth : Gehrig :: Mantle : Maris` there
+ * is no arrow, so the player must guess the author's orientation and then match
+ * it in the other pair. Guess wrong and it is "So close!" — a mistake charged
+ * for knowing the answer.
+ *
+ * That set cost Max all four mistakes on the Yankees board (2026-08-06): every
+ * one of them was so-close, and he never once grouped the wrong four words.
+ *
+ * NOT a blocklist, and deliberately not fed to the authoring stages. A
+ * symmetric shape whose words carry a convention — `north : south :: east :
+ * west` — is perfectly fair, and the pipeline cannot tell those apart by shape
+ * alone. This list says "look here"; 06 says whether the words rescue it.
+ */
+export const SYMMETRIC_SHAPES = Object.freeze(
+  vocabulary.shapes.filter((shape) => shape.symmetric === true).map((shape) => shape.id),
+);
+
+const symmetric = new Set(SYMMETRIC_SHAPES);
+
+/** Could a player read this shape's intended orientation off the words? */
+export const isSymmetric = (value) => symmetric.has(resolveShape(value)?.id);
+
+/** The one-line reason a shape is symmetric, for the review card; null if it isn't. */
+export const symmetricNote = (value) =>
+  isSymmetric(value) ? (resolveShape(value)?.symmetricNote ?? null) : null;
+
 const byId = new Map(SHAPES.map((shape) => [shape.id, shape]));
 const aliases = new Map(Object.entries(vocabulary.legacyAliases ?? {}));
 

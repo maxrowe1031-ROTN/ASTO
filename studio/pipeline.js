@@ -32,7 +32,7 @@ import {
   maxTokensFor,
   retriesFor,
 } from './pipeline-config.js';
-import { stanceOf } from './corpus/vocabulary.js';
+import { isSymmetric, stanceOf, symmetricNote } from './corpus/vocabulary.js';
 import { validatePuzzle } from '../src/source/validate-puzzle.js';
 import { checkBoard } from '../src/engine/board-integrity.js';
 import { deriveWords } from '../src/engine/arrangements.js';
@@ -592,9 +592,14 @@ function gateReport(blackboard) {
     );
   }
 
+  const orderFairness = orderIndistinguishability(output.board, blackboard);
+
   // `ok` last, and derived from the reasons: `...integrity` carries an `ok` of
   // its own that would otherwise silently win and re-admit the board.
-  return { ...integrity, schema, variety, stances, reasons, ok: reasons.length === 0 };
+  //
+  // `orderFairness` is deliberately absent from `reasons` — it reports and does
+  // not gate (design.md D-9), the same probation the cross-reading check served.
+  return { ...integrity, schema, variety, stances, orderFairness, reasons, ok: reasons.length === 0 };
 }
 
 // Four sets that all express the same kind of relationship make a board that
@@ -652,6 +657,50 @@ function stanceComposition(board, blackboard) {
     distinct,
     bySet,
     summary: board.sets.map((set) => `${set.id}: ${bySet[set.id] ?? 'unknown'}`).join(', '),
+  };
+}
+
+// Sets whose shape gives the player no way to read the intended orientation
+// (design.md D-9). Arithmetic on the taxonomy, not a judgement: the shape comes
+// from the grouper's declared `shape`, joined by set id exactly as the stance
+// check above does, so the puzzle schema stays untouched.
+//
+// Why this is the gate stage's business rather than an agent's. 06 already had
+// an `ambiguous-order` finding kind and returned nothing on either board where
+// every one of Max's four mistakes was an ordering mistake — an open-ended
+// search cannot reliably see a structural property. So the structure is
+// computed here and handed to 06 as a checklist, which is the same move that
+// fixed the cross-reading search.
+//
+// REPORTS, NEVER GATES. A symmetric shape whose words carry a convention
+// (`north : south :: east : west`) is perfectly fair; only 06 can tell those
+// apart, and until the flags have been read against real playthroughs a veto
+// here would reject good boards on a proxy.
+function orderIndistinguishability(board, blackboard) {
+  const grouped = new Map(
+    (blackboard.get('02-theme-grouper')?.sets ?? []).map((set) => [set.id, set]),
+  );
+
+  const flagged = board.sets
+    .map((set) => {
+      const shape = grouped.get(set.id)?.shape ?? null;
+      if (!isSymmetric(shape)) return null;
+      return {
+        setId: set.id,
+        shape,
+        kind: 'order-indistinguishable',
+        note: symmetricNote(shape),
+      };
+    })
+    .filter(Boolean);
+
+  return {
+    // `enforced: false` is the honest word for a check that cannot fail a
+    // board. It is here so the review page and any later promotion read the
+    // same field the stance check uses, rather than inferring probation.
+    enforced: false,
+    flagged,
+    count: flagged.length,
   };
 }
 

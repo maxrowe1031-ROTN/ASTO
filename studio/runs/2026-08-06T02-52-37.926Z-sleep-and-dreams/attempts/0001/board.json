@@ -1,0 +1,82 @@
+{
+  "id": "board-sleep-analogies-01",
+  "title": "Sleep & Bedtime",
+  "sets": [
+    {
+      "id": "set-bedside-holdings",
+      "relationshipLabel": "a sleeping-area place and the thing kept there",
+      "explanation": "A nightstand holds an alarm clock and a crib holds a mobile — each pair names a spot in the sleep space and the object that belongs on it.",
+      "pairs": [
+        [
+          "nightstand",
+          "alarm clock"
+        ],
+        [
+          "crib",
+          "mobile"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "alarm clock could suggest a time/ritual set instead of a location set"
+      ]
+    },
+    {
+      "id": "set-bed-axes",
+      "relationshipLabel": "opposite ends of one spatial axis of the sleeping furniture",
+      "explanation": "Headboard and footboard mark the two ends of a bed's length, just as top bunk and bottom bunk mark the two ends of a bunk's height.",
+      "pairs": [
+        [
+          "headboard",
+          "footboard"
+        ],
+        [
+          "top bunk",
+          "bottom bunk"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "furniture words could be mistaken for item-location pairing"
+      ]
+    },
+    {
+      "id": "set-drawn-symbols",
+      "relationshipLabel": "a thing and the drawn image that stands for it",
+      "explanation": "Slumber is shorthand-drawn as 'Zzz' the same way the moon is shorthand-drawn as a crescent icon — each pair links a referent to its iconographic stand-in.",
+      "pairs": [
+        [
+          "slumber",
+          "Zzz"
+        ],
+        [
+          "moon",
+          "crescent icon"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "moon could pull toward a nighttime-theme grouping rather than a representation grouping"
+      ]
+    },
+    {
+      "id": "set-sleep-workers",
+      "relationshipLabel": "a worker and the thing their work is about",
+      "explanation": "A sleep therapist treats insomnia and a dream analyst studies dreams — each professional is defined by the phenomenon they work on.",
+      "pairs": [
+        [
+          "sleep therapist",
+          "insomnia"
+        ],
+        [
+          "dream analyst",
+          "dream"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "dream could tempt a solver toward a dream/nightmare category pairing"
+      ]
+    }
+  ]
+}

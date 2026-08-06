@@ -1,0 +1,82 @@
+{
+  "id": "asto-board-001",
+  "title": "Medieval Analogies",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "a piece of armor and its distinguishing built-in feature",
+      "explanation": "Each pair links a piece of armor to the specific structural detail that defines it — the shield's raised boss, the helm's protective visor.",
+      "pairs": [
+        [
+          "shield",
+          "boss"
+        ],
+        [
+          "helm",
+          "visor"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "armor-vocabulary"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a class of Arthurian entity and one named member of it",
+      "explanation": "Both pairs move from a general category of knighthood to one specific, famous instance of it.",
+      "pairs": [
+        [
+          "Knight of the Round Table",
+          "Sir Lancelot"
+        ],
+        [
+          "Chivalric order",
+          "Knights Templar"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "arthurian-vocabulary"
+      ]
+    },
+    {
+      "id": "set-activity-stage",
+      "relationshipLabel": "a decisive moment and the larger contest it occurs within",
+      "explanation": "Unhorsing is the pivotal act inside a joust, just as flanking is the pivotal act inside a melee — a tactical moment nested in its larger event.",
+      "pairs": [
+        [
+          "unhorsing",
+          "joust"
+        ],
+        [
+          "flanking",
+          "melee"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "combat-terms"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the preparatory moment before a rite and the ceremony that answers it",
+      "explanation": "A vigil is the quiet preparation that precedes a dubbing, just as a siege is the prolonged pressure that precedes a surrender — each pair moves from anticipation to resolution.",
+      "pairs": [
+        [
+          "vigil",
+          "dubbing"
+        ],
+        [
+          "siege",
+          "surrender"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "ritual-vs-conflict"
+      ]
+    }
+  ]
+}

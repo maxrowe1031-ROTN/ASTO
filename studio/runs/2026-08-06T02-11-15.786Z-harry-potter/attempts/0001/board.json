@@ -1,0 +1,82 @@
+{
+  "id": "board-hp-analogies-1",
+  "title": "ASTO Analogies: Wizarding World",
+  "sets": [
+    {
+      "id": "set-worker-tools",
+      "relationshipLabel": "a worker and the instrument of their trade",
+      "explanation": "A Beater swings a bat and a Potions Master stirs with a cauldron — each role defined by the tool it wields.",
+      "pairs": [
+        [
+          "Beater",
+          "bat"
+        ],
+        [
+          "Potions Master",
+          "cauldron"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "cauldron-potion-link"
+      ]
+    },
+    {
+      "id": "set-magic-taxonomy",
+      "relationshipLabel": "a general category and a specific kind belonging to it",
+      "explanation": "A Patronus is a kind of spell and Polyjuice is a kind of potion — each pair moves from the broad craft to its named example.",
+      "pairs": [
+        [
+          "Spell",
+          "Patronus"
+        ],
+        [
+          "Potion",
+          "Polyjuice"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "potion-cauldron-echo"
+      ]
+    },
+    {
+      "id": "set-creature-belongings",
+      "relationshipLabel": "a creature and the thing that belongs to it",
+      "explanation": "A dragon guards its hoard and an Acromantula spins its web — each creature bound to something distinctly its own.",
+      "pairs": [
+        [
+          "Dragon",
+          "hoard"
+        ],
+        [
+          "Acromantula",
+          "web"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "creature-tool-confusion"
+      ]
+    },
+    {
+      "id": "set-lifespan-bookends",
+      "relationshipLabel": "the start and the end of a thing's existence",
+      "explanation": "A wand's life runs from carving to snapping, a phoenix's from hatching to burning — first cause and final cause of the same object.",
+      "pairs": [
+        [
+          "Carving",
+          "Snapping"
+        ],
+        [
+          "Hatching",
+          "Burning"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "tournament-sequence-lookalike"
+      ]
+    }
+  ]
+}

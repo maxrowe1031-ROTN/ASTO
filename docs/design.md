@@ -883,6 +883,106 @@ the steer is too weak and the lever moves upstream to the stance quota — `incl
 quota'd on every run and is where all three nameable shapes live, which is why 8 of the 9
 boards before this carried exactly one naming set.
 
+### D-9 — Order is the game, so order has to be fair (2026-08-06)
+
+D-8's steer worked. The first batch built under it varied its Black slot's difficulty
+source for the first time — `both`×3, `vocabulary`×3, `arrangement`×1 across seven boards —
+and `maps` became the first board ever to top out through arrangement alone
+(`needle : compass :: satellite : GPS`, four ordinary words). Max: *"This was a great
+puzzle! this one felt fun and challenging."* Four boards approved, four published,
+`puzzles/` at 10. The rater also returned a 4 four times, which the backlog had predicted
+would stop happening.
+
+**And the same batch surfaced a defect that had been hiding inside the win.**
+
+#### The finding
+
+Across **13 recorded playthroughs there are 0 wins**. That alone is not news — D-8 recorded
+it and Max's call, *"you don't have to solve every puzzle to have fun"*, still stands. What
+is new is *how* the losses happen once you sort them:
+
+| board | sets solved | mistakes | of which so-close |
+|---|---|---|---|
+| Yankees | 3/4 | 4 | **4** |
+| cars (2026-08-05) | 3/4 | 4 | **4** |
+| maps | 3/4 | 4 | 3 |
+| Harry Potter | 3/4 | 4 | 2 |
+
+On **Yankees Max never made a wrong grouping.** All four mistakes were the right four words
+in the wrong order. He wrote of that board *"I'm not familiar with the yankees but was able
+to get all except the most trivia heavy one, which is right where we expect to be"* — but
+the trivia set is not what beat him. Ordering was.
+
+#### The cause is structural, and the engine is not wrong
+
+The four accepted orders are `[A,B,C,D] [C,D,A,B] [B,A,D,C] [D,C,B,A]` — so flipping **both**
+pairs is accepted and flipping **one** is a mistake. That consistency requirement costs
+nothing on `dawn : dusk :: birth : death`: time runs one way, and a player mirrors it
+without thinking. On `Ruth : Gehrig :: Mantle : Maris` there is no arrow at all, so the
+player must guess the author's orientation and then match it in the other pair. Half of
+them guess wrong, and lose a mistake for having the answer.
+
+That set's shape is `coordinates` — *"two counterparts of the same kind, side by side"*.
+The taxonomy had already half-said this: `directional`'s failure mode reads *"fails when the
+two orders read the same"* and `synonymity`'s reads *"near-synonyms make the order feel
+arbitrary"*. The property was described before it was named.
+
+#### Two framings, and Max's call
+
+The question put to him was whether this is a **fourth `difficultySource`** — a third kind
+of hard beside arrangement and vocabulary — or a **defect to catch**.
+
+He chose **defect**. The reasoning: if the player had the insight and lost anyway to a coin
+flip, that is not difficulty, it is unfairness — which is what his own (never-yet-used)
+`order-ambiguous` tag has always meant. A difficulty source gets labelled and balanced; a
+defect gets reported and, eventually, refused.
+
+#### Built — three independent signals, none of them gating
+
+- **The taxonomy names the property.** Four shapes carry `symmetric: true` —
+  `coordinates`, `synonymity`, `directional`, `contiguity` — each with a one-line reason,
+  pinned by a test because it is a judgement about meaning, not a derivation. `reverse` and
+  `before-after` were considered and rejected: *undoes* and *before* both carry a direction.
+- **04a computes the flags.** Arithmetic joining the board's sets to 02's declared shapes,
+  exactly as the stance check already does. `enforced: false`, absent from `reasons`.
+- **06 answers the one question structure cannot** — do the words themselves settle it?
+  Enumerated as closed questions with every-line-answered validation, the same discipline
+  the cross-reading checklist got a day earlier and for the same demonstrated reason: **06
+  already had an `ambiguous-order` finding kind and returned nothing at all on Yankees or
+  cars**, the two boards where ordering took every mistake. An open hunt cannot see a
+  structural property.
+- **07 reports `orderGuessed`**, mirroring `knowledgeGated` exactly — words, never sets. A
+  model does not experience a coin flip; it picks an order and writes a fluent rationale for
+  it, so the agent whose whole job is *how does this feel to play* scored a coin-flip set as
+  a clean solve. Asking it out loud is the same move D-8 made one rung earlier.
+- **The Studio shows all three on the set's card**, and the test player's *simulated*
+  so-close count beside Max's real one — the gap between them is the signal.
+
+**Why it reports rather than gates.** `maps` is the proof: its `north : south :: east :
+west` set is `directional`, so it is flagged — and it is perfectly fair, because convention
+settles the order. Max solved it and said *"green made me smile."* A check that could fail a
+board would have failed a board he approved and published. Only 06 can tell a coin flip from
+a convention, and until the flags have been read against real playthroughs a veto here would
+reject good boards on a proxy.
+
+#### What was deliberately not done
+
+- **The so-close rule is untouched.** It still costs a mistake. The fix is boards that do
+  not coin-flip, not rules that forgive one. This re-affirms D-8's call on the same evidence,
+  one batch larger.
+- **01 and 02 are not steered away from symmetric shapes.** That is the mistake Max already
+  refused once — *"they can both be black... I don't want to fall into a repetitive hole"* —
+  and it would ban `north : south :: east : west` to catch `Ruth : Gehrig`. Report first.
+- **No fourth `difficultySource`.** His call, recorded above.
+- **Misdirection still has no home.** `dock`'s noun/verb trap on the sea board was graded
+  `vocabulary`; the rater is told to weigh misdirection and cannot report it. Max called it
+  *"a great misdirect"* — a strength, so no urgency. Parked in the backlog with the evidence.
+
+**Reconsider-when:** across roughly the next six boards, compare the flags against
+so-close-concentrated losses and against Max's `order-ambiguous` tag. If they agree, promote
+the check to blocking at 04a. If a flagged set repeatedly plays fine, the symmetric list is
+too wide — shrink it. Either way the answer comes from played boards, not from more argument.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

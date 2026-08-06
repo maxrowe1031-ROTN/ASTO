@@ -7,6 +7,7 @@
 // create a second version that can be wrong.
 
 import { boardHtml } from './board-html.js';
+import { simulatedSoClose } from './so-close.js';
 import { feedbackControls, collectFeedback, FORM_VERSION } from './feedback.js';
 import { STAGE_IDS_FOR_REVISION } from '../../stage-registry.js';
 // The same derivation the server publishes under, not a second copy of it: the
@@ -159,13 +160,28 @@ function feedbackList(events) {
     .join('')}</ul>`;
 }
 
-const reportPanel = (title, value) =>
+const reportPanel = (title, value, lede = '') =>
   value === undefined
     ? ''
     : `<details class="panel report">
          <summary>${escape(title)}</summary>
+         ${lede}
          <pre>${escape(JSON.stringify(value, null, 2))}</pre>
        </details>`;
+
+/**
+ * The test player's own so-close rate, in words, above its raw report.
+ *
+ * A model does not experience a coin flip — it picks an order and explains it —
+ * so this number is expected to be LOW on a board that coin-flips a human. It
+ * is here to be compared with Max's real count, not trusted in its place.
+ */
+function soCloseLine(attempt) {
+  if (!attempt.board) return '';
+  const { soClose, submissions } = simulatedSoClose(attempt.board, attempt.reports['07-test-player']);
+  if (submissions === 0) return '';
+  return `<p class="studio-muted">Simulated: ${soClose} of ${submissions} submission(s) were right-words-wrong-order.</p>`;
+}
 
 /**
  * The evaluators' findings, regrouped from stage-shaped to set-shaped.
@@ -233,8 +249,37 @@ function machineNotesBySet(attempt) {
     });
   }
 
+  // Order fairness (design.md D-9). Three sources, deliberately combined here
+  // rather than shown as three panels: 04a says which sets are structurally
+  // symmetric, 06 says whether the words rescue the order, 07 says whether it
+  // felt like a guess. Only the unrescued ones are news — a set 06 cleared is
+  // silent for the same reason a cross-reading answered `false` is.
+  const cleared = new Set(
+    (solver?.orderReadings ?? []).filter((entry) => entry.inferable).map((entry) => entry.setId),
+  );
+  for (const flag of attempt.reports['04a-integrity']?.orderFairness?.flagged ?? []) {
+    if (cleared.has(flag.setId)) continue;
+    const verdict = (solver?.orderReadings ?? []).find((entry) => entry.setId === flag.setId);
+    add(flag.setId, {
+      source: 'order may be a coin flip',
+      level: 'high',
+      text:
+        `${flag.note ?? `this set's relationship reads the same both ways round`}. ` +
+        `The engine accepts a flip only when BOTH pairs flip together, so a player who reads one pair the other way round loses a mistake on a grouping they had right` +
+        (verdict ? '. The adversarial solver agrees a player would be guessing' : ''),
+    });
+  }
+  // 07 names words, never sets — mapped here like everything else it reports.
+  for (const guessed of attempt.reports['07-test-player']?.orderGuessed ?? []) {
+    const owners = new Set((guessed.words ?? []).map((word) => setIdsByWord.get(word)));
+    if (owners.size !== 1) continue;
+    const [setId] = [...owners];
+    add(setId, { source: 'test player guessed the order', level: 'medium', text: guessed.note });
+  }
+
   return notes;
 }
+
 
 async function renderRun(runId) {
   const detail = await api(`/runs/${encodeURIComponent(runId)}`);
@@ -309,7 +354,7 @@ async function renderRun(runId) {
     ${reportPanel('Integrity gate', attempt.reports['04a-integrity'])}
     ${reportPanel('Analogy validator', attempt.reports['05-analogy-validator'])}
     ${reportPanel('Adversarial solver', attempt.reports['06-adversarial-solver'])}
-    ${reportPanel('Test player', attempt.reports['07-test-player'])}
+    ${reportPanel('Test player', attempt.reports['07-test-player'], soCloseLine(attempt))}
     ${reportPanel('Style guide', attempt.reports['08-style-guide'])}
 
     ${

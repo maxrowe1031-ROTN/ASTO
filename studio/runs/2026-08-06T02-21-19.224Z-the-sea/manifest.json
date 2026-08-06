@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-06T02-21-19.224Z-the-sea",
+  "createdAt": "2026-08-06T02:21:19.225Z",
+  "theme": "the sea",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "plan",
+      "prevention",
+      "directional"
+    ],
+    "avoidShapes": [
+      "enabling-agent",
+      "concealment"
+    ],
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-06T02-43-45.561Z-yankees",
+  "createdAt": "2026-08-06T02:43:45.561Z",
+  "theme": "Yankees",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}
