@@ -26,7 +26,25 @@ const INPUT = {
   'difficulty-rater': { sets: [{ id: 'set-growth', relationshipLabel: 'x', pairs: [['Seed', 'Tree'], ['Spark', 'Fire']] }] },
   'board-builder': { gradedSets: [{ id: 'set-growth', difficulty: 1 }] },
   'analogy-validator': { board: { id: 'b', title: 'B', sets: [] } },
-  'adversarial-solver': { board: { id: 'b', title: 'B', sets: [] }, integrity: { acceptedCount: 16 } },
+  // A real set and a real order-fairness flag, because an agent whose prompt is
+  // built from an empty board names none of its checklist keys and the checks
+  // below would pass on a prompt no run ever sends.
+  'adversarial-solver': {
+    board: {
+      id: 'b',
+      title: 'B',
+      sets: [{ id: 'set-growth', relationshipLabel: 'x', explanation: 'e', difficulty: 1,
+        pairs: [['Seed', 'Tree'], ['Spark', 'Fire']] }],
+    },
+    integrity: {
+      acceptedCount: 16,
+      orderFairness: {
+        enforced: false,
+        count: 1,
+        flagged: [{ setId: 'set-growth', shape: 'coordinates', kind: 'order-indistinguishable', note: 'n' }],
+      },
+    },
+  },
   'test-player': { words: Array.from({ length: 16 }, (_, i) => `W${i}`), maxMistakes: 4 },
   'style-guide': { items: [], title: 'B' },
 };

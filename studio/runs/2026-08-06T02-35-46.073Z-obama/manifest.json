@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-06T02-35-46.073Z-obama",
+  "createdAt": "2026-08-06T02:35:46.074Z",
+  "theme": "Obama",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "failed",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

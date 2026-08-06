@@ -48,6 +48,24 @@ export function enumerateCrossReadings(board) {
   );
 }
 
+/**
+ * The symmetric sets the gate stage flagged, as checklist lines.
+ *
+ * Read off the integrity report rather than recomputed: the shape a set
+ * declared lives on the grouper's output, which this agent is never handed —
+ * and should not be, since knowing the intended shape would tell it the answer
+ * to the wrong question. It gets the set ids and the words, nothing else.
+ */
+export function enumerateOrderReadings(board, integrity) {
+  const flagged = integrity?.orderFairness?.flagged ?? [];
+  const bySet = new Map((board?.sets ?? []).map((set) => [set.id, set]));
+  return flagged
+    .filter((flag) => bySet.has(flag.setId))
+    .map((flag) => ({ setId: flag.setId, reading: orderedWords(bySet.get(flag.setId)) }));
+}
+
+const orderedWords = (set) => (set.pairs ?? []).flat();
+
 export const id = 'adversarial-solver';
 export const stageId = '06-adversarial-solver';
 
@@ -56,6 +74,26 @@ const SCHEMA = {
   required: ['findings', 'noneFound', 'crossReadings'],
   properties: {
     noneFound: { type: 'boolean' },
+    // The order-fairness checklist (design.md D-9). Same shape and same reason
+    // as `crossReadings` above it: the gate stage computes WHICH sets are
+    // structurally symmetric, and this agent answers the one question the
+    // structure cannot — do the words themselves say which way round?
+    //
+    // Not `required`, because a board with no symmetric set gets no checklist
+    // and must not be asked for an empty array it was never given lines for.
+    // The semantic check below enforces the pairing in both directions.
+    orderReadings: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['setId', 'inferable'],
+        properties: {
+          setId: { type: 'string', minLength: 1 },
+          inferable: { type: 'boolean' },
+          note: { type: 'string' },
+        },
+      },
+    },
     // `note` is required only where it carries information — on a reading that
     // HOLDS. Eight paragraphs explaining why eight non-analogies are not
     // analogies is output spent on nothing, and output is the budget that ran
@@ -109,6 +147,7 @@ export function getOutputSchema() {
 export function buildPrompt(input = {}, context) {
   const { board = {}, integrity = null } = input;
   const candidates = enumerateCrossReadings(board);
+  const orderLines = enumerateOrderReadings(board, integrity);
 
   return composePrompt({
     role:
@@ -136,6 +175,23 @@ export function buildPrompt(input = {}, context) {
       'The trap: two halves that are each a pair of SIMILAR THINGS do not share a relation. "song : album :: Truckin\' : American Beauty" is a pair of categories beside a pair of named works — the left half relates two kinds of thing, the right half relates a track to the record it is on. Those are different relations, so the answer is false. Likewise "guitarist : drummer :: guitar : drum kit" is two people beside two instruments: symmetry, not analogy. A grid that looks tidy is not a reading a player can solve.',
       'Judge only the reading in front of you, and do not soften an answer because the intended set is good.',
       'This is a checklist, not a search: the candidates are already found, so answer them and move on. These answers belong in "crossReadings", not in "findings" — do not report them twice.',
+      // The order-fairness checklist (design.md D-9). Same discipline again,
+      // and for the same demonstrated reason: this agent already had an
+      // `ambiguous-order` finding kind and returned NOTHING on the two boards
+      // where every one of Max's four mistakes was an ordering mistake. The
+      // structure is computed upstream; only the words can answer the question.
+      ...(orderLines.length > 0
+        ? [
+            '',
+            'SEPARATELY AGAIN, answer the order-fairness checklist below. Each listed set is built on a relationship that reads the same both ways round, so nothing about the RELATIONSHIP says which word the author put first.',
+            'The engine accepts a flip only when BOTH pairs flip together: for W : X :: Y : Z it takes X : W :: Z : Y, and refuses X : W :: Y : Z. So a player who reads one pair the other way round loses a mistake for a grouping they had completely right.',
+            'For each line, ask only this: could a player who has found these four words tell which way round to write them, from the words alone?',
+            '  - "inferable": true — yes, something in the words settles it. A convention ("north" before "south", "east" before "west"), a familiar fixed phrase, a name that always leads. Say what settles it in the "note".',
+            '  - "inferable": false — no, a player would be guessing, and half of them would guess wrong. No note needed.',
+            'Answer for the ORDER only. Whether the set is a good analogy, or fairly graded, is not this question — a set can be excellent and still coin-flip.',
+            'Judge what a player can see. You are told the intended order because it is the only way to show you the words; that you can see which order was chosen is not evidence a player could have inferred it.',
+          ]
+        : []),
     ].join('\n'),
     data: [
       asJsonBlock('Board', board),
@@ -145,11 +201,21 @@ export function buildPrompt(input = {}, context) {
             .map(({ id, reading }) => `  - ${id}: ${readingText(reading)}`)
             .join('\n')}`
         : '',
+      orderLines.length > 0
+        ? `Order-fairness checklist — answer every line by its setId:\n${orderLines
+            .map(({ setId, reading }) => `  - ${setId}: ${readingText(reading)}`)
+            .join('\n')}`
+        : '',
     ]
       .filter(Boolean)
       .join('\n\n'),
     outputRules: [
       'Return { "findings": [ { "kind", "words", "severity", "note" } ], "noneFound": true or false, "crossReadings": [ { "id", "valid", "note" } ] }.',
+      ...(orderLines.length > 0
+        ? [
+            'Also return "orderReadings": [ { "setId", "inferable", "note" } ] — one entry for EVERY line of the order-fairness checklist and nothing else, with "setId" exactly as written. "note" is one sentence required only when "inferable" is true.',
+          ]
+        : []),
       '"kind" is one of alternate-reading, cross-set-association, ambiguous-order, double-meaning, misleading-label, unfair.',
       '"words" is an array of the board words involved, "severity" is low, medium or high, and "note" says what a player would see.',
       'Rate each finding low, medium or high by how likely a real player is to be misled.',
@@ -219,9 +285,65 @@ const everyReadingAnswered = (output, board) => {
   return errors;
 };
 
+/**
+ * Every flagged set got an order verdict, exactly once, and nothing was invented.
+ *
+ * Same guarantee as `everyReadingAnswered`, and it matters more here: the whole
+ * reason this checklist exists is that the agent's free-hunting `ambiguous-order`
+ * kind stayed silent on the two boards where ordering cost Max every mistake he
+ * had. A stage that can quietly skip the question would reproduce that silence.
+ */
+const everyOrderAnswered = (output, board, integrity) => {
+  if (!board || !integrity) return []; // called without input — shape only
+  const asked = new Map(enumerateOrderReadings(board, integrity).map((c) => [c.setId, c]));
+  const given = output.orderReadings ?? [];
+  const answered = new Set(given.map((entry) => entry.setId));
+
+  const errors = [];
+  if (asked.size === 0) {
+    // No symmetric set on this board, so no checklist was sent. An answer here
+    // is the model inventing a question, which is worth catching: it means the
+    // instruction leaked without its lines.
+    return given.length === 0
+      ? []
+      : [{ path: 'orderReadings', message: 'no order-fairness checklist was given — do not invent one' }];
+  }
+
+  const missing = [...asked.keys()].filter((setId) => !answered.has(setId));
+  if (missing.length > 0) {
+    errors.push({
+      path: 'orderReadings',
+      message: `${missing.length} order checklist line(s) unanswered: ${missing
+        .map((setId) => `${setId} (${readingText(asked.get(setId).reading)})`)
+        .join('; ')}`,
+    });
+  }
+  for (const entry of given.filter((e) => !asked.has(e.setId))) {
+    errors.push({
+      path: 'orderReadings',
+      message: `"${entry.setId}" is not an order checklist id — answer the lines given, do not add your own`,
+    });
+  }
+  if (answered.size !== given.length) {
+    errors.push({ path: 'orderReadings', message: 'a set was answered more than once' });
+  }
+  // `inferable: true` is the answer that clears a set, so it is the one that
+  // has to carry its reasoning — the mirror of a cross-reading marked valid.
+  for (const entry of given) {
+    if (entry.inferable && !entry.note?.trim()) {
+      errors.push({
+        path: 'orderReadings',
+        message: `${entry.setId} is marked inferable but says nothing — name what tells a player which way round`,
+      });
+    }
+  }
+  return errors;
+};
+
 export function validateOutput(output, { input = null } = {}) {
   return validateAgainst(output, SCHEMA, [
     noneFoundAgreesWithFindings,
     (value) => everyReadingAnswered(value, input?.board ?? null),
+    (value) => everyOrderAnswered(value, input?.board ?? null, input?.integrity ?? null),
   ]);
 }

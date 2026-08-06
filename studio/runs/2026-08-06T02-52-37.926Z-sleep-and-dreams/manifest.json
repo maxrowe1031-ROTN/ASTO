@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-06T02-52-37.926Z-sleep-and-dreams",
+  "createdAt": "2026-08-06T02:52:37.927Z",
+  "theme": "sleep and dreams",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "representation",
+      "enabling-agent",
+      "directional"
+    ],
+    "avoidShapes": [
+      "object-component",
+      "before-after"
+    ],
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "awaiting-review",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

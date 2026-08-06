@@ -1,0 +1,3 @@
+{"type":"attempt-completed","attemptId":"0001","boardId":"board-yankees-baseball","at":"2026-08-06T02:52:37.499Z"}
+{"type":"approve","attemptId":"0001","at":"2026-08-06T02:58:06.506Z"}
+{"type":"publish","attemptId":"0001","boardId":"board-yankees-baseball","publishedAs":"yankees-baseball.json","publishedId":"asto-yankees-baseball","republished":false,"at":"2026-08-06T02:58:12.616Z"}

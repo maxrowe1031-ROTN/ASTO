@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-06T02-52-30.611Z-maps",
+  "createdAt": "2026-08-06T02:52:30.612Z",
+  "theme": "maps",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "representation",
+      "enabling-agent",
+      "directional"
+    ],
+    "avoidShapes": [
+      "plan",
+      "before-after"
+    ],
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

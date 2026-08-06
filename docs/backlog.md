@@ -10,14 +10,38 @@
   retired from the form and valid forever. What remains: **the nine historical events carrying
   it cannot be re-sorted automatically** — their meaning is only in the prose, so a rubric
   compiled across the version boundary has to read those by hand or exclude them.
-- **D-8 probably makes D-1's promotion universal — watch it.** The reframed rater grades the
-  REASONING and names the vocabulary separately, so a set that used to score 4 for its rare
-  words now scores lower: on the caves board the real model graded the shipped Black
-  (`speleothem : stalactite`) a **1**, and returned no 4 at all. D-1 already exists because
-  "the Difficulty Rater has never returned a 4" and the builder promotes to fill the slot —
-  this likely widens that gap rather than closing it. Not a fault, but if every board is now
-  built on a promotion, D-1's open question ("should the Pair Author be asked for a hard set
-  in the first place?") gets its answer sooner than planned.
+- ~~**D-8 probably makes D-1's promotion universal — watch it.**~~ **Wrong, and closed
+  2026-08-06 by the first batch built under D-8.** The prediction was that the reframed rater,
+  no longer counting rare words as difficulty, would stop returning 4s and every board would
+  ship on a promotion. The opposite happened: **four rated 4s across the batch** (Knights ×3,
+  Harry Potter ×1), and **two of seven boards shipped a genuinely rated-4 Black** rather than
+  a promoted 3. Grading the reasoning did not lower the ceiling; it moved it onto sets that
+  earn it. D-1's underlying question — should the Pair Author be asked for a hard set in the
+  first place? — is still open, but not urgent, and its reconsider-when trigger is unchanged.
+- **Misdirection has nowhere to be reported (design.md D-9).** `difficultySource` is
+  `arrangement | vocabulary | both`, but 03's own grade-4 definition names three routes to
+  hard — *"abstract, easily mistaken for another grouping, or dependent on noticing
+  direction"*. Only the first has a label. `dock` on the sea board is the live example: Max
+  knew both senses, the trap was which one applied, he called it *"a great misdirect"*, and
+  the set was graded `vocabulary`. Ordering got its own treatment in D-9; misdirection did
+  not, because it is a strength rather than a defect and nothing is being lost by the silence
+  yet. Revisit if boards start being praised for a quality the corpus cannot count.
+- **"Easily mistaken for another grouping" is unratable by construction.** Same D-9 finding,
+  third route: 03 is explicitly told *"Grade each set on its own; you are not looking at a
+  board"*, so board-level bait cannot reach a difficulty grade at all. The schema has
+  `baitTags` and nothing computes them. Cross-set pull is currently only 06's
+  `cross-set-association`, which is a hunt rather than a measure.
+- **01 can hand 02 a pool whose obvious groupings are illegal (2026-08-06, the Obama run).**
+  01 authored `President`, `Obama` and `Cabinet secretary` as the left term of two pairs each;
+  02 grouped each with its twin, and three of seven candidate sets used the same word twice.
+  Three rounds, terminal. Round 2 fixed the duplicates and then failed the stance floor, so it
+  oscillated between two constraints it could not satisfy from that pool. rule-009 gained the
+  shared-subject example (the rule already forbade it; only the chain shape was illustrated),
+  which is the small half of the fix. The **unfixed** half is upstream and deliberately left
+  alone at n=1: 01 is under no obligation to author pairs that can legally be grouped, and
+  single-subject themes — one person, one place — structurally invite the shared left term.
+  A hard ban at 01 would be wrong: `President : Air Force One` is fine once it has a partner
+  from elsewhere. Revisit if a second person-themed run fails the same way.
 - **The difficulty-source fallback classifier is weak (design.md D-8).** For boards graded
   before 03 reported `difficultySource`, the variety index guesses from the shape — and
   replayed against Max's verdicts it caught all four boards he loved but only 2 of the 5 he
@@ -29,9 +53,16 @@
   (`taxonomic`, `class-individual`, `synonymity`), which is why 8 of the 9 boards before
   2026-08-05 carried exactly one naming set. Loosening that quota is the bigger, more
   invasive move held in reserve behind D-8's steer.
-- **07's `knowledgeGated` has never fired on a real board.** It returned `[]` on the mock,
-  honestly — First Light's words are all ordinary. Its first real test is the next batch,
-  and its precision is unmeasured until then.
+- ~~**07's `knowledgeGated` has never fired on a real board.**~~ **Measured 2026-08-06, and it
+  works.** It fired on **5 of 7** boards, and Max's own notes independently confirm two hits:
+  on Knights it flagged `boss` and he wrote *"the machine caught exactly what i got hung up
+  on. I didn't know what a boss was in this setting"*; on Yankees it flagged
+  Ruth/Gehrig/Mantle/Maris and he wrote *"was able to get all except the most trivia heavy
+  one"* — that set exactly. It stayed **correctly silent** on the two all-ordinary-word boards
+  (`the sea`, `sleep and dreams`). And it flagged `phlebotomist`/`stent` on `medicine`, which
+  he called his best puzzle yet — so a flag **names a wall without condemning a board**, which
+  is the distinction that keeps it useful. What is still unmeasured is the false-negative
+  rate: nothing yet says what it missed.
 - **The cross-reading check's semantic question needs a third attempt (design.md D-7).** The
   enumerator and plumbing are sound; the model's answer is not. Round 2 flagged any tidy 2×2
   grid as an analogy (13 spurious across six boards); round 3's anti-grid wording over-corrected
@@ -56,7 +87,9 @@
   rather than leaving Max to the filesystem.
 - **The three older approved boards** (`music`, `weather`, `history`) predate the taxonomy work
   and the v1 feedback form. They are approved but deliberately unpublished, pending a re-read.
-  Publishing them is what takes `puzzles/` from six boards to nine against Phase 5's 10+.
+  No longer load-bearing for the count: the 2026-08-06 batch published four boards and took
+  `puzzles/` to **10**, so Phase 5's content bar is met without them. Publishing them is now a
+  quality question rather than a quantity one.
 - **`puzzles/index.json` is a reserved name** — `check-board.js` skips it and `puzzle-store`
   refuses to list it, both anticipating Phase 5's manifest. Nothing writes it yet.
 - `current-attempt.json` at the run root is in the Studio spec's run-directory contract
@@ -165,3 +198,12 @@
   previous version keeps serving, so a broken deploy is invisible from the outside
   (2026-08-05: five failed builds, most of a day stale). `.nojekyll` fixed the cause;
   the *detection* gap remains. A post-push build-status check would close it.
+- **A proposal that fails validation twice leaves no trace at all.** `proposeRevision`
+  records a thrown error as `revision-proposal-<id>-failure.json`, but the path where the
+  model simply cannot produce a valid brief in two rounds ends in a bare `return null`
+  ([studio/review/proposer.js](../studio/review/proposer.js)) — no artifact, no decision
+  event, nothing on the page. Max sees an absent brief and cannot tell "not attempted" from
+  "attempted and failed". Surfaced 2026-08-06: the Harry Potter run carried a `revise-board`
+  verdict and no proposal, and re-running the proposer by hand produced a good brief on the
+  first try — so whatever happened the first time is unknowable by construction. A one-line
+  failure artifact on the null path would close it.

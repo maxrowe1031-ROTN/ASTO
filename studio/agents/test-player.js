@@ -40,6 +40,33 @@ const SCHEMA = {
         },
       },
     },
+    // Words whose ORDER this player guessed (design.md D-9, added 2026-08-06).
+    // Words, never sets — same blindness rule and same reporting shape as
+    // `knowledgeGated` above, so the review page maps word → set the one way it
+    // already does.
+    //
+    // The reason this field exists is the reason knowledgeGated's does, one
+    // rung further in: a model does not experience a coin flip. Handed four
+    // words with no orientation to read, it picks one and writes a fluent
+    // rationale for it — so the agent whose whole job is "how does this feel to
+    // play" scores a set the player loses a mistake on as a clean solve. Asking
+    // it to mark the guess is the cheapest way to see what it cannot feel.
+    orderGuessed: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['words', 'note'],
+        properties: {
+          words: {
+            type: 'array',
+            minItems: 4,
+            maxItems: 4,
+            items: { type: 'string', minLength: 1 },
+          },
+          note: { type: 'string', minLength: 1 },
+        },
+      },
+    },
     trials: {
       type: 'array',
       minItems: 1,
@@ -107,12 +134,24 @@ export function buildPrompt(input = {}, context) {
       'Finally, be honest about what you knew that a general player might not. List in "knowledgeGated" every word you could only place because you happen to know the subject — a technical term, a proper name, a piece of trivia — with one line on what someone would need to know.',
       'Judge this by what the word demands, not by whether you found it easy: you know a great deal, and the question is whether a curious person with no interest in this topic could have got there. A word that is merely uncommon but guessable from the other three is not knowledge-gated; a word that is simply the answer if you know it, and opaque if you do not, is.',
       'An empty list is a real answer. Say it when the board is genuinely open.',
+      '',
+      // The second detector, same argument one rung further in. See the schema
+      // comment: a model does not experience a coin flip, it rationalizes one.
+      // Deliberately phrased in the A : B :: C : D language the rules above
+      // already use. Saying "pairs" would describe the board's structure to an
+      // agent that is blind to it by construction — a test enforces the silence.
+      'Separately, be honest about ORDER. Writing B : A :: D : C is accepted, because both halves turned together. Writing B : A :: C : D is a mistake — you found the right four words and lost a life for reversing one half and not the other.',
+      'List in "orderGuessed" every four words where you were confident about WHICH four belong together but had to guess which way round to write them. Say in one line what you had no way to settle.',
+      'The test is whether the words themselves told you. "dawn : dusk :: birth : death" does — time runs one way. "Ruth : Gehrig :: Mantle : Maris" does not — nothing says which name leads, so either order reads the same and you picked one.',
+      'Do not count a set where you simply thought for a moment and then knew. This is for the ones where you would have been guessing, and a different player guessing differently would have been marked wrong.',
+      'An empty list is a real answer, and the one we hope for.',
     ].join('\n'),
     data: asJsonBlock('The sixteen words on the board', words),
     outputRules: [
       'Return { "trials": [ { "submissions": [ { "words": [A,B,C,D], "relationshipGuess", "confidence" } ], "mistakes", "solved", "reasoning", "estimatedDifficulty" } ] }.',
       'Confidence is 0 to 1. Reasoning is a short summary of how you read the board, including the false trails you followed.',
       'Also return "knowledgeGated": [ { "word", "note" } ] — the words you could only place by knowing the subject. Return an empty array when the board is open to a general player; that is the answer we hope for.',
+      'And return "orderGuessed": [ { "words": [A,B,C,D], "note" } ] — the four-word sets whose ORDER you guessed rather than read. Empty array when every order was readable.',
       JSON_ONLY,
     ].join(' '),
   });

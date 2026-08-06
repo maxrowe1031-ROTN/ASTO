@@ -68,7 +68,7 @@
         "document": "maigd-course-handbook/projects/asto/crew/lessons-learned.md",
         "section": "2",
         "note": "a live run produced \"Gulf Stream : warm\"",
-        "retirement": "Eliminated by Max 2026-08-04 (design.md D-3). The word 'transformative' overreached: read literally it forbade Brush : Painter, Nest : Bird and Dove : Peace — three of the four sets on the approved First Light board — and the whole arrowless class rated best in the two blind experiments (experiments/four-family-board, experiments/arrow-round-2). Likely the mechanical cause of ~80% of all authored pairs being one-thing-becomes-another. Its real intent — no static adjectives, B must be a thing — is enforced by the controlled shape vocabulary, which contains no adjective-shaped relation types.",
+        "retirement": "Eliminated by Max 2026-08-04 (design.md D-3). The word 'transformative' overreached: read literally it forbade Brush : Painter, Nest : Bird and Dove : Peace \u2014 three of the four sets on the approved First Light board \u2014 and the whole arrowless class rated best in the two blind experiments (experiments/four-family-board, experiments/arrow-round-2). Likely the mechanical cause of ~80% of all authored pairs being one-thing-becomes-another. Its real intent \u2014 no static adjectives, B must be a thing \u2014 is enforced by the controlled shape vocabulary, which contains no adjective-shaped relation types.",
         "retiredAt": "2026-08-04"
       },
       "createdAt": "2026-08-03"
@@ -87,13 +87,13 @@
     },
     {
       "id": "rule-009",
-      "text": "Never build a set from a progression chain that repeats a word, such as \"Second : Minute :: Minute : Hour\". A set is two independent pairs and needs four distinct words, so use \"Second : Minute :: Hour : Day\" instead.",
+      "text": "Never build a set from a progression chain that repeats a word, such as \"Second : Minute :: Minute : Hour\". A set is two independent pairs and needs four distinct words, so use \"Second : Minute :: Hour : Day\" instead. The same rule forbids a shared subject, which is the easier trap on a board about one person or place: \"President : Air Force One :: President : Marine One\" repeats a word just as surely, and needs a second subject \u2014 \"President : Air Force One :: Monarch : royal train\".",
       "status": "approved",
       "source": "prototype-crew",
       "provenance": {
         "document": "maigd-course-handbook/projects/asto/crew/lessons-learned.md",
         "section": "2",
-        "note": "the Time and Music runs both produced progression chains"
+        "note": "the Time and Music runs both produced progression chains; the shared-subject clause added 2026-08-06 after the Obama run failed terminally \u2014 01 authored President/President, Obama/Obama and Cabinet secretary/Cabinet secretary, 02 grouped each with its twin, and three of seven candidate sets were illegal on the same word"
       },
       "createdAt": "2026-08-03"
     },
@@ -111,7 +111,7 @@
     },
     {
       "id": "rule-011",
-      "text": "B must follow from A necessarily, not occasionally. If there is a common case where A happens and B does not, the pair is broken. \"Telescope : Discovery\" fails this test — a telescope does not necessarily yield a discovery. \"Foul : Free throw\" passes it.",
+      "text": "B must follow from A necessarily, not occasionally. If there is a common case where A happens and B does not, the pair is broken. \"Telescope : Discovery\" fails this test \u2014 a telescope does not necessarily yield a discovery. \"Foul : Free throw\" passes it.",
       "status": "approved",
       "source": "feedback-batch-1",
       "provenance": {
