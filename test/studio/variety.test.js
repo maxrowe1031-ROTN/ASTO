@@ -312,3 +312,115 @@ test('an empty library still produces a usable brief', () => {
   assert.ok(brief.relationshipShapes.length >= 2);
   assert.deepEqual(brief.avoidShapes, []);
 });
+
+// --- how the hardest set earned its difficulty (design.md D-8) ------------
+//
+// On 2026-08-05 Max approved five boards and said none of them gave him the
+// rush. Every one reached its hardest set the same way — through a word fewer
+// people know (coronagraph, speleothem, Paris-Roubaix) — because 03 counted
+// familiarity as difficulty and 04 promoted whatever it ranked hardest.
+//
+// The steer is against a RUT, never against a KIND. Max was explicit: "they can
+// both be black, depending on the puzzle. I don't want to fall into a
+// repetitive hole where only one type of puzzle is one difficulty."
+
+const gradedRun = (store, { slug, blackShape, source, difficulties = [1, 2, 3, 4] }) => {
+  const { runId } = store.createRun({ slug, theme: slug, brief: { count: 8 } });
+  const attemptId = store.createAttempt(runId);
+  store.updateStatus(runId, 'running');
+  const words = difficulties.map((d) => [`w${d}a`, `w${d}b`, `w${d}c`, `w${d}d`]);
+  store.writeStageArtifact(runId, attemptId, '01-pair-author', 'output.json', {
+    pairs: difficulties.flatMap((d, i) => [
+      { a: words[i][0], b: words[i][1], relationshipLabel: 'r', shape: d === 4 ? blackShape : 'conversion' },
+      { a: words[i][2], b: words[i][3], relationshipLabel: 'r', shape: d === 4 ? blackShape : 'conversion' },
+    ]),
+  });
+  if (source) {
+    store.writeStageArtifact(runId, attemptId, '03-difficulty-rater', 'output.json', {
+      grades: difficulties.map((d, i) => ({
+        setId: `s${d}`,
+        difficulty: d,
+        difficultySource: d === 4 ? source : 'arrangement',
+        rationale: 'r',
+      })),
+    });
+  }
+  store.writeAttemptArtifact(runId, attemptId, 'board.json', {
+    id: `asto-${slug}`,
+    title: slug,
+    sets: difficulties.map((d, i) => ({
+      id: `s${d}`,
+      relationshipLabel: 'r',
+      explanation: 'e',
+      pairs: [[words[i][0], words[i][1]], [words[i][2], words[i][3]]],
+      difficulty: d,
+    })),
+  });
+  store.completeAttempt(runId, attemptId, { status: 'complete' });
+  store.updateStatus(runId, 'awaiting-review');
+  return runId;
+};
+
+test('03\'s own judgement is what the index records when it exists', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    // A shape the fallback would call `arrangement`, declared `vocabulary` by
+    // the rater — which is exactly the astronomy case the fallback gets wrong.
+    gradedRun(store, { slug: 'declared', blackShape: 'conversion', source: 'vocabulary' });
+    const index = buildRelationshipIndex({ store });
+    assert.equal(index.hardestSources.at(-1), 'vocabulary');
+  } finally {
+    cleanup();
+  }
+});
+
+test('without a declared source it falls back to the shape', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    gradedRun(store, { slug: 'named', blackShape: 'class-individual', source: null });
+    gradedRun(store, { slug: 'arranged', blackShape: 'before-after', source: null });
+    const index = buildRelationshipIndex({ store });
+    assert.deepEqual(index.hardestSources.slice(-2), ['vocabulary', 'arrangement']);
+  } finally {
+    cleanup();
+  }
+});
+
+test('three boards hard the same way asks the next one to vary', () => {
+  const brief = buildVarietyBrief({
+    index: { counts: {}, recent: [], unknown: 0, hardestSources: ['vocabulary', 'vocabulary', 'vocabulary'] },
+    count: 8,
+  });
+  assert.equal(brief.varyHardestFrom, 'vocabulary');
+});
+
+test('it steers away from an arrangement rut too — neither kind is the right answer', () => {
+  const brief = buildVarietyBrief({
+    index: { counts: {}, recent: [], unknown: 0, hardestSources: ['arrangement', 'arrangement', 'arrangement'] },
+    count: 8,
+  });
+  assert.equal(brief.varyHardestFrom, 'arrangement');
+});
+
+// The load-bearing test. A rule reserving Black for one kind is the failure
+// this whole change exists to avoid, so a mixed history must say NOTHING.
+test('a varied history carries no steer at all', () => {
+  for (const history of [
+    ['vocabulary', 'arrangement', 'vocabulary'],
+    ['arrangement', 'arrangement', 'vocabulary'],
+    ['both', 'both', 'both'],
+    ['vocabulary', 'vocabulary'],
+    [],
+  ]) {
+    const brief = buildVarietyBrief({ index: { counts: {}, recent: [], unknown: 0, hardestSources: history }, count: 8 });
+    assert.equal(brief.varyHardestFrom, undefined, JSON.stringify(history));
+  }
+});
+
+test('the steer reaches the pair author as a nudge, and is silent otherwise', async () => {
+  const author = await import('../../studio/agents/pair-author.js');
+  const withSteer = author.buildPrompt({ theme: 'caves', brief: { count: 8, varyHardestFrom: 'vocabulary' } }, {});
+  assert.match(withSteer, /reach its top tier through arrangement/);
+  const without = author.buildPrompt({ theme: 'caves', brief: { count: 8 } }, {});
+  assert.ok(!/top tier through arrangement/.test(without));
+});

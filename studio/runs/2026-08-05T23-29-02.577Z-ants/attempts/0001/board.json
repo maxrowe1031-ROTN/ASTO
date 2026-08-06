@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "Colony Life: Structures, Roles, and Scale",
+  "sets": [
+    {
+      "id": "set-chamber-item",
+      "relationshipLabel": "A chamber and the item it is kept for",
+      "explanation": "Each chamber exists to hold a specific kind of item: nurseries shelter eggs, granaries store seed.",
+      "pairs": [
+        [
+          "nursery",
+          "egg"
+        ],
+        [
+          "granary",
+          "seed"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "possession",
+        "storage"
+      ]
+    },
+    {
+      "id": "set-colony-swarm",
+      "relationshipLabel": "A collection and the kind of member that makes it up",
+      "explanation": "A colony is defined by its workers just as a swarm is defined by its alates, each collection named for its typical member.",
+      "pairs": [
+        [
+          "colony",
+          "worker"
+        ],
+        [
+          "swarm",
+          "alate"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "inclusion",
+        "group"
+      ]
+    },
+    {
+      "id": "set-worker-substance",
+      "relationshipLabel": "A worker role and the substance its work is centered on",
+      "explanation": "A scout's labor revolves around pheromone signals just as a forager's revolves around honeydew, tying each role to its defining substance.",
+      "pairs": [
+        [
+          "scout",
+          "pheromone"
+        ],
+        [
+          "forager",
+          "honeydew"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "agent-object",
+        "role"
+      ]
+    },
+    {
+      "id": "set-path-scale",
+      "relationshipLabel": "The same kind of path or passage, minor scale versus major scale",
+      "explanation": "A trail scales up into a highway just as a tunnel scales up into a catacomb, each pair showing the same passage at two sizes.",
+      "pairs": [
+        [
+          "trail",
+          "highway"
+        ],
+        [
+          "tunnel",
+          "catacomb"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "dimension",
+        "scale"
+      ]
+    }
+  ]
+}

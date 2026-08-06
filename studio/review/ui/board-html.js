@@ -101,6 +101,42 @@ function stanceHtml(shapeId) {
 }
 
 /**
+ * What the evaluators said about ONE set, folded shut.
+ *
+ * Stages 05 and 06 have been describing real defects in prose for weeks — 05
+ * named the cars grain mismatch exactly, 06 flagged the Grateful Dead set as
+ * ambiguous-order — and both were reachable only in a collapsed panel at the
+ * bottom of the page, filed by stage rather than by set. Max rediscovered both
+ * by playing the boards. Their findings are per-set, so this is where they go.
+ *
+ * Closed by default, deliberately. The review loop exists to capture an
+ * unbiased first read — the same reason the Revision Proposer's brief stays
+ * hidden until after judgement — so the machine's opinion is one click away
+ * rather than in the way.
+ *
+ * `notes` is [{ source, level, text }] and this file does not know which stage
+ * produced what: the caller joins, this renders.
+ */
+function machineNotesHtml(notes = []) {
+  if (notes.length === 0) return '';
+  const worst = notes.some((note) => note.level === 'high') ? 'high' : notes[0].level;
+  const lines = notes
+    .map(
+      (note) =>
+        `        <li data-level="${escape(note.level)}"><span class="machine-source">${escape(note.source)}</span> ${escape(note.text)}</li>`,
+    )
+    .join('\n');
+  return [
+    `\n    <details class="machine-notes" data-level="${escape(worst)}">`,
+    `      <summary>${notes.length} machine note${notes.length === 1 ? '' : 's'}</summary>`,
+    '      <ul>',
+    lines,
+    '      </ul>',
+    '    </details>',
+  ].join('\n');
+}
+
+/**
  * The four sets as the game reveals them once solved.
  *
  * `promotions` is the one thing here a player never sees. The builder may
@@ -112,7 +148,7 @@ function stanceHtml(shapeId) {
  * the stance line the same way: a judgement the reviewer cannot see is one
  * he cannot correct.
  */
-export function setsHtml(board, promotions = [], shapesBySet = {}) {
+export function setsHtml(board, promotions = [], shapesBySet = {}, notesBySet = {}) {
   const promotedBy = new Map(
     (promotions ?? []).map((promotion) => [promotion.setId, promotion]),
   );
@@ -134,7 +170,7 @@ export function setsHtml(board, promotions = [], shapesBySet = {}) {
         `    <span class="tier-badge">${escape(tier)}</span>${promotionHtml}`,
         `    <div class="analogy">${escape(analogy)}</div>`,
         `    <div class="relationship">${escape(set.relationshipLabel)}</div>`,
-        `    <div class="explanation">${escape(set.explanation)}</div>${stanceHtml(shapesBySet[set.id])}`,
+        `    <div class="explanation">${escape(set.explanation)}</div>${stanceHtml(shapesBySet[set.id])}${machineNotesHtml(notesBySet[set.id])}`,
         '  </article>',
       ].join('\n');
     })
@@ -146,7 +182,7 @@ export function setsHtml(board, promotions = [], shapesBySet = {}) {
  * the style guide's unity verdict with any words it flagged as outside the
  * world. Unity is advisory by design — shown, never a gate.
  */
-export function boardShapeHtml({ shapesBySet = {}, unity = null } = {}) {
+export function boardShapeHtml({ shapesBySet = {}, unity = null, evocativeness = null } = {}) {
   const stances = [
     ...new Set(
       Object.values(shapesBySet)
@@ -154,10 +190,21 @@ export function boardShapeHtml({ shapesBySet = {}, unity = null } = {}) {
         .filter(Boolean),
     ),
   ];
-  if (stances.length === 0 && !unity) return '';
+  if (stances.length === 0 && !unity && !evocativeness) return '';
 
   const outliers = (unity?.outliers ?? [])
     .map((outlier) => `      <div class="unity-outlier">⚠ ${escape(outlier.word)} — ${escape(outlier.note)}</div>`)
+    .join('\n');
+  // The flat words, each with the sharper one where 08 could name it. This is
+  // the actionable half of the verdict: "generic" alone is not something Max
+  // can do anything with, "workshop → woodshop" is.
+  const generic = (evocativeness?.generic ?? [])
+    .map(
+      (entry) =>
+        `      <div class="evocativeness-generic">⚠ ${escape(entry.word)}${
+          entry.suggestion ? ` → <strong>${escape(entry.suggestion)}</strong>` : ''
+        } — ${escape(entry.note)}</div>`,
+    )
     .join('\n');
   return [
     '  <div class="board-shape">',
@@ -167,14 +214,25 @@ export function boardShapeHtml({ shapesBySet = {}, unity = null } = {}) {
     unity
       ? `    <div class="unity" data-verdict="${escape(unity.verdict)}">unity: <strong>${escape(unity.verdict)}</strong> — ${escape(unity.reasoning)}</div>${outliers ? `\n${outliers}` : ''}`
       : '',
+    // Beside unity, never folded into it. A board can be strongly unified and
+    // completely generic — that combination is precisely the 2026-08-05
+    // Grateful Dead board, and showing one verdict without the other is how it
+    // reached Max looking healthy.
+    evocativeness
+      ? `    <div class="evocativeness" data-verdict="${escape(evocativeness.verdict)}">evocativeness: <strong>${escape(evocativeness.verdict)}</strong> — ${escape(evocativeness.reasoning)}</div>${generic ? `\n${generic}` : ''}`
+      : '',
     '  </div>',
   ]
     .filter(Boolean)
     .join('\n');
 }
 
-export function boardHtml(board, promotions = [], { shapesBySet = {}, unity = null } = {}) {
+export function boardHtml(
+  board,
+  promotions = [],
+  { shapesBySet = {}, unity = null, evocativeness = null, notesBySet = {} } = {},
+) {
   if (!board?.sets) return '';
-  const shape = boardShapeHtml({ shapesBySet, unity });
-  return `${shape ? `${shape}\n` : ''}${tilesHtml(board)}\n<div class="solved-sets">\n${setsHtml(board, promotions, shapesBySet)}\n</div>`;
+  const shape = boardShapeHtml({ shapesBySet, unity, evocativeness });
+  return `${shape ? `${shape}\n` : ''}${tilesHtml(board)}\n<div class="solved-sets">\n${setsHtml(board, promotions, shapesBySet, notesBySet)}\n</div>`;
 }

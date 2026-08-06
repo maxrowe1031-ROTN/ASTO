@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "On the Road",
+  "sets": [
+    {
+      "id": "set-class-individual-car",
+      "relationshipLabel": "A kind of car and one specific named example of it",
+      "explanation": "Each pair names a car type paired with the iconic real-world model that defines it.",
+      "pairs": [
+        [
+          "sports car",
+          "Corvette"
+        ],
+        [
+          "muscle car",
+          "Mustang"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "car-type",
+        "brand-name"
+      ]
+    },
+    {
+      "id": "set-object-component-body",
+      "relationshipLabel": "A thing and the defining feature it necessarily has",
+      "explanation": "Each car type is defined by a structural feature it must have to earn that name.",
+      "pairs": [
+        [
+          "convertible",
+          "retractable roof"
+        ],
+        [
+          "hatchback",
+          "liftgate"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "car-type-lookalike",
+        "body-style"
+      ]
+    },
+    {
+      "id": "set-agent-instrument-trade",
+      "relationshipLabel": "A worker and the tool of their trade",
+      "explanation": "Each pair links a person to the tool that defines how they carry out their role.",
+      "pairs": [
+        [
+          "mechanic",
+          "wrench"
+        ],
+        [
+          "driver",
+          "steering wheel"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "worker-pairing",
+        "tool-stretch"
+      ]
+    },
+    {
+      "id": "set-before-after-drive",
+      "relationshipLabel": "Two moments facing each other across a drive or journey",
+      "explanation": "Each pair marks the opening and closing moments that bookend a journey.",
+      "pairs": [
+        [
+          "ignition",
+          "shutdown"
+        ],
+        [
+          "departure",
+          "arrival"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "journey-moment",
+        "abstract-timing"
+      ]
+    }
+  ]
+}

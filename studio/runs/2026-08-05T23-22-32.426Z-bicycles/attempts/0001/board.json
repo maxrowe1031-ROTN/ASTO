@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-cycling-01",
+  "title": "Cycling Connections",
+  "sets": [
+    {
+      "id": "set-before-after-race",
+      "relationshipLabel": "Opposite moments across one span",
+      "explanation": "Start line/finish line and clip in/clip out mark the two ends of the same continuous action.",
+      "pairs": [
+        [
+          "start line",
+          "finish line"
+        ],
+        [
+          "clip in",
+          "clip out"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "time-boundary",
+        "cycling-action"
+      ]
+    },
+    {
+      "id": "set-agent-object-cycling",
+      "relationshipLabel": "A worker and the object their work is about",
+      "explanation": "A framebuilder builds a frame and a wheelbuilder builds a wheel — the craftsperson named for the exact thing they make.",
+      "pairs": [
+        [
+          "framebuilder",
+          "frame"
+        ],
+        [
+          "wheelbuilder",
+          "wheel"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "bike-parts",
+        "craft-role"
+      ]
+    },
+    {
+      "id": "set-attachment-bike-parts",
+      "relationshipLabel": "A thing and where it fastens",
+      "explanation": "A reflector clips to a spoke and a bottle cage bolts to a down tube — each part named alongside its mounting point.",
+      "pairs": [
+        [
+          "reflector",
+          "spoke"
+        ],
+        [
+          "bottle cage",
+          "down tube"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "bike-parts",
+        "physical-mounting"
+      ]
+    },
+    {
+      "id": "set-class-individual-race",
+      "relationshipLabel": "A class of race and one named instance",
+      "explanation": "Paris-Roubaix is one of cycling's Monuments and the Vuelta a España is one of its Grand Tours — a category paired with a specific race that belongs to it.",
+      "pairs": [
+        [
+          "Monument",
+          "Paris-Roubaix"
+        ],
+        [
+          "Grand Tour",
+          "Vuelta a España"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "race-classification",
+        "cycling-lore"
+      ]
+    }
+  ]
+}

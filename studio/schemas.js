@@ -127,7 +127,12 @@ export const FEEDBACK_ACTIONS = Object.freeze([
 // must segment on this rather than guess from dates — under version 1 a set's
 // `action` was inherited from the board button and cannot be trusted, though
 // its tags and note can.
-export const FEEDBACK_FORM_VERSION = 2;
+//
+// Version 3 (2026-08-05, later the same day): `valid-but-unfair` retired from
+// the form in favour of `second-valid-reading`. Segmenting matters here too —
+// the ABSENCE of `valid-but-unfair` means something different before and after
+// this line.
+export const FEEDBACK_FORM_VERSION = 3;
 
 // The spec's thirteen, plus four added 2026-08-04 from the review corpus itself.
 //
@@ -168,7 +173,39 @@ export const QUICK_TAGS = Object.freeze([
   'no-unifying-theme',
   'not-evocative',
   'feels-like-asto',
+  // Added 2026-08-05 with Max, from the corpus — the same way the four above
+  // were. See RETIRED_TAGS below for what it replaces and why.
+  'second-valid-reading',
 ]);
+
+/**
+ * Tags the form no longer offers, which the schema still accepts forever.
+ *
+ * This is what APPEND ONLY means in practice. A retired tag is not a mistake to
+ * be erased — the events carrying it are the record of what Max thought at the
+ * time, and rewriting that would be rewriting him.
+ *
+ * `valid-but-unfair` (retired 2026-08-05, replaced by `second-valid-reading`):
+ * its chip read "technically correct, but the player could not have known", and
+ * across nine uses Max never once meant that. He meant three different things:
+ *
+ *   - four uses: the same four words regroup into a SECOND analogy that also
+ *     works — "Ignition:departure::shutdown:arrival creates a valid analogy as
+ *     well". Nothing in the vocabulary covered this, so it landed here. That is
+ *     now `second-valid-reading`.
+ *   - two uses: the claim is only sometimes true — "to state that every crew
+ *     contains a mason?". `not-always-true` already covers this exactly.
+ *   - three uses: technically valid but flat — "technically works but… boring".
+ *     `not-evocative` and `weak-explanation` already cover this.
+ *
+ * A vague chip beside precise ones collects everything, which is the same
+ * failure that left `not-always-true` unused for four boards. So the fix was
+ * one precise tag and one retirement, not three new chips.
+ */
+export const RETIRED_TAGS = Object.freeze(new Set(['valid-but-unfair']));
+
+/** The tags a new judgement may still be recorded with. */
+export const ACTIVE_TAGS = Object.freeze(QUICK_TAGS.filter((tag) => !RETIRED_TAGS.has(tag)));
 
 export const FEEDBACK_SCOPES = Object.freeze(['board', 'set']);
 

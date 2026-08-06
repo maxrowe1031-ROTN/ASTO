@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "Everyday Connections",
+  "sets": [
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a category of story or character and one named example of it",
+      "explanation": "Each pair pairs a broad story type with a single famous character who embodies it.",
+      "pairs": [
+        [
+          "fairy tale",
+          "Cinderella"
+        ],
+        [
+          "superhero",
+          "Batman"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "inclusion",
+        "story-types"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "a written or drawn plan and the made thing it specifies",
+      "explanation": "A blueprint and a recipe are both instructions that, when followed, produce the exact object named.",
+      "pairs": [
+        [
+          "blueprint",
+          "treehouse"
+        ],
+        [
+          "recipe",
+          "cookies"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "reference",
+        "instructions"
+      ]
+    },
+    {
+      "id": "set-enabling-agent",
+      "relationshipLabel": "the thing that lets another thing happen safely or comfortably",
+      "explanation": "Training wheels and a nightlight don't perform the activity themselves—they simply make it safe or comfortable to happen.",
+      "pairs": [
+        [
+          "training wheels",
+          "bicycle"
+        ],
+        [
+          "nightlight",
+          "sleep"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "cause",
+        "safety-comfort"
+      ]
+    },
+    {
+      "id": "set-sequence",
+      "relationshipLabel": "an early stage within the larger span it opens",
+      "explanation": "Infancy and kindergarten are each the opening stage of a longer span—childhood and school—not just the step before it.",
+      "pairs": [
+        [
+          "infancy",
+          "childhood"
+        ],
+        [
+          "kindergarten",
+          "elementary school"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "time",
+        "life-stages"
+      ]
+    }
+  ]
+}

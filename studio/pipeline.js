@@ -71,10 +71,15 @@ const STAGE_INPUTS = {
     words: deriveWords(boardOf(board)?.sets ?? []),
     maxMistakes: config.maxMistakes ?? 4,
   }),
-  '08-style-guide': (board) => {
+  '08-style-guide': (board, { manifest }) => {
     const puzzle = boardOf(board);
     return {
       title: puzzle?.title ?? null,
+      // The theme Max actually typed, for the evocativeness verdict. The board's
+      // own title is the BUILDER's read of the subject, so judging "does this
+      // evoke the subject" against it would only ask whether the board agrees
+      // with itself.
+      theme: manifest?.theme ?? null,
       // The sixteen words, for the unity verdict: 08 judges whether they read
       // as one world, which it cannot do from labels and explanations alone.
       words: puzzle ? deriveWords(puzzle.sets) : [],
@@ -100,7 +105,17 @@ function gradedSets(blackboard) {
     const grade = grades.get(set.id);
     const withStance = { ...set, stance: stanceOf(set.shape) ?? 'unknown' };
     return grade
-      ? { ...withStance, difficulty: grade.difficulty, abstained: grade.abstained, rationale: grade.rationale }
+      ? {
+          ...withStance,
+          difficulty: grade.difficulty,
+          abstained: grade.abstained,
+          rationale: grade.rationale,
+          // Carried through so 04 can compose with WHERE the difficulty comes
+          // from, not just how much of it there is. Without this the builder
+          // ranks by number alone, and since a rare word reads as a high
+          // number, the vocabulary-hard set won every Black (design.md D-8).
+          difficultySource: grade.difficultySource,
+        }
       : withStance;
   });
 }
@@ -316,7 +331,15 @@ async function runAgentStage(ctx, stage, { feedback: seedFeedback } = {}) {
     store.writeStageText(runId, attemptId, stage.id, 'response.txt', text);
 
     const parsed = agent.parse(text);
-    const validation = parsed.ok ? agent.validateOutput(parsed.value) : parsed.failure;
+    // The stage's own input is handed to the validator, so a check can compare
+    // the answer against the question. Without it a validator can only ask
+    // whether output is well-formed, never whether it actually addressed what
+    // was asked — which is how 06 could return a confident report that had
+    // skipped the readings it was handed. Agents that do not need it ignore the
+    // second argument; `revision-proposer.js` already used this shape.
+    const validation = parsed.ok
+      ? agent.validateOutput(parsed.value, { input })
+      : parsed.failure;
     if (parsed.ok) {
       store.writeStageArtifact(runId, attemptId, stage.id, 'output.json', parsed.value);
     }

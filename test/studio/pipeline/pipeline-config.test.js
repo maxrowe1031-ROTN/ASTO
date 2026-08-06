@@ -82,9 +82,9 @@ test('effort follows what a stage actually has to work out', () => {
   // 04 holds at medium — its job barely hardened; the stance check is
   // mechanical, at the gate.
   assert.equal(effortFor('04-board-builder', DEFAULT_CONFIG), 'medium');
-  // The exception, and the reason there is one: 06 is the last thing between a
-  // flawed board and Max's time. Cheapening it would move cost onto him.
-  assert.equal(effortFor('06-adversarial-solver', DEFAULT_CONFIG), 'high');
+  // 06 came down from high on 2026-08-05 — see the test below for the
+  // measurement that flipped it.
+  assert.equal(effortFor('06-adversarial-solver', DEFAULT_CONFIG), 'medium');
 });
 
 test('the theme grouper stays at medium — high truncated it on a real run', () => {
@@ -104,7 +104,7 @@ test('the effort profile changes whenever the effort map does', () => {
   // sharing one label would silently merge the two populations being compared,
   // so the assertion is pinned deliberately: changing the map above without
   // changing the string fails here.
-  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-08-04-taxonomy-shakedown-2');
+  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-08-05-cross-reading');
 });
 
 test('every stage has small explicit retry limits for both failure classes', () => {
@@ -158,8 +158,21 @@ test('the board builder no longer runs at the highest effort in the pipeline', (
   assert.equal(effortFor('04-board-builder', DEFAULT_CONFIG), 'medium');
 });
 
-test('the adversarial solver keeps its effort — it is the last line before Max', () => {
-  assert.equal(effortFor('06-adversarial-solver', DEFAULT_CONFIG), 'high');
+// Held at high until 2026-08-05 on the argument that 06 is the last thing
+// between a flawed board and Max's time, so cheapening it moves cost onto him.
+// That argument was right and is now outranked: at high, WITH the cross-reading
+// checklist, the stage spent all 16,000 output tokens on thinking and returned
+// no text at all — stop_reason max_tokens, zero characters, three of six boards
+// unparseable on the replay. A stage that returns nothing protects nobody.
+//
+// The same board at medium, with the compact checklist: end_turn, 6,234 output
+// tokens, all eight readings answered. And the headroom is no longer needed —
+// the candidates used to have to be FOUND and are now enumerated in the engine
+// and handed over, the same trade that let 02 come back down once its stance
+// work moved upstream. Third stage to learn it: high effort on a combinatorial
+// ask does not converge.
+test('the adversarial solver came down from high once its search became a checklist', () => {
+  assert.equal(effortFor('06-adversarial-solver', DEFAULT_CONFIG), 'medium');
 });
 
 test('the effort profile carries a version, like the pricing table does', () => {

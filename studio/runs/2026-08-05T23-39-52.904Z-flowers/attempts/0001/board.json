@@ -1,0 +1,86 @@
+{
+  "id": "board-flowers-01",
+  "title": "Bloom Logic",
+  "sets": [
+    {
+      "id": "set-symbolism",
+      "relationshipLabel": "flower as conventional sign of a meaning",
+      "explanation": "Poppies and lilies each carry a fixed cultural meaning — remembrance and purity — recognized instantly once named.",
+      "pairs": [
+        [
+          "poppy",
+          "remembrance"
+        ],
+        [
+          "lily",
+          "purity"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "cultural-symbol",
+        "flower-word"
+      ]
+    },
+    {
+      "id": "set-products",
+      "relationshipLabel": "flower processed into a product",
+      "explanation": "Hops become beer and lavender becomes lavender oil — each flower is the raw input for a familiar processed good.",
+      "pairs": [
+        [
+          "hops",
+          "beer"
+        ],
+        [
+          "lavender",
+          "lavender oil"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "conversion",
+        "compound-word-repeat"
+      ]
+    },
+    {
+      "id": "set-tools",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A gardener plants with a dibber and a florist trims with shears — each worker's signature tool.",
+      "pairs": [
+        [
+          "gardener",
+          "dibber"
+        ],
+        [
+          "florist",
+          "shears"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "agent-instrument",
+        "obscure-tool"
+      ]
+    },
+    {
+      "id": "set-cultivars",
+      "relationshipLabel": "flower and a named cultivar of it",
+      "explanation": "Peace and Queen of Night aren't generic flowers — they're specific named cultivars of rose and tulip.",
+      "pairs": [
+        [
+          "rose",
+          "Peace"
+        ],
+        [
+          "tulip",
+          "Queen of Night"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "cultivar-name",
+        "capitalized-trap"
+      ]
+    }
+  ]
+}

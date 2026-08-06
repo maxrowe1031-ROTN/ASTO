@@ -264,9 +264,9 @@ test('a pool too small to build from fails at once, without re-asking the builde
     '03-difficulty-rater': {
       text: JSON.stringify({
         grades: [
-          { setId: 'set-growth', difficulty: 1, rationale: 'immediate' },
-          { setId: 'set-tools', difficulty: 2, rationale: 'a moment' },
-          { setId: 'set-homes', difficulty: 3, rationale: 'abstract' },
+          { setId: 'set-growth', difficulty: 1, difficultySource: 'arrangement', rationale: 'immediate' },
+          { setId: 'set-tools', difficulty: 2, difficultySource: 'arrangement', rationale: 'a moment' },
+          { setId: 'set-homes', difficulty: 3, difficultySource: 'arrangement', rationale: 'abstract' },
         ],
       }),
     },

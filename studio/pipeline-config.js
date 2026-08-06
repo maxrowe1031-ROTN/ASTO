@@ -155,7 +155,19 @@ export const DEFAULT_CONFIG = deepFreeze({
     '02-theme-grouper': 'medium',
     '03-difficulty-rater': 'medium',
     '04-board-builder': 'medium',
-    '06-adversarial-solver': 'high',
+    // Came down from high on 2026-08-05, with the cross-reading checklist.
+    //
+    // At high, with the checklist added, it spent all 16,000 output tokens on
+    // thinking and returned NO TEXT — stop_reason max_tokens, zero characters.
+    // The same failure 02 hit on the beach run and 04 hit at xhigh: high effort
+    // on a stage that has become combinatorial. Eight closed questions plus a
+    // free hunt is combinatorial.
+    //
+    // And it no longer needs the headroom. The candidates used to have to be
+    // FOUND; now they are enumerated in the engine and handed over, so the
+    // expensive half of the job is already done — the same trade that let 02
+    // come back down once its stance work moved upstream into 01's quotas.
+    '06-adversarial-solver': 'medium',
     '07-test-player': 'medium',
     '08-style-guide': 'medium',
     // Not a pipeline stage: it runs once at review time when Max rejects a
@@ -173,7 +185,7 @@ export const DEFAULT_CONFIG = deepFreeze({
   // The string must change with the map, not just when it feels significant:
   // boards built under two different maps are two populations, and reusing one
   // label would merge them inside the very corpus meant to tell them apart.
-  effortProfile: '2026-08-04-taxonomy-shakedown-2',
+  effortProfile: '2026-08-05-cross-reading',
 
   // Two bounds, because there are two failure classes and they are retried by
   // different owners. `transport` bounds llm.js's own loop (timeouts, 429s,

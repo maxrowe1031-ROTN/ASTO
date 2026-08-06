@@ -364,6 +364,63 @@ textarea { width: 100%; resize: vertical; }
 }
 
 /*
+  Evocativeness sits beside unity, never folded into it — the two are
+  orthogonal, and a board can be strongly unified and completely generic. That
+  exact combination reached Max on 2026-08-05 looking healthy.
+
+  Advisory like unity: it colours nothing and blocks nothing. The one visual
+  weight it earns is on the suggested replacement word, because that is the
+  part he can act on in seconds.
+*/
+.evocativeness { margin-top: 4px; }
+
+.evocativeness-generic {
+  margin-top: 2px;
+  font-style: italic;
+}
+
+/*
+  What the evaluators said about one set, folded shut on its card.
+
+  Closed by default is the whole design: the review loop exists to capture an
+  unbiased first read, so the machine's opinion is one click away rather than
+  in the way — the same reason the Revision Proposer's brief waits until after
+  judgement. `data-level="high"` is reserved for a cross-reading that reads as
+  valid, which is the one defect that makes a board actively unfair.
+*/
+.machine-notes {
+  margin-top: 6px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--soft-ink);
+}
+
+.machine-notes > summary {
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
+.machine-notes[data-level='high'] > summary {
+  opacity: 1;
+  font-weight: 700;
+}
+
+.machine-notes ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.machine-notes li { margin-bottom: 4px; }
+
+.machine-source {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+/*
   The Revision Proposer's brief. Below the board and only after a rejection:
   an unbiased first read is what the review loop exists to capture, so the
   machine's framing must not arrive before Max has played.

@@ -2,6 +2,117 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-05 — Five approvals, no rush, and the lever that had become one
+
+Max ran seven boards and judged five. **Five approved, zero rejected** — the first batch
+with no rejections at all, against the previous batch's zero approvals. And then:
+*"while these are publishable, i didn't get the same rush or joyous reaction as a few of
+the earlier puzzles."* He asked to be told if he was going numb. Recorded as **D-8**.
+
+### He was not, and his own scoring proves it
+
+| batch | praise-tags per set | sets scoring all four |
+|---|---|---|
+| rounds 1–2 (Aug 2–4) | 1.33 | 6% |
+| Aug 5 early | 2.29 | 21% |
+| Aug 5 20:xx (zero approvals) | 1.43 | 25% |
+| **this batch** | **3.15** | **75%** |
+
+`feedback.js` records all-four-on-all-four as his *"this is ASTO"* signal, earned by only
+two boards ever; this batch put it on 15 of 20 sets. `not-evocative` **15 → 0**,
+`too-obscure` **6 → 0**, `valid-but-unfair` **9 → 0**. Numbness reads as lower scores.
+Craft went up while delight went down — two axes, and the gap between them was the work.
+
+### The diagnosis, after Max corrected it twice
+
+I first read it as the naming set moving into the Black slot, and proposed forbidding
+that. He refused: *"they can both be black, depending on the puzzle. I don't want to fall
+into a repetitive hole where only one type of puzzle is one difficulty."* The data agreed —
+this batch's Blacks were the **more** varied five shapes, against a-tree and birds both
+running `before-after`.
+
+Sorting every set by where its difficulty came from found the real gap. *Ordinary words,
+surprising arrangement* was present and **always easy**; *rare words, ordinary
+arrangement* was present and **always the hard end**. Nothing was a plain-word set that
+was genuinely difficult — which is exactly what a-tree's Black had been.
+
+**A missing capability, not a misplaced set.** Difficulty and vocabulary had become the
+same lever. I caused part of it: D-7's specificity instruction said a hard set *"may ask
+for the word an enthusiast knows"*, one route up, and the pipeline took it every time.
+
+### Built — the levers, agent by agent
+
+Max asked which agents could proliferate the fix rather than loading it onto 01. Two were
+working against it.
+
+- **03** was told to judge *"clarity, abstraction, **familiarity** and misdirection"* — so
+  a rare word literally **was** difficulty. The conflation was in the measurement. Every
+  graded set now reports `difficultySource`, enforced by a semantic check.
+- **04** ranked by that number and promoted the top of it. It now receives the source, is
+  told a board reads best when its difficulty is not all from one place, and records
+  `blackSetReasoning`.
+- **07** is a model — it knows what `speleothem` is, so it plays a knowledge-gated set as
+  though it were open. The one agent whose job is "how does this feel to play" could not
+  see the defect Max found by playing. It now plays as a general-audience solver and
+  reports `knowledgeGated`, still blind: words, never sets.
+- **02** decides which sets exist at all; told that arrangement-hard groupings are the
+  scarcer resource.
+- **01** gets both routes as a palette, plus one requirement about range — at least one
+  group hard through arrangement alone.
+
+**Variety by steering, never by rule.** `variety.js` gained a second dimension beside shape
+usage: how each board's hardest set earned its difficulty. The brief leans against a rut of
+three and says nothing otherwise; a mixed history produces no steer, pinned as a test,
+because a rule reserving Black for one kind is the failure this exists to avoid. Themed
+runs now get that steer too — they had never received anything from the index but stance
+quotas.
+
+### What verification caught
+
+- **The fallback classifier is weak, and the replay says so.** For boards graded before
+  `difficultySource` existed the index falls back to the shape. Against Max's verdicts it
+  gets all four boards he loved right and **only 2 of the 5 he found flat** — `coronagraph
+  : glare` is `prevention`, `perihelion : orbit` is `sequence`, and a shape id cannot see
+  that the words are rare. Which is why 03's judgement is primary and the shape is only a
+  fallback.
+- **A correction to my own finding.** I inferred from the telemetry that Max had judged the
+  boards he loved by reading rather than playing. He played them; a-tree predates the
+  recorder, which stores only completed playthroughs. What stands: **0 wins in 8 recorded
+  playthroughs**, all at four mistakes. Since he loved boards he may also have lost, losing
+  is not what kills the joy — which is why his "leave the rules alone" call is right.
+
+### Session gate
+
+- **Automated: PASSED.** 887 → **895 tests, 0 fail.**
+- **Claude-verifiable: PASSED, and beyond the mocks.** A themed mock run round-trips all
+  three new fields, and the steer is correctly **silent** on the live corpus (its last three
+  boards are mixed). But mock fixtures replay canned answers and prove nothing about whether
+  the real model can satisfy a new instruction — the lesson 06 taught earlier the same day —
+  so both risky agents were also called for real, against the `caves` board:
+  - **03 validates, and the reframing works on the board that caused the complaint.**
+    `speleothem : stalactite` now grades **difficulty 1** — *"category-and-kind structure is
+    immediately obvious once the specialized terms are recognized"* — with its difficulty
+    attributed to `vocabulary`. The old rater made that set the Black. It labelled all four
+    caves sets `vocabulary`, which is itself the finding: that board had no arrangement-hard
+    set anywhere. 348 output tokens, `end_turn`.
+  - **07's detector names the walls.** `speleothem`, `karst landform`, `guideline`,
+    `collar`, `swarming` — five of the sixteen words on a board Max approved. It solved the
+    board with **0 mistakes**, which is the point: the model cannot feel a vocabulary wall,
+    but asked directly it can name one.
+- **Max acceptance: OPEN.** A fresh batch answers it: does a set hard through arrangement
+  alone produce the reaction, and does the hardest set vary in kind across boards.
+
+- **Next:**
+  1. **A fresh batch is the test.** Watch whether any board tops out through arrangement
+     with ordinary words, and whether `knowledgeGated` starts naming the walls.
+  2. If every board still tops the same way, the lever moves upstream to the stance quota —
+     `inclusion` is quota'd every run and is where all three nameable shapes live.
+  3. **Judge a Revision Proposer brief** — still zero `proposal-verdict` events.
+  4. Carried: the cross-reading check's third attempt · rater abstention floor · rubric
+     compilation must read version-1 sets by TAGS not action · nine `valid-but-unfair`
+     events need reading by hand · `README.md` never mentions `npm run studio:review` ·
+     05–08 concurrency · Phase 5's select screen.
+
 ## 2026-08-05 — The deploy failure gets a name in the recovery playbook
 
 Short follow-on to the entry below, which shipped the deck and found — while shipping it —
@@ -194,6 +305,173 @@ portfolio artifact, deliberately outside the phase plan.
      the game's missing favicon · rater abstention floor · rubric compilation must read
      version-1 sets by TAGS not action · `README.md` never mentions `npm run studio:review`
      · 05–08 concurrency · First Light `explanation` pass · GDD drift.
+
+## 2026-08-05 — Six boards, no approvals, and the two axes that were missing
+
+Max ran six boards in parallel — `cars`, `grateful-dead`, `shadows`, `construction` and two on
+`childhood` — and approved **none**. Three rejected, one failed, two left in revise. The worst
+batch since the taxonomy work landed, and the most useful: 36 feedback events consistent
+enough to name causes rather than symptoms. Recorded as **D-7** in `docs/design.md`.
+
+### What the corpus said
+
+- **`not-evocative` was the top tag at 15 uses, across four boards.** The recurring shape of
+  his complaint is *"technically works, but…"* — *"boring as a blank wall"*, *"the MOST BASIC
+  terms relating to childhood, slapped on the page"*, *"is this what anyone thinks when they
+  imagine their childhood?"*
+- **Every single before-after / sequence set was rejected — six of six.**
+- **Stage 08 rated the "absolute snooze" board `unity: strong`** — *"every word sits comfortably
+  inside one coherent world"*. Both were right. Unity and evocativeness are orthogonal, a board
+  of a subject's most obvious nouns is unified *by construction*, and only unity was measured.
+  The word "evocative" appeared in the feedback form's tags, in the docs, and in **no agent
+  prompt anywhere**.
+
+### The finding that decided the method
+
+I read the actual `prompt.txt` that produced the cars defect. **All twelve editorial rules were
+present verbatim** — including *"check whether any four of its words form another valid
+analogy"* and *"B must follow from A necessarily, not occasionally"* — and three of them were
+broken. That was the **revision** attempt, whose notes also named the specific defect, and it
+returned `ignition : shutdown :: departure : arrival`: the identical four words.
+
+So validity defects got a **mechanical check, not a thirteenth rule**. An instruction is a
+request; a validation failure sends the stage back.
+
+### Built
+
+**The cross-reading check.** `ignition : shutdown :: departure : arrival` also reads
+`ignition : departure :: shutdown : arrival` — and because the engine refuses that reading, a
+player who sees it is **marked wrong for being right**. `board-integrity.js` says in its own
+header it cannot catch this: the sixteen words *are* distinct, so the sweep sees a clean board.
+`crossPairings` now enumerates the two refused groupings of every set — pure, in the engine,
+beside the accepted-order algebra it is the complement of — and 06 answers them as a checklist
+of closed questions. Its validator refuses an answer that skipped one, invented one, or
+answered one twice, which meant teaching the pipeline to hand a stage's **input** to
+`validateOutput`: a validator that cannot see the question can only check that the answer is
+well-formed.
+
+**Specificity, and Max's correction.** I framed it as one axis — generic ←→ obscure, aim for
+the middle. He corrected it: *obscurity comes from overgeneralisation too*. His own notes prove
+it — *"so boring and **unspecific** the puzzles barely make sense"*. One root cause, three
+tags: a too-general word is boring (`not-evocative`), stops being true (`valid-but-unfair`,
+*"to state that every crew contains a mason?"*), and reads as vague (`too-obscure` — of six
+uses only "squit" was genuinely an esoteric word). So the instruction is not "be evocative" but
+**"prefer the most specific word your reader will still recognise"**, with all three failure
+modes named. 01's theme line stopped being `Theme to work within: X`, and its *"prefer familiar
+words"* line stopped saying *familiar* when it meant *recognisable*.
+
+**The evocativeness verdict** now sits beside unity in 08, naming the flat words and the
+sharper ones where it can — the form Max's own best note took (*"replacing 'Steal Your Face
+logo' with 'Stealie'"*). Shown, never enforced.
+
+**The Revision Proposer's brief now wins.** `cars` produced the first brief ever and it was
+right — correct root cause, correct stage, three candidate fixes, the three praised sets under
+`doNotChange`. It was never sent: the plain Request-revision button answered first, carrying
+raw notes and no protection list, so the revision churned the good sets and reproduced the
+defect. The button now defers to the brief rather than racing it — but does not send it
+silently, because an inferred `proposal-verdict` is not evidence.
+
+**05 and 06 moved to the sets they are about**, folded shut on the card. They had been
+describing these defects for weeks, filed by stage at the foot of the page, so Max rediscovered
+them by playing the boards.
+
+### The check did not work the first time, and the replay is why we know
+
+Replaying it over the six judged boards — the step that exists *because* Max's verdicts are an
+answer key — **three of six came back unparseable**, two failed validation, and the one that
+validated missed the defect he had found. Diagnosed on a single board:
+**`stop_reason max_tokens`, 16,000 output tokens, zero characters of text.**
+
+I had made 06 combinatorial and left it at `high`. **Third time this repo has met that
+failure** — 02 died on the `beach` run at high, 04 came down from xhigh with *"94% of its
+billed output was thinking behind an 876-token answer"* — and `pipeline-config.js` was carrying
+both notes when I walked into it.
+
+Fixed by shrinking the ask rather than raising the ceiling: checklist lines carry short ids
+(`set-b#1`) that the answer echoes instead of retyping four words — the old shape invited the
+model to send back the formatted *string* it had been shown, which is exactly what childhood-1
+did for all eight — and a `note` is required only on a reading that HOLDS. Then 06 came down to
+`medium`, over a pinned test whose reason was good (*"the last thing between a flawed board and
+Max's time"*) and which a stage returning nothing outranks. Same board after: **`end_turn`,
+6,234 output tokens, all eight readings answered.**
+
+**And then it still did not work.** Three rounds against the same six boards:
+
+| round | caught | spurious | behaviour |
+|---|---|---|---|
+| 1 — high effort, verbose shape | — | — | 3 of 6 unparseable, 16k thinking, no text |
+| 2 — compact shape, medium | 1 of 3 | 13 | flags any tidy 2×2 grid as an analogy |
+| 3 — plus an anti-grid instruction | 0 of 3 | 2 | quiet, misses what it was built for |
+
+Every round-2 false flag had one signature — *"guitarist and drummer are parallel musician
+roles"*, *"song and album are parallel categories"* — the model calling **symmetry** an analogy,
+which round 2's prompt already told it not to do. Round 3's sharper wording fixed that and
+over-corrected into silence.
+
+**The mechanism works and the judgement does not.** The enumerator is exact and pins both real
+defects as tests; the plumbing forces a complete answer and no longer truncates. What is
+unreliable, after two honest attempts at the wording, is the model's answer. It ships **quiet**
+— advisory, folded shut, ~2 false flags across six boards — and it is **nowhere near a gate**.
+I stopped there rather than spend more of Max's credit guessing at prompt wording.
+
+**A finding from building the answer key, and Max split the tag the same day.**
+`valid-but-unfair` was three meanings wearing one name — and its own chip described a *fourth*
+(*"technically correct, but the player could not have known"*) that he had never used it for.
+Four of nine uses meant "the same four words regroup into a second analogy that also works",
+which had no chip at all; the other five were already covered by `not-always-true` and
+`not-evocative`.
+
+So the fix was **one precise tag and one retirement**, not three new chips: `second-valid-reading`
+now sits in the fairness group where the vague one was. `valid-but-unfair` stays in the
+vocabulary and validates forever — `schemas.js` already carried the rule, *"APPEND ONLY. A
+removed tag would orphan the events that already carry it"* — and a new `RETIRED_TAGS` set is
+what keeps it off the form. `FEEDBACK_FORM_VERSION` moved to 3, because the **absence** of that
+tag now means something different before and after today.
+
+Also collapsed a copy while there: `formVersion` was a literal `2` in `review.js` beside the
+real constant in `feedback.js`, one bump away from splitting a population by accident.
+
+### What the measurement decided
+
+The obvious move — promote 05's `boardPasses` to a gate — is **wrong, and the numbers say so**:
+
+| | |
+|---|---|
+| `boardPasses: false` | **31 of 36 attempts ever (86%)**; 7 of 7 this batch |
+| set-level agreement with Max | **13 of 24 (54%)** |
+| precision when it flags | 8 of 12 — 4 sets he called publishable, 7 rejections missed |
+
+So the cross-reading check **reports and does not gate**, and earns its gate the way D-5's
+auto-revise does. Its reconsider-when is recorded in D-7: agreement with Max's
+`valid-but-unfair` / `order-ambiguous` calls across roughly the next six boards.
+
+### Session gate
+
+- **Automated: PASSED.** 841 → **882 tests, 0 fail.** Every one of the corpus's recorded
+  feedback events still validates, including the nine that carry the retired tag. The enumerator is pinned against both
+  real defects as fixtures — cars' `ignition/shutdown` and the Grateful Dead's
+  `formation/disbandment` — plus `planting : felling :: budding : withering`, the same stance
+  Max loved, as the case that must still enumerate without being condemned.
+- **Claude-verifiable: PASSED.** In the browser, the `ignition : shutdown :: departure :
+  arrival` card now carries 05's grain-mismatch note under a folded "1 machine note"
+  disclosure, and the two clean sets carry none. The enumerator produces **48 closed questions
+  across the six boards**, including Max's two verbatim.
+- **Max acceptance: OPEN.** The question the next batch answers is whether `not-evocative`
+  drops.
+- **Corpus insured first**, before any analysis was acted on: the whole batch was uncommitted
+  at session start — the same exposure as the 2026-08-05 scar.
+
+- **Next:**
+  1. **A fresh batch is the test.** Watch `not-evocative`, and watch whether the cross-reading
+     check agrees with his `valid-but-unfair` calls — that agreement is what promotes it to a
+     gate at `04a`.
+  2. **Judge a Revision Proposer brief.** Still zero `proposal-verdict` events; the path is
+     now clear, so the next revise-board should record one.
+  3. **Phase 5's select screen.** Six boards in `puzzles/`, ten needed — and the three older
+     approvals (`music`, `weather`, `history`) are still held back for a re-read.
+  4. Carried: rater abstention floor · slim-down lap at ~10 judged boards · rubric compilation
+     must read version-1 sets by TAGS not action · `README.md` never mentions
+     `npm run studio:review` · 05–08 concurrency · First Light `explanation` pass · GDD drift.
 
 ## 2026-08-05 — Approved boards reach the game
 

@@ -1,0 +1,84 @@
+{
+  "id": "asto-board-001",
+  "title": "Celestial Bodies and Cycles",
+  "sets": [
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a category of planet and its named member",
+      "explanation": "Jupiter is the archetypal gas giant, and Pluto the most famous dwarf planet — each pair links a planetary class to its best-known example.",
+      "pairs": [
+        [
+          "gas giant",
+          "Jupiter"
+        ],
+        [
+          "dwarf planet",
+          "Pluto"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "planet-vocab"
+      ]
+    },
+    {
+      "id": "set-instrument-action",
+      "relationshipLabel": "a tool built to perform this exact action",
+      "explanation": "A heat shield exists to survive reentry and a parachute exists to enable landing — each device is purpose-built for one specific event.",
+      "pairs": [
+        [
+          "heat shield",
+          "reentry"
+        ],
+        [
+          "parachute",
+          "landing"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "spaceflight-hardware"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "raw diffuse material becoming a formed body",
+      "explanation": "A nebula collapses into a star and a protoplanetary disk coalesces into a planet — both pairs trace diffuse matter condensing into a discrete body.",
+      "pairs": [
+        [
+          "nebula",
+          "star"
+        ],
+        [
+          "protoplanetary disk",
+          "planet"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "planet-vocab",
+        "formation"
+      ]
+    },
+    {
+      "id": "set-sequence",
+      "relationshipLabel": "a single stage and the whole cycle it belongs to",
+      "explanation": "Perihelion is one moment within an orbit, and a solstice is one moment within a year — each names a stage nested inside its larger cycle.",
+      "pairs": [
+        [
+          "perihelion",
+          "orbit"
+        ],
+        [
+          "solstice",
+          "year"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "time-vocab",
+        "cycle-terms"
+      ]
+    }
+  ]
+}

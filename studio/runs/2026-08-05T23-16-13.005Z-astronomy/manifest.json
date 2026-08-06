@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-05T23-16-13.005Z-astronomy",
+  "createdAt": "2026-08-05T23:16:13.005Z",
+  "theme": "astronomy",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "representation",
+      "prevention",
+      "class-individual"
+    ],
+    "avoidShapes": [
+      "creature-possession",
+      "before-after"
+    ],
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "event",
+      "possession"
+    ],
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

@@ -29,6 +29,28 @@ export const STANCES = Object.freeze(vocabulary.stances.map((stance) => Object.f
  */
 export const PORTABLE_STANCES = Object.freeze([...vocabulary.portableStances]);
 
+/**
+ * Shapes whose difficulty can be bought with a rarer word.
+ *
+ * All three are `inclusion`, which is why they are so common: `inclusion` has
+ * been in the stance quota on every run ever, and naming something is the
+ * obvious way to satisfy it — 8 of the 9 boards before 2026-08-05 carried
+ * exactly one. The relationship in each is immediate (a category and a member
+ * of it), so the only lever left for making one HARDER is picking a name fewer
+ * people know: `speleothem : stalactite`, `Monument : Paris-Roubaix`.
+ *
+ * This is the fallback classifier for boards graded before 03 started
+ * reporting `difficultySource` (design.md D-8). It is not a blocklist — Max was
+ * explicit that either kind of set may be the Black, and `constellation :
+ * Cassiopeia` earned all four of his praise tags at green.
+ */
+export const NAMEABLE_SHAPES = Object.freeze(['taxonomic', 'class-individual', 'synonymity']);
+
+const nameable = new Set(NAMEABLE_SHAPES);
+
+/** Could this shape's difficulty come from the word rather than the relation? */
+export const isNameable = (value) => nameable.has(resolveShape(value)?.id);
+
 const byId = new Map(SHAPES.map((shape) => [shape.id, shape]));
 const aliases = new Map(Object.entries(vocabulary.legacyAliases ?? {}));
 

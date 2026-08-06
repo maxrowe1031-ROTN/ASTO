@@ -12,9 +12,12 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
+  ACTIVE_TAGS,
   FEEDBACK_SCHEMA_VERSION,
   FEEDBACK_ACTIONS,
+  FEEDBACK_FORM_VERSION,
   QUICK_TAGS,
+  RETIRED_TAGS,
   validateFeedbackEvent,
 } from '../../studio/schemas.js';
 
@@ -65,8 +68,11 @@ test('the action vocabulary is the spec\'s ten plus the 2026-08-05 instrument', 
   }
 });
 
-test('the spec\'s thirteen quick tags, plus four from the corpus, are all accepted', () => {
-  assert.equal(QUICK_TAGS.length, 17);
+test('the spec\'s thirteen quick tags, plus five from the corpus, are all accepted', () => {
+  // 13 from the spec · 4 added 2026-08-04 · `second-valid-reading` added
+  // 2026-08-05. The count only ever goes up: retiring a tag takes it out of the
+  // FORM, never out of the vocabulary.
+  assert.equal(QUICK_TAGS.length, 18);
   assert.equal(validateFeedbackEvent(good({ tags: [...QUICK_TAGS] })).ok, true);
 });
 
@@ -219,4 +225,53 @@ test('version-1 set events are exactly the ones whose action cannot be trusted',
     }
   }
   assert.ok(contradictory > 0, 'the version-1 contradiction should still be visible in the corpus');
+});
+
+// --- the retirement of `valid-but-unfair` (2026-08-05) --------------------
+//
+// Its chip read "technically correct, but the player could not have known",
+// and across nine uses Max never once meant that. Four meant "the same four
+// words regroup into a second analogy that also works" — which had no chip, so
+// it landed on the vaguest one available. The other five were already covered
+// by `not-always-true` and `not-evocative`.
+//
+// So: one precise tag added, one vague chip retired from the form. The tag
+// itself is never removed from the vocabulary, because nine events carry it and
+// the corpus is the record of what Max thought at the time.
+
+test('the retired tag still validates — nine recorded events depend on it', () => {
+  assert.ok(RETIRED_TAGS.has('valid-but-unfair'));
+  assert.ok(QUICK_TAGS.includes('valid-but-unfair'), 'a retired tag must stay in the vocabulary');
+  assert.equal(validateFeedbackEvent(good({ tags: ['valid-but-unfair'] })).ok, true);
+});
+
+test('the new tag is accepted, and is not offered as a retired one', () => {
+  assert.ok(QUICK_TAGS.includes('second-valid-reading'));
+  assert.ok(ACTIVE_TAGS.includes('second-valid-reading'));
+  assert.equal(validateFeedbackEvent(good({ tags: ['second-valid-reading'] })).ok, true);
+});
+
+test('ACTIVE_TAGS is the vocabulary minus what has been retired', () => {
+  assert.deepEqual(
+    ACTIVE_TAGS,
+    QUICK_TAGS.filter((tag) => !RETIRED_TAGS.has(tag)),
+  );
+  assert.ok(!ACTIVE_TAGS.includes('valid-but-unfair'));
+  // Retiring is subtraction from the FORM, never from the record.
+  assert.equal(ACTIVE_TAGS.length, QUICK_TAGS.length - RETIRED_TAGS.size);
+});
+
+// The two meanings that already had homes. Recorded so a future reading of the
+// corpus does not "rediscover" the gap and add chips that already exist.
+test('the tags that absorbed the other two meanings are still in the vocabulary', () => {
+  for (const tag of ['not-always-true', 'not-evocative', 'weak-explanation']) {
+    assert.ok(ACTIVE_TAGS.includes(tag), `${tag} is what half of valid-but-unfair became`);
+  }
+});
+
+test('the form version moved with the instrument', () => {
+  // Version 3 exists so rubric compilation can tell the two populations apart:
+  // the ABSENCE of `valid-but-unfair` means something different before and
+  // after the retirement.
+  assert.equal(FEEDBACK_FORM_VERSION, 3);
 });

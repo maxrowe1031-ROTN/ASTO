@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-05T20-56-03.405Z-shadows",
+  "createdAt": "2026-08-05T20:56:03.405Z",
+  "theme": "shadows",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "concealment",
+      "class-individual",
+      "defective"
+    ],
+    "avoidShapes": [
+      "object-component",
+      "before-after"
+    ],
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "event",
+      "possession"
+    ],
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

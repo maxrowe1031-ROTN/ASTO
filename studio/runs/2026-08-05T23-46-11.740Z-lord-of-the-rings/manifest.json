@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-05T23-46-11.740Z-lord-of-the-rings",
+  "createdAt": "2026-08-05T23:46:11.740Z",
+  "theme": "Lord of the Rings",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "event",
+      "possession"
+    ],
+    "mock": false
+  },
+  "status": "awaiting-review",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

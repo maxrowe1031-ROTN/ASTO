@@ -1,0 +1,86 @@
+{
+  "id": "grateful-dead-analogies",
+  "title": "Grateful Dead: Sets and Setlists",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a worker and the instrument central to their craft",
+      "explanation": "A guitarist is defined by the guitar and a drummer by the drum kit — each musician's core tool.",
+      "pairs": [
+        [
+          "guitarist",
+          "guitar"
+        ],
+        [
+          "drummer",
+          "drum kit"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "instrument-parts",
+        "agent-object-confusion"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "two moments facing each other across the band's whole existence",
+      "explanation": "Formation mirrors disbandment and first show mirrors last show — each pair bookends the band's timeline.",
+      "pairs": [
+        [
+          "formation",
+          "disbandment"
+        ],
+        [
+          "first show",
+          "last show"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "event-sequence",
+        "concert-lifecycle"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a general category and one named example belonging to it",
+      "explanation": "'Truckin'' is a song and 'American Beauty' is an album — each pair names a category and a specific instance of it.",
+      "pairs": [
+        [
+          "song",
+          "Truckin'"
+        ],
+        [
+          "album",
+          "American Beauty"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "title-recognition",
+        "band-trivia"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "a thing and a structural feature it inherently has",
+      "explanation": "The Wall of Sound is built from speakers and the Steal Your Face logo is built around its lightning bolt — each whole possesses a defining structural piece.",
+      "pairs": [
+        [
+          "Wall of Sound",
+          "speaker"
+        ],
+        [
+          "Steal Your Face logo",
+          "lightning bolt"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "visual-iconography",
+        "sound-equipment"
+      ]
+    }
+  ]
+}

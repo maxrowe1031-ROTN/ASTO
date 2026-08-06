@@ -1,0 +1,84 @@
+{
+  "id": "board-shadow-time",
+  "title": "Shadows, Spans, and Missing Pieces",
+  "sets": [
+    {
+      "id": "set-sequence",
+      "relationshipLabel": "a stage that occurs within or closes out the larger span",
+      "explanation": "Totality is the peak moment inside an eclipse, and dusk is the closing stage of a day — each pair names a phase nested inside a longer span.",
+      "pairs": [
+        [
+          "totality",
+          "eclipse"
+        ],
+        [
+          "dusk",
+          "day"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "astronomy",
+        "time-of-day"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "a visible outline that conceals the true form beneath it",
+      "explanation": "A shadow traces a face without revealing it, just as a silhouette outlines identity while hiding every detail that would confirm it.",
+      "pairs": [
+        [
+          "shadow",
+          "face"
+        ],
+        [
+          "silhouette",
+          "identity"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "shadow-theme"
+      ]
+    },
+    {
+      "id": "set-instrument-action",
+      "relationshipLabel": "the instrument and the action it exists to perform",
+      "explanation": "An obelisk is built to cast a shadow that marks the sun's path, just as a sundial exists purely to tell time from that shadow.",
+      "pairs": [
+        [
+          "obelisk",
+          "cast a shadow"
+        ],
+        [
+          "sundial",
+          "tell time"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "astronomy",
+        "shadow-theme"
+      ]
+    },
+    {
+      "id": "set-defective",
+      "relationshipLabel": "a strained or unopposed form of the activity that falls short of the real thing",
+      "explanation": "Shadowboxing mimics a fight with no opponent, and squinting strains toward sight without ever achieving it — both are effortful stand-ins for the real act.",
+      "pairs": [
+        [
+          "shadowbox",
+          "boxing"
+        ],
+        [
+          "squint",
+          "see"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "shadow-theme"
+      ]
+    }
+  ]
+}

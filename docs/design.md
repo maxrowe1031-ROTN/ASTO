@@ -595,6 +595,294 @@ for. Measured against the real corpus after publishing: published boards contrib
 **Reversibility is git**, not an un-publish route ([[version-control-for-agents]]): a published
 board is a file in a commit, and removing one is a revert plus a deletion.
 
+### D-7 — The two axes the pipeline was missing (2026-08-05)
+
+**What prompted it:** Max ran six boards in parallel and approved none — three rejected, one
+failed, two left in revise. The worst batch since the taxonomy work, and the most useful,
+because the complaints were consistent enough to name causes.
+
+#### An instruction is a request; a check is not
+
+The finding that set the method. I read the actual `prompt.txt` that produced the cars defect.
+**All twelve compiled editorial rules were present verbatim**, including rule-010 (*"check
+whether any four of its words form another valid analogy"*), rule-011 (*"B must follow from A
+necessarily, not occasionally"*) and rule-008 (same grain). All three were broken. And that was
+the **revision** attempt, whose notes *also* named the specific defect — and it returned
+`ignition : shutdown :: departure : arrival`, the identical four words.
+
+So: **validity defects get a mechanical check, not a thirteenth rule.** Taste keeps using
+instruction, because nothing else can judge it — but even there the output is a scored, visible
+verdict rather than an exhortation.
+
+#### The cross-reading check
+
+Six of six before-after / sequence sets in the batch were rejected; two were outright fairness
+bugs. `ignition : shutdown :: departure : arrival` also reads `ignition : departure :: shutdown
+: arrival`, and because the engine refuses that reading, **a player who sees it is marked wrong
+for being right**. `board-integrity.js` says in its own header that exhaustive search cannot
+catch this (risk 1): the sixteen words *are* distinct, so the sweep sees a clean board.
+
+`crossPairings` (in `src/engine/arrangements.js`, beside the accepted-order algebra it is the
+complement of) enumerates the two refused groupings of a set's own four words — four words
+admit exactly three pairings, so this is finite, deterministic and pure. `06` receives them as
+a checklist with one closed question each, and its validator refuses an answer that skipped
+one, invented one, or answered one twice. That required the pipeline to hand a stage's **input**
+to `validateOutput`, which it never did: a validator that cannot see the question can only
+check that the answer is well-formed.
+
+**It reports; it does not gate.** Measured first, because "just enforce the validator" was the
+obvious move and the numbers refute it: `05`'s `boardPasses` is **false on 31 of 36 attempts
+ever (86%)** and agrees with Max on **13 of 24 sets (54%)**, flagging 4 he called publishable
+and missing 7 he rejected. A signal that fires 86% of the time cannot gate anything.
+**Reconsider-when:** if the cross-reading check agrees with Max's `valid-but-unfair` /
+`order-ambiguous` calls across roughly the next six boards, promote it to a blocking check at
+`04a`. It earns its gate the way D-5's auto-revise does — on evidence.
+
+The stance is not cursed, and the check must not be read as condemning it:
+`planting : felling :: budding : withering` drew *"I felt especially good about this one."* The
+difference is whether the cross-pairing is *also* strong, which is exactly the question asked.
+
+**And it did not work the first time.** Replaying it over the six judged boards — the step that
+exists because Max's verdicts are an answer key — three of six came back **unparseable**, two
+failed validation, and the one that validated missed the defect he had found. Diagnosed on a
+single board: **`stop_reason max_tokens`, 16,000 output tokens, zero characters of text.** The
+whole budget went to thinking.
+
+I had made 06 combinatorial and left it at `high`. That is the **third** time this repo has met
+that failure — 02 died on the `beach` run at high, 04 came down from xhigh with *"94% of its
+billed output was thinking behind an 876-token answer"* — and `pipeline-config.js` was already
+carrying both notes when I walked into it. The lesson generalises past any one stage: **raising
+effort on a stage whose ask has just become combinatorial does not buy convergence, it buys
+silence.**
+
+Fixed by shrinking the ask rather than raising the ceiling: checklist lines carry short ids
+(`set-b#1`) which the answer echoes instead of retyping four words — the old shape invited the
+model to send back the formatted *string* it had been shown, which is what it did — and a `note`
+is required only on a reading that HOLDS. Then 06 came down to `medium`, which its pinned test
+had forbidden for a good reason (*"the last thing between a flawed board and Max's time"*) that
+a stage returning nothing outranks. Same board after: `end_turn`, 6,234 output tokens, all eight
+readings answered.
+
+**And then it still did not work.** Three measured rounds over the same six boards:
+
+| round | caught | spurious | behaviour |
+|---|---|---|---|
+| 1 — high effort, verbose shape | — | — | 3 of 6 unparseable, 16k tokens of thinking, no text |
+| 2 — compact shape, medium | 1 of 3 | 13 | flags any tidy 2×2 grid as an analogy |
+| 3 — round 2 plus an anti-grid instruction | 0 of 3 | 2 | quiet, and misses what it was built for |
+
+Round 2's every false flag had one signature — *"guitarist and drummer are parallel musician
+roles"*, *"song and album are parallel categories"* — the model calling **symmetry** an analogy,
+which is precisely what round 2's prompt already told it not to do. Round 3's sharper wording
+fixed that and over-corrected into silence.
+
+**Conclusion, recorded rather than papered over: the mechanism works and the judgement does
+not.** The enumerator is exact, deterministic and pins both real defects as tests; the checklist
+plumbing forces a complete answer and no longer truncates. What is not reliable is the model's
+answer to the question, in either direction, after two honest attempts at the wording. It ships
+**quiet** (round 3) — advisory, folded shut, ~2 false flags across six boards — and it is
+**nowhere near a gate**. The reconsider-when above stands, with its bar restated: it must catch
+the defects Max describes in prose before it is trusted with a veto.
+
+#### The tag that turned out to be three tags
+
+Building the answer key exposed something about the corpus itself. `valid-but-unfair` is Max's
+catch-all for *"technically works but the player gets cheated"*, and across this batch it covers
+at least three unrelated defects: **a cross-reading also works** (cars, grateful-dead — he
+writes the reading out verbatim), **the claim is overgeneral** (*"not every crew contains a
+mason"*, *"many kinds of workshops"*), and **the set is simply weak** (*"technically works
+but… boring"*). My first score conflated all three and reported eight misses where the narrow
+answer key holds three.
+
+That matters beyond this measurement: **the rubric compiled from this corpus will conflate them
+too**, and no automated check can be scored against a tag that means three things.
+
+**Split with Max the same day.** Reading the form changed the shape of the fix. The chip's own
+description was *"technically correct, but the player could not have known"* — a **fourth**
+meaning, and one he had never used it for. Sorting the nine uses:
+
+| what he meant | uses | chip that already covered it |
+|---|---|---|
+| the same four words regroup into a second analogy that also works | 4 | **none — the real gap** |
+| the claim is only sometimes true | 2 | `not-always-true` |
+| technically valid but flat | 3 | `not-evocative`, `weak-explanation` |
+
+So the work was **one precise tag and one retirement**, not three new chips — `second-valid-reading`,
+in the *fairness* group, where the vague one had been. Note that `order-ambiguous` is not the
+same thing (*A : B reads like B : A*, a direction problem); Max reached for it on the cars board
+because it was the closest available, which is itself the evidence for the gap.
+
+**Retiring is subtraction from the form, never from the record.** `schemas.js` already carried
+the rule — *"APPEND ONLY. A removed tag would orphan the events that already carry it"* — so
+`valid-but-unfair` stays in `QUICK_TAGS` and validates forever; a new `RETIRED_TAGS` set is what
+keeps it off the form. `FEEDBACK_FORM_VERSION` moved to 3, because the **absence** of that tag
+now means something different before and after this line, and rubric compilation has to segment
+on it exactly as it does for version 1's untrustworthy `action`.
+
+Why retire rather than keep a catch-all: a vague chip beside precise ones collects everything.
+That is the same failure that left `not-always-true` unused for four boards while Max ticked
+`relationship-does-not-click` and wrote the necessity argument in prose underneath.
+
+#### Evocativeness, and Max's correction to it
+
+`not-evocative` was the top tag at **15 uses across four boards**, and the word appeared in **no
+agent prompt anywhere**. Stage 08 rated the board Max called *"an absolute snooze"* as
+**`unity: strong`** — *"every word sits comfortably inside one coherent world"*. Both readings
+were correct: **unity and evocativeness are orthogonal**, a board of a subject's most obvious
+nouns is perfectly unified *by construction*, and only one axis was being measured.
+
+**Max's correction is the load-bearing part.** I framed it as one axis, generic ←→ obscure, with
+the target in the middle. He corrected it: *obscurity comes from overgeneralisation too*, and
+his own notes prove it — *"so boring and **unspecific** the puzzles barely make sense"*, and
+*"Theres many kinds of **workshops**… if you had said **woodshop** : carpentry, that would have
+worked a lot better."*
+
+So one root cause produces three complaints. A word chosen too general is **boring**
+(`not-evocative`), **untrue** (`valid-but-unfair`, `not-always-true` — *"to state that every
+crew contains a mason?"*), and **vague** (`too-obscure` — of the batch's six uses only "squit"
+was an esoteric word; the rest were vagueness). His fix is always the *more specific* word,
+which repairs all three at once.
+
+The instruction is therefore not "be evocative" but **"prefer the most specific word your
+reader will still recognise"**, with all three failure modes named — and the rarer opposite
+failure named too, scaled to difficulty: an easy set wants words anyone knows, a hard set may
+ask for the word an enthusiast knows, never one they would look up. `01`'s theme line stopped
+being `Theme to work within: X`, and its *"prefer familiar words"* line stopped saying
+*familiar* when it meant *recognisable* — common is exactly the generic middle.
+
+`08` scores the result beside unity, naming the flat words and the sharper ones. Shown, never
+enforced — same treatment as unity, and for the same reason.
+
+#### The Revision Proposer worked and lost to the button beside it
+
+`cars` produced the first brief ever, and it was right: correct root cause (pair selection, not
+layout), correct re-entry stage, three candidate fixes, and the three praised sets listed under
+`doNotChange`. It was never sent. The plain "Request revision" button answered first, carrying
+raw tag-and-note text and no protection list — so the revision churned the three good sets and
+reproduced the defect. **Zero `proposal-verdict` events existed in the whole corpus**, which is
+the only thing D-5's graduation trigger was ever waiting on.
+
+The button now defers to the brief when one exists or is being written. It does not send the
+brief silently in its place: Max still accepts, edits or discards it, because an inferred
+verdict is not evidence.
+
+#### And the evaluators moved to the sets they are about
+
+`05` and `06` had been describing these defects in prose for weeks, filed by stage in a
+collapsed panel at the foot of the page — so Max rediscovered them by playing the boards. Their
+findings are per-set, so they now render on the set card, **folded shut**: the review loop
+exists to capture an unbiased first read, so the machine's opinion is one click away rather
+than in the way.
+
+### D-8 — Two kinds of hard, and why the pipeline could only make one (2026-08-05)
+
+**What prompted it:** Max ran seven boards and judged five. **Five approved, zero rejected**
+— the first batch with no rejections at all. And: *"while these are publishable, i didn't
+get the same rush or joyous reaction as a few of the earlier puzzles."* He asked whether he
+was simply going numb.
+
+**He was not, and his own scoring is the proof.** Praise-tags per set went 1.43 → **3.15**,
+and 15 of 20 sets scored all four — the *"this is ASTO"* signal `feedback.js` records as
+having been earned by only two boards ever. `not-evocative` **15 → 0**, `too-obscure`
+**6 → 0**, `valid-but-unfair` **9 → 0**. Numbness shows up as lower scores. Craft went up
+while delight went down: two axes, and the gap between them was the work.
+
+#### The diagnosis, after two corrections from Max
+
+My first reading was that the naming set had moved into the Black slot, so forbid that.
+Max: *"they can both be black, depending on the puzzle. I don't want to fall into a
+repetitive hole where only one type of puzzle is one difficulty."* The data agreed with
+him — this batch's Blacks were the **more** varied five shapes, against a-tree and birds
+both running `before-after`. A placement rule would have swapped one predictable pattern
+for another.
+
+Sorting every set in the batch by where its difficulty came from found the real gap:
+
+- *ordinary words, surprising arrangement* — `start line : finish line :: clip in : clip
+  out` — present, and **always easy** (Max: all four praise tags **and** `too-easy`);
+- *rare words, ordinary arrangement* — `coronagraph : glare`, `speleothem : stalactite` —
+  present, and **always the hard end**.
+
+Nothing in the batch was a plain-word set that was genuinely difficult. That is exactly
+what a-tree's Black had been — `planting : felling :: budding : withering`, four words a
+child knows — and Max's note on it names the mechanism: *"the opposite arrangement makes
+this analogy stand out from the rest."*
+
+**So the gap was a missing capability, not a misplaced set.** Difficulty and vocabulary had
+become the same lever. I caused part of it: the specificity instruction from D-7 said a
+hard set *"may ask for the word an enthusiast knows"* — one route up, and the pipeline took
+it every time. His tell, written twice: *"someone with cycling knowledge would probably be
+stoked."* He handed the delight to a hypothetical expert.
+
+#### The change: every agent that held a lever
+
+Max asked which agents could proliferate the fix rather than loading it all onto 01. Two
+were working against it:
+
+- **03, the difficulty rater** — told to judge *"clarity, abstraction, **familiarity** and
+  misdirection"*. To this agent a rare word simply **was** difficulty; the conflation was
+  in the measurement, not only in the authoring. Familiarity still moves a grade, but every
+  graded set now reports `difficultySource: arrangement | vocabulary | both`, enforced by a
+  semantic check.
+- **04, the board builder** — *"the hardest set you have becomes the Black"*, ranking by a
+  number that already had rarity folded into it. It now receives the source, is told a
+  board reads best when its difficulty does not all come from one place, and records
+  `blackSetReasoning`. **Guidance, not a rule** — decision 3 below.
+- **07, the test player** — a model, so it knows what `speleothem` is and plays a
+  knowledge-gated set as though it were open. The one agent whose job is *"how does this
+  feel to play"* could not detect the defect Max found by playing. It now plays as a
+  general-audience solver and reports `knowledgeGated` words. Blind by construction still:
+  it names words, never sets, and the review page maps word → set as it already does for
+  06's findings.
+- **02, the theme grouper** — chooses which sets exist at all, so anything it sets aside is
+  gone. Told that an arrangement-hard grouping is the scarcer resource when candidates
+  compete.
+- **01, the pair author** — both routes named as a palette, and one requirement about
+  *range*: at least one matched group must be hard through arrangement alone. The
+  recognition-scales-with-difficulty clause is gone.
+
+#### Variety by steering, never by rule
+
+Max's constraint, and the reason none of this is a gate: *"we need to create and arrange
+our agents in ways that allow for flexibility… variety is an important part of puzzle
+games. If it becomes too predictable, it's no longer fun."*
+
+So `variety.js` gained a second dimension beside shape usage: **how each board's hardest
+set earned its difficulty**. The brief leans against a rut — three boards in a row topped
+the same way — and says nothing otherwise. A mixed history produces no steer at all, which
+is pinned as a test, because a rule reserving Black for one kind is the failure this whole
+decision exists to avoid. Themed runs now receive that steer too (they had never received
+anything from the index but stance quotas), while `relationshipShapes` stays the
+surprise-me marker.
+
+**Honest limit of the fallback classifier.** For the thirty-odd boards graded before 03
+reported its source, the index falls back to the shape — the three `inclusion` shapes whose
+only lever for extra difficulty is a rarer name. Replayed against Max's verdicts it gets
+all four boards he loved right and **only 2 of the 5 he found flat**: `coronagraph : glare`
+is `prevention` and `perihelion : orbit` is `sequence`, so the shape cannot see that the
+words are rare. That is precisely why 03's own judgement is the primary source and the
+shape is only the fallback.
+
+#### What was deliberately not done
+
+- **The game rules are untouched.** Max: *"you don't have to solve every puzzle to have
+  fun. The challenging nature is what pushes people to want to try again."* `so-close` still
+  costs a mistake and the cap is still four. Recorded because the data tempted otherwise:
+  **0 wins in 8 recorded playthroughs**, every one ending at four mistakes, and on `cars`
+  all four mistakes were so-close. He loved boards he may also have lost, so losing is not
+  what kills the joy.
+- **No third style-guide verdict.** 08 returned `evocativeness: strong` on four of the five
+  boards Max said did not thrill him. It is not wrong — they *are* on theme — it simply
+  does not measure delight. A third score would be a third thing agreeing with itself,
+  which unity demonstrated and evocativeness has now repeated.
+- **Nothing in the `04a` gate.** A gate is a rule, and every rule here becomes the
+  predictability being avoided.
+
+**Reconsider-when:** if a fresh batch still arrives with every board topped the same way,
+the steer is too weak and the lever moves upstream to the stance quota — `inclusion` is
+quota'd on every run and is where all three nameable shapes live, which is why 8 of the 9
+boards before this carried exactly one naming set.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

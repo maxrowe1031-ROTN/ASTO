@@ -19,7 +19,7 @@ export const QUICK_TAGS = [
   'repetitive-shape',
   'weak-explanation',
   'weak-label',
-  'valid-but-unfair',
+  'valid-but-unfair', // retired from the form 2026-08-05; still valid forever
   'good-unchanged',
   'strong-reveal',
   'difficulty-accurate',
@@ -27,6 +27,7 @@ export const QUICK_TAGS = [
   'no-unifying-theme',
   'not-evocative',
   'feels-like-asto',
+  'second-valid-reading',
 ];
 
 // Tags that read as praise, so the UI can tint them differently. Positive
@@ -77,7 +78,16 @@ const FAULT_GROUPS = [
     label: 'fairness',
     tags: [
       ['cross-set-association', 'a word pulls toward another set on the board'],
-      ['valid-but-unfair', 'technically correct, but the player could not have known'],
+      // Replaced `valid-but-unfair` on 2026-08-05. That chip read "technically
+      // correct, but the player could not have known", and across nine uses Max
+      // never meant that — four of them meant this, and the rest were already
+      // covered by `not-always-true` and `not-evocative`. A vague chip beside
+      // precise ones collects everything; schemas.js RETIRED_TAGS has the count.
+      //
+      // It is the worst defect a board can carry, so it says so: the engine
+      // accepts exactly one grouping, and a player who finds the other one is
+      // marked wrong for being right.
+      ['second-valid-reading', 'the same four words regroup into another analogy that also works'],
     ],
   },
   {
@@ -358,7 +368,10 @@ export function collectFeedback(root, { attemptId, defaultAction = 'revise-set',
   return events;
 }
 
-const FORM_VERSION = 2;
+// Exported so review.js stamps the same number on the proposal-verdict events
+// it writes. It had its own literal `2` until 2026-08-05, which is one version
+// bump away from silently splitting one population into two.
+export const FORM_VERSION = 3;
 
 const setVerdictIn = (block) =>
   block.querySelector('input[data-role=verdict]:checked')?.value ?? null;

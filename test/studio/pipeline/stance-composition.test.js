@@ -27,6 +27,7 @@ import {
   fastTime,
   fixturesWith,
   boardReply,
+  solverReply,
 } from './helpers.js';
 
 const experiment = (name) =>
@@ -62,6 +63,9 @@ const raterReply = (board) => ({
     grades: board.sets.map((set) => ({
       setId: set.id,
       difficulty: set.difficulty,
+      // Required on a graded set since 2026-08-05 (design.md D-8): a grade has
+      // to say whether it is hard by arrangement or by vocabulary.
+      difficultySource: 'arrangement',
       rationale: 'as played',
     })),
   }),
@@ -73,6 +77,9 @@ const runBoard = async (board) => {
     '02-theme-grouper': grouperReply(board),
     '03-difficulty-rater': raterReply(board),
     '04-board-builder': [boardReply(board)],
+    // The solver's checklist is derived from the board it judges, so a swapped
+    // board needs a swapped reply — same reason the grouper and rater do.
+    '06-adversarial-solver': solverReply(board),
   });
   const result = await runPipeline({
     runId: seedRun(store),
@@ -146,6 +153,7 @@ test('a builder that picks the same stance twice from a diverse pool is sent bac
         grades: poolSets.map((set, i) => ({
           setId: set.id,
           difficulty: Math.min(i + 1, 4),
+          difficultySource: 'arrangement',
           rationale: 'graded',
         })),
       }),
@@ -206,6 +214,7 @@ test('KNOWN LIMIT: round 1\'s kitchen board declares four stances yet Max read i
     },
     '03-difficulty-rater': raterReply(kitchen),
     '04-board-builder': [boardReply(kitchen)],
+    '06-adversarial-solver': solverReply(kitchen),
   });
   const result = await runPipeline({
     runId: seedRun(store),

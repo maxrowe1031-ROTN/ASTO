@@ -4,6 +4,52 @@
 > work only when Max pulls them into `design.md`'s plan. Mid-session ideas
 > land here so the session stays on task.
 
+- ~~**`valid-but-unfair` is three tags wearing one name.**~~ **Split 2026-08-05 with Max — see
+  design.md D-7.** `second-valid-reading` added for the meaning that had no chip; the other two
+  went back to `not-always-true` and `not-evocative`, which already covered them. The old tag is
+  retired from the form and valid forever. What remains: **the nine historical events carrying
+  it cannot be re-sorted automatically** — their meaning is only in the prose, so a rubric
+  compiled across the version boundary has to read those by hand or exclude them.
+- **D-8 probably makes D-1's promotion universal — watch it.** The reframed rater grades the
+  REASONING and names the vocabulary separately, so a set that used to score 4 for its rare
+  words now scores lower: on the caves board the real model graded the shipped Black
+  (`speleothem : stalactite`) a **1**, and returned no 4 at all. D-1 already exists because
+  "the Difficulty Rater has never returned a 4" and the builder promotes to fill the slot —
+  this likely widens that gap rather than closing it. Not a fault, but if every board is now
+  built on a promotion, D-1's open question ("should the Pair Author be asked for a hard set
+  in the first place?") gets its answer sooner than planned.
+- **The difficulty-source fallback classifier is weak (design.md D-8).** For boards graded
+  before 03 reported `difficultySource`, the variety index guesses from the shape — and
+  replayed against Max's verdicts it caught all four boards he loved but only 2 of the 5 he
+  found flat. `coronagraph : glare` is `prevention` and `perihelion : orbit` is `sequence`;
+  a shape id cannot see that the words are rare. Harmless while 03's own judgement is
+  primary, but any analysis over historical boards must not trust it.
+- **If a fresh batch still tops out the same way every time, the lever is the stance quota.**
+  `inclusion` has been quota'd on every run ever and is where all three nameable shapes live
+  (`taxonomic`, `class-individual`, `synonymity`), which is why 8 of the 9 boards before
+  2026-08-05 carried exactly one naming set. Loosening that quota is the bigger, more
+  invasive move held in reserve behind D-8's steer.
+- **07's `knowledgeGated` has never fired on a real board.** It returned `[]` on the mock,
+  honestly — First Light's words are all ordinary. Its first real test is the next batch,
+  and its precision is unmeasured until then.
+- **The cross-reading check's semantic question needs a third attempt (design.md D-7).** The
+  enumerator and plumbing are sound; the model's answer is not. Round 2 flagged any tidy 2×2
+  grid as an analogy (13 spurious across six boards); round 3's anti-grid wording over-corrected
+  into near-silence (0 of 3 caught). Worth trying: ask it to name each half's relation as a
+  separate output field rather than folding both into one boolean, so the reasoning is visible
+  and scoreable rather than hidden behind a yes/no.
+- **The cross-reading check's gate-promotion trigger (design.md D-7).** It reports and does not
+  block. If it agrees with Max's `valid-but-unfair` / `order-ambiguous` calls across roughly the
+  next six boards, promote it to a blocking check at `04a`. If it disagrees, the question it
+  asks needs sharpening before it is trusted with a veto.
+- **Stage 05 flags almost exactly two sets per board.** Across 36 attempts the distribution is
+  0/1/2/3 fails at 5/10/19/2 — 2 is the mode at 53%, and it was 2 on every board of the
+  2026-08-05 batch. `boardPasses` is therefore false on 31 of 36 attempts (86%) and agrees with
+  Max on 54% of sets. Its prose is often excellent and its verdict carries almost no
+  information; worth asking whether the stage should return severities rather than a boolean.
+- **The evocativeness verdict has no answer key yet.** It is shown, never enforced, and nothing
+  measures whether it agrees with Max's `not-evocative` tag. At ~6 judged boards, compare — it
+  is the same graduation question the cross-reading check has.
 - **Un-publishing has no route.** Removing a published board is `git revert` plus deleting the
   file — deliberate (reversibility for generated artifacts is version control, not
   application-level undo), but if boards start being pulled often, the Studio should say so

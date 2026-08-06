@@ -70,6 +70,13 @@ const SCHEMA = {
         },
       },
     },
+    // Why THIS set got the Black slot, added 2026-08-05 (design.md D-8).
+    //
+    // The choice was always being made and never recorded, so when every Black
+    // in a batch turned out to be vocabulary-hard there was no way to tell a
+    // deliberate call from a pool that offered nothing else. Optional, so the
+    // runs already on disk still validate.
+    blackSetReasoning: { type: 'string', minLength: 1 },
     insufficientSets: { type: 'string', minLength: 1 },
   },
 };
@@ -93,6 +100,22 @@ export function buildPrompt(input = {}, context) {
       // is not thrown away over a label. Decided with Max, 2026-08-03.
       'The grades are the rater\'s opinion, not a constraint you must match exactly. Rank your four chosen sets from easiest to hardest and assign difficulties 1, 2, 3 and 4 in that order.',
       'This means the hardest set you have becomes difficulty 4 — the Black set — even if the rater graded it lower. Do this rather than refusing; a board with a promoted Black set is wanted.',
+      '',
+      // design.md D-8. Ranking by grade alone is what produced the 2026-08-05
+      // batch Max called publishable and unexciting: the rater counted an
+      // unfamiliar word as difficulty, so the vocabulary-hard set topped every
+      // ranking and every Black became coronagraph, speleothem, Paris-Roubaix.
+      //
+      // Deliberately guidance and not a rule. Max's instruction was explicit —
+      // "they can both be black, depending on the puzzle. I don't want to fall
+      // into a repetitive hole where only one type of puzzle is one
+      // difficulty." A rule reserving Black for one kind would just be the
+      // opposite monoculture. Variety here is steered across boards, by the
+      // brief, not legislated inside one.
+      'Each graded set carries a "difficultySource": "arrangement" (ordinary words whose placement is the puzzle), "vocabulary" (a plain relationship carried by a word not everyone knows), or "both".',
+      'Use it when you rank. Two sets can share a grade and be hard in completely different ways, and a board reads best when its four sets do not all get their difficulty from the same place — four vocabulary-hard sets is a quiz, four arrangement-hard sets is a board with no colour in it.',
+      'Either kind may be the Black. If your pool gives you a real choice for the hardest slot, take the one that makes the board as a whole more varied rather than the one with the rarest words — but do not force it: a genuinely harder vocabulary set is the right Black when that is what the pool holds.',
+      'Say which you chose and why in "blackSetReasoning": one line naming the difficultySource of the set you put at 4 and what it was competing with.',
       'Record every set you labelled harder than it was graded in "promotions". A promotion the reviewer cannot see is a judgement nobody can check.',
       'Never invent a set that is not among the graded candidates. Choose and relabel; do not author.',
       'All sixteen words must be distinct. No word may appear in two sets.',
@@ -126,6 +149,7 @@ export function buildPrompt(input = {}, context) {
     outputRules: [
       'Return { "board": { "id", "title", "sets": [ { "id", "relationshipLabel", "explanation", "pairs", "difficulty", "baitTags" } ] }, "falseTrails": [ { "words", "note" } ], "promotions": [ { "setId", "gradedDifficulty", "assignedDifficulty" } ] }.',
       'Leave "promotions" empty when every set kept the difficulty it was graded.',
+      'Also return "blackSetReasoning": one line naming the difficultySource of the set you placed at difficulty 4, and what it was competing with for that slot.',
       'Each set\'s "pairs" is [[A, B], [C, D]] — order carries the meaning and is never sorted.',
       'The board carries no "words" array; the sixteen words are derived from the pairs.',
       'No set carries a "tier" field; the tier derives from "difficulty".',

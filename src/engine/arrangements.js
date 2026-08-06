@@ -16,6 +16,32 @@ export function acceptedOrders(pairs) {
 }
 
 /**
+ * The other two ways to group a set's own four words — the readings the engine REFUSES.
+ *
+ * `acceptedOrders` says which readings play; this says which ones a human might still
+ * find convincing while the engine marks them wrong. That gap is real:
+ * `ignition : shutdown :: departure : arrival` also reads `ignition : departure ::
+ * shutdown : arrival`, and a player who sees the second loses a mistake for it.
+ * `board-integrity.js` says in its own header that exhaustive search cannot catch this
+ * (design.md risk 1) — because the words ARE distinct, so the sweep sees a clean board.
+ *
+ * Two candidates, not twenty-four. Four words admit exactly three pairings: the intended
+ * one and these. Every other rearrangement is one of the same three CLAIMS read backwards
+ * or with its halves swapped, which the engine already treats as equivalent.
+ *
+ * Deliberately blind to whether a reading is any good — enumerating is mechanical,
+ * judging is not. The Studio's adversarial solver is handed these strings and asked,
+ * one closed question each, whether they read as valid analogies.
+ */
+export function crossPairings(pairs) {
+  const [[a, b], [c, d]] = assertPairs(pairs);
+  return [
+    [a, c, b, d], // A : C :: B : D — the classic wrong reading
+    [a, d, b, c] // A : D :: B : C
+  ];
+}
+
+/**
  * The stored order — what a solved card always displays, whichever accepted order the
  * player actually confirmed. Relationship labels are directional, so the display
  * normalizes even though the engine accepts all four.

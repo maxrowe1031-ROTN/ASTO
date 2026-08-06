@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-05T20-37-30.718Z-cars",
+  "createdAt": "2026-08-05T20:37:30.718Z",
+  "theme": "cars",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "event",
+      "possession"
+    ],
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}

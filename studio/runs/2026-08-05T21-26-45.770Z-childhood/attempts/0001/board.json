@@ -1,0 +1,86 @@
+{
+  "id": "board-childhood-analogies",
+  "title": "Childhood Connections",
+  "sets": [
+    {
+      "id": "set-toy-game",
+      "relationshipLabel": "A general category of plaything and a specific kind within it",
+      "explanation": "A yo-yo is a kind of toy, just as tag is a kind of game — each pair names a broad category and one clear example inside it.",
+      "pairs": [
+        [
+          "toy",
+          "yo-yo"
+        ],
+        [
+          "game",
+          "tag"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "category",
+        "childhood-object"
+      ]
+    },
+    {
+      "id": "set-caregiver-recipient",
+      "relationshipLabel": "One who acts and the child their work is directed toward",
+      "explanation": "A teacher works for a student and a babysitter works for a child — both pairs link an adult role to the young person they serve.",
+      "pairs": [
+        [
+          "teacher",
+          "student"
+        ],
+        [
+          "babysitter",
+          "child"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "child",
+        "roles"
+      ]
+    },
+    {
+      "id": "set-life-stages",
+      "relationshipLabel": "An earlier moment of childhood facing a later one across the same span",
+      "explanation": "Birth precedes graduation and toddler precedes teenager — each pair marks an earlier and later point on the same stretch of growing up.",
+      "pairs": [
+        [
+          "birth",
+          "graduation"
+        ],
+        [
+          "toddler",
+          "teenager"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "child",
+        "growth"
+      ]
+    },
+    {
+      "id": "set-child-possession",
+      "relationshipLabel": "A young creature and the possession characteristic of it",
+      "explanation": "An infant is known for its rattle and a kid for a bicycle — each pair ties a stage of childhood to the object most associated with it.",
+      "pairs": [
+        [
+          "infant",
+          "rattle"
+        ],
+        [
+          "kid",
+          "bicycle"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "child",
+        "objects"
+      ]
+    }
+  ]
+}

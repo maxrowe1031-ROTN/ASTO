@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 import { createRunStore } from '../../../studio/storage/run-store.js';
 import { createMockTransport } from '../../../studio/mock-transport.js';
+import { enumerateCrossReadings } from '../../../studio/agents/adversarial-solver.js';
 
 export const fixturesDir = fileURLToPath(
   new URL('../../../studio/fixtures/responses/', import.meta.url),
@@ -68,6 +69,25 @@ export function fixtureBoard() {
 /** Wraps a board-builder output back into the reply shape the transport returns. */
 export function boardReply(board, extra = {}) {
   return { text: JSON.stringify({ board, falseTrails: [], ...extra }) };
+}
+
+/**
+ * A 06-adversarial-solver reply that actually answers THIS board's checklist.
+ *
+ * Since 2026-08-05 the solver is handed the enumerated cross-readings of the
+ * board it is judging and its validator refuses an answer that skipped any of
+ * them. That makes the committed fixture board-specific: a test that swaps the
+ * board must swap this reply too, exactly as it already swaps the grouper's and
+ * the rater's. Answering every reading `valid: false` is the "clean board"
+ * case; pass `valid` to flip a chosen reading.
+ */
+export function solverReply(board, { valid = () => false } = {}) {
+  const crossReadings = enumerateCrossReadings(board).map(({ id, setId, reading }) => ({
+    id,
+    valid: valid(setId, reading),
+    ...(valid(setId, reading) ? { note: 'Test fixture.' } : {}),
+  }));
+  return { text: JSON.stringify({ noneFound: true, findings: [], crossReadings }) };
 }
 
 /**
