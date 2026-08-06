@@ -2,6 +2,131 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-06 — Order is the game, so order has to be fair
+
+D-8's first real batch answered its question. Max ran eight themes, judged six, approved
+four, published four. **`puzzles/` is at 10 boards — Phase 5's content bar is met**, and
+the remaining Phase 5 work is the manifest and select screen, not more boards.
+
+### D-8 works, and two backlog predictions were wrong
+
+The Black slot's difficulty source varied for the first time — **`both`×3, `vocabulary`×3,
+`arrangement`×1** across seven boards. **`maps` is the first board ever to top out through
+arrangement alone**: `needle : compass :: satellite : GPS`, four ordinary words, a
+deliberate grain-shift from single device to whole system. Max: *"This was a great puzzle!
+this one felt fun and challenging."*
+
+| | praise-tags/set | sets scoring all four | approvals |
+|---|---|---|---|
+| Aug 5 23:xx (pre-D-8) | 3.15 | 15/20 (75%) | 5/5 |
+| **Aug 6 (D-8)** | **3.25** | **19/24 (79%)** | **4/6 judged** |
+
+- **The rater returned a 4, four times** (Knights ×3, Harry Potter ×1), and two of seven
+  boards shipped a genuinely rated-4 Black rather than a promotion. The backlog predicted
+  the opposite — that D-8 would make D-1's promotion universal. Closed as wrong.
+- **`knowledgeGated` fired for the first time**, on 5 of 7 boards, with two hits Max's own
+  notes confirm: `boss` on Knights (*"the machine caught exactly what i got hung up on"*)
+  and the Ruth/Gehrig/Mantle/Maris set on Yankees (*"all except the most trivia heavy
+  one"*). Correctly silent on the two all-ordinary-word boards, and its flag on `medicine`
+  did not stop that being his best board — it names a wall without condemning a board.
+
+### The defect hiding inside the win — D-9
+
+**13 recorded playthroughs, 0 wins.** Not news on its own; what is new is how the losses
+happen. On Yankees **all four mistakes were so-close** and he never grouped the wrong four
+words once. Same on `cars`. On `maps`, 3 of 4.
+
+The cause is structural. The engine accepts `[A,B,C,D] [C,D,A,B] [B,A,D,C] [D,C,B,A]`, so
+flipping **both** pairs is fine and flipping **one** is a mistake. `dawn : dusk :: birth :
+death` costs nothing — time runs one way. `Ruth : Gehrig :: Mantle : Maris` has no arrow at
+all, so the player guesses an orientation and mirrors it, and half of them lose a mistake
+for having the answer. Its shape is `coordinates`, *"two counterparts side by side"*.
+
+**Max's call: a defect to catch, not a fourth `difficultySource`.** If the player had the
+insight and lost to a coin flip, that is unfairness, not difficulty.
+
+### Built — three independent signals, none of them gating
+
+- **`studio/corpus/relationship-index.json`** — four shapes carry `symmetric: true`:
+  `coordinates`, `synonymity`, `directional`, `contiguity`. Two of them already said so in
+  their own `failureMode` before the field existed. `reverse` and `before-after` considered
+  and rejected — *undoes* and *before* both carry a direction. Pinned by a test.
+- **`studio/corpus/vocabulary.js`** — `SYMMETRIC_SHAPES`, `isSymmetric`, `symmetricNote`.
+- **`studio/pipeline.js`** — `orderIndistinguishability()` at 04a, joining the board to 02's
+  declared shapes exactly as the stance check does. `enforced: false`, absent from `reasons`.
+- **`studio/agents/adversarial-solver.js`** — the flags become an every-line-answered
+  checklist (`orderReadings`). Same move the cross-reading search got, for the same
+  demonstrated reason: **06 already had an `ambiguous-order` finding kind and returned
+  nothing on Yankees or cars**, the two boards where ordering took every mistake.
+- **`studio/agents/test-player.js`** — `orderGuessed`, mirroring `knowledgeGated`. Words,
+  never sets. A model does not experience a coin flip; it picks an order and rationalizes
+  it, so the agent whose job is *how does this feel to play* scored a coin-flip set as a
+  clean solve.
+- **`studio/review/ui/so-close.js`** (new) + `review.js` — all three signals on the set's
+  card, plus a *simulated* so-close count beside Max's real one. Its own module because
+  `review.js` reaches for `document` at module scope.
+
+**It reports rather than gates, and `maps` is why.** Its `north : south :: east : west` set
+is `directional` and therefore flagged — and is perfectly fair, because convention settles
+the order. Max solved it and said *"green made me smile."* A blocking check would have
+failed a board he approved and published.
+
+### Also this session
+
+- **The Obama terminal failure diagnosed.** 01 authored `President`, `Obama` and `Cabinet
+  secretary` as the left term of two pairs each; 02 grouped each with its twin and three of
+  seven sets used one word twice. Round 2 fixed the duplicates and then failed the stance
+  floor — it oscillated between two constraints that pool could not satisfy. `rule-009`
+  already forbade it but illustrated only the *chain* shape, so it gained the
+  **shared-subject** example, with provenance recorded. The upstream half — 01 is under no
+  obligation to author pairs that can be legally grouped — is backlogged deliberately at n=1.
+- **The Revision Proposer exercised for the first time.** It had zero `proposal-verdict`
+  events ever. Knights already had a brief; Harry Potter did not, and re-running produced a
+  good one first try — which surfaced that a brief failing validation twice returns `null`
+  with **no artifact at all**, so "not attempted" and "attempted and failed" are
+  indistinguishable. Backlogged. The HP brief restates Max's own note: he wrote *"this could
+  be stronger the two things were more alike"*, it wrote *"mix an object lifecycle (wand)
+  with a creature lifecycle (phoenix)"*, sourced `both`, with his three praised sets marked
+  `doNotChange`.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **940 pass, 0 fail** (was 895; +45).
+  `node tools/check-board.js` → **10 boards, all clean.**
+- **Claude-verifiable: PASSED, and it reproduced the defect end to end.** A real pipeline
+  run carrying a symmetric set flagged `set-coordinates`, did **not** fail the board, and
+  rendered all three notes plus the simulated count in the Studio with no console errors.
+  Then, in the served game at `?puzzle=yankees-baseball`:
+  - `Bullpen : warm-up :: Batting cage : practice swings` → **"Correct!"**, 16→12 tiles,
+    tier and label revealed, no bean spent.
+  - `Gehrig : Ruth :: Mantle : Maris` — one pair flipped, the submission a real player
+    makes — → **"So close! Right four words — check the order."** and *"1 of 4 mistakes
+    used"*. **The exact defect D-9 names, in the shipped game, on a published board.**
+  - `Ruth : Gehrig :: Mantle : Maris` → **"Correct!"** So it really was only the order.
+  - All four new boards serve 200 with 4 sets and 16 words.
+  - *Recorded honestly:* the browser pane's synthetic clicks do not reach `data-action`
+    control buttons (tile taps work fine), so the controls were driven with dispatched
+    bubbling clicks. Screenshots returned blank all session; evidence above is DOM reads.
+    Neither is a game defect — no `src/` file changed this session.
+- **Max acceptance: OPEN.** Two things: the Harry Potter and Knights revision briefs are
+  written and waiting for his verdict, and D-9's flags need reading against played boards.
+
+- **Next:**
+  1. **Judge the two revision briefs** (Harry Potter, Knights). Each verdict starts D-5's
+     counter toward the bounded auto-revise loop — currently at zero of ~10.
+  2. **D-9's graduation trigger:** across roughly the next six boards, compare the flags
+     against so-close-concentrated losses and the (still never-used) `order-ambiguous` tag.
+     Agreement → promote to blocking at 04a. A flagged set that repeatedly plays fine →
+     the symmetric list is too wide.
+  3. **Phase 5's remaining work is now the select screen and `puzzles/index.json`**, not
+     content — the 10+ bar is met.
+  4. `sleep and dreams` is unjudged; three older approved boards (`music`, `weather`,
+     `history`) still unpublished, now a quality question rather than a quantity one.
+  5. Carried: the cross-reading check's third attempt · rater abstention floor · rubric
+     compilation must read version-1 sets by TAGS not action · nine `valid-but-unfair`
+     events need reading by hand · `README.md` never mentions `npm run studio:review` ·
+     05–08 concurrency · the proposer's silent-null path · 01's illegal-pool gap.
+
 ## 2026-08-05 — Five approvals, no rush, and the lever that had become one
 
 Max ran seven boards and judged five. **Five approved, zero rejected** — the first batch
