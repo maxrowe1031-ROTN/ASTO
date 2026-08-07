@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "puzzles": [
+    {
+      "slug": "first-light",
+      "id": "asto-first-light",
+      "title": "First Light"
+    },
+    {
+      "slug": "bedside-manor",
+      "id": "asto-bedside-manor",
+      "title": "Bedside Manor"
+    },
+    {
+      "slug": "by-the-shore",
+      "id": "asto-by-the-shore",
+      "title": "By the Shore"
+    },
+    {
+      "slug": "for-the-birds",
+      "id": "asto-for-the-birds",
+      "title": "For the Birds"
+    },
+    {
+      "slug": "gotham-connections",
+      "id": "asto-gotham-connections",
+      "title": "Gotham Connections"
+    },
+    {
+      "slug": "maps-tools-and-directions",
+      "id": "asto-maps-tools-and-directions",
+      "title": "Maps, Tools, and Directions"
+    },
+    {
+      "slug": "trees-tools-and-time",
+      "id": "asto-trees-tools-and-time",
+      "title": "Trees, Tools, and Time"
+    },
+    {
+      "slug": "voyages-warnings-and-watery-wisdom",
+      "id": "asto-voyages-warnings-and-watery-wisdom",
+      "title": "Voyages, Warnings, and Watery Wisdom"
+    },
+    {
+      "slug": "yankees-baseball",
+      "id": "asto-yankees-baseball",
+      "title": "Yankees Baseball"
+    }
+  ]
+}

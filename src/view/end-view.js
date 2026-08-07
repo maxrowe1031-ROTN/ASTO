@@ -12,27 +12,44 @@ import { difficultyToTier } from '../engine/tiers.js';
 import { settleIn, staggerStep } from './motion.js';
 
 export class EndView {
-  constructor(root, { onShare, onPlayAgain, onBackToTitle }) {
+  constructor(root, { onShare, onPlayAgain, onNextPuzzle, onBackToPuzzles }) {
     root.innerHTML = `
       <h1 class="end-title"></h1>
       <p class="end-score"></p>
       <div class="end-sets"></div>
       <div class="controls end-actions">
-        <button class="pill primary" data-action="share">Share</button>
+        <button class="pill" data-action="share">Share</button>
         <button class="pill" data-action="play-again">Play again</button>
+        <!-- Ink fill is reserved for the one primary action, and after a finished board
+             that is moving on — the GDD's own Screen 4 markup fills this pill, not Share.
+             When there is no board left it hides, and no pill is filled. -->
+        <button class="pill primary" data-action="next-puzzle">Next puzzle</button>
       </div>
       <p class="share-feedback" role="status" aria-live="polite"></p>
-      <button class="text-action" data-action="back-to-title">Back to title</button>`;
+      <button class="text-action" data-action="back-to-puzzles">Back to puzzles</button>`;
 
     this.titleEl = root.querySelector('.end-title');
     this.scoreEl = root.querySelector('.end-score');
     this.setsEl = root.querySelector('.end-sets');
     this.feedbackEl = root.querySelector('.share-feedback');
+    this.nextEl = root.querySelector('[data-action="next-puzzle"]');
     this.renderedFor = null;
 
     root.querySelector('[data-action="share"]').addEventListener('click', onShare);
     root.querySelector('[data-action="play-again"]').addEventListener('click', onPlayAgain);
-    root.querySelector('[data-action="back-to-title"]').addEventListener('click', onBackToTitle);
+    this.nextEl.addEventListener('click', onNextPuzzle);
+    root
+      .querySelector('[data-action="back-to-puzzles"]')
+      .addEventListener('click', onBackToPuzzles);
+  }
+
+  /**
+   * Whether there is a board left to hand the player. Told, never decided here — which
+   * board is next is a question about the manifest and the saved results, and this view
+   * knows about neither.
+   */
+  showNext(hasNext) {
+    this.nextEl.hidden = !hasNext;
   }
 
   /** Called by the controller like any other view; it simply ignores live games. */

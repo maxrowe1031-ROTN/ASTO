@@ -82,6 +82,7 @@ ASTO/
 │   │   └── board-integrity.js# brute-force alternate-solution checker
 │   ├── source/
 │   │   ├── validate-puzzle.js    # pure schema v1.0 validator → {ok, errors[]}
+│   │   ├── validate-manifest.js  # pure manifest validator, same {ok, errors[]} contract
 │   │   └── local-json-source.js  # fetch + validate at boundary (ApiSource later, same interface)
 │   ├── view/             # READ-ONLY renderers, emit intents via callbacks
 │   │   ├── header-view.js · board-view.js · frame-view.js · solved-sets-view.js
@@ -90,10 +91,12 @@ ASTO/
 │   │   ├── game-controller.js    # the ONLY writer: intents → engine → re-render
 │   │   └── tutorial-script.js    # coach-mark steps keyed to controller events (no DOM)
 │   ├── storage.js        # localStorage: per-puzzle results, tutorialSeen
+│   ├── results-recorder.js # reads finished games off the views array → storage
 │   ├── share.js          # navigator.share → clipboard fallback
 │   └── app.js            # bootstrap, screen routing, first-run check
 ├── puzzles/              # index.json manifest + first-light.json + tutorial.json + 10+
 ├── tools/check-board.js  # CLI: validate + integrity-check a board file
+├── tools/build-manifest.js # CLI over puzzle-store.writeManifest() (`npm run manifest`)
 ├── docs/design.md        # this design, committed
 └── test/                 # engine/ · source/ · content/ (node:test)
 ```
@@ -170,6 +173,11 @@ completion routes to First Light; returning visitor skips.
 globs `puzzles/*.json` so `npm test` regates all content forever), manifest,
 `select-view.js` with per-puzzle persisted results, routing + Next-puzzle chaining.
 *Gate:* all boards green, select state survives reload, full §16 acceptance pass.
+
+*Status 2026-08-07:* content **done** (10 boards, all clean); manifest, select screen,
+per-puzzle results and Next-puzzle chaining **built and verified** (see D-10). The two
+automated halves of the gate pass and reload persistence is demonstrated; what remains is
+the §16 acceptance pass, which is Max's.
 
 ### Test layout (all `node:test`, Phase 1 unless noted)
 
@@ -982,6 +990,101 @@ reject good boards on a proxy.
 so-close-concentrated losses and against Max's `order-ambiguous` tag. If they agree, promote
 the check to blocking at 04a. If a flagged set repeatedly plays fine, the symmetric list is
 too wide — shrink it. Either way the answer comes from played boards, not from more argument.
+
+### D-10 — The puzzle list is generated data, and its order is Max's (2026-08-07)
+
+**Why now:** Phase 5's content bar was met at 10 boards, so the phase's remaining work was
+the part players actually touch — a way to choose a board and a memory of how it went.
+
+**The manifest is a file, not a directory listing.** GitHub Pages serves static files with
+no index, so the game cannot discover `puzzles/*.json` at runtime; `puzzles/index.json` is
+what makes the list possible at all. Shape: `{schemaVersion: 1, puzzles: [{slug, id,
+title}]}` — deliberately minimal, because results live in `localStorage` and everything
+else about a board lives in the board.
+
+**Generated, but order-preserving — the one rule that matters here.** The array order is
+the play order *and* the Next-puzzle order, which is an editorial judgement, not something
+a directory listing should decide. So regeneration keeps the position of every slug that
+still has a file, drops slugs whose files are gone, and appends genuinely new boards
+alphabetically at the end. Max can reorder `index.json` by hand and a republish will not
+fight him — pinned by a test, and used immediately: the default alphabetical build put a
+hard medical board above `first-light`, which the tutorial hands off to, so First Light was
+moved to the top by hand.
+
+**Written only through `puzzle-store.js`,** which becomes the owner of a *second* artifact
+under the same law that governed the first (D-6): the sole module allowed into `puzzles/`,
+gate in the store rather than in callers, and a refused publish leaves the manifest exactly
+as it was. `tools/build-manifest.js` (`npm run manifest`) is a CLI over that function, not
+a second implementation — it exists for hand-authored boards and files removed by hand.
+
+**The guard that earns its keep:** `test/content/manifest.test.js`, sibling of
+`board-integrity.test.js`. It re-gates the committed manifest against the files on disk on
+every `npm test`, so a board published into `puzzles/` and never listed — a failure that
+looks exactly like success — is impossible from here on.
+
+**Results are keyed by slug, and record the player's best day.** One `asto.results` blob:
+one read paints the whole screen, one thing to forget on `clear()`. A win is never
+overwritten by a later loss, and a cleaner win replaces a scrappier one. A corrupt blob
+degrades to "no results" — the same law the tutorial flag already followed, extended to the
+failure a boolean cannot have (JSON that parses into the wrong shape).
+
+**Two boundary notes.** `ResultsRecorder` rides the controller's `views` array beside
+`ScreenRouter`: `update(state)` is the hook the controller offers, and something that only
+*reads* state cannot break the law. And `nextUnfinished()` is a pure function of the
+manifest and the results, so the question "which board is next" is tested without a DOM
+even though it is asked by a view.
+
+**A deep link does not buy a way past the first-run tutorial.** GDD §5.2 forces the guided
+board on first launch, so `?puzzle=<slug>` on a fresh profile decides what the tutorial
+*hands off to* rather than replacing it. The slug is captured before the tutorial clears
+the query string. On a returning profile it still goes straight in.
+
+**One id was renamed, deliberately, while renaming was still free.** `slug.js` warns that a
+puzzle id "can never be renamed without orphaning saved progress" — which is exactly why
+`Bedside Manor: Four Medical Analogies` was shortened to **`Bedside Manor`** (slug
+`bedside-manor`, id `asto-bedside-manor`) the same day the results store landed and before
+anything shipped. The cost was zero then and rises permanently from here. Done *through*
+`publish()`, so the rename re-ran the game's validator and the 43,680-tuple sweep instead of
+hand-editing JSON. The old slug survives in that run's `decisions.jsonl` as `publishedAs`,
+untouched: history records what happened, not what we later wished had happened.
+
+**Two things done differently from the plan, both because the GDD said so.** Screen 6's
+wireframe carries four tier dots per row, not a prose line — so a loss shows how far the
+player got at no cost in words. And the GDD's own Screen 4 markup ink-fills **Next
+puzzle**, so it took the primary slot from Share; when every board is finished it hides and
+no pill is filled.
+
+**The row ends in a coffee cup, not words (Max, same day).** A steaming cup on a solve, a
+spilled cup on a loss, replacing the caps `CLEAN SOLVE` / `OUT OF BEANS` labels the
+wireframe used. Coffee is already this game's entire vocabulary for how a board went —
+mistakes are beans, a loss is *"Out of beans"* — so the cup finishes a metaphor the game
+was telling in words, and it shortens a row where the two longest titles already wrap.
+Steam is **static**: the no-list bans particles and pins motion at 120–180ms, and a looping
+drift across nine rows is ambient motion nothing else in the game does.
+
+- **Accepted cost:** a cup cannot say *how many* mistakes, so the list no longer
+  distinguishes a clean solve from a scrappy one. Max chose this knowingly. It is not lost
+  to assistive tech — the row's `aria-label` still says *"Solved with 2 mistakes."*
+- **A PAPER cup, not a mug, and the handle is the reason.** The mug was drawn first and a
+  mug on its side is unreadable at 24px: the handle swings over a rounded body and it
+  renders as a **handbag**, then as a **heart** once the base was rounded to fix it. Three
+  rounds of geometry only got it to "almost". Max's call was to switch to a takeaway cup,
+  which has no handle to misread — it is an overhanging rim on a tapered cone, and the rim
+  is what says which end is open whichever way up the cup is. That also let both states
+  become literally the **same two paths**, the fallen one simply rotated 105° over a
+  puddle: same size, same colour, one object in two poses.
+- **What survived from the mug attempts:** the body must start *under* the rim, not below
+  it — a hairline gap is invisible upright and reads as a detached stick once tipped. And
+  the **puddle is the same brown as the cup**, dropped in opacity; a puddle lighter than
+  the cup reads as a shadow rather than a spill.
+- Recorded at this length because the elegant version was wrong three times in ways only a
+  render showed. Nothing here was visible in the code.
+
+**Reconsider-when:** if boards start being pulled often, the append-at-the-end rule stops
+being enough and the manifest wants a real editing surface in the Studio (the un-publishing
+gap already in the backlog). If the tier dots read as scoring rather than progress in the
+playtest, they come off. And if losing the visible mistake count turns out to matter once
+Max has lived with it, the fix is bean pips beside the cup — the header already draws them.
 
 ## House-rule exceptions
 

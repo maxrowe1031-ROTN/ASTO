@@ -90,8 +90,20 @@
   No longer load-bearing for the count: the 2026-08-06 batch published four boards and took
   `puzzles/` to **10**, so Phase 5's content bar is met without them. Publishing them is now a
   quality question rather than a quantity one.
-- **`puzzles/index.json` is a reserved name** — `check-board.js` skips it and `puzzle-store`
-  refuses to list it, both anticipating Phase 5's manifest. Nothing writes it yet.
+- ~~**`puzzles/index.json` is a reserved name.**~~ **Built 2026-08-07 — see design.md D-10.**
+  `puzzle-store.writeManifest()` owns it, `npm run manifest` is the CLI, and
+  `test/content/manifest.test.js` re-gates it against the files on disk every `npm test`.
+- **A rename defeats the manifest's order-preserving rule (2026-08-07).** Regeneration keeps
+  a slug's position, but a retitle-plus-reslug reads as delete-then-add, so the board lands
+  last — `bedside-manor` dropped from position 2 to 9 and was restored by hand. Harmless and
+  visible, and renames should be rare now that ids are settled. If they turn out not to be,
+  the fix is for `publish()` to accept a `renamedFrom` slug and inherit its slot.
+- **The select screen's `h1` is the wordmark, not the screen's name.** Consistent with the
+  title screen, but it means the puzzle list's top-level heading is "ASTO" rather than
+  "Puzzles". Revisit only if a screen-reader pass says it reads badly.
+- **Losing the visible mistake count was a deliberate trade (design.md D-10).** If it turns
+  out to matter once Max has lived with the list, the fix is bean pips beside the cup —
+  `header-view.js` already draws the pip and it is the game's own mistake vocabulary.
 - `current-attempt.json` at the run root is in the Studio spec's run-directory contract
   but has never been built (A1 or A3); `manifest.currentAttemptId` serves the purpose.
   Decide whether to build it or amend the spec.

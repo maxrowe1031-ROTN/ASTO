@@ -1,12 +1,14 @@
 // Bootstrap: decide where a player lands, load boards through the source seam, build the
 // views once, and drive them all with a single controller.
 //
-// Routing (Phase 4):
-//   first launch  → the tutorial board, forced (GDD §5.2)
-//   any later run → the title screen → Play or How to play
+// Routing (Phase 5):
+//   first launch     → the tutorial board, forced (GDD §5.2)
+//   ?puzzle=<slug>   → straight into that board, however the player arrived
+//   any later run    → the title screen → Play (the puzzle list) or How to play
 // Boards are swapped on ONE controller and ONE set of views via controller.loadPuzzle,
 // so nothing is torn down and rebuilt between the tutorial and the real puzzle.
 
+import { ResultsRecorder } from './results-recorder.js';
 import { GameController } from './controller/game-controller.js';
 import { TUTORIAL_RULES } from './controller/tutorial-script.js';
 import { buildShareText, share } from './share.js';
@@ -17,39 +19,53 @@ import { ControlsView } from './view/controls-view.js';
 import { EndView } from './view/end-view.js';
 import { FrameView } from './view/frame-view.js';
 import { HeaderView } from './view/header-view.js';
+import { nextUnfinished, SelectView } from './view/select-view.js';
 import { SolvedSetsView } from './view/solved-sets-view.js';
 import { StatusView } from './view/status-view.js';
 import { TitleView } from './view/title-view.js';
 import { TutorialOverlay } from './view/tutorial-overlay.js';
 
-const TUTORIAL_PATH = 'puzzles/tutorial.json';
+const MANIFEST_PATH = 'puzzles/index.json';
+const TUTORIAL_SLUG = 'tutorial';
+const TUTORIAL_PATH = `puzzles/${TUTORIAL_SLUG}.json`;
 const DEFAULT_PUZZLE = 'first-light';
 
-// `?puzzle=<slug>` picks a board out of puzzles/ instead of the default one.
-//
-// This is the seed of Phase 5's routing, deliberately pulled early and kept to
-// its smallest useful form: the Studio can now publish an approved board into
-// puzzles/, and without this there would be no way to actually PLAY what it
-// published — a published board would be verified only as far as "the file
-// validates", which is not the same claim. The select screen, the manifest and
-// per-puzzle results are still Phase 5's.
-//
-// The slug is matched against the same pattern the publisher enforces, so a
-// crafted query string cannot reach outside puzzles/.
+// The slug is matched against the same pattern the publisher and the manifest validator
+// enforce, so a crafted query string cannot reach outside puzzles/.
 const SLUG = /^[a-z0-9][a-z0-9-]{0,63}$/;
 
-function requestedPuzzlePath() {
+const pathFor = (slug) => `puzzles/${slug}.json`;
+
+/** `?puzzle=<slug>`, when it is one — a deep link into a specific board. */
+function requestedSlug() {
   const slug = new URLSearchParams(globalThis.location?.search ?? '').get('puzzle');
-  return `puzzles/${slug && SLUG.test(slug) ? slug : DEFAULT_PUZZLE}.json`;
+  return slug && SLUG.test(slug) ? slug : null;
 }
 
 async function main() {
-  const PUZZLE_PATH = requestedPuzzlePath();
+  // Read before anything can rewrite the URL — the tutorial clears `?puzzle=` while it is
+  // up, and a first-time player who followed a link to a specific board should still be
+  // handed that board when the tutorial lets go of them.
+  const deepLink = requestedSlug();
 
   const source = new LocalJsonSource();
   const storage = new Storage();
   const router = new ScreenRouter();
   const boards = new Map(); // path → puzzle; a re-run of the tutorial refetches nothing
+
+  // The list of boards, loaded once. A missing or broken manifest must not cost the player
+  // the game — it costs them the select screen, and `?puzzle=` and the default board still
+  // work. This is the only degrade-and-continue path in the bootstrap.
+  let manifest = [];
+  try {
+    manifest = (await source.loadManifest(MANIFEST_PATH)).puzzles;
+  } catch (error) {
+    console.error('The puzzle list could not be loaded; falling back to a single board.', error);
+  }
+
+  // Which board is on screen. Null while the tutorial is up: it has no row on the select
+  // screen and no saved result.
+  let currentSlug = null;
 
   // Views receive intent callbacks bound to a controller that doesn't exist yet, so wire
   // them through a late-bound reference.
@@ -67,10 +83,19 @@ async function main() {
   const stillPlaying = (puzzleId) =>
     controller?.state.status === 'playing' && controller.state.puzzle.id === puzzleId;
 
-  /** The one way a game starts, whichever door the player came through. */
-  const startGame = async (path, rules, coaching) => {
-    const puzzle = await loadBoard(path);
+  /**
+   * The one way a game starts, whichever door the player came through.
+   *
+   * `slug` is null for the tutorial and a board slug for everything else — it is what the
+   * results recorder saves under and what the URL carries, so it is set BEFORE the
+   * controller can finish a game.
+   */
+  const startGame = async (slug, rules, coaching) => {
+    const puzzle = await loadBoard(slug === null ? TUTORIAL_PATH : pathFor(slug));
+    currentSlug = slug;
+    rememberInUrl(slug);
     coach.setActive(coaching);
+    endView.showNext(nextUnfinished(manifest, storage.allResults(), slug) !== null);
     router.show('game');
 
     // Coming back to a board that is still in play RESUMES it. Visiting the title screen
@@ -89,14 +114,29 @@ async function main() {
     }
   };
 
+  const play = (slug) => startGame(slug, {}, false).catch(fail);
+
   const leaveTutorial = () => {
     storage.markTutorialSeen();
-    return startGame(PUZZLE_PATH, {}, false).catch(fail);
+    return play(deepLink ?? DEFAULT_PUZZLE);
+  };
+
+  /** Show the list, always freshly painted — a result may have landed since last time. */
+  const showSelect = () => {
+    selectView.render(manifest, storage.allResults());
+    router.show('select');
   };
 
   new TitleView(document.getElementById('screen-title'), {
-    onPlay: () => startGame(PUZZLE_PATH, {}, false).catch(fail),
-    onTutorial: () => startGame(TUTORIAL_PATH, TUTORIAL_RULES, true).catch(fail)
+    // With no manifest there is no list worth showing, so Play falls back to the board the
+    // tutorial has always handed off to.
+    onPlay: () => (manifest.length > 0 ? showSelect() : play(DEFAULT_PUZZLE)),
+    onTutorial: () => startGame(null, TUTORIAL_RULES, true).catch(fail)
+  });
+
+  const selectView = new SelectView(document.getElementById('screen-select'), {
+    onPick: play,
+    onBack: () => router.show('title')
   });
 
   const coach = new TutorialOverlay(document.getElementById('tutorial-coach'), {
@@ -112,7 +152,14 @@ async function main() {
       endView.showShareResult(await share(buildShareText(controller.state)));
     },
     onPlayAgain: () => controller.restart(),
-    onBackToTitle: () => router.show('title')
+    // Read at TAP time, not render time: the result of the board just finished is already
+    // saved by then, so a board won a moment ago is correctly skipped.
+    onNextPuzzle: () => {
+      const next = nextUnfinished(manifest, storage.allResults(), currentSlug);
+      if (next) play(next.slug);
+      else showSelect();
+    },
+    onBackToPuzzles: () => (manifest.length > 0 ? showSelect() : router.show('title'))
   });
 
   // Order matters: the controller awaits each view in turn, so the solve beat plays out
@@ -140,25 +187,52 @@ async function main() {
       onTileTap: (term) => controller.tileTapped(term)
     }),
     new SolvedSetsView(document.getElementById('solved-sets')),
+    // Not a view: a reader that saves the result of a finished game. It sits here for the
+    // same reason the router does — update(state) is the hook the controller offers, and
+    // something that only READS state cannot break the boundary law. Before the end view,
+    // so the result is on disk by the time the end screen offers "Next puzzle".
+    new ResultsRecorder(storage, () => currentSlug),
     // The router runs BEFORE the end view so the end screen is already on-screen when its
     // cards settle in — animating a hidden section just throws the motion away.
     router,
     endView
   ];
 
-  if (storage.hasSeenTutorial()) router.show('title');
-  else await startGame(TUTORIAL_PATH, TUTORIAL_RULES, true);
+  // GDD §5.2: the first launch is the tutorial, and a deep link does not buy a way past
+  // it — it decides what the tutorial hands off to instead.
+  if (!storage.hasSeenTutorial()) await startGame(null, TUTORIAL_RULES, true);
+  else if (deepLink) await startGame(deepLink, {}, false);
+  else router.show('title');
 }
 
 /**
- * Title, play, or end. The route is the player's choice of door; within a game, the
- * status decides play versus end — so both inputs are kept and repainted together rather
- * than each fighting the other's `hidden` flags.
+ * Keep `?puzzle=<slug>` pointing at the board on screen, so a reload comes back to it.
+ *
+ * replaceState, never pushState: this is bookkeeping, not navigation. Pushing would build
+ * a history stack where Back means "the previous board" — a second, invisible router
+ * competing with the real one.
+ */
+function rememberInUrl(slug) {
+  const url = new URL(globalThis.location.href);
+  if (slug === null) url.searchParams.delete('puzzle');
+  else url.searchParams.set('puzzle', slug);
+  globalThis.history?.replaceState?.(null, '', url);
+}
+
+/**
+ * Title, select, play, or end. The route is the player's choice of door; within a game,
+ * the status decides play versus end — so both inputs are kept and repainted together
+ * rather than each fighting the other's `hidden` flags.
  */
 class ScreenRouter {
+  // The doors. Standing on one means the game underneath keeps its state and is simply
+  // not on screen; only `game` defers to the status.
+  static DOORS = ['title', 'select'];
+
   constructor() {
     this.sections = {
       title: document.getElementById('screen-title'),
+      select: document.getElementById('screen-select'),
       play: document.getElementById('screen-play'),
       end: document.getElementById('screen-end')
     };
@@ -179,7 +253,11 @@ class ScreenRouter {
 
   paint() {
     const over = this.state !== null && this.state.status !== 'playing';
-    const showing = this.route === 'title' ? 'title' : over ? 'end' : 'play';
+    const showing = ScreenRouter.DOORS.includes(this.route)
+      ? this.route
+      : over
+        ? 'end'
+        : 'play';
 
     for (const [name, section] of Object.entries(this.sections)) {
       section.hidden = name !== showing;

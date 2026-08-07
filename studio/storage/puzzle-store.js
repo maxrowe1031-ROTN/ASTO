@@ -26,6 +26,11 @@
 // is locked, and a published board must be indistinguishable from a
 // hand-authored one. Which run a board came from is recorded in that run's
 // `decisions.jsonl`, where the rest of its history already lives.
+//
+// Since Phase 5 it owns a SECOND artifact: `puzzles/index.json`, the manifest
+// the game's select screen reads. It lives here because this is the only
+// module allowed to write into `puzzles/` — and because a manifest that can
+// drift from the files beside it is worse than no manifest at all.
 
 import { existsSync, mkdirSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -41,9 +46,19 @@ const PUZZLES_DIR = fileURLToPath(new URL('../../puzzles/', import.meta.url));
 // The convention every shipped board follows, `asto-first-light` included.
 const idFor = (slug) => `asto-${slug}`;
 
-// `index.json` is the Phase 5 manifest's reserved name — `tools/check-board.js`
-// already skips it, and so does this.
-const RESERVED = new Set(['index.json']);
+// `index.json` is the manifest's reserved name — `tools/check-board.js` skips
+// it, and so does every board listing here.
+const MANIFEST_FILENAME = 'index.json';
+const RESERVED = new Set([MANIFEST_FILENAME]);
+
+// The manifest's own version, independent of puzzle schema v1.0 — it describes
+// the LIST, not a board. Bumped only if the entry shape changes.
+const MANIFEST_VERSION = 1;
+
+// On disk but never in the list: the tutorial is reached through "How to play"
+// on the title screen, and offering it as a puzzle would hand a returning
+// player a board they cannot lose.
+const UNLISTED = new Set(['tutorial']);
 
 /**
  * A publish refused on purpose, with a machine-readable reason so callers can
@@ -62,10 +77,11 @@ export class PublishRefused extends Error {
 
 export function createPuzzleStore({ rootDir = PUZZLES_DIR } = {}) {
   const pathFor = (slug) => join(rootDir, `${slug}.json`);
+  const manifestPath = join(rootDir, MANIFEST_FILENAME);
 
   const readBoard = (slug) => JSON.parse(readFileSync(pathFor(slug), 'utf8'));
 
-  return {
+  const store = {
     /**
      * Publishes an approved board as game content.
      *
@@ -124,6 +140,11 @@ export function createPuzzleStore({ rootDir = PUZZLES_DIR } = {}) {
       mkdirSync(rootDir, { recursive: true });
       writeJsonAtomic(destination, published);
 
+      // The board and the list that advertises it land together. Anything that
+      // could refuse has already refused above, so by here the manifest cannot
+      // be regenerated for a board that was not actually written.
+      const manifest = store.writeManifest();
+
       return {
         slug,
         filename: `${slug}.json`,
@@ -137,6 +158,8 @@ export function createPuzzleStore({ rootDir = PUZZLES_DIR } = {}) {
           expectedAccepted: report.expectedAccepted,
           soCloseCount: report.soCloseCount,
         },
+        listedAt: manifest.puzzles.findIndex((entry) => entry.slug === slug),
+        listedCount: manifest.puzzles.length,
       };
     },
 
@@ -160,7 +183,69 @@ export function createPuzzleStore({ rootDir = PUZZLES_DIR } = {}) {
       }
       return entries;
     },
+
+    /**
+     * The committed manifest, parsed — or null when there isn't one yet or it
+     * is unreadable. Never throws: a broken manifest is something to REBUILD,
+     * and `writeManifest` below is what rebuilds it.
+     */
+    readManifest() {
+      try {
+        return JSON.parse(readFileSync(manifestPath, 'utf8'));
+      } catch {
+        return null;
+      }
+    },
+
+    /**
+     * Rebuild `puzzles/index.json` from the boards actually on disk, and
+     * return it.
+     *
+     * ORDER IS PRESERVED, and that is the whole design. The array order is the
+     * play order and the Next-puzzle order — an editorial judgement Max owns,
+     * not something a directory listing should decide. So: slugs already in
+     * the manifest keep their position, slugs whose files are gone drop out,
+     * and genuinely new boards are appended alphabetically at the end. Max can
+     * reorder the file by hand and a republish will not fight him.
+     *
+     * The entries themselves are always re-read from the boards, so a retitled
+     * board cannot leave a stale title in the list.
+     */
+    writeManifest() {
+      const boards = new Map(
+        store
+          .list()
+          .filter((entry) => !UNLISTED.has(entry.slug))
+          .map((entry) => [entry.slug, { slug: entry.slug, id: entry.id, title: entry.title }]),
+      );
+
+      // A hand-edited manifest can carry anything, including the same slug
+      // twice — dedupe as we keep, so a slip in the file cannot produce a
+      // board that appears in the list more than once.
+      const previous = store.readManifest();
+      const seen = new Set();
+      const kept = [];
+      for (const entry of Array.isArray(previous?.puzzles) ? previous.puzzles : []) {
+        const slug = entry?.slug;
+        if (!boards.has(slug) || seen.has(slug)) continue;
+        seen.add(slug);
+        kept.push(slug);
+      }
+
+      const appended = [...boards.keys()].filter((slug) => !seen.has(slug)).sort();
+
+      const manifest = {
+        schemaVersion: MANIFEST_VERSION,
+        puzzles: [...kept, ...appended].map((slug) => boards.get(slug)),
+      };
+
+      mkdirSync(rootDir, { recursive: true });
+      writeJsonAtomic(manifestPath, manifest);
+      return manifest;
+    },
   };
+
+  return store;
 }
 
 function integrityMessage(report) {
