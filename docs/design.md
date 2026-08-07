@@ -174,10 +174,11 @@ globs `puzzles/*.json` so `npm test` regates all content forever), manifest,
 `select-view.js` with per-puzzle persisted results, routing + Next-puzzle chaining.
 *Gate:* all boards green, select state survives reload, full §16 acceptance pass.
 
-*Status 2026-08-07:* content **done** (10 boards, all clean); manifest, select screen,
-per-puzzle results and Next-puzzle chaining **built and verified** (see D-10). The two
-automated halves of the gate pass and reload persistence is demonstrated; what remains is
-the §16 acceptance pass, which is Max's.
+*Status 2026-08-07:* **COMPLETE.** Content done (10 boards, all clean); manifest, select
+screen, per-puzzle results and Next-puzzle chaining built and verified (see D-10). All
+three parts of the gate met — `npm test` 1003/0 and `check-board.js` clean, reload
+persistence demonstrated in the browser, and **Max's playtest passed**. Tagged
+`v0.1.0-local`. **Phases 1–5 are done**; publishing to Pages is a separate milestone.
 
 ### Test layout (all `node:test`, Phase 1 unless noted)
 

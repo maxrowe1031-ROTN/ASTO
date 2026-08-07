@@ -83,24 +83,33 @@ was everything a player touches to reach them. `?puzzle=<slug>` was the only doo
   Also verified earlier: a loss records and shows the spilled cup with partial dots; with
   everything won `Next puzzle` hides; pulling `index.json` out from under the running game
   costs the list, never the game.
-- **Max acceptance: OPEN.** The GDD §16 acceptance pass and the playtest. Four changes
-  stacked up this session that he has not yet seen running: the select screen itself, the
-  cups, the wordmark/subtitle, and the rename.
+- **Max acceptance: PASSED.** He playtested the select screen at the end of the session —
+  *"I've play tested and things are working as expected."* That covers all four changes
+  stacked up this session: the select screen, the cups, the wordmark/subtitle, and the
+  rename. The cups, the tier dots and the dropped mistake count all stand as shipped; their
+  reconsider-when triggers in D-10 remain, unfired.
 
-**Phase 5 status:** content done (10 boards), manifest / select screen / per-puzzle results
-/ Next-puzzle chaining **built and verified**. The phase's gate is *not* met — its third
-item is a playtest, and that is Max's.
+**PHASE 5 COMPLETE — and with it, Phases 1–5.** Content (10 boards), manifest, select
+screen, per-puzzle results and Next-puzzle chaining are all built, verified and accepted.
+All three parts of the gate are met: automated, Claude-verifiable, and Max's playtest.
 
-- **Next:**
-  1. **Playtest the select screen** — the Phase 5 gate. Specifically: whether the cups feel
-     cozy rather than cute, whether losing the visible mistake count is genuinely fine
-     (the fix, if not, is bean pips beside the cup — `header-view.js` already draws them),
-     and whether the manifest order is the ramp he wants. Passing it closes Phase 5 and puts
-     `v0.1.0-local` in reach.
-  2. **Judge the two revision briefs** (Harry Potter, Knights) — carried from 2026-08-06,
-     still unstarted. Each verdict is one of ~10 toward D-5's auto-revise trigger.
-  3. **D-9's graduation trigger** — still needs ~6 more played boards before the symmetric
+**Tagged `v0.1.0-local`; `CLAUDE.md` status is now LOCALLY SHIPPED.** Per `docs/brief.md`,
+working locally for its intended purpose is what "shipped" means here — a player can open
+the game, be taught it, choose from ten boards, win or lose, and be remembered. Publishing
+to Pages remains a separate, later milestone.
+
+- **Next:** Max's stated direction is the **Review Studio and the pipeline** first, then
+  more app tweaks and features.
+  1. **Back into the Review Studio to keep tweaking the pipeline.** Two things are queued
+     and waiting there: the **Harry Potter and Knights revision briefs** need verdicts
+     (carried from 2026-08-06, each one of ~10 toward D-5's auto-revise trigger), and
+     **D-9's graduation trigger** still needs ~6 more played boards before the symmetric
      -order flags can be scored against so-close-concentrated losses.
+  2. **App tweaks and features** as they come up. Nothing is blocking; the backlog's
+     select-screen entries (the rename-vs-manifest-order wrinkle, the `h1` question, bean
+     pips if the missing mistake count starts to itch) are all optional and unapproved.
+  3. **Publishing to GitHub Pages** is the next real milestone whenever he wants it — note
+     the backlog's standing gap that nothing verifies a push actually deployed.
 
 ## 2026-08-06 — Order is the game, so order has to be fair
 
