@@ -7,6 +7,7 @@
 // `fetchFn` is injectable so node:test covers this module without a network or browser;
 // production wiring passes nothing and gets the real fetch.
 
+import { validateManifest } from './validate-manifest.js';
 import { validatePuzzle } from './validate-puzzle.js';
 
 export class LocalJsonSource {
@@ -15,28 +16,42 @@ export class LocalJsonSource {
   }
 
   async loadPuzzle(path) {
+    return this.load(path, validatePuzzle, 'schema v1.0');
+  }
+
+  /**
+   * The list of published boards, in play order. Same contract as loadPuzzle —
+   * fetched and validated at the boundary — so `ApiSource` implements both and
+   * swaps in with no view or controller changes.
+   */
+  async loadManifest(path) {
+    return this.load(path, validateManifest, 'manifest');
+  }
+
+  /** Fetch, parse, validate. The one place this module touches the network. */
+  async load(path, validate, what) {
     const response = await this.fetchFn(path);
     if (!response.ok) {
       throw new Error(`Could not load ${path}: HTTP ${response.status}`);
     }
 
-    let puzzle;
+    let parsed;
     try {
-      puzzle = await response.json();
+      parsed = await response.json();
     } catch {
       throw new Error(`Could not load ${path}: the file is not valid JSON.`);
     }
 
-    const validation = validatePuzzle(puzzle);
+    const validation = validate(parsed);
     if (!validation.ok) {
       const error = new Error(
-        `${path} failed schema v1.0 validation:\n` +
+        `${path} failed ${what} validation:\n` +
           validation.errors.map((e) => `  ${e.path || '(root)'} — ${e.message}`).join('\n')
       );
       error.errors = validation.errors;
       throw error;
     }
 
-    return puzzle;
+    return parsed;
   }
 }

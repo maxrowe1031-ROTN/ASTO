@@ -65,3 +65,51 @@ test('malformed JSON rejects cleanly', async () => {
   });
   await assert.rejects(() => source.loadPuzzle('puzzles/broken.json'));
 });
+
+// --- the manifest: the same seam, the other artifact ---
+
+const manifest = {
+  schemaVersion: 1,
+  puzzles: [{ slug: 'first-light', id: 'asto-first-light', title: 'First Light' }]
+};
+
+test('a valid manifest loads and comes back parsed', async () => {
+  const source = new LocalJsonSource({ fetchFn: okFetch(manifest) });
+  const loaded = await source.loadManifest('puzzles/index.json');
+  assert.equal(loaded.puzzles.length, 1);
+  assert.equal(loaded.puzzles[0].slug, 'first-light');
+});
+
+test('an invalid manifest is rejected at the boundary, carrying the validator errors', async () => {
+  const bad = { schemaVersion: 1, puzzles: [{ slug: '../escape', title: 'X' }] };
+  const source = new LocalJsonSource({ fetchFn: okFetch(bad) });
+  await assert.rejects(
+    () => source.loadManifest('puzzles/index.json'),
+    (error) => {
+      assert.match(error.message, /manifest validation/);
+      assert.ok(error.errors.some((e) => e.path === 'puzzles[0].slug'));
+      assert.ok(error.errors.some((e) => e.path === 'puzzles[0].id'));
+      return true;
+    }
+  );
+});
+
+test('a missing manifest rejects with its status, so the caller can fall back', async () => {
+  const source = new LocalJsonSource({
+    fetchFn: async () => new Response('not found', { status: 404 })
+  });
+  await assert.rejects(() => source.loadManifest('puzzles/index.json'), /404/);
+});
+
+// The two artifacts must not be confusable: a board is not a list and a list is
+// not a board, and each validator has to say so rather than passing the other through.
+test('a board offered as a manifest is rejected, and the reverse too', async () => {
+  await assert.rejects(
+    () => new LocalJsonSource({ fetchFn: okFetch(board) }).loadManifest('puzzles/index.json'),
+    (error) => error.errors.some((e) => e.path === 'puzzles')
+  );
+  await assert.rejects(
+    () => new LocalJsonSource({ fetchFn: okFetch(manifest) }).loadPuzzle('puzzles/x.json'),
+    (error) => error.errors.some((e) => e.path === 'sets')
+  );
+});

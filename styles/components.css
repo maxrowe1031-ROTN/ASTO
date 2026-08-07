@@ -313,8 +313,10 @@
   gap: 10px;
 }
 
+/* Three pills do not fit across a 375px phone, so they wrap rather than overflow. */
 .end-actions {
   margin-top: 4px;
+  flex-wrap: wrap;
 }
 
 .share-feedback {
@@ -432,4 +434,170 @@
 
 .coach-action[hidden] {
   display: none;
+}
+
+/* ---------- Puzzle select (GDD Screen 6) ---------- */
+
+.select-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 2px 0;
+}
+
+/* Also the way home, exactly as the play screen's wordmark is. Still visually a wordmark —
+   no pill, no underline — because a logo that goes to the title screen is a convention
+   players already know. */
+.select-head .wordmark {
+  position: relative;
+  display: block;
+  font-family: var(--font-display);
+  font-size: 32px;
+  letter-spacing: 0.03em;
+  text-align: left;
+  transition: opacity var(--motion-fast) var(--ease);
+}
+
+/* 44px tap target without changing the box, so the heading's spacing is what it was when
+   this was a plain h1. Same trick as .header .wordmark. */
+.select-head .wordmark::after {
+  content: '';
+  position: absolute;
+  inset: -8px -10px;
+}
+
+.select-head .wordmark:active {
+  opacity: 0.6;
+}
+
+.select-count {
+  color: var(--soft-ink);
+  font-size: 14px;
+}
+
+.puzzle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Wells on the page, cards under the finger. Each row is a real <button>, so keyboard
+   focus, Enter and the 44px tap target all come from the platform. */
+.puzzle-row {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 62px;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--taupe);
+  border-radius: var(--radius-card);
+  background: var(--milk);
+  transition: transform var(--motion-fast) var(--ease);
+}
+
+/* A finished board sits a shade back — read, not pending. */
+.puzzle-row[data-played] {
+  background: var(--oat);
+  border-color: var(--taupe);
+}
+
+.puzzle-row::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: var(--grain);
+  opacity: var(--grain-strength);
+  pointer-events: none;
+}
+
+.puzzle-row:active {
+  transform: translateY(1px);
+}
+
+.puzzle-row-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.puzzle-row-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.puzzle-row-status.is-unplayed {
+  color: var(--faint-ink);
+  font-size: 20px;
+  padding-right: 4px;
+}
+
+/* How the board went, as a coffee cup — steaming on a solve, spilled on a loss. Coffee is
+   already the game's vocabulary for this: mistakes are beans, a loss is "Out of beans". */
+.result-cup-slot {
+  display: flex;
+  align-items: center;
+}
+
+.result-cup {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* One cup, one colour, whichever way up it is — the standing and fallen cups are the same
+   object, so nothing about the fill says which outcome you are looking at. The pose does. */
+.cup-rim,
+.cup-body {
+  fill: var(--bean-filled);
+}
+
+.cup-steam {
+  fill: none;
+  stroke: var(--faint-ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+/* The puddle is the same brown, dropped in opacity so it reads as spread liquid rather
+   than a second solid object. A puddle LIGHTER than the cup read as a shadow instead of a
+   spill, which is why it is not simply taupe. Never red: the game does not scold you for
+   losing, it just shows you the answers. */
+.cup-spill {
+  fill: var(--bean-filled);
+  opacity: 0.5;
+}
+
+/* One dot per set, in tier order — lit for a set the player solved, hollow for one that
+   got away. These are TIER colours (the same four the solved cards use), not mistake
+   pips: beans are the mistake vocabulary and beans are never red. */
+.tier-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.tier-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--taupe);
+  background: transparent;
+}
+
+.tier-dot[data-solved][data-tier='green']  { background: var(--tier-green-main);  border-color: var(--tier-green-main); }
+.tier-dot[data-solved][data-tier='yellow'] { background: var(--tier-yellow-main); border-color: var(--tier-yellow-main); }
+.tier-dot[data-solved][data-tier='red']    { background: var(--tier-red-main);    border-color: var(--tier-red-main); }
+.tier-dot[data-solved][data-tier='black']  { background: var(--tier-black-main);  border-color: var(--tier-black-main); }
+
+/* Room to breathe below the last row before the Back action. */
+.puzzle-list + .text-action {
+  margin-top: 2px;
+  margin-bottom: 8px;
 }

@@ -29,10 +29,11 @@ the retired Python crew stay in `../maigd-course-handbook`.
    **`docs/recovery.md`** — rollback playbook · **`docs/decisions/`** — open questions.
 
 - **Distribution target:** web · GitHub Pages · free.
-- **Status:** BUILDING — Phases 1–4 complete; Phase 5 (puzzle select + content) and the
-  Studio are in flight. Working locally for its intended purpose counts as **shipped**
-  (see `docs/brief.md` for what that means here); publishing is a separate milestone.
-  The `v0.1.0-local` tag belongs at the Phase 5 gate, not before.
+- **Status:** LOCALLY SHIPPED — **Phases 1–5 complete**, tagged `v0.1.0-local` on
+  2026-08-07 when Max's playtest passed the Phase 5 gate. Working locally for its intended
+  purpose counts as **shipped** (see `docs/brief.md` for what that means here); publishing
+  to GitHub Pages is a separate, later milestone. The **Studio** remains in flight — the
+  pipeline is still being tuned, and HR-2's hand-editing (B2) is still deferred.
 - No paid hosting, services, or recurring costs are ever adopted without explicit
   discussion with Max.
 

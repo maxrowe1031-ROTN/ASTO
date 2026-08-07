@@ -2,6 +2,115 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-07 — A way in, and a memory of how it went
+
+Phase 5's last build work. The content bar was already met at 10 boards; what was missing
+was everything a player touches to reach them. `?puzzle=<slug>` was the only door, and
+[app.js](../src/app.js) said so in its own comment. Now there is a list, and it remembers.
+
+### Built
+
+- **`puzzles/index.json`** — the manifest, 9 boards (tutorial deliberately absent). A file
+  rather than a directory scan because **GitHub Pages has no directory listing**: without
+  it the game cannot discover what exists. Shape `{schemaVersion, puzzles:[{slug,id,title}]}`.
+- **`puzzle-store.js` gains `writeManifest()`/`readManifest()`** and calls the former on a
+  successful publish — its second artifact, under D-6's law: sole writer into `puzzles/`,
+  gate in the store, and a refused publish leaves the manifest untouched.
+  **Order is preserved**: slugs keep their position, dead ones drop, new ones append.
+  `tools/build-manifest.js` (`npm run manifest`) is a CLI over the same function.
+- **`src/source/validate-manifest.js`** (pure, imports nothing) + **`LocalJsonSource.loadManifest()`**
+  — same `{ok, errors[]}` contract and same boundary as `validatePuzzle`/`loadPuzzle`.
+- **`src/storage.js`** — per-puzzle results under `asto.results`, keyed by slug.
+  Best-result semantics: a win is never overwritten by a loss, a cleaner win replaces a
+  scrappier one. Corrupt JSON degrades to "no results" — the failure a boolean flag cannot
+  have, and the game must always boot.
+- **`src/results-recorder.js`** — rides the controller's `views` array beside `ScreenRouter`.
+  Only reads state, so the boundary law holds; a module rather than a closure so it is
+  unit-tested with no browser.
+- **`src/view/select-view.js`** + `screen-select` + styles — GDD Screen 6. Also exports
+  `nextUnfinished()`, a pure function tested headlessly.
+- **`end-view.js`** — `Next puzzle` (ink-filled, per the GDD's own Screen 4 markup) and
+  `Back to puzzles`. **`app.js`** — router gains `select`, Play opens the list,
+  `history.replaceState` keeps `?puzzle=` on the board you are playing.
+
+### Decided (design.md **D-10**)
+
+- **The manifest's order is Max's**, not a directory listing's — it is the play order and
+  the Next-puzzle order. Used immediately: alphabetical put a hard medical board above
+  First Light, which the tutorial hands off to, so First Light was moved to the top by hand
+  and a republish left it there.
+- **A deep link does not buy a way past the first-run tutorial** (GDD §5.2). It decides
+  what the tutorial hands off to instead.
+- **Rows end in a coffee cup, not words** (Max). Coffee is already the game's vocabulary —
+  mistakes are beans, a loss is *"Out of beans"*. Accepted cost, chosen knowingly: the list
+  no longer distinguishes a clean solve from a scrappy one. Not lost to assistive tech —
+  the row's `aria-label` still says *"Solved with 2 mistakes."*
+- **A paper cup, not a mug, and the handle is the reason.** The mug rendered as a
+  **handbag** on its side, then a **heart** once its base was rounded to fix that. Three
+  rounds of geometry got it to "almost". A takeaway cup has no handle to misread, and it
+  let both states become the *same two paths* — the fallen one rotated 105° over a puddle.
+  Same size, same colour, verified in the live page (`24x24`, `rgb(92,70,51)` on both).
+- **`Bedside Manor: Four Medical Analogies` → `Bedside Manor`**, slug and id renamed with
+  it. `slug.js` warns an id can never be renamed without orphaning saved progress — true,
+  and the cost is ~zero today and never cheaper. Done *through* `publish()`, so the rename
+  re-ran the schema check and the 43,680-tuple sweep rather than editing JSON by hand.
+
+### Bugs and gaps found by building
+
+- **A rename defeats the order-preserving rule.** It reads as delete-then-add, so the board
+  landed at position 9. Fixed by hand and re-verified. Renames are the one edit where the
+  manifest needs a second look. Backlogged.
+- **The select-screen wordmark was dead** (Max spotted it). Now a real `<button>` reusing
+  `HeaderView`'s pattern, including the invisible `::after` that reaches 44px without
+  moving the heading.
+- **Dropped "· 9 curated boards"** from the subtitle (Max); it reads just **Puzzles**.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1003 pass, 0 fail** (was 940; +63).
+  `node tools/check-board.js` → **10 boards, all clean.** `npm run manifest` idempotent.
+  The load-bearing new test is **`test/content/manifest.test.js`**: it re-gates the
+  committed manifest against the files on disk on every run, so a board published but never
+  listed — a failure that looks exactly like success — is now impossible.
+- **Claude-verifiable: PASSED**, re-run end to end on the final code after the last four
+  changes. Screenshots worked this session (they returned blank on 2026-08-06). Fresh
+  profile → tutorial (`Warm Up`, no `?puzzle=`) → skip → First Light with
+  `?puzzle=first-light` → wordmark home → Play → 9 rows, subtitle "Puzzles" → select-screen
+  wordmark home → played **Bedside Manor** to a genuine win through tile taps →
+  `{"bedside-manor":{"status":"won","mistakes":0,"solvedCount":4}}` → **Next puzzle** skipped
+  the won board to By the Shore → **full page reload → the row still reads solved, four dots
+  lit, steaming cup**. That last line is the gate's named condition. Console clean, no 404s.
+  Also verified earlier: a loss records and shows the spilled cup with partial dots; with
+  everything won `Next puzzle` hides; pulling `index.json` out from under the running game
+  costs the list, never the game.
+- **Max acceptance: PASSED.** He playtested the select screen at the end of the session —
+  *"I've play tested and things are working as expected."* That covers all four changes
+  stacked up this session: the select screen, the cups, the wordmark/subtitle, and the
+  rename. The cups, the tier dots and the dropped mistake count all stand as shipped; their
+  reconsider-when triggers in D-10 remain, unfired.
+
+**PHASE 5 COMPLETE — and with it, Phases 1–5.** Content (10 boards), manifest, select
+screen, per-puzzle results and Next-puzzle chaining are all built, verified and accepted.
+All three parts of the gate are met: automated, Claude-verifiable, and Max's playtest.
+
+**Tagged `v0.1.0-local`; `CLAUDE.md` status is now LOCALLY SHIPPED.** Per `docs/brief.md`,
+working locally for its intended purpose is what "shipped" means here — a player can open
+the game, be taught it, choose from ten boards, win or lose, and be remembered. Publishing
+to Pages remains a separate, later milestone.
+
+- **Next:** Max's stated direction is the **Review Studio and the pipeline** first, then
+  more app tweaks and features.
+  1. **Back into the Review Studio to keep tweaking the pipeline.** Two things are queued
+     and waiting there: the **Harry Potter and Knights revision briefs** need verdicts
+     (carried from 2026-08-06, each one of ~10 toward D-5's auto-revise trigger), and
+     **D-9's graduation trigger** still needs ~6 more played boards before the symmetric
+     -order flags can be scored against so-close-concentrated losses.
+  2. **App tweaks and features** as they come up. Nothing is blocking; the backlog's
+     select-screen entries (the rename-vs-manifest-order wrinkle, the `h1` question, bean
+     pips if the missing mistake count starts to itch) are all optional and unapproved.
+  3. **Publishing to GitHub Pages** is the next real milestone whenever he wants it — note
+     the backlog's standing gap that nothing verifies a push actually deployed.
+
 ## 2026-08-06 — Order is the game, so order has to be fair
 
 D-8's first real batch answered its question. Max ran eight themes, judged six, approved

@@ -4,7 +4,9 @@
 // front door, shown before any game exists. It is what makes the tutorial replayable
 // once the first run is behind the player.
 //
-// Phase 5's puzzle-select screen may well absorb this; see docs/log.md.
+// It survived the select screen rather than being absorbed by it: Play now opens the
+// puzzle list, and this stays the one screen where "How to play" is a peer of playing
+// rather than a footnote under a list of boards.
 
 export class TitleView {
   constructor(root, { onPlay, onTutorial }) {
