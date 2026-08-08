@@ -1151,6 +1151,91 @@ revision with the notes and the board in hand still churns a set the notes named
 the instruction is not enough and the protected sets need to be carried structurally rather
 than asked for.
 
+### D-12 — Four defects the 2026-08-08 batches exposed (2026-08-08)
+
+Fifteen themes across two nights. Nothing here was designed; all four were found by running
+the pipeline hard enough that its failure modes became visible.
+
+**1. The truncation rescue: a bigger ceiling was never the fix.** Five themes died
+identically — painting, shadows, bald eagle, sculpture, a rose — truncating at 16k, retrying
+at 24k, truncating again. **~$0.62 each, $3.10 for nothing.** All five were narrow
+single-subject themes; ensemble themes sailed through. The retry only ever raised the
+ceiling, and what overran the ceiling was **thinking**: at `high` effort a narrow theme
+reasons until the budget is gone and never gets to speak. `pipeline-config.js` already
+documented this exact disease on 06 — *"At high… it spent all 16,000 output tokens on
+thinking and returned NO TEXT"* — and the lesson had not been generalised.
+
+The escalation retry now **steps effort down one rung as well** (`xhigh→high→medium→low`;
+absent stays absent). First attempts are untouched, so nothing on the happy path gets
+cheaper — this fires only where the alternative is a dead run. Proved against the real API
+the same night: **`a rose` truncated at high/16k, then completed at medium/24k** using 6,229
+output tokens, and produced a board the gate passed. Terminal failures also now keep the
+model's partial reply as `response.truncated.txt`; all five dead runs threw theirs away, so
+what they were doing with those tokens is unknowable.
+
+**Reconsider-when:** if a board rescued at the lower effort reads flat to Max, the step-down
+is too cheap and the answer is cutting 01's input (it is shown all 36 vocabulary entries)
+rather than buying more thinking. If a stage ever legitimately needs more than 300s of
+reasoning, the answer is streaming, not a bigger ceiling.
+
+**2. The stale server is now visible.** A node process holds the modules it booted with. On
+2026-08-07 the revision fix merged at 20:48, a server booted at 19:16 ran a revision at
+20:00, the revision churned exactly as before, and the only reasonable reading was that D-11
+had failed. It had not — it was not running. **A whole conclusion was wrong for want of one
+line on a page.** `GET /api/config` now reports `startedAt` / `staleCode` / `codeChangedAt`
+(newest `.js` mtime under `studio/` and `src/`, recomputed per call), and the review page
+carries a banner above every view. Computed in `server.js`, not `api.js` — api.js does not
+touch the filesystem.
+
+**3. Self-matching pairs: reported, never gated.** Max, on a music board: *"i keep seeing
+puzzles that include something really easy like 'fade in : fade out'. It seems too easy but
+maybe that needs testing from other audiences."* The mechanism is not that the relationship
+is easy — it is that **the tiles pair themselves before any relationship is read**. His own
+verdicts imply a three-tier rule about PLACEMENT, not banishment:
+
+- **One** self-matching pair is an on-ramp. He called cinema's `opening credits : closing
+  credits :: greenlight : wrap` a set that *"should be studied"* — the second pair reaches
+  from watching a film to making one, so the relationship still has to be seen.
+- **Both** pairs self-matching makes the set free (music's Yellow: `load-in : load-out ::
+  fade-in : fade-out`).
+- A self-matching **Black** is miscalibrated by construction — bbq's `wrap : unwrap`, which
+  he called *"way too easy for a black"*.
+
+`studio/corpus/lexical.js` (pure) detects it: a shared whole token of ≥4 characters, or
+containment with the shorter ≥4. Deliberately conservative — `sunrise`/`sunset` shares only
+a three-letter stem (a shared *subject*, not a shared word) and does not flag, and
+`ignite`/`extinguish` is semantic symmetry, which is **D-9's separate axis**. It reaches 03's
+input, 01's prompt, and the review card via the 04a artifact.
+
+**It gates nothing, and that is load-bearing rather than cautious.** Max has explicitly not
+decided these sets are bad, and a set he admired carries one — a check that could reject a
+board would be deciding a question he left open. It found something immediately: music's
+Black `stage name : birth name` also self-matches on "name", which nobody had noticed.
+**Reconsider-when:** if audience testing says these sets play as free, the flag graduates to
+a difficulty cap; if he decides they are fine, it stays a note forever.
+
+**4. Publishing warns when recorded edits would evaporate.** Publishing ships `board.json`
+exactly as generated — hand-editing is B2, still deferred (HR-2). Fine limitation, terrible
+silence: Behind the Scenes was published carrying a recorded difficulty change from 3 to 1
+that vanished, the **fourth** occurrence (Ascent, bbq ×2, cinema) and the first anyone
+noticed. `publishRun` now 409s with `reason: 'unapplied-edits'` unless the body carries
+`acknowledgeUnapplied`, and the page confirms with every change named. Only the **current**
+attempt counts — a request answered by a revision is not outstanding. It refuses publishing
+*without knowing*, never publishing itself; Max is the editor. **Reconsider-when:** if he
+starts acknowledging routinely, B2 has become due and should leave HR-2.
+
+**Found while verifying, and fixed: a crash that had never once been seen.** Stage 06 answers
+the cross-reading checklist **by id** — `{ id: "set-seasons#1", valid, note }` — and the
+review page read `reading.setId` and destructured `reading.reading`. Neither field has ever
+existed. Entries answered `valid: false` skipped before the destructure, so every board
+rendered perfectly while the check found nothing, and **the first board where a check came
+back true blanked the entire review page** — on the note the code itself calls the defect
+that makes a board actively unfair. It stayed hidden because the check tuned itself into
+near-silence (backlog) and because `machineNotesBySet` lived in `review.js`, which touches
+`document` at module scope and therefore could not be tested in node. It is now
+`studio/review/ui/machine-notes.js`, pure and covered — the same split, for the same reason,
+as `board-html.js`.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

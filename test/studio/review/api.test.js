@@ -878,3 +878,202 @@ test('a brief outranks a failure record left beside it', async () => {
     cleanup();
   }
 });
+
+// --- GET /api/config: is this server running the code on disk? ---
+//
+// A node process holds the modules it booted with. On 2026-08-07 the revision
+// fix merged at 20:48, a server booted at 19:16 ran a revision at 20:00, and
+// the revision churned exactly as it had before the fix — which read as the
+// fix failing. It had not failed; it was not running. api.js does not touch
+// the filesystem, so the answer is injected.
+
+test('the config reports a stale server when the code is newer than the boot', async () => {
+  const { api, cleanup } = setup(undefined, {
+    codeState: () => ({
+      startedAt: '2026-08-07T19:16:00.000Z',
+      staleCode: true,
+      codeChangedAt: '2026-08-07T20:48:00.000Z',
+    }),
+  });
+  try {
+    const { status, body } = await api.handle({ method: 'GET', path: '/api/config' });
+    assert.equal(status, 200);
+    assert.equal(body.staleCode, true);
+    assert.equal(body.startedAt, '2026-08-07T19:16:00.000Z');
+    assert.equal(body.codeChangedAt, '2026-08-07T20:48:00.000Z');
+    // The settings it always carried are still there — this is an addition.
+    assert.equal(body.effortProfile, 'stub-profile');
+  } finally {
+    cleanup();
+  }
+});
+
+test('a fresh server says so without claiming anything else', async () => {
+  const { api, cleanup } = setup(undefined, {
+    codeState: () => ({ startedAt: '2026-08-07T21:00:00.000Z', staleCode: false }),
+  });
+  try {
+    const { body } = await api.handle({ method: 'GET', path: '/api/config' });
+    assert.equal(body.staleCode, false);
+  } finally {
+    cleanup();
+  }
+});
+
+test('with no provider the config is exactly what it always was', async () => {
+  const { api, cleanup } = setup();
+  try {
+    const { body } = await api.handle({ method: 'GET', path: '/api/config' });
+    // Absent, not false: a server that cannot answer the question must not be
+    // reported as having answered "fine".
+    assert.equal('staleCode' in body, false);
+    assert.equal('startedAt' in body, false);
+    assert.equal(body.effortProfile, 'stub-profile');
+  } finally {
+    cleanup();
+  }
+});
+
+// --- publishing warns when recorded changes would evaporate ---
+//
+// Publishing ships board.json exactly as generated; hand-editing is B2 and
+// still deferred. That is a fine limitation and was a terrible silence. On
+// 2026-08-08 Behind the Scenes was published carrying a recorded difficulty
+// change from 3 to 1 that simply vanished — the fourth time (Ascent, bbq
+// twice, cinema) and the first time anyone noticed. Nothing distinguished
+// "I changed my mind" from "I forgot I flagged that".
+
+const recordEdit = (store, runId, attemptId, event) =>
+  store.appendFeedback(runId, {
+    schemaVersion: '1.0',
+    id: `fb-${attemptId}-${event.action}-${Math.abs(hashOf(JSON.stringify(event)))}`,
+    attemptId,
+    formVersion: 3,
+    source: 'review-studio',
+    tags: [],
+    ...event,
+  });
+
+const hashOf = (text) => [...text].reduce((h, c) => (h * 31 + c.charCodeAt(0)) | 0, 7);
+
+test('publishing refuses once when a recorded change would not be applied', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    recordEdit(store, runId, attemptId, {
+      action: 'change-difficulty',
+      scope: { type: 'set', setId: 'set-c' },
+      before: { difficulty: 3 },
+      after: { difficulty: 1 },
+    });
+    await approve(api, runId);
+
+    const { status, body } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: {},
+    });
+
+    assert.equal(status, 409);
+    assert.equal(body.reason, 'unapplied-edits');
+    assert.equal(body.unapplied.length, 1);
+    assert.equal(body.unapplied[0].setId, 'set-c');
+    // The numbers travel, so the confirm can say what actually changes.
+    assert.equal(body.unapplied[0].from, 3);
+    assert.equal(body.unapplied[0].to, 1);
+    assert.deepEqual(readdirSync(puzzlesDir), [], 'the board reached puzzles/ anyway');
+  } finally {
+    cleanup();
+  }
+});
+
+test('acknowledged, it publishes — the editor decides, not the guard', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    recordEdit(store, runId, attemptId, {
+      action: 'set-needs-edit',
+      scope: { type: 'set', setId: 'set-b' },
+      note: 'swap Switch for Wii',
+    });
+    await approve(api, runId);
+
+    const { status } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: { acknowledgeUnapplied: true },
+    });
+
+    assert.equal(status, 200);
+    // index.json rides along: publish writes the manifest through the same store.
+    assert.ok(readdirSync(puzzlesDir).includes('lantern.json'));
+  } finally {
+    cleanup();
+  }
+});
+
+test('a run with nothing outstanding publishes exactly as it always did', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    // Praise is not an outstanding request — only asks for a change count.
+    recordEdit(store, runId, attemptId, {
+      action: 'set-publishable',
+      scope: { type: 'set', setId: 'set-a' },
+    });
+    await approve(api, runId);
+
+    const { status } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: {},
+    });
+    assert.equal(status, 200, 'an unrelated event blocked a clean publish');
+  } finally {
+    cleanup();
+  }
+});
+
+test('a request answered by a revision does not block — the revision is the answer', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    recordEdit(store, runId, attemptId, {
+      action: 'set-replace',
+      scope: { type: 'set', setId: 'set-d' },
+      note: 'this set is off theme',
+    });
+
+    // A second attempt supersedes the first, exactly as a revision does.
+    const second = store.createAttempt(runId, { parentAttemptId: attemptId, startingStage: '01-pair-author' });
+    store.writeAttemptArtifact(runId, second, 'board.json', BOARD);
+    store.completeAttempt(runId, second, { status: 'complete' });
+    await approve(api, runId);
+
+    const { status } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: {},
+    });
+    assert.equal(status, 200, 'a superseded request blocked the publish');
+  } finally {
+    cleanup();
+  }
+});
+
+test('publish still refuses fields it does not know', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store);
+    await approve(api, runId);
+    const { status, body } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: { acknowledgeUnapplied: true, sneaky: 1 },
+    });
+    assert.equal(status, 400);
+    assert.match(body.error, /unknown field: sneaky/);
+  } finally {
+    cleanup();
+  }
+});

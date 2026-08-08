@@ -78,6 +78,13 @@ export function buildPrompt(input = {}, context) {
       // the board for the name of something till I found Venus"), so the kind
       // of relationship is difficulty-relevant, not decoration.
       'Each set carries a "stance" — the kind of question it asks (a cause unfolds, a possession is checked, a membership is hunted for). The stance changes what the player actually does, so weigh it: the relationship, the words and the stance together set the difficulty.',
+      // design.md D-12. The rater grades the RELATIONSHIP, so it cannot see
+      // that some sets never make the player read one: `fade in : fade out`
+      // pairs itself on sight, the way two socks match. `selfMatchingPairs`
+      // counts how many of the set's two pairs are like that.
+      'Each set carries "selfMatchingPairs": how many of its two pairs share visible text, so a player can couple them WITHOUT reading the relationship at all ("fade in : fade out", "wrap : unwrap"). This is difficulty you can see and the relationship cannot express — weigh it down:',
+      '  - 1 — a way in. Fine, and often good: one obvious pair gives the player a foothold while the other still has to be understood. Usually a 1 or 2.',
+      '  - 2 — the set assembles itself. Both pairs are found by looking, so the analogy never gets examined. This is a 1 however clever the relationship is, and it cannot be a 3 or 4.',
       'Hard must never mean arbitrary. A grade-4 set still has to feel fair once revealed.',
       'If a set genuinely straddles two tiers, set "abstained": true, leave "difficulty" out, and say so in the rationale. Do not guess.',
       'Every set gets a one-line rationale.',

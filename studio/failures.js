@@ -77,11 +77,19 @@ export function classifyOutputFailure({ reason, errors = [], ceilings = [], stop
     // the one retryable failure where resending the same request cannot
     // possibly work: the ceiling is what stopped it. So the retry carries an
     // instruction to raise that ceiling, once.
+    // The retry ALSO steps the effort down one notch, and that half is not
+    // optional decoration. Raising the ceiling alone was measured five times
+    // on 2026-08-08 — painting, shadows, bald eagle, sculpture, a rose — and
+    // failed every time at ~$0.62 a run, because what overran the ceiling was
+    // THINKING, not the answer: at high effort a narrow theme reasons until
+    // the budget is gone and never gets to speak. More room to think in is not
+    // a rescue for a stage that is thinking too much. See design.md D-12.
     case 'truncated':
       return {
         category: RETRYABLE_TRANSPORT,
         message: 'response was truncated before it finished',
         escalateMaxTokens: 1.5,
+        stepDownEffort: true,
       };
 
     // Raised once and truncated again: the stage wants more room than we are
@@ -141,4 +149,26 @@ function buildSchemaFeedback(errors) {
 
 export function isRetryable(failure) {
   return failure?.category === RETRYABLE_TRANSPORT || failure?.category === RETRYABLE_OUTPUT;
+}
+
+// Coarsest last. One rung down is a real change in how long a stage reasons
+// before it answers, which is the whole point — see the 'truncated' case above.
+const EFFORT_LADDER = ['xhigh', 'high', 'medium', 'low'];
+
+/**
+ * One rung down the effort ladder, or null when there is nowhere to go.
+ *
+ * Lives here rather than in llm.js because "what a truncation is worth trying
+ * next" is a decision about a failure, and this module owns those. llm.js owns
+ * the I/O that carries the decision out.
+ *
+ * An absent effort stays absent: some models reject the parameter outright, and
+ * a stage with none configured has nothing to step down from. An unrecognised
+ * value is left alone too — guessing at a ladder we do not know is worse than
+ * retrying with the ceiling raise alone.
+ */
+export function stepDownEffort(effort) {
+  const rung = EFFORT_LADDER.indexOf(effort);
+  if (rung === -1 || rung === EFFORT_LADDER.length - 1) return null;
+  return EFFORT_LADDER[rung + 1];
 }
