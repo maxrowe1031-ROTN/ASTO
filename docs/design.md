@@ -554,6 +554,23 @@ work is never rewritten"). An attempt directory records what the *pipeline* did;
 brief is not that. Proposals are run artifacts beside `feedback.jsonl`, written through the new
 `writeRunArtifact` — run-store stays the only writer.
 
+**D-5 amendment — a brief that never arrives says so (2026-08-07).** `proposeRevision` had two
+ways to come back empty and recorded only one of them: a throw wrote a failure artifact, while
+"the model answered twice and neither reply was valid" was a bare `return null`. Both produced
+the same blank page, so **an absent brief and a failed one were indistinguishable** — which is
+how the 2026-08-06 Harry Potter proposal became unknowable by construction. Now **every path out
+that returns null writes `revision-proposal-<attemptId>-failure.json`** through `run-store`,
+carrying the category, each round's validation errors, the prompt, and **the model's last raw
+reply** — the field whose absence is what made that case undiagnosable. `GET
+/api/runs/:id/proposal` gives four distinguishable answers rather than three (brief · `working`
+· `failure` · nothing attempted, the last omitting the key entirely), a brief outranks a stale
+failure record beside it, and the review page names the failure instead of showing silence.
+`Request revision` stays clickable in that state **by design**: a brief that is never coming must
+not deadlock the button that exists for exactly that case. Nothing here may be fatal — the
+recorder itself cannot throw, because saving Max's feedback is the irreplaceable half of the
+transaction. No change to the graduation trigger above; a failed proposal still records no
+`proposal-verdict`, it just stops being invisible.
+
 ### D-6 — Approved boards reach the game, and the id they carry (2026-08-05)
 
 **Why now:** the rubric loop had produced faster than the project could absorb. Four approved

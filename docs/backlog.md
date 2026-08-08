@@ -210,7 +210,18 @@
   previous version keeps serving, so a broken deploy is invisible from the outside
   (2026-08-05: five failed builds, most of a day stale). `.nojekyll` fixed the cause;
   the *detection* gap remains. A post-push build-status check would close it.
-- **A proposal that fails validation twice leaves no trace at all.** `proposeRevision`
+- ~~**A proposal that fails validation twice leaves no trace at all.**~~ **Closed 2026-08-07.**
+  Both empty exits from `proposeRevision` now write `revision-proposal-<attemptId>-failure.json`
+  through `run-store` — category, message, what each round got wrong, the prompt, and **the
+  model's last raw reply**, which is the field whose absence made the Harry Potter case
+  unknowable. `GET /api/runs/:id/proposal` grew a `failure` field so the endpoint gives four
+  distinguishable answers instead of three (a proposal outranks a stale failure record; a
+  proposer never asked reports no `failure` key at all), and the review page says *"The
+  proposer ran and could not produce a usable brief"* rather than showing nothing. `Request
+  revision` stays clickable in that state by design — a brief that is never coming must not
+  deadlock the button that exists for exactly that case. First direct test coverage of
+  `proposer.js` came with it (`test/studio/review/proposer.test.js`). The original entry:
+  `proposeRevision`
   records a thrown error as `revision-proposal-<id>-failure.json`, but the path where the
   model simply cannot produce a valid brief in two rounds ends in a bare `return null`
   ([studio/review/proposer.js](../studio/review/proposer.js)) — no artifact, no decision

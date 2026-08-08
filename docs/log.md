@@ -2,6 +2,104 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-07 — A brief that never arrives now says so
+
+First session after `v0.1.0-local`, and Studio work rather than game work. The Revision
+Proposer had two ways to come back empty and recorded only one of them. The page could not
+tell "never asked" from "asked and failed", so an absent brief said nothing at all.
+
+### The gap, precisely
+
+- A **throw** wrote `revision-proposal-<attemptId>-failure.json`. Fine — except nothing ever
+  read it, not even the API, so it existed only for someone opening `studio/runs/` by hand.
+- **Two rounds of invalid output** — the model answered twice and neither reply parsed or
+  validated — was a bare `return null` at [proposer.js](../studio/review/proposer.js). No
+  artifact, no decision event, nothing.
+- `readProposal` answered `{proposal: null, working: false}` for *both* cases, and
+  `showProposal` returned silently on `!proposal`. Three different states, one blank panel.
+
+This is what made the **2026-08-06 Harry Potter proposal unknowable by construction**: the run
+carried a `revise-board` verdict and no brief, re-running the proposer by hand produced a good
+one on the first try, and the original reply was gone.
+
+### Built
+
+- **`proposer.js` — one `recordFailure` helper, both empty exits through it.** Same shape from
+  both paths: `category`, `message`, `at`, `rounds` (each round's structured validation errors,
+  or the parse failure), `prompt`, `model`, and **`reply` — the model's last raw text**. That
+  last field is the one whose absence made the Harry Potter case undiagnosable, and it is why
+  the artifact is a few KB rather than one line. The recorder is wrapped so it **cannot throw**:
+  an advisory miss must never cost Max's feedback, which is the irreplaceable half of the
+  transaction. A throw on round 2 still keeps what round 1 got wrong.
+- **`api.js` — `GET /api/runs/:id/proposal` gives four answers, not three.** brief · `working`
+  · `failure` · nothing attempted. A **brief outranks a stale failure record** beside it (a
+  re-run succeeds without erasing the earlier trace), and "never attempted" omits the `failure`
+  key entirely rather than nulling it — the repo's own *absent artifacts are absent, not errors*
+  convention. A failure record that exists but will not parse still answers `unreadable` rather
+  than falling silent, which would reproduce the exact ambiguity being removed.
+- **`review.js` — the panel says it.** *"The proposer ran and could not produce a usable brief"*
+  plus the reason. **No buttons** — there is nothing to accept or discard. `proposalPending()`
+  deliberately still answers `null` on a failure, so **Request revision stays clickable**: a
+  brief that is never coming must not deadlock the button that exists for that case.
+- **`test/studio/review/proposer.test.js` — new, and the first direct coverage `proposer.js`
+  has ever had.** Only the pure agent was tested before; the orchestration around it was not.
+  Eight cases on an injected transport, zero network, zero credit.
+
+### Decided (design.md — **D-5 amendment**)
+
+Recorded as an amendment to D-5 rather than a new decision: it is that decision's follow-through,
+not a new one. The graduation trigger is unchanged — a failed proposal still records no
+`proposal-verdict`, it just stops being invisible.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1014 pass, 0 fail** (was 1003; +11).
+  `node tools/check-board.js` → **10 boards, all clean** (untouched — this session changed no
+  content). The new tests were checked for bite: with the `recordFailure` call on the
+  invalid-output path disabled, `two unusable replies leave a failure artifact, not silence` and
+  `an unparseable reply is recorded as a parse failure` both fail; restored, all eight pass.
+  A green suite that would stay green without the fix is not evidence.
+- **Claude-verifiable: PASSED.** Studio at `:4321`, a failure artifact seeded into the flowers
+  run (gitignored, removed after). Panel rendered *"The proposer ran and could not produce a
+  usable brief / the model answered twice and neither reply was a valid brief (invalid-output)"*;
+  endpoint returned `{proposal: null, working: false, failure: {category: "invalid-output"}}`;
+  panel carried **0 buttons**; **Request revision enabled**. Control case — the lord-of-the-rings
+  run with no failure artifact — `'failure' in body === false` and the panel stayed hidden.
+  Console clean.
+- **Max acceptance: not required.** A Studio diagnostic with an automated gate, not a question
+  of feel or taste. No phase gate is in play: **Phases 1–5 are complete and tagged
+  `v0.1.0-local`**; this is Studio pipeline work.
+
+### Noticed, and deliberately dropped
+
+Inventoried all 59 runs. Six sat in `awaiting-review`: four never opened (travel, flowers,
+lord-of-the-rings, sleep-and-dreams) and **two carrying briefs that never got a verdict**
+(Harry Potter, Knights). A third unjudged brief sits on the rejected `childhood` run, and
+`2026-08-04T02-01-38.033Z-surprise-me` has been stuck in `revising` since 2026-08-04.
+
+**Max's call: ignore all of it and run a fresh batch.** So those two briefs will never be
+judged, and **D-5's counter stays at 0 — the ~10 starts from the new batch.** He started a
+`weather` run at the end of the session; it was mid-flight at wrapup and is deliberately not in
+this commit.
+
+### Backlog
+
+- Struck **"a proposal that fails validation twice leaves no trace at all"** — built, with what
+  it turned into.
+
+- **Next:** Max is running a **new batch of boards** through the pipeline for review — that is
+  the live work.
+  1. **Review the new batch in the Review Studio** (`npm run studio:review`). Every
+     `revise-board` verdict now produces either a brief or a visible reason there is none, so
+     **D-5's ~10 `proposal-verdict` events can start accumulating for real** — the counter is
+     at 0 and starts here.
+  2. **D-9's graduation trigger** still needs ~6 more played boards before the symmetric-order
+     flags can be scored against so-close-concentrated losses. The new batch feeds this too.
+  3. **The six stale `awaiting-review` runs and the stuck `revising` run are abandoned by
+     decision, not oversight** — do not re-surface them as work.
+  4. **Publishing to GitHub Pages** remains the next real milestone whenever he wants it; the
+     backlog's standing gap is that nothing verifies a push actually deployed.
+
 ## 2026-08-07 — A way in, and a memory of how it went
 
 Phase 5's last build work. The content bar was already met at 10 boards; what was missing
