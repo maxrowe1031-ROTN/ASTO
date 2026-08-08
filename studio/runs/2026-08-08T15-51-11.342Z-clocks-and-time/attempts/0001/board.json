@@ -1,0 +1,86 @@
+{
+  "id": "board-timepieces-1",
+  "title": "Clockwork Analogies",
+  "sets": [
+    {
+      "id": "set-opening-stage",
+      "relationshipLabel": "stage that opens the larger whole",
+      "explanation": "Midnight starts a day the same way January starts a year — each pair names the opening beat of its cycle.",
+      "pairs": [
+        [
+          "midnight",
+          "day"
+        ],
+        [
+          "January",
+          "year"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "cycle",
+        "calendar"
+      ]
+    },
+    {
+      "id": "set-power-source",
+      "relationshipLabel": "power source that lets the timepiece run",
+      "explanation": "A battery drives a quartz clock and a mainspring drives a mechanical watch — each is the hidden engine behind the ticking.",
+      "pairs": [
+        [
+          "battery",
+          "quartz clock"
+        ],
+        [
+          "mainspring",
+          "mechanical watch"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "mechanism",
+        "timepiece"
+      ]
+    },
+    {
+      "id": "set-opposite-adjustment",
+      "relationshipLabel": "action and the action that undoes it",
+      "explanation": "Advance and retard are opposite ways to reset a clock's hands, just as start and stop are opposite ways to run one.",
+      "pairs": [
+        [
+          "advance",
+          "retard"
+        ],
+        [
+          "start",
+          "stop"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "clock-setting",
+        "reversal"
+      ]
+    },
+    {
+      "id": "set-time-counterparts",
+      "relationshipLabel": "two counterpart divisions of a cycle",
+      "explanation": "Weekday and weekend split the calendar week just as tick and tock split the pendulum's single beat.",
+      "pairs": [
+        [
+          "weekday",
+          "weekend"
+        ],
+        [
+          "tick",
+          "tock"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "cycle-split",
+        "onomatopoeia"
+      ]
+    }
+  ]
+}

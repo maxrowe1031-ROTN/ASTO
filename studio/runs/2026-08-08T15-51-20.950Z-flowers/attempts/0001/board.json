@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "In the Garden",
+  "sets": [
+    {
+      "id": "set-location-product",
+      "relationshipLabel": "a place and what it exists to produce",
+      "explanation": "An apiary exists to produce honey just as a nursery exists to produce seedlings — each place is defined by its output.",
+      "pairs": [
+        [
+          "apiary",
+          "honey"
+        ],
+        [
+          "nursery",
+          "seedlings"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "place",
+        "production"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "A beekeeper always reaches for a smoker and a florist for shears — each worker is defined by the tool that does their job.",
+      "pairs": [
+        [
+          "beekeeper",
+          "smoker"
+        ],
+        [
+          "florist",
+          "shears"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "worker",
+        "tool"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "a flower and a feature it simply has",
+      "explanation": "A rose has a thorn and an iris has a rhizome — each flower is inseparable from a defining structural feature.",
+      "pairs": [
+        [
+          "rose",
+          "thorn"
+        ],
+        [
+          "iris",
+          "rhizome"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "flower",
+        "anatomy"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "two moments facing each other across a span",
+      "explanation": "Seed and wilt bookend a plant's life just as dusk and dawn bookend the night — each pair marks the two edges of the same cycle.",
+      "pairs": [
+        [
+          "seed",
+          "wilt"
+        ],
+        [
+          "dusk",
+          "dawn"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "cycle",
+        "time"
+      ]
+    }
+  ]
+}

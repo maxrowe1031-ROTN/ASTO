@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T15-51-11.342Z-clocks-and-time",
+  "createdAt": "2026-08-08T15:51:11.342Z",
+  "theme": "clocks and time",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "plan",
+      "coordinates",
+      "enabling-agent"
+    ],
+    "avoidShapes": [
+      "before-after",
+      "agent-object"
+    ],
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "cause",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "awaiting-review",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

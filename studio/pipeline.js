@@ -36,7 +36,7 @@ import { isSymmetric, stanceOf, symmetricNote } from './corpus/vocabulary.js';
 import { selfMatchingBySet, selfMatchingCount } from './corpus/lexical.js';
 import { validatePuzzle } from '../src/source/validate-puzzle.js';
 import { checkBoard } from '../src/engine/board-integrity.js';
-import { deriveWords } from '../src/engine/arrangements.js';
+import { crossPairings, deriveWords } from '../src/engine/arrangements.js';
 
 const FIRST_STAGE = STAGES[0].id;
 // A board is four sets, one per difficulty — so four is also the smallest
@@ -80,7 +80,16 @@ const STAGE_INPUTS = {
       selfMatchingPairs: selfMatchingCount(set),
     })),
   }),
-  [BOARD_STAGE]: (board, { revision }) => ({ gradedSets: gradedSets(board), revision }),
+  // The builder gets the hardest-stance steer as well as the author, because
+  // the builder is what actually assigns difficulty 4 (design.md D-13). Steering
+  // 01 alone only changes what is available; a pool can still be topped by the
+  // stance we are trying to move away from. Only this one field travels — the
+  // rest of the brief is 01's business.
+  [BOARD_STAGE]: (board, { manifest, revision }) => ({
+    gradedSets: gradedSets(board),
+    varyHardestStance: manifest?.brief?.varyHardestStance ?? null,
+    revision,
+  }),
   '05-analogy-validator': (board) => ({ board: boardOf(board) }),
   '06-adversarial-solver': (board) => ({
     board: boardOf(board),
@@ -681,12 +690,14 @@ function gateReport(blackboard) {
   // explicitly left open.
   const lexical = { bySet: selfMatchingBySet(output.board.sets) };
 
+  const spanFairness = spanCrossReadings(output.board, blackboard);
+
   // `ok` last, and derived from the reasons: `...integrity` carries an `ok` of
   // its own that would otherwise silently win and re-admit the board.
   //
-  // `orderFairness` and `lexical` are deliberately absent from `reasons` — they
-  // report and do not gate (design.md D-9, D-12), the same probation the
-  // cross-reading check served.
+  // `orderFairness`, `lexical` and `spanFairness` are deliberately absent from
+  // `reasons` — they report and do not gate (design.md D-9, D-12, D-13), the
+  // same probation the cross-reading check served.
   return {
     ...integrity,
     schema,
@@ -694,8 +705,60 @@ function gateReport(blackboard) {
     stances,
     orderFairness,
     lexical,
+    spanFairness,
     reasons,
     ok: reasons.length === 0,
+  };
+}
+
+/**
+ * Time-stance sets, with the readings the engine refuses spelled out.
+ *
+ * The structural finding behind design.md D-13: when a set's four words all lie
+ * on ONE timeline — `seed → bud → bloom → wilt` — regrouping them still reads
+ * "earlier : later". The cross-reading is a valid analogy, the engine rejects
+ * it, and a player who finds it is marked wrong for being right. That is D-7's
+ * `second-valid-reading`, and the span stance manufactures it.
+ *
+ * Deterministic on purpose. 06 was asked this question three times and answered
+ * `valid: false` with an empty note on the very set Max caught by hand, so the
+ * semantic check is being repaired separately — but a structural risk should
+ * not depend on a model noticing it. This cannot go quiet: if the stance is
+ * time, the readings are listed, full stop.
+ *
+ * Reports, never gates. A span set is not a defect — `sunrise : sunset` is a
+ * fine set, and Max has approved several. What is a defect is one reaching
+ * review UNEXAMINED.
+ */
+const TIME_STANCE = 'time';
+
+function spanCrossReadings(board, blackboard) {
+  const grouped = new Map(
+    (blackboard.get('02-theme-grouper')?.sets ?? []).map((set) => [set.id, set]),
+  );
+
+  const flagged = (board.sets ?? [])
+    .map((set) => {
+      const shape = grouped.get(set.id)?.shape ?? null;
+      if (stanceOf(shape) !== TIME_STANCE) return null;
+      let readings;
+      try {
+        // `A : B :: C : D`, the form the game and the review card both speak.
+        // A flat join reads as one four-term list and hides where the analogy
+        // breaks in half.
+        readings = crossPairings(set.pairs).map(([a, b, c, d]) => `${a} : ${b} :: ${c} : ${d}`);
+      } catch {
+        return null; // malformed pairs are the schema check's business, not this one
+      }
+      return { setId: set.id, shape, difficulty: set.difficulty ?? null, readings };
+    })
+    .filter(Boolean);
+
+  return {
+    // Same honest word as orderFairness: this check cannot fail a board.
+    enforced: false,
+    flagged,
+    count: flagged.length,
   };
 }
 

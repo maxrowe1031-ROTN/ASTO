@@ -86,7 +86,7 @@ export function getOutputSchema() {
 }
 
 export function buildPrompt(input = {}, context) {
-  const { gradedSets = [], revision = null } = input;
+  const { gradedSets = [], revision = null, varyHardestStance = null } = input;
   const revising = renderRevision(revision);
 
   return composePrompt({
@@ -117,6 +117,16 @@ export function buildPrompt(input = {}, context) {
       'Each graded set carries a "difficultySource": "arrangement" (ordinary words whose placement is the puzzle), "vocabulary" (a plain relationship carried by a word not everyone knows), or "both".',
       'Use it when you rank. Two sets can share a grade and be hard in completely different ways, and a board reads best when its four sets do not all get their difficulty from the same place — four vocabulary-hard sets is a quiz, four arrangement-hard sets is a board with no colour in it.',
       'Either kind may be the Black. If your pool gives you a real choice for the hardest slot, take the one that makes the board as a whole more varied rather than the one with the rarest words — but do not force it: a genuinely harder vocabulary set is the right Black when that is what the pool holds.',
+      // design.md D-13. The author is steered too, but the author only decides
+      // what is AVAILABLE — this stage decides what sits at 4, so a steer that
+      // stopped at 01 could still be undone here. Guidance, not a rule, for the
+      // same reason as everything else in this block: Max's instruction is that
+      // no kind of set gets reserved to or banished from a tier.
+      ...(varyHardestStance
+        ? [
+            `Recent boards have kept putting a ${varyHardestStance.toUpperCase()} set at difficulty 4. If this pool gives you any real choice for the hardest slot, prefer a set that asks a different kind of question — and say in "blackSetReasoning" that you did. A ${varyHardestStance} set lower on the board is perfectly good; only the top slot is the rut. If the ${varyHardestStance} set is genuinely the hardest thing here, still use it and say so rather than promoting something weaker.`,
+          ]
+        : []),
       'Say which you chose and why in "blackSetReasoning": one line naming the difficultySource of the set you put at 4 and what it was competing with.',
       'Record every set you labelled harder than it was graded in "promotions". A promotion the reviewer cannot see is a judgement nobody can check.',
       'Never invent a set that is not among the graded candidates. Choose and relabel; do not author.',

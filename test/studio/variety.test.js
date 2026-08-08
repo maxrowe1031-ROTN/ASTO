@@ -386,6 +386,38 @@ test('without a declared source it falls back to the shape', () => {
   }
 });
 
+// The bite-check that caught this: with the index's stance recording disabled,
+// every stance test above still passed, because they all feed `hardestStances`
+// in by hand. Nothing proved the index actually FILLS it — the same shape of
+// bug as the revision channel, which was faithfully recorded and never read.
+test('the index records the hardest set\'s STANCE, not just how it was hard', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    // `before-after` is a time set; `class-individual` is inclusion. Both are
+    // the board's Black in their own run.
+    gradedRun(store, { slug: 'spanned', blackShape: 'before-after', source: null });
+    gradedRun(store, { slug: 'named', blackShape: 'class-individual', source: null });
+    const index = buildRelationshipIndex({ store });
+    assert.deepEqual(index.hardestStances.slice(-2), ['time', 'inclusion']);
+  } finally {
+    cleanup();
+  }
+});
+
+// The two axes are recorded independently: a declared `difficultySource` short
+// -circuits the source fallback, and must not take the stance down with it.
+test('a declared difficultySource does not cost the board its stance', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    gradedRun(store, { slug: 'declared', blackShape: 'before-after', source: 'vocabulary' });
+    const index = buildRelationshipIndex({ store });
+    assert.equal(index.hardestSources.at(-1), 'vocabulary');
+    assert.equal(index.hardestStances.at(-1), 'time');
+  } finally {
+    cleanup();
+  }
+});
+
 test('three boards hard the same way asks the next one to vary', () => {
   const brief = buildVarietyBrief({
     index: { counts: {}, recent: [], unknown: 0, hardestSources: ['vocabulary', 'vocabulary', 'vocabulary'] },
@@ -423,4 +455,99 @@ test('the steer reaches the pair author as a nudge, and is silent otherwise', as
   assert.match(withSteer, /reach its top tier through arrangement/);
   const without = author.buildPrompt({ theme: 'caves', brief: { count: 8 } }, {});
   assert.ok(!/top tier through arrangement/.test(without));
+});
+
+// --- the stance rut (design.md D-13) ---
+//
+// D-8's steer stopped every Black being a rare word. What filled the space was
+// a clock: 19 of 54 hardest sets were a TIME question, against 17% for the next
+// stance. These pin the second axis, and specifically pin the two design
+// choices the corpus forced — a window rather than a run, and no sibling lever
+// keyed to overall stance usage.
+
+const stanceIndex = (hardestStances) => ({ counts: {}, recent: [], unknown: 0, hardestStances });
+
+test('a stance eating half the recent hardest slots asks the next board to vary', () => {
+  const brief = buildVarietyBrief({
+    index: stanceIndex(['time', 'time', 'time', 'time', 'cause', 'event', 'inclusion', 'possession']),
+    count: 8,
+  });
+  assert.equal(brief.varyHardestStance, 'time');
+});
+
+// The rule this replaced. D-8's axis has two values, so "the last three are
+// identical" is a strong signal there; stance has eight, and the transplanted
+// rule fired on 5 of 52 windows of real history — including NOT firing on the
+// evening Max complained, whose last three Blacks were time, dimension,
+// possession. A window is the point, not an implementation detail.
+test('a run of three is not enough on an eight-valued axis', () => {
+  const brief = buildVarietyBrief({
+    index: stanceIndex(['cause', 'inclusion', 'event', 'possession', 'dimension', 'time', 'time', 'time']),
+    count: 8,
+  });
+  assert.equal(brief.varyHardestStance, undefined, 'three of eight is not a rut');
+});
+
+// The same shape as D-8's load-bearing test, and for the same reason: a rule
+// that reserves the hardest slot away from a stance would be the opposite
+// monoculture. A balanced history must say nothing.
+test('a varied hardest-slot history carries no stance steer', () => {
+  for (const history of [
+    ['time', 'cause', 'time', 'event', 'inclusion', 'possession', 'time', 'dimension'],
+    ['cause', 'event', 'inclusion', 'possession', 'dimension', 'reference', 'time', 'absence'],
+    ['time', 'time', 'time'], // shorter than the window — not enough evidence yet
+    [],
+  ]) {
+    const brief = buildVarietyBrief({ index: stanceIndex(history), count: 8 });
+    assert.equal(brief.varyHardestStance, undefined, JSON.stringify(history));
+  }
+});
+
+// Ties break on name like every other ordering in the file, so the same
+// library always produces the same brief.
+test('a tie for the rutted stance breaks deterministically', () => {
+  const history = ['time', 'time', 'time', 'time', 'cause', 'cause', 'cause', 'cause'];
+  const first = buildVarietyBrief({ index: stanceIndex(history), count: 8 });
+  const again = buildVarietyBrief({ index: stanceIndex(history), count: 8 });
+  assert.equal(first.varyHardestStance, again.varyHardestStance);
+  assert.equal(first.varyHardestStance, 'cause', 'alphabetical on a tie');
+});
+
+// Both steers are independent — a board can be in both ruts at once, and
+// neither should suppress the other.
+test('the two steers ride the same brief without colliding', () => {
+  const brief = buildVarietyBrief({
+    index: {
+      counts: {},
+      recent: [],
+      unknown: 0,
+      hardestSources: ['arrangement', 'arrangement', 'arrangement'],
+      hardestStances: ['time', 'time', 'time', 'time', 'cause', 'event', 'inclusion', 'possession'],
+    },
+    count: 8,
+  });
+  assert.equal(brief.varyHardestFrom, 'arrangement');
+  assert.equal(brief.varyHardestStance, 'time');
+});
+
+test('the stance steer reaches BOTH the author and the builder', async () => {
+  const author = await import('../../studio/agents/pair-author.js');
+  const builder = await import('../../studio/agents/board-builder.js');
+
+  const authored = author.buildPrompt({ theme: 'caves', brief: { count: 8, varyHardestStance: 'time' } }, {});
+  assert.match(authored, /HARDEST set a TIME question/);
+  // Phrased so it cannot be read as banning the stance outright — the quota may
+  // legitimately ask for a time set on this very board.
+  assert.match(authored, /still welcome/);
+
+  // The builder is what actually assigns difficulty 4; a steer that stopped at
+  // the author would only change what was available, not what got promoted.
+  const built = builder.buildPrompt(
+    { gradedSets: [{ id: 's', stance: 'time', difficulty: 4, pairs: [['a', 'b'], ['c', 'd']] }], varyHardestStance: 'time' },
+    {},
+  );
+  assert.match(built, /TIME set at difficulty 4/);
+
+  assert.doesNotMatch(author.buildPrompt({ theme: 'caves', brief: { count: 8 } }, {}), /HARDEST set a/);
+  assert.doesNotMatch(builder.buildPrompt({ gradedSets: [] }, {}), /set at difficulty 4\. If this pool/);
 });

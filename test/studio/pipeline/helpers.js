@@ -83,8 +83,13 @@ export function boardReply(board, extra = {}) {
  * case; pass `valid` to flip a chosen reading.
  */
 export function solverReply(board, { valid = () => false, shapes = null, inferable = () => false } = {}) {
+  // `leftRelation`/`rightRelation` on every line since design.md D-13: the
+  // verdict is no longer a bare boolean, and the validator refuses a line that
+  // does not name what each half carries.
   const crossReadings = enumerateCrossReadings(board).map(({ id, setId, reading }) => ({
     id,
+    leftRelation: 'test fixture — left half',
+    rightRelation: 'test fixture — right half',
     valid: valid(setId, reading),
     ...(valid(setId, reading) ? { note: 'Test fixture.' } : {}),
   }));

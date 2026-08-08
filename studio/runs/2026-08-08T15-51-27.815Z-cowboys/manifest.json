@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T15-51-27.815Z-cowboys",
+  "createdAt": "2026-08-08T15:51:27.815Z",
+  "theme": "cowboys",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "cause",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}
