@@ -2,6 +2,80 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-08 — The evaluators finally have an answer key
+
+Max wrote `tools/evaluator-report.js` (with `agent/run.js`) for MAIGD Assignment #6, and
+asked for a review. It joins the two halves of the corpus that have been recorded since
+2026-08-02 and never compared: what the Studio's evaluators said about a board, and what
+Max then said about it.
+
+### What it measures, and why the numbers are worth having
+
+Unflattering, and therefore credible:
+
+- **05 analogy validator** agrees with Max on **94 of 144 sets (65%)** — and **flagged 32
+  sets he liked** against **18 it passed that he rejected**. The paris failure mode,
+  quantified: its dominant error is crying wolf.
+- **08 style guide** agrees on **38 of 66 boards (58%)**.
+- **06's** 254 findings touch a rejected set **27%** of the time — reported as word
+  overlap, explicitly *not* as "it found his reason".
+- **07's `knowledgeGated`** fired on 24 of the 32 attempts that could report it.
+
+Its best design property is that **five instrument boundaries are segmented rather than
+smoothed** — version-1 set actions are never read as verdicts, `valid-but-unfair` is
+counted where it is and never re-sorted, an absent field is "could not report" and not a
+zero. That is the discipline `docs/backlog.md` says rubric compilation will need.
+
+**The finding that matters to the project: D-5's graduation trigger has far less evidence
+than its raw count implies.** Five `proposal-verdict` events all say `accepted`, but three
+of those revisions predate D-11 and never received the notes. The honest denominator is
+**2 usable, 0 published**. Detected from the artifact — does the re-entry prompt carry
+`renderRevision()`'s marker — rather than from a date.
+
+### Review findings, fixed
+
+- **`published` was reading run status, not publication.** D-6 made publishing a `publish`
+  decision precisely because a run stays `approved` either way. Measured: **33 approved
+  runs, 19 published, 14 approved and never shipped.** The bug lived in **two** places —
+  `chainOutcome` took the field from the record and `chainTally` re-derived it from
+  `outcome === 'approved'`, so fixing one alone would have left the printed number wrong.
+  Now `wasPublished()` reads the decision log; an unreadable decision file is `false`,
+  because absence of the record is not evidence of publication.
+- **An optimistic default in `scoreStyle`**: a missing `unity.verdict` defaulted to
+  `'strong'` — to happy — which is the exact smoothing the file refuses for 07's
+  `knowledgeGated`. Inert in today's corpus (all 21 unity-less outputs are already
+  non-compliant) and removed before it could bite. It reports `unityReportable` instead.
+- Renamed a snake_case parameter.
+
+**No conclusion in the submission changed.** *"0 published of 2 usable"* was true before and
+after — both usable chains ended open or rejected. The bug was a landmine, not a live error.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1160 pass, 0 fail** = ASTO's **1126** plus the tool's
+  **34** tests (29 written with the tool, 5 added by this review). `node tools/check-board.js`
+  → **21 boards, all clean.**
+- **Bite-checked.** Restoring `status === 'approved'` fails two tests, one of them reading
+  *"an approved board Max never shipped is not published"*.
+- **Claude-verifiable: PASSED.** The tool runs against the real corpus, `--json` parses, and
+  it **writes nothing** — file count under `studio/runs/` identical before and after. The two
+  generated report artifacts were regenerated so they match the fixed tool.
+- **Drift check: clean.** Every figure in `studio/README.md`'s limits table matches
+  `pipeline-config.js` (240 requests · 12M tokens · $60 · 2h per run; retries 3/2; caps 3
+  and 2), 05 really is the one Haiku stage, and 43,680 is the integrity sweep's real count.
+- **No Max acceptance needed** — nothing model-visible or player-visible changed.
+
+- **Next:**
+  1. **The report is now the instrument for two open triggers.** D-5's graduation question
+     reads `0 published of 2 usable`, not `5 accepted`. D-7's cross-reading promotion and the
+     evocativeness answer key both want the same treatment — neither has a scorer yet.
+  2. **05 is the loudest candidate for work.** 65% agreement whose dominant error is flagging
+     sets Max likes matches the backlog's own note that `boardPasses` is false on 86% of
+     attempts. The backlog already asks whether it should return severities rather than a
+     boolean; there is now a number behind that question.
+  3. Unchanged from this morning: watch the `dimension` slot, and the delight gap
+     (6/6 publishable, 1/6 exciting) is still the open question.
+
 ## 2026-08-08 — A steer that only reaches half the runs is not a steer
 
 Max chose to run the batch D-13's reconsider-when asks for. A pre-flight check found the

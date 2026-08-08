@@ -1,0 +1,148 @@
+{
+  "attempts": 66,
+  "runs": 59,
+  "skipped": {
+    "mock": 8,
+    "noBoard": 2,
+    "noFeedback": 20,
+    "unjudgedAttempt": 0
+  },
+  "populations": {
+    "trustedSets": 102,
+    "version1Sets": 42,
+    "unclassifiedSets": 73
+  },
+  "validator": {
+    "agreePass": 67,
+    "agreeFail": 27,
+    "flaggedLiked": 32,
+    "passedRejected": 18,
+    "unjudged": 120
+  },
+  "solver": {
+    "findings": 254,
+    "onRejectedSet": 68,
+    "onLikedSet": 100,
+    "unjoinable": 0,
+    "bySeverity": {
+      "high": 41,
+      "medium": 134,
+      "low": 79
+    }
+  },
+  "player": {
+    "reportable": 32,
+    "fired": 24,
+    "gatedWords": 77,
+    "gatedOnRejectedSet": 14,
+    "trials": 76,
+    "solvedTrials": 71
+  },
+  "style": {
+    "compared": 66,
+    "agree": 38,
+    "machineHappyHumanNot": 11,
+    "humanHappyMachineNot": 17
+  },
+  "tags": {
+    "active": {
+      "relationship-does-not-click": 15,
+      "good-unchanged": 130,
+      "too-obscure": 10,
+      "weak-explanation": 10,
+      "weak-label": 10,
+      "too-easy": 14,
+      "order-ambiguous": 6,
+      "too-difficult": 6,
+      "strong-reveal": 134,
+      "difficulty-accurate": 119,
+      "cross-set-association": 12,
+      "repetitive-shape": 1,
+      "feels-like-asto": 122,
+      "not-evocative": 18,
+      "not-always-true": 5
+    },
+    "retired": {
+      "valid-but-unfair": 9
+    }
+  },
+  "proposals": {
+    "verdicts": 5,
+    "accepted": 5,
+    "edited": 0,
+    "discarded": 0,
+    "other": 0
+  },
+  "chains": [
+    {
+      "runId": "2026-08-08T01-41-45.790Z-bbq",
+      "slug": "2026-08-08T01-41-45.790Z-bbq",
+      "status": "rejected",
+      "verdict": "accepted",
+      "revised": true,
+      "notesReached": false,
+      "usable": false,
+      "outcome": "rejected",
+      "lastBoardAction": "bad",
+      "published": false
+    },
+    {
+      "runId": "2026-08-08T01-52-51.811Z-nintendo",
+      "slug": "2026-08-08T01-52-51.811Z-nintendo",
+      "status": "rejected",
+      "verdict": "accepted",
+      "revised": true,
+      "notesReached": false,
+      "usable": false,
+      "outcome": "rejected",
+      "lastBoardAction": "bad",
+      "published": false
+    },
+    {
+      "runId": "2026-08-08T02-51-05.655Z-naruto",
+      "slug": "2026-08-08T02-51-05.655Z-naruto",
+      "status": "rejected",
+      "verdict": "accepted",
+      "revised": true,
+      "notesReached": false,
+      "usable": false,
+      "outcome": "rejected",
+      "lastBoardAction": "bad",
+      "published": false
+    },
+    {
+      "runId": "2026-08-08T15-51-20.950Z-flowers",
+      "slug": "2026-08-08T15-51-20.950Z-flowers",
+      "status": "awaiting-review",
+      "verdict": "accepted",
+      "revised": true,
+      "notesReached": true,
+      "usable": true,
+      "outcome": "open",
+      "lastBoardAction": "edit",
+      "published": false
+    },
+    {
+      "runId": "2026-08-08T15-51-27.815Z-cowboys",
+      "slug": "2026-08-08T15-51-27.815Z-cowboys",
+      "status": "rejected",
+      "verdict": "accepted",
+      "revised": true,
+      "notesReached": true,
+      "usable": true,
+      "outcome": "rejected",
+      "lastBoardAction": "good",
+      "published": false
+    }
+  ],
+  "chainTally": {
+    "briefs": 5,
+    "revised": 5,
+    "confounded": 3,
+    "usable": 2,
+    "approved": 0,
+    "published": 0,
+    "open": 1,
+    "rejected": 1
+  }
+}
