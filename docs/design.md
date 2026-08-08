@@ -1319,6 +1319,66 @@ banning them would fail real work to prevent a copy 82 boards say has never happ
 line recorded in the test: **ban a taught pair only when nothing but the lesson would produce
 it**; everything else is watched at the prompt.
 
+### D-13 — Order is the game, so the Black slot cannot be a clock (2026-08-08)
+
+**Max's finding, from one evening's reviews.** He flagged "beginning and end" sets on flowers
+(twice), cowboys and music, refused to publish an otherwise-approved cowboys board over it,
+and wrote *"we keep encountering way too many puzzles that move through time"* and **"We def
+need to fix this."**
+
+**Measured across all real boards:** time-stance sets are **19% of all sets** — unremarkable,
+fourth of eight — but **19 of 54 hardest sets, 35% of the Black slot**, against 17% for the
+next stance. The monoculture is not in the corpus; it is in the top tier.
+
+**Why it grew.** D-8 taught the builder to prefer *arrangement-hard* sets for Black. A time
+span is the easiest arrangement-hard set to author — ordinary words whose placement is the
+puzzle is nearly the definition of a span. Fixing the vocabulary-hard rut opened a slot, and
+clocks filled it. **Every rut fix should be assumed to create the next one**, which is why
+this decision adds a measurement, not just a nudge.
+
+**The structural half, which is worse than the repetition.** When a span set's four words lie
+on ONE timeline — `seed → bud → bloom → wilt` — regrouping them *still* reads "earlier :
+later". The cross-reading is a valid analogy, the engine refuses cross-pair orderings, and the
+player who finds it is **marked wrong for being right**. That is D-7's `second-valid-reading`,
+manufactured by the stance rather than stumbled into. Max found it by hand on flowers 0002 and
+reached for `order-ambiguous`, a tag he had never used before.
+
+**Three levers, none of which gate.**
+
+1. **Steer the slot (`variety.js` → 01 and 04).** The index now records
+   `hardestStances` beside `hardestSources`, and a stance holding **half of the last eight**
+   Blacks puts `varyHardestStance` on the brief. Two calibrations came from the data, not from
+   taste: **a window, not a run** — D-8's "last three identical" rule works on a two-valued
+   axis and fires on only 5 of 52 windows of an eight-valued one, and *would not have fired on
+   the evening Max complained* (his last three were time, dimension, possession); and
+   **window 8 at half share**, which across 47 historical windows fires on `time` and on
+   nothing else, ever. The steer reaches **both** 01 and 04, because 01 only decides what is
+   available and 04 is what actually assigns difficulty 4.
+   **An `avoidStances` sibling was designed and then dropped** — overall stance usage is
+   balanced, so a lever keyed to total counts would have fired on `cause` and left the rut
+   untouched.
+2. **See it deterministically (`04a` → review card).** `spanFairness` lists every time-stance
+   set with its two refused readings spelled out. Report, never gate — Max has approved span
+   boards and `sunrise : sunset` is a good set; what is a defect is one reaching review
+   **unexamined**. Deterministic on purpose: the semantic check went quiet, and a structural
+   risk must not depend on a model noticing it.
+3. **Ask the question properly (06, attempt four).** Two diagnosed causes, both fixed. The
+   verdict was a **bare boolean** — when 06 answered `valid: false` on the set Max caught,
+   there was nothing to read to find out why; every line now names `leftRelation` and
+   `rightRelation` before the verdict, which also makes the answer scoreable against his calls.
+   And the checklist printed **one orientation** of each half while instructing *"judge only
+   the reading in front of you"* — so Max's `seed : bud :: bloom : wilt` was formally outside
+   the question. Halves may now be read either way round, and the shared-timeline case is named
+   with the board that exposed it.
+
+**Reconsider-when.** If the next ~6 boards still top out on spans, the steer is too soft —
+tighten the share before touching the window. If v4 starts calling tidy 2×2 grids valid again,
+the orientation freedom over-reached and the anti-grid trap needs restating (that was round
+2's failure). D-7's graduation trigger keeps running with v4 as its subject: agreement with
+Max's `order-ambiguous` calls over ~6 boards promotes the check to blocking at `04a`.
+**Max's D-8 instruction still governs everything above** — *"they can both be black, depending
+on the puzzle"* — so all three levers report or nudge, and none reserves a tier.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

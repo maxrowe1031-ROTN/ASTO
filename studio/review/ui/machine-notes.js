@@ -88,10 +88,19 @@ export function machineNotesBySet(attempt) {
     // cross-readings it is, which the note already says in words.
     const setId = String(reading.id ?? '').split('#')[0];
     if (!setId) continue;
+    // Both halves' relations, when 06 named them (design.md D-13). The verdict
+    // used to be a bare boolean, so a claim this expensive arrived with nothing
+    // to weigh it against — and a wrong one looked exactly like a right one.
+    // Showing the reasoning is what lets Max score the check against his own
+    // `order-ambiguous` calls, which is what D-7's graduation trigger reads.
+    const relations =
+      reading.leftRelation && reading.rightRelation
+        ? ` Both halves read as: "${reading.leftRelation}" and "${reading.rightRelation}".`
+        : '';
     add(setId, {
       source: 'also reads',
       level: 'high',
-      text: `${reading.note} The engine refuses this reading, so a player who finds it loses a mistake.`,
+      text: `${reading.note} The engine refuses this reading, so a player who finds it loses a mistake.${relations}`,
     });
   }
 
@@ -141,6 +150,24 @@ export function machineNotesBySet(attempt) {
         count === 2
           ? 'Both pairs share visible text, so a player can couple all four words without reading the relationship at all — the set assembles itself.'
           : 'One pair shares visible text, so it couples on sight. Often a good way in; worth knowing it is doing that work rather than the relationship.',
+    });
+  }
+
+  // Span sets, with the refused readings spelled out (design.md D-13).
+  //
+  // Deterministic, so unlike every other note on this card it cannot go quiet.
+  // The point is not that a time set is bad — Max has approved several — but
+  // that when four words share one timeline, the regrouping usually reads
+  // "earlier : later" too, and the engine marks that player wrong. He caught
+  // exactly that by hand on the flowers board while 06 said `valid: false`.
+  // Louder at the top tier, where a set carries the most weight.
+  for (const flag of attempt.reports['04a-integrity']?.spanFairness?.flagged ?? []) {
+    add(flag.setId, {
+      source: 'span set — check the refused readings',
+      level: flag.difficulty === 4 ? 'medium' : 'low',
+      text:
+        `Both pairs are time spans, so the readings the engine refuses may be valid analogies too — ` +
+        `a player who finds one is marked wrong for being right. Refused here: ${flag.readings.join('  ·  ')}.`,
     });
   }
 

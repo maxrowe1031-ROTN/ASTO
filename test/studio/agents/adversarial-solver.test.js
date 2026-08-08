@@ -26,9 +26,19 @@ const BOARD = {
   ],
 };
 
-/** A complete, well-formed answer to the checklist BOARD produces. */
+/**
+ * A complete, well-formed answer to the checklist BOARD produces.
+ *
+ * Both relations on every line since design.md D-13 — the verdict stopped being
+ * a bare boolean when a bare `valid: false` turned out to be unarguable-with.
+ */
 const answered = () =>
-  solver.enumerateCrossReadings(BOARD).map(({ id }) => ({ id, valid: false }));
+  solver.enumerateCrossReadings(BOARD).map(({ id }) => ({
+    id,
+    leftRelation: 'two kinds of car',
+    rightRelation: 'two named models',
+    valid: false,
+  }));
 
 const output = (overrides = {}) => ({
   noneFound: true,
@@ -77,7 +87,9 @@ test('an answer with no crossReadings at all is refused', () => {
 // were never asked about — answering a checklist it wrote itself.
 test('a reading that was not on the checklist is refused', () => {
   const invented = answered();
-  invented.push({ id: 'set-a#3', valid: false });
+  // Fully formed apart from the id, so the SCHEMA passes and the checklist
+  // rule is what refuses it — otherwise this asserts the wrong failure.
+  invented.push({ id: 'set-a#3', leftRelation: 'x', rightRelation: 'y', valid: false });
   const result = validate(output({ crossReadings: invented }));
   assert.equal(result.ok, false);
   assert.match(JSON.stringify(result.errors), /not a checklist id/);
@@ -129,7 +141,8 @@ test('noneFound still describes findings only, not the checklist', () => {
 // and evocativeness's named words are held to.
 test('a reading marked valid must say what relationship both halves share', () => {
   const found = answered();
-  found[2] = { id: found[2].id, valid: true };
+  // Relations named, note deliberately missing: the note rule is under test.
+  found[2] = { ...found[2], valid: true };
   const result = validate(output({ crossReadings: found }));
   assert.equal(result.ok, false);
   assert.match(JSON.stringify(result.errors), /says nothing/);
@@ -140,4 +153,67 @@ test('a reading marked valid must say what relationship both halves share', () =
 // was first built: 16,000 tokens of thinking, stop_reason max_tokens, no text.
 test('a reading marked false needs no note', () => {
   assert.equal(validate(output()).ok, true);
+});
+
+// --- the question, rebuilt (design.md D-13) ---
+//
+// Attempt three answered `valid: false` with an empty note on the flowers Black
+// — `seed : wilt :: bud : bloom` — while Max caught it by hand and wrote "you
+// could reorder this as seed:bud::bloom:wilt and it still makes sense." Two
+// causes, both pinned here: the verdict was a bare boolean nobody could argue
+// with, and the checklist printed ONE orientation of each half while telling the
+// model to judge only the reading in front of it.
+
+test('every line must name both halves\' relations, not just answer yes or no', () => {
+  const bare = answered();
+  bare[0] = { id: bare[0].id, valid: false };
+  const result = validate(output({ crossReadings: bare }));
+  assert.equal(result.ok, false, 'a bare boolean is the thing this rewrite removed');
+});
+
+// A blank relation is refused by the SCHEMA, whose minLength trims first — so
+// no semantic check is needed for it, and adding one would be dead code. Pinned
+// because the first cut of D-13 added exactly that check and it never fired.
+test('a whitespace-only relation is refused by the schema, not by a second check', () => {
+  const blank = answered();
+  blank[0] = { ...blank[0], leftRelation: '   ' };
+  const result = validate(output({ crossReadings: blank }));
+  assert.equal(result.ok, false);
+  assert.match(JSON.stringify(result.errors), /after trimming/);
+});
+
+// The load-bearing one. The instruction that made the correct answer
+// unreachable is gone, and the case that keeps reaching review is named.
+test('the checklist lets a half be read either way round, and warns about shared timelines', () => {
+  const flowers = {
+    id: 'asto-board-001',
+    title: 'In the Garden',
+    sets: [
+      { id: 'set-before-after', relationshipLabel: 'two life-stages facing each other',
+        explanation: 'e', difficulty: 4, pairs: [['seed', 'wilt'], ['bud', 'bloom']] },
+    ],
+  };
+  const prompt = solver.buildPrompt({ board: flowers }, {});
+
+  assert.match(prompt, /Either half may be read in either direction/);
+  assert.match(prompt, /flipped readings/);
+  // The old wording forbade exactly what the player does.
+  assert.doesNotMatch(prompt, /Judge only the reading in front of you/);
+  // And the shared-timeline case is called out by name, using the board that
+  // exposed it, so the anti-grid rule is not used to wave one through.
+  assert.match(prompt, /single progression/);
+  assert.match(prompt, /seed : bud :: bloom : wilt/);
+  // Both relation fields are asked for before the verdict.
+  assert.match(prompt, /"leftRelation"/);
+  assert.match(prompt, /"rightRelation"/);
+});
+
+test('a valid reading still needs its note — the relations do not replace it', () => {
+  const found = answered();
+  found[0] = { ...found[0], valid: true };
+  assert.equal(validate(output({ crossReadings: found })).ok, false);
+
+  const explained = answered();
+  explained[0] = { ...explained[0], valid: true, note: 'both halves run earlier to later' };
+  assert.equal(validate(output({ crossReadings: explained })).ok, true);
 });

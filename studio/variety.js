@@ -30,6 +30,7 @@ import {
   SHIPPED_LABELS,
   isNameable,
   resolveShape,
+  stanceOf,
 } from './corpus/vocabulary.js';
 
 export { SHAPES } from './corpus/vocabulary.js';
@@ -60,6 +61,7 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
   const stanceCounts = {};
   const recent = [];
   const hardestSources = [];
+  const hardestStances = [];
   let unknown = 0;
 
   const record = (declared) => {
@@ -116,7 +118,7 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
         return shapes.length > 0 ? mostCommon(shapes) : null;
       };
       for (const set of board.sets ?? []) record(shapeOf(set));
-      recordHardestSource(board, shapeOf, grades);
+      recordHardest(board, shapeOf, grades);
     }
   }
 
@@ -131,26 +133,46 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
     // (design.md D-8). Not a count of shapes — a count of the two ways a board
     // can be made hard, which is the thing that had quietly become one.
     hardestSources,
+    // What KIND of question each board's hardest set asked, newest last
+    // (design.md D-13). The sibling axis: D-8 stopped every Black being a rare
+    // word, and the space it opened filled up with clocks.
+    hardestStances,
   };
 
   /**
-   * Records whether this board's Black is hard by arrangement or by vocabulary.
+   * Records how this board's Black earned its difficulty — two axes.
    *
-   * Prefers 03's own `difficultySource`, which is a judgement made while
-   * grading. Falls back to the shape for the thirty-odd boards graded before
-   * that field existed: the three nameable shapes are the ones whose only
-   * lever for extra difficulty is a rarer word.
+   * `hardestSources` is D-8's axis: arrangement or vocabulary. It prefers 03's
+   * own `difficultySource`, a judgement made while grading, and falls back to
+   * the shape for the thirty-odd boards graded before that field existed (the
+   * three nameable shapes are the ones whose only lever for extra difficulty is
+   * a rarer word).
+   *
+   * `hardestStances` is D-13's axis, and it exists because fixing D-8's rut
+   * grew another one inside it. "Arrangement-hard" is a broad answer; a TIME
+   * SPAN is the easiest arrangement-hard set to author, so the builder kept
+   * reaching for one. Measured across 57 boards: 19 of 57 Blacks were a time
+   * set — a third of the hardest slot spent on one stance. The stance is always
+   * read from the shape, never from 03, because `difficultySource` says how a
+   * set is hard and this asks what KIND of question it is.
    */
-  function recordHardestSource(board, shapeOf, grades) {
+  function recordHardest(board, shapeOf, grades) {
     const sets = board.sets ?? [];
     if (sets.length === 0) return;
     const hardest = sets.reduce((a, b) => (b.difficulty > a.difficulty ? b : a));
+    const shape = shapeOf(hardest);
+
+    // Recorded first and independently: a board can have a declared source and
+    // an unjoinable shape, or the reverse, and neither axis should lose a
+    // datapoint because the other one is missing.
+    const stance = shape ? stanceOf(shape) : null;
+    if (stance) hardestStances.push(stance);
+
     const declared = grades?.get(hardest.id)?.difficultySource;
     if (declared === 'arrangement' || declared === 'vocabulary' || declared === 'both') {
       hardestSources.push(declared);
       return;
     }
-    const shape = shapeOf(hardest);
     if (!shape) return; // unjoinable — guessing here would be worse than silence
     hardestSources.push(isNameable(shape) ? 'vocabulary' : 'arrangement');
   }
@@ -280,6 +302,7 @@ export function buildVarietyBrief({ index, count = 8 } = {}) {
     avoidShapes,
     stanceQuotas: buildStanceQuotas({ index }),
     ...leanAgainstRecentDifficulty(index),
+    ...leanAgainstRecentStance(index),
   };
 }
 
@@ -293,6 +316,53 @@ export function buildVarietyBrief({ index, count = 8 } = {}) {
  * sameness and says nothing otherwise.
  */
 const RUT_LENGTH = 3;
+
+/**
+ * How many recent boards the STANCE rut looks at, and the share that trips it.
+ *
+ * Deliberately not `RUT_LENGTH`, and the reason is arity. D-8's axis has two
+ * values — arrangement or vocabulary — so "the last three are identical" is a
+ * strong, common signal there. Stance has EIGHT values, and the same rule
+ * transplanted fires on 5 of 52 windows of real history: it did not fire on the
+ * evening Max complained (his last three Blacks were time, dimension,
+ * possession) even though 19 of the previous 54 had been time. A rule that
+ * misses the complaint that motivated it is the wrong rule.
+ *
+ * Simulated against the whole corpus, a window of 8 at half share is the clean
+ * discriminator: it fires on 16 of 47 windows and **every one of them is
+ * `time`** — no false positive on any other stance in the project's history —
+ * and eight boards is about the span of work over which Max noticed it.
+ */
+const HARDEST_WINDOW = 8;
+const HARDEST_SHARE = 0.5;
+
+/**
+ * The stance that has been eating the hardest slot (design.md D-13).
+ *
+ * Deliberately NOT paired with an `avoidStances` sibling keyed to overall
+ * usage, though that was the first design. The corpus refuses it: across all
+ * sets the stances are well balanced — cause 19%, possession 18%, event 18%,
+ * time 17% — so a lever reading total counts would fire on `cause` and do
+ * nothing whatever about the rut. The monoculture lives ONLY in the hardest
+ * slot, where time holds 35% against a next-best 17%. Steer the slot, not the
+ * corpus.
+ */
+function leanAgainstRecentStance(index) {
+  const stances = index?.hardestStances ?? [];
+  if (stances.length < HARDEST_WINDOW) return {};
+
+  const window = stances.slice(-HARDEST_WINDOW);
+  const tally = new Map();
+  for (const stance of window) tally.set(stance, (tally.get(stance) ?? 0) + 1);
+  // Ties break on name, like every other ordering in this file, so the same
+  // library always produces the same brief.
+  const [stance, used] = [...tally.entries()].sort(
+    (a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1),
+  )[0];
+
+  if (used / HARDEST_WINDOW < HARDEST_SHARE) return {};
+  return { varyHardestStance: stance };
+}
 
 function leanAgainstRecentDifficulty(index) {
   const sources = index?.hardestSources ?? [];

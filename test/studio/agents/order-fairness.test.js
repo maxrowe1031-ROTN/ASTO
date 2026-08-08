@@ -51,7 +51,14 @@ const INTEGRITY = {
   },
 };
 
-const crossAnswers = () => solver.enumerateCrossReadings(BOARD).map(({ id }) => ({ id, valid: false }));
+// Both relations on every line since design.md D-13.
+const crossAnswers = () =>
+  solver.enumerateCrossReadings(BOARD).map(({ id }) => ({
+    id,
+    leftRelation: 'no shared relation',
+    rightRelation: 'no shared relation',
+    valid: false,
+  }));
 
 const output = (overrides = {}) => ({
   noneFound: true,

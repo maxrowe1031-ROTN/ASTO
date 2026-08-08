@@ -2,6 +2,94 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-08 — Order is the game, so the Black slot cannot be a clock
+
+Max ran six themes and reviewed them, and the session's finding is his: he flagged
+"beginning and end" sets on flowers (twice), cowboys and music, refused to publish an
+approved cowboys board over it, and wrote **"We def need to fix this."** He was right, and
+the measurement was worse than the complaint.
+
+### First: D-11's revision fix passed its gate
+
+Both revisions this session ran through the repaired channel — the marker is in the stored
+prompts — and the behaviour changed completely:
+
+- **flowers**: asked to fix the Black and tighten object-component. Got exactly that. The two
+  approved sets survived **byte-identical**; `rose:thorn::iris:rhizome` became
+  `dahlia:tuber::gladiolus:corm`, answering his "aren't rhizomes generic?" note precisely.
+- **cowboys**: asked to replace the non-cowboy Black, keep the other three. **Three sets
+  byte-identical**, and the new Black was actually cowboy-themed.
+
+Against naruto/bbq/nintendo, where "one small change" returned an entirely new board. The
+failure mode is gone. **D-5 is at 5 of ~10 `proposal-verdict` events, all `accepted`** — and
+now the accepted briefs are actually executed.
+
+### The finding, with numbers
+
+Time-stance sets are **19% of all sets** — unremarkable, fourth of eight — but **19 of 54
+hardest sets, 35% of the Black slot**, against 17% for the next stance. **The monoculture is
+not in the corpus; it is in the top tier.** D-8 taught the builder to prefer arrangement-hard
+sets for Black, a span is the easiest arrangement-hard set to author, and clocks filled the
+slot D-8 opened.
+
+Worse than the repetition: when four words lie on **one timeline** (`seed → bud → bloom →
+wilt`), the regrouping still reads "earlier : later" — a valid analogy the engine refuses, so
+the player who finds it is **marked wrong for being right**. Max caught exactly that on
+flowers 0002 and reached for `order-ambiguous`, a tag he had never used. 06 had answered
+`valid: false` with an empty note on that very set.
+
+### Built — three levers, none of which gate (design.md **D-13**)
+
+- **The steer** (`variety.js` → 01 and 04). Index records `hardestStances`; a stance holding
+  half of the last eight Blacks sets `varyHardestStance`. **Two calibrations came from the
+  data, against my own plan.** D-8's "last three identical" rule fires on 5 of 52 windows of
+  an eight-valued axis and *would not have fired the evening Max complained* — so a window,
+  not a run. Window 8 at half share fires on `time` across 47 historical windows and on
+  **nothing else, ever**. And the planned `avoidStances` sibling was **dropped**: overall
+  stance usage is balanced, so it would have fired on `cause` and left the rut untouched.
+  The steer reaches **both** 01 and 04, because 01 decides what is available and 04 decides
+  what sits at 4.
+- **The deterministic flag** (`04a` → review card). `spanFairness` lists every time-stance set
+  with its two refused readings spelled out. Report, never gate — Max has approved span
+  boards; the defect is one arriving **unexamined**.
+- **The question, attempt four** (06). Every line now names `leftRelation` and `rightRelation`
+  before the verdict — a bare boolean was unarguable-with. And the second cause, which the
+  backlog had not suspected: the checklist printed **one orientation** of each half while
+  saying *"judge only the reading in front of you"*, so Max's reading was formally outside the
+  question. Halves may now be read either way, and the shared-timeline case is named.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1111 pass, 0 fail** (was 1095; +16).
+  `node tools/check-board.js` → **15 boards, all clean.**
+- **Bite-checked all three.** Disable the orientation sentence → the flowers prompt test
+  fails. Make the span flag find nothing → the flowers gate test fails. **Bite 1 initially did
+  NOT bite** — every stance test fed `hardestStances` in by hand, so nothing proved the index
+  *populates* it. That is the same shape as the revision channel: recorded faithfully, never
+  read. Two tests added over the real index; the bite then bit.
+- **Two tests caught real defects in my own work**: cross-readings rendered as a flat
+  four-term join instead of `A : B :: C : D`, and a semantic validator I added for empty
+  relation fields was **dead code** — the schema's `minLength` trims first. Removed rather
+  than kept.
+- **Claude-verifiable: PASSED.** Mock run end-to-end: 01 and 04 both carry the steer, 06
+  carries the orientation freedom and has dropped the old blocker, `spanFairness` lands on the
+  gate artifact. In the browser, the note renders on the real flowers board naming both
+  refused readings (screenshot). Seeded artifact removed; run restored byte-identical.
+  Incidental proof: the stale-server banner fired on its own, correctly, before I restarted.
+- **Max acceptance: OPEN, and it is the real gate.** Whether Blacks stop being clocks is
+  visible only over the next batch.
+
+- **Next:** review a fresh batch under D-13.
+  1. **Run new themes and watch the Black slot.** The live index has the rut, so the steer
+     fires on the next real brief. D-13's reconsider-when: if ~6 more boards still top out on
+     spans, tighten the share before touching the window.
+  2. **Span sets now arrive pre-flagged** with their refused readings named — and v4's
+     agreement with your `order-ambiguous` calls is what D-7's graduation trigger reads.
+  3. **Still waiting:** the rose and the-seasons boards, unreviewed; and the clocks
+     revision (the "retard" wording) is requested but not yet run.
+  4. Backlog gained the two catches offered and declined this session: board-level repeated
+     roots (Snow), and culturally loaded words (clocks).
+
 ## 2026-08-08 — 04 is clean; the guard was passing on capitalisation
 
 Max asked me to check 04's prompt for the same defect. It does not have it — and neither does

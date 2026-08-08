@@ -45,7 +45,14 @@ export function getOutputSchema() {
 
 export function buildPrompt(input = {}, context) {
   const { brief = {}, theme = null, revision = null } = input;
-  const { relationshipShapes = [], count = 8, avoidShapes = [], stanceQuotas = [], varyHardestFrom = null } = brief;
+  const {
+    relationshipShapes = [],
+    count = 8,
+    avoidShapes = [],
+    stanceQuotas = [],
+    varyHardestFrom = null,
+    varyHardestStance = null,
+  } = brief;
   // Leads the task, because a revision changes what the whole rest of the
   // instruction means: "author N pairs" reads as "author a fresh pool" unless
   // the model has already been told it is repairing an existing board.
@@ -107,6 +114,15 @@ export function buildPrompt(input = {}, context) {
         : varyHardestFrom === 'arrangement'
           ? 'The last few boards all got their hardest set from ARRANGEMENT. This pool may reach its top tier through a word that belongs to the subject instead, if the theme offers one worth knowing.'
           : '',
+      // design.md D-13, and the sibling of the nudge above. D-8 stopped every
+      // Black being a rare word; the space that opened filled with clocks —
+      // 19 of 54 hardest sets were a TIME question, against 17% for the next
+      // stance. Phrased to sit beside the stance quota rather than fight it:
+      // the quota may legitimately ask for this very stance on this very board,
+      // and a time set at difficulty 1 or 2 was never the problem.
+      varyHardestStance
+        ? `Recent boards have kept making their HARDEST set a ${varyHardestStance.toUpperCase()} question. A ${varyHardestStance} pair is still welcome on this board — just make sure the pool's most demanding material asks a different kind of question, so the top tier is not that stance again.`
+        : '',
       'The order of a pair must matter: A : B should not read the same as B : A. A pair whose direction is reversible is a weak pair.',
       // design.md D-12, from Max's own reading of the boards. A pair that
       // shares visible text couples itself on sight — the player matches the

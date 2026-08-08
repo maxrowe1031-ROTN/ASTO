@@ -102,9 +102,20 @@ const SCHEMA = {
       type: 'array',
       items: {
         type: 'object',
-        required: ['id', 'valid'],
+        // `leftRelation` and `rightRelation` are required on EVERY line, not
+        // just the ones that hold (design.md D-13). Three attempts at this
+        // question produced a bare boolean that was first credulous and then
+        // near-silent, and a boolean cannot be argued with: when 06 answered
+        // `valid: false` on the set Max caught by hand, there was nothing to
+        // read to find out why. Naming both relations before the verdict makes
+        // the reasoning visible, and makes the answer scoreable against his
+        // `order-ambiguous` calls — which is the currency D-7's graduation
+        // trigger is paid in.
+        required: ['id', 'leftRelation', 'rightRelation', 'valid'],
         properties: {
           id: { type: 'string', minLength: 1 },
+          leftRelation: { type: 'string', minLength: 1 },
+          rightRelation: { type: 'string', minLength: 1 },
           valid: { type: 'boolean' },
           // No minLength here on purpose: an empty note on a `false` answer is
           // the model filling in a field it was told it did not need, which is
@@ -167,13 +178,27 @@ export function buildPrompt(input = {}, context) {
       // The checklist. Every one of these must come back answered — an omission
       // fails validation and the stage is asked again.
       'SEPARATELY, answer the cross-reading checklist below. Each set on this board is two pairs; its four words can be regrouped in exactly two other ways, and both are listed for you. The engine REFUSES those readings, so if one of them is also a valid analogy, a player who sees it is marked wrong for being right. That is the worst failure this board can have.',
-      'Work each line the same way. A line reads W : X :: Y : Z. Name the relation that takes W to X. Name the relation that takes Y to Z. Mark it valid ONLY if those two are the SAME relation, and say which relation it is in the "note".',
+      'Work each line the same way. A line reads W : X :: Y : Z. Write the relation that takes W to X in "leftRelation" and the relation that takes Y to Z in "rightRelation" — always, on every line, before you decide anything. Then mark it valid ONLY if those two are the SAME relation, and name that shared relation in the "note".',
+      // design.md D-13. The reason the flowers Black slipped through: the
+      // checklist presents ONE orientation of each half, and Max's reading
+      // (`seed : bud :: bloom : wilt`) is the presented line with its right half
+      // read the other way round. The old instruction to judge only the reading
+      // in front of you then made the correct answer unreachable — the question
+      // excluded the very reading a player finds. A player does not respect the
+      // order a checklist happened to print in.
+      'Either half may be read in either direction. Before answering, check the flipped readings too: if ANY consistent pairing of the four words gives both halves the same relation, the line is valid — say so, and give the orientation that works in the "note".',
       '  - "valid": true means a real player could reasonably read it and be satisfied. The set is broken.',
       '  - "valid": false means the two halves carry different relations, or one half carries none. No note needed.',
       // The failure this instruction exists to stop, verbatim from the
       // 2026-08-05 replay: 13 of 16 flags were this one mistake.
       'The trap: two halves that are each a pair of SIMILAR THINGS do not share a relation. "song : album :: Truckin\' : American Beauty" is a pair of categories beside a pair of named works — the left half relates two kinds of thing, the right half relates a track to the record it is on. Those are different relations, so the answer is false. Likewise "guitarist : drummer :: guitar : drum kit" is two people beside two instruments: symmetry, not analogy. A grid that looks tidy is not a reading a player can solve.',
-      'Judge only the reading in front of you, and do not soften an answer because the intended set is good.',
+      // The counter-trap, added with the orientation freedom above so the two
+      // are read together: a SHARED SEQUENCE is the case that keeps reaching
+      // review. Four words on one timeline regroup into "earlier : later" no
+      // matter how they are dealt, so the tidy-grid rule above must not be used
+      // to wave one through.
+      'One case to watch especially: when all four words sit on a single progression — one timeline, one lifecycle, one journey — almost any regrouping still reads "earlier : later", and that IS the same relation on both halves. That makes the line valid, not tidy. "seed : bud :: bloom : wilt" is four life-stages in order; both halves run earlier to later, so a player can solve it and the engine will refuse them.',
+      'Do not soften an answer because the intended set is good. A valid cross-reading in a set you admire is the most expensive kind there is.',
       'This is a checklist, not a search: the candidates are already found, so answer them and move on. These answers belong in "crossReadings", not in "findings" — do not report them twice.',
       // The order-fairness checklist (design.md D-9). Same discipline again,
       // and for the same demonstrated reason: this agent already had an
@@ -210,7 +235,7 @@ export function buildPrompt(input = {}, context) {
       .filter(Boolean)
       .join('\n\n'),
     outputRules: [
-      'Return { "findings": [ { "kind", "words", "severity", "note" } ], "noneFound": true or false, "crossReadings": [ { "id", "valid", "note" } ] }.',
+      'Return { "findings": [ { "kind", "words", "severity", "note" } ], "noneFound": true or false, "crossReadings": [ { "id", "leftRelation", "rightRelation", "valid", "note" } ] }.',
       ...(orderLines.length > 0
         ? [
             'Also return "orderReadings": [ { "setId", "inferable", "note" } ] — one entry for EVERY line of the order-fairness checklist and nothing else, with "setId" exactly as written. "note" is one sentence required only when "inferable" is true.',
@@ -219,7 +244,7 @@ export function buildPrompt(input = {}, context) {
       '"kind" is one of alternate-reading, cross-set-association, ambiguous-order, double-meaning, misleading-label, unfair.',
       '"words" is an array of the board words involved, "severity" is low, medium or high, and "note" says what a player would see.',
       'Rate each finding low, medium or high by how likely a real player is to be misled.',
-      '"crossReadings" must contain one entry for EVERY line of the checklist and nothing else. "id" is that line\'s id exactly as written, "valid" is a boolean, and "note" is one sentence required only when "valid" is true.',
+      '"crossReadings" must contain one entry for EVERY line of the checklist and nothing else. "id" is that line\'s id exactly as written; "leftRelation" and "rightRelation" are short phrases naming each half\'s relation and are required on every line; "valid" is a boolean; "note" is one sentence required only when "valid" is true.',
       '"noneFound" describes "findings" only — a cross-reading answer is not a finding.',
       JSON_ONLY,
     ].join(' '),
@@ -271,6 +296,12 @@ const everyReadingAnswered = (output, board) => {
   if (answered.size !== output.crossReadings.length) {
     errors.push({ path: 'crossReadings', message: 'a reading was answered more than once' });
   }
+  // No semantic check for the two relation fields on purpose: the schema's
+  // `required` plus `minLength: 1` (which trims first) already refuses both a
+  // missing relation and a blank one, so a check here would be unreachable.
+  // Established by test, not by reading — the first version of D-13 added one
+  // and it never fired.
+
   // A reading that HOLDS is the whole point of the checklist; an unexplained
   // one is a verdict Max cannot act on, exactly like a weak unity score with no
   // outliers named.

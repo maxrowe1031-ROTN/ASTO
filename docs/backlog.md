@@ -18,6 +18,16 @@
   a promoted 3. Grading the reasoning did not lower the ceiling; it moved it onto sets that
   earn it. D-1's underlying question — should the Pair Author be asked for a hard set in the
   first place? — is still open, but not urgent, and its reconsider-when trigger is unchanged.
+- **A board can repeat one root across four tiles and nothing notices (2026-08-08).** The Snow
+  board shipped `snow`, `snowfall`, `snow day`, `snowman` plus `winter` — Max: *"repeating snow
+  4 times is so lousy. plus we used winter, also lazy."* The 16-distinct-words rule is satisfied
+  literally; nothing measures lexical diversity ACROSS sets. D-12's `lexical.js` already counts
+  shared roots within a pair, so a board-level count is a small extension of code that exists.
+  Offered and declined this session in favour of the span work.
+- **Nothing looks for culturally loaded words (2026-08-08).** The clocks board authored
+  `advance : retard` — horologically exact, and Max asked for it to be replaced. 08 checks style
+  and never checks this. One report-only line in its prompt would cover it; his judgement stays
+  the authority. Offered and declined this session.
 - **Misdirection has nowhere to be reported (design.md D-9).** `difficultySource` is
   `arrangement | vocabulary | both`, but 03's own grade-4 definition names three routes to
   hard — *"abstract, easily mistaken for another grouping, or dependent on noticing
@@ -48,11 +58,14 @@
   found flat. `coronagraph : glare` is `prevention` and `perihelion : orbit` is `sequence`;
   a shape id cannot see that the words are rare. Harmless while 03's own judgement is
   primary, but any analysis over historical boards must not trust it.
-- **If a fresh batch still tops out the same way every time, the lever is the stance quota.**
-  `inclusion` has been quota'd on every run ever and is where all three nameable shapes live
-  (`taxonomic`, `class-individual`, `synonymity`), which is why 8 of the 9 boards before
-  2026-08-05 carried exactly one naming set. Loosening that quota is the bigger, more
-  invasive move held in reserve behind D-8's steer.
+- ~~**If a fresh batch still tops out the same way every time, the lever is the stance quota.**~~
+  **Fired and built 2026-08-08 — see design.md D-13.** The trigger was met with data: time
+  stance held **19 of 54 Blacks (35%)** against 17% for the next. The lever turned out NOT to
+  be the quota, though — overall stance usage is balanced, so a quota change would have moved
+  `cause` and left the rut untouched. What shipped instead is a hardest-slot steer
+  (`varyHardestStance`, half of the last eight) reaching both 01 and 04. The `inclusion`
+  observation above stands unexamined and is now the only part left: nothing has re-measured
+  whether quota'ing inclusion on every run is still shaping boards.
 - ~~**07's `knowledgeGated` has never fired on a real board.**~~ **Measured 2026-08-06, and it
   works.** It fired on **5 of 7** boards, and Max's own notes independently confirm two hits:
   on Knights it flagged `boss` and he wrote *"the machine caught exactly what i got hung up
@@ -63,12 +76,14 @@
   he called his best puzzle yet — so a flag **names a wall without condemning a board**, which
   is the distinction that keeps it useful. What is still unmeasured is the false-negative
   rate: nothing yet says what it missed.
-- **The cross-reading check's semantic question needs a third attempt (design.md D-7).** The
-  enumerator and plumbing are sound; the model's answer is not. Round 2 flagged any tidy 2×2
-  grid as an analogy (13 spurious across six boards); round 3's anti-grid wording over-corrected
-  into near-silence (0 of 3 caught). Worth trying: ask it to name each half's relation as a
-  separate output field rather than folding both into one boolean, so the reasoning is visible
-  and scoreable rather than hidden behind a yes/no.
+- ~~**The cross-reading check's semantic question needs a third attempt (design.md D-7).**~~
+  **Built 2026-08-08 as attempt four — see design.md D-13.** The suggested fix (name each half's
+  relation as its own field) shipped, and a second cause was found that the entry had not
+  suspected: the checklist printed ONE orientation of each half while instructing *"judge only
+  the reading in front of you"*, so the reading Max actually found — `seed : bud :: bloom :
+  wilt`, his right half read the other way round — was formally outside the question. Halves may
+  now be read either way. Whether v4 agrees with his `order-ambiguous` calls is D-7's
+  graduation trigger, still running.
 - **The cross-reading check's gate-promotion trigger (design.md D-7).** It reports and does not
   block. If it agrees with Max's `valid-but-unfair` / `order-ambiguous` calls across roughly the
   next six boards, promote it to a blocking check at `04a`. If it disagrees, the question it

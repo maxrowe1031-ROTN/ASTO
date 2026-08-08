@@ -134,3 +134,49 @@ test('self-matching counts arrive from the gate with two distinct levels', () =>
 test('an attempt with no reports at all produces no notes and no throw', () => {
   assert.deepEqual(machineNotesBySet({ board: BOARD, reports: {} }), {});
 });
+
+// --- span sets (design.md D-13) ---
+
+test('a span set arrives with its refused readings spelled out', () => {
+  const notes = machineNotesBySet(
+    attemptWith({
+      '04a-integrity': {
+        spanFairness: {
+          enforced: false,
+          count: 1,
+          flagged: [
+            {
+              setId: 'set-growth',
+              shape: 'before-after',
+              difficulty: 4,
+              readings: ['Seed : Spark :: Tree : Fire', 'Seed : Fire :: Tree : Spark'],
+            },
+          ],
+        },
+      },
+    }),
+  );
+
+  const [note] = notes['set-growth'];
+  assert.match(note.text, /marked wrong for being right/);
+  assert.match(note.text, /Seed : Spark :: Tree : Fire/, 'the reading itself must be readable on the card');
+  // Louder at the top tier, where the set carries the most weight — and where
+  // 19 of 54 of them had been landing.
+  assert.equal(note.level, 'medium');
+});
+
+test('a span set below the top tier is quieter, not silent', () => {
+  const notes = machineNotesBySet(
+    attemptWith({
+      '04a-integrity': {
+        spanFairness: { flagged: [{ setId: 'set-seasons', difficulty: 2, readings: ['a : b :: c : d'] }] },
+      },
+    }),
+  );
+  assert.equal(notes['set-seasons'][0].level, 'low');
+});
+
+test('no span flag, no note — and an absent report never throws', () => {
+  assert.deepEqual(machineNotesBySet(attemptWith({ '04a-integrity': { spanFairness: { flagged: [] } } })), {});
+  assert.deepEqual(machineNotesBySet(attemptWith({ '04a-integrity': {} })), {});
+});
