@@ -82,6 +82,46 @@ const renderExample = (example) =>
     ? `- ${example}`
     : `- ${example.text}${example.reason ? `\n    why: ${example.reason}` : ''}`;
 
+/**
+ * The revision instruction the generative stages lead with, when the attempt
+ * they are running is a revision of an earlier one.
+ *
+ * This exists because for the whole life of the pipeline it did not. Max's
+ * notes were written to `revision.json` and read by nothing, so a revision
+ * re-entering at `01-pair-author` was a blind re-roll of the theme: fresh
+ * pool, fresh grouping, fresh board. He said it twice on 2026-08-08, on bbq
+ * and on nintendo — *"i only asked for one small change... and this is an
+ * entirely new puzzle set"* — and the nintendo re-roll reproduced the exact
+ * flaw the revision was meant to fix, because nothing ever told it there was
+ * a flaw. See design.md D-11.
+ *
+ * One block, shared by all three generative agents: the wording is the fix,
+ * and three copies of it would drift.
+ *
+ * Returns '' when there is nothing to say, so callers can drop it like any
+ * other empty prompt part.
+ */
+export function renderRevision(revision) {
+  if (!revision) return '';
+  const { notes = '', parentBoard = null } = revision;
+  if (!notes.trim() && !parentBoard) return '';
+
+  return [
+    'THIS IS A REVISION, NOT A NEW BOARD.',
+    'An editor reviewed the board below and asked for specific changes. Your job is to make those changes and nothing else.',
+    parentBoard ? asJsonBlock('The board being revised', parentBoard) : '',
+    notes.trim() ? `The editor's instructions, verbatim:\n${notes.trim()}` : '',
+    [
+      'Rules for this revision:',
+      '- Any set the instructions approve, praise, or list under "Do not change" must SURVIVE UNCHANGED. Reproduce it exactly as it appears above — same words, same order, same relationship.',
+      '- Change only what the instructions actually ask you to change. Everything else is finished work that was paid for and accepted.',
+      '- Do not re-theme, re-title or re-author the board. A revision that returns a different board has failed, however good the different board is.',
+    ].join('\n'),
+  ]
+    .filter((part) => part.trim().length > 0)
+    .join('\n\n');
+}
+
 /** Assembles a prompt from its parts, dropping the empty ones. */
 export function composePrompt({ role, task, context, data, outputRules }) {
   return [role, renderContext(context), task, data, outputRules]

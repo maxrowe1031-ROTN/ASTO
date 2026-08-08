@@ -170,3 +170,88 @@ test('the run\'s spend accumulates across attempts rather than resetting', async
     cleanup();
   }
 });
+
+// --- the notes have to actually reach the model ---
+//
+// The defect these pin, found on 2026-08-08: `requestRevision` wrote the
+// editor's notes to revision.json and NOTHING READ THEM BACK. A revision
+// re-entering at 01-pair-author was a blind re-roll of the theme — fresh pool,
+// fresh grouping, fresh board. Max said it twice in one night, on bbq and on
+// nintendo: "i only asked for one small change and this is an entirely new
+// puzzle set."
+//
+// `the revision records why it was asked for` above passed the whole time,
+// because recording is not delivering. These read the prompt the stage
+// actually sent.
+
+const promptFor = (rootDir, runId, attemptId, stageId) =>
+  readFileSync(join(attemptDir(rootDir, runId, attemptId), 'stages', stageId, 'prompt.txt'), 'utf8');
+
+test('the entry stage is told what the editor asked for', async () => {
+  const { store, rootDir, runId, cleanup } = await completedRun();
+  try {
+    const childId = requestRevision(store, runId, {
+      fromStage: FROM,
+      notes: 'The Black set is too easy — wrap:unwrap is a symmetric opposite pair.',
+    });
+    await runPipeline({ runId, store, transport: mockTransport(), ...fastTime() });
+
+    const prompt = promptFor(rootDir, runId, childId, FROM);
+    assert.match(prompt, /THIS IS A REVISION, NOT A NEW BOARD/);
+    assert.match(prompt, /wrap:unwrap is a symmetric opposite pair/);
+    assert.match(prompt, /must SURVIVE UNCHANGED/);
+  } finally {
+    cleanup();
+  }
+});
+
+test('the entry stage can see the board it is revising', async () => {
+  const { store, rootDir, runId, first, cleanup } = await completedRun();
+  try {
+    const parentBoard = store.readAttemptArtifact(runId, first.attemptId, 'board.json');
+    const childId = requestRevision(store, runId, { fromStage: FROM, notes: 'fix the Red set' });
+    await runPipeline({ runId, store, transport: mockTransport(), ...fastTime() });
+
+    const prompt = promptFor(rootDir, runId, childId, FROM);
+    assert.match(prompt, /The board being revised/);
+    // Without the parent board, "leave the approved sets alone" is an
+    // instruction the model has no way to follow.
+    assert.ok(
+      prompt.includes(parentBoard.sets[0].pairs[0][0]),
+      'a word from the parent board never reached the prompt',
+    );
+  } finally {
+    cleanup();
+  }
+});
+
+test('the evaluators stay blind — they judge the board, not the request', async () => {
+  const { store, rootDir, runId, cleanup } = await completedRun();
+  try {
+    const childId = requestRevision(store, runId, {
+      fromStage: FROM,
+      notes: 'The Black set is too easy — wrap:unwrap is a symmetric opposite pair.',
+    });
+    await runPipeline({ runId, store, transport: mockTransport(), ...fastTime() });
+
+    // An evaluator that had read the instructions would be marking its own
+    // homework: agreeing the change was made is not finding the board good.
+    for (const stageId of ['05-analogy-validator', '06-adversarial-solver', '07-test-player', '08-style-guide']) {
+      const prompt = promptFor(rootDir, runId, childId, stageId);
+      assert.doesNotMatch(prompt, /THIS IS A REVISION/, `${stageId} was shown the revision request`);
+      assert.doesNotMatch(prompt, /wrap:unwrap/, `${stageId} was shown the editor's notes`);
+    }
+  } finally {
+    cleanup();
+  }
+});
+
+test('a fresh run carries no revision framing at all', async () => {
+  const { store, rootDir, runId, first, cleanup } = await completedRun();
+  try {
+    const prompt = promptFor(rootDir, runId, first.attemptId, '01-pair-author');
+    assert.doesNotMatch(prompt, /THIS IS A REVISION/);
+  } finally {
+    cleanup();
+  }
+});

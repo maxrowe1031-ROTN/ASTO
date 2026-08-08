@@ -2,6 +2,97 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-08 — A revision has to be told what to revise
+
+Max ran a six-theme batch and reviewed all of it. Three boards published, two rejected — and
+both rejections carried the same complaint, which turned out to be a pipeline defect that had
+been there since revisions existed.
+
+### The batch
+
+- **Approved and published:** `weather-watch`, `ascent`, `furniture-craft-analogies`.
+  **`puzzles/` is at 13 boards, all clean.** Committed with the run corpus (`15b4a3f`).
+- **Rejected:** bbq and nintendo, both after a revision. **Failed:** painting, on a truncated
+  pair author.
+- **D-5's counter is at 2 of ~10** — the first `proposal-verdict` events ever recorded, both
+  `accepted`. They stand: the briefs were good, they were simply never executed.
+
+### The defect
+
+`requestRevision` has written the editor's notes to `revision.json` since the beginning.
+**Nothing ever read them back.** A revision re-entering at `01-pair-author` was a blind re-roll
+of the theme. Ground truth: the bbq revision's `01-pair-author/prompt.txt` contains no mention
+of `wrap:unwrap`, "too easy", or "Do not change" — it is byte-for-byte a fresh authoring prompt.
+
+Max, twice in one night: *"i only asked for one small change in the previous puzzle and this is
+an entirely new puzzle set. So thats something we should figure out."* Nintendo's re-roll
+reproduced the exact flaw its brief was fixing, because nothing told it there was a flaw.
+
+**It re-explains 2026-08-05 too.** The paris churn was blamed on raw notes lacking a protection
+list. The protection list was never the problem — no notes were traveling at all. The entire
+brief apparatus D-5 built was writing into a channel with no receiver.
+
+### Built
+
+- **`revisionOf()` in [pipeline.js](../studio/pipeline.js)** — reads the attempt's
+  `revision.json` and the parent's `board.json` onto the pipeline context beside `manifest` and
+  `config`. The sibling of `replayOutputs`: that carries forward what the parent *made*, this
+  carries forward what the editor *said*. Degrades rather than throws — a parent that never
+  finished a board still lets the notes travel, because the notes are the part that cannot be
+  re-derived.
+- **`renderRevision()` in `agent-kit.js`** — one shared block, not three copies, because the
+  wording *is* the fix and three copies would drift silently. Leads the prompt of `01`, `02`
+  and `04`: the parent board, the notes verbatim, and the rule that approved sets survive
+  unchanged and the board is not re-themed or re-titled.
+- **`STAGE_INPUTS` threads it to the three generative stages only.** 05–08 stay blind — an
+  evaluator that had read the instructions would be marking its own homework.
+
+### Decided (design.md **D-11**)
+
+- **Not on the blackboard.** The obvious home was `blackboard.put('revision', …)` and the
+  blackboard **rejects any key that is not a stage id**. That guard is right — it is what makes
+  an attempt reconstructable from its stage folders — so the revision travels as orchestration
+  context instead. The plan said blackboard; the code said no, and the code was right.
+- **Structural carry-forward of protected sets is deliberately not built.** The instruction plus
+  the parent board is the smallest honest step, with a named reconsider-when: if a revision
+  churns a set the notes named as approved *with both in hand*, asking is not enough.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1031 pass, 0 fail** (was 1014; +17).
+  `node tools/check-board.js` → **13 boards, all clean.** The new tests were checked for bite:
+  with `revision` forced to null on the context, `the entry stage is told what the editor asked
+  for` and `the entry stage can see the board it is revising` both fail; restored, all pass.
+  The load-bearing addition is that `revision.test.js` now reads **the prompt the stage actually
+  sent** — its existing `records why it was asked for` passed the entire time the channel was
+  dead, because recording is not delivering.
+- **Claude-verifiable: PASSED.** Ran a revision end to end on the mock transport (no credit) and
+  read the stored prompts: `01-pair-author` opens with `THIS IS A REVISION, NOT A NEW BOARD`,
+  the parent board rendered as JSON, and the notes verbatim — while `05-analogy-validator` on
+  the same attempt mentions neither, and the original attempt carries no framing at all.
+- **Max acceptance: OPEN — and it is the real gate.** Whether a revision now returns *the same
+  board with the asked-for change* can only be judged by Max on a real revision in the next
+  batch. Until then this is verified-in-prompt, not verified-in-quality.
+
+### Backlog
+
+Three new lines: 01's double truncation on the painting run (**$0.62 for nothing**; streaming
+is the real lever, n=1 so far) · **nothing governs tile capitalization** (Ascent shipped Title
+Case; Max asked why — the answer is that nothing decides it) · Ascent was published carrying an
+unactioned `revise-set` on its Green.
+
+- **Next:** the revision fix needs **Max's judgement on a real revision** — request one in the
+  next batch and see whether the board comes back changed rather than replaced. That is the
+  open gate item.
+  1. **Run a revision through the Studio on a real board.** If it holds the approved sets and
+     changes only what was asked, D-11 is done; if it still churns a protected set, D-11's
+     reconsider-when has fired and the protected sets need carrying structurally.
+  2. **D-5 is at 2 of ~10 verdicts** and can now accumulate honestly, since an executed brief
+     finally means something.
+  3. **D-9's graduation trigger** still needs ~6 more played boards.
+  4. **Publishing to GitHub Pages** remains the next real milestone; nothing yet verifies a push
+     actually deployed.
+
 ## 2026-08-07 — A brief that never arrives now says so
 
 First session after `v0.1.0-local`, and Studio work rather than game work. The Revision

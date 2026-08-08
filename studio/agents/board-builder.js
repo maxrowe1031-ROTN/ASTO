@@ -8,7 +8,7 @@
 //
 // Returns "insufficientSets" rather than shipping a compromised board.
 
-import { JSON_ONLY, asJsonBlock, composePrompt, parseJson, validateAgainst } from './agent-kit.js';
+import { JSON_ONLY, asJsonBlock, composePrompt, parseJson, renderRevision, validateAgainst } from './agent-kit.js';
 
 export const id = 'board-builder';
 export const stageId = '04-board-builder';
@@ -86,7 +86,8 @@ export function getOutputSchema() {
 }
 
 export function buildPrompt(input = {}, context) {
-  const { gradedSets = [] } = input;
+  const { gradedSets = [], revision = null } = input;
+  const revising = renderRevision(revision);
 
   return composePrompt({
     role:
@@ -94,6 +95,7 @@ export function buildPrompt(input = {}, context) {
       'one at each difficulty 1, 2, 3 and 4.',
     context,
     task: [
+      ...(revising ? [`${revising}\n`] : []),
       'Choose exactly four sets from the graded candidates and assemble a board with one set at each difficulty 1, 2, 3 and 4.',
       // The rater grades each set on its own merits and often never reaches 4.
       // Rank-and-assign rather than requiring an exact match, so a usable pool
