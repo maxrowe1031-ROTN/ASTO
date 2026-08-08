@@ -213,6 +213,21 @@
   said nothing, because it reports the effort profile — which had not changed. The page now
   carries a banner whenever the source on disk is newer than the server's boot time. Still
   manual: it tells you to restart, it does not restart itself.
+- **The staleness banner reads mtime, so a touch is indistinguishable from an edit
+  (2026-08-08).** It fired at Max mid-review and it was wrong: it named
+  `studio/corpus/vocabulary.js`, whose mtime had moved to 15:19 while the server booted at
+  14:56 — and `git diff` showed the file **byte-identical to the commit**. No `.js` under
+  `studio/` or `src/` differed from what the server had loaded. Most likely a formatter
+  rewriting the file unchanged (one rewrote a test file the same session), though nothing
+  proves that. This is the opposite failure to the one D-12 fixed: the old signal was too
+  quiet to catch a real stale server, and this one is loud enough to interrupt a review that
+  was fine. A banner that cries wolf gets ignored, which would restore the original defect.
+  The fix is to compare **content** rather than timestamps — hash the `.js` files under
+  `studio/` and `src/` at boot, re-hash per `/api/config` call, and report stale only on a
+  difference; mtime becomes a cheap pre-filter rather than the verdict. Small and testable
+  (`server.js` already owns the computation — `api.js` does not touch the filesystem).
+  Not urgent: a false "restart me" costs a restart, while a missed one cost a whole wrong
+  conclusion on 2026-08-07.
 - `budget.js` cost caps only bite once every model in play is priced. Rates are estimates
   until A5 measures real spend; unpriced models are surfaced in `usage.unpricedModels`.
 - Studio run artifacts accumulate under the git-ignored `studio/runs/`; no pruning yet.
