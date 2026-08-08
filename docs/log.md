@@ -85,8 +85,14 @@ flowers 0002 and reached for `order-ambiguous`, a tag he had never used. 06 had 
      spans, tighten the share before touching the window.
   2. **Span sets now arrive pre-flagged** with their refused readings named — and v4's
      agreement with your `order-ambiguous` calls is what D-7's graduation trigger reads.
-  3. **Still waiting:** the rose and the-seasons boards, unreviewed; and the clocks
-     revision (the "retard" wording) is requested but not yet run.
+  3. **The rose and the-seasons boards are abandoned by decision, not oversight** (Max,
+     2026-08-08: *"ignore the rose and season boards. they are now out of date"*). They
+     predate D-13, so their Blacks were picked under the rut this session removed — judging
+     them now would score the old pipeline. Do not re-surface them as work. The same applies
+     to the six older `awaiting-review` runs abandoned on 2026-08-07.
+     **Genuinely still open:** the clocks revision (the "retard" wording) is requested but
+     not yet run, and the flowers run is parked at `awaiting-review` after its second
+     rejection.
   4. Backlog gained the two catches offered and declined this session: board-level repeated
      roots (Snow), and culturally loaded words (clocks).
 
