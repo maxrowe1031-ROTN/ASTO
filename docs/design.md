@@ -1236,6 +1236,57 @@ near-silence (backlog) and because `machineNotesBySet` lived in `review.js`, whi
 `studio/review/ui/machine-notes.js`, pure and covered — the same split, for the same reason,
 as `board-html.js`.
 
+### D-12 addendum — a teaching example must not be shaped like the deliverable (2026-08-08)
+
+**What happened.** D-8 put a full set in 01's prompt to teach arrangement-hard difficulty:
+`"planting : felling :: budding : withering"`. **`trees-tools-and-time`'s published Black is
+that line verbatim**, and the rose board returned `planting : uprooting :: budding : wilting`
+— a paraphrase, so no ban on the literal words would have caught it.
+
+**The measurement that generalises it,** taken across all 15 published boards: the **36
+pair-level examples** in the vocabulary block (`flower : tulip`, `moon : crater`) leaked
+**zero** times; the **one full-set example** leaked immediately and then again. The variable
+is not how vivid an example is — it is whether the example is shaped like the **deliverable**.
+A pair illustrates a property and still leaves the model everything to do; a finished
+four-word set is an answer, and an answer in the prompt comes back as output.
+
+**The fix, and why it is not a prompt edit.** The example is *content*, so it became content:
+`studio/corpus/examples.js` holds it once, pair-level, and 01 and 03 render from it — the
+same discipline `vocabulary.js` already enforces for shapes, and the end of two hand-written
+copies of one lesson drifting apart. The rendered line names the pair, the property, and
+tells the author the pair is an illustration whose **near-synonyms** are also off limits;
+that last clause exists because what actually happened was paraphrase, not copying.
+
+**The rule is pinned as a class, over every generative stage** — 01, 02, 03, 04 — not as the
+one instance that was caught (`no-full-set-examples.test.js`). Fixing two files would have
+left the same mistake available in the other two.
+
+**Generative only, and the narrowing is the interesting part.** Run over all eight agents,
+the guard immediately flagged 06 and 07 — and both are *right* to carry full sets. 06 shows
+`"guitarist : drummer :: guitar : drum kit"` and says of it *"symmetry, not analogy… the
+answer is false"*; 07 shows `"dawn : dusk :: birth : death"` against `"Ruth : Gehrig :: Mantle
+: Maris"`. Neither can leak, because neither agent's **output** is a set. The hazard was never
+"a full set appears in a prompt" — it is "a full set appears in the prompt of a stage whose
+job is to produce one". A stage that judges sets needs to be shown sets, and a second test
+pins that their counter-examples are never deleted in the name of this rule.
+
+**A published board is the other half,** because prompts can be edited back and a shipped
+board stays shipped: `test/content/example-leak.test.js` re-gates `puzzles/` on every run,
+beside `manifest.test.js`, for the same reason.
+
+**`trees-tools-and-time` stays published — Max's call.** It is a good set, no player can
+perceive its provenance, and republishing would cost a board for a reason invisible from the
+outside. It is grandfathered per-slug (a *new* board with the same defect still fails), and
+the provenance is recorded **here** so that a rubric compiled from the corpus later does not
+credit the pipeline with authoring that Black.
+
+**Reconsider-when:** if the next batches' arrangement-hard sets stop orbiting
+planting/budding, this worked. If they **vanish** instead — the pipeline drifting back to
+vocabulary-hard Blacks — the pair-level anchor is too weak and D-8's rut has reopened; the
+answer then is a rotating pool of pair-level examples, which `examples.js` makes a data
+change rather than a prompt edit. Nothing has yet swept 02's and 04's prompts for examples of
+*other* kinds that might be shaped like their own deliverables.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

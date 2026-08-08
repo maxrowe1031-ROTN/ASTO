@@ -134,7 +134,13 @@ test('an abstention needs no source', () => {
 test('the two kinds are taught by example in the prompt, and neither is preferred', () => {
   const prompt = rater.buildPrompt({ sets: [{ id: 's1', relationshipLabel: 'x', pairs: [['a', 'b'], ['c', 'd']] }] }, {});
   assert.match(prompt, /difficultySource/);
-  assert.match(prompt, /planting : felling :: budding : withering/);
+  // Both kinds are still taught by example — D-8's whole point. What changed on
+  // 2026-08-08 is the SHAPE of the arrangement one: it was a finished four-word
+  // set, and 01 handed it back as a board (`trees-tools-and-time`'s Black is
+  // that line verbatim). It is now a pair, matching `speleothem : stalactite`
+  // beside it, which has never leaked. See design.md D-12.
+  assert.match(prompt, /"planting : felling"/);
+  assert.doesNotMatch(prompt, /planting : felling :: budding : withering/);
   assert.match(prompt, /speleothem : stalactite/);
   assert.match(prompt, /Neither is better/);
   // The clause that made a rare word into difficulty by itself is gone.

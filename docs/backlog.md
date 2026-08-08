@@ -216,17 +216,17 @@
   previous version keeps serving, so a broken deploy is invisible from the outside
   (2026-08-05: five failed builds, most of a day stale). `.nojekyll` fixed the cause;
   the *detection* gap remains. A post-push build-status check would close it.
-- **01 is REPRODUCING its own prompt example, and one is already published (2026-08-08).**
-  D-8 added an illustration of arrangement-hard difficulty to 01's prompt:
-  `planting : felling :: budding : withering`. **`trees-tools-and-time`'s Black is that line
-  verbatim** — published, in the game, since 2026-08-05 — and tonight's rose board returned
-  `planting : uprooting :: budding : wilting`, the same two subjects with near-synonym second
-  terms. So the example is functioning as a template rather than an illustration, which means
-  a published board's hardest set is not the pipeline's own work and every future
-  arrangement-hard set is anchored to planting/budding. Needs a decision, not just a patch:
-  abstract the example (describe the shape without naming words), rotate a pool of examples,
-  or mark it explicitly as forbidden output. Worth checking the other published boards for
-  echoes of 03's and 04's examples too — nothing has ever looked.
+- ~~**01 is REPRODUCING its own prompt example, and one is already published.**~~ **Closed
+  2026-08-08 — see design.md D-12 addendum.** The example is corpus data now
+  (`studio/corpus/examples.js`), demoted to pair-level to match the 36 vocabulary examples
+  that have never leaked, and 01 and 03 render from the one source. Two guards: no generative
+  prompt may quote a finished set (every stage, not just the two caught), and no published
+  board may be built from a taught pair. `trees-tools-and-time` stays published by Max's
+  decision, grandfathered per-slug with its provenance recorded in design.md.
+  **What remains:** the sweep only covers the arrangement example. **Nothing has looked at
+  02's or 04's prompts for examples shaped like *their* deliverables** — 04's output is a
+  whole board, so a fully-worked board in its prompt would be the same defect one level up.
+  The class guard would catch a four-word set there; it would not catch a sixteen-word one.
 - ~~**The pair author can still truncate itself out of a run.**~~ **Closed 2026-08-08 at n=5 —
   see design.md D-12.** painting, shadows, bald eagle, sculpture and a rose all died the same
   death (~$0.62 each, $3.10 total). Raising the ceiling alone could never work, because what
