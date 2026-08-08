@@ -1,0 +1,86 @@
+{
+  "id": "circus-analogies-board-1",
+  "title": "Under the Big Top",
+  "sets": [
+    {
+      "id": "set-net-wire-reverse",
+      "relationshipLabel": "an action on circus rigging and the action that reverses it",
+      "explanation": "Raise undoes lower and tighten undoes loosen — each pair names an action and its exact opposite on the same piece of rigging.",
+      "pairs": [
+        [
+          "raise",
+          "lower"
+        ],
+        [
+          "tighten",
+          "loosen"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "rigging",
+        "antonym"
+      ]
+    },
+    {
+      "id": "set-role-marker",
+      "relationshipLabel": "role and the object that marks it",
+      "explanation": "A top hat announces the ringmaster and a straitjacket announces the escape artist — each object is the instantly readable badge of its role.",
+      "pairs": [
+        [
+          "ringmaster",
+          "top hat"
+        ],
+        [
+          "escape artist",
+          "straitjacket"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "circus roles",
+        "iconic props"
+      ]
+    },
+    {
+      "id": "set-clown-taxonomy",
+      "relationshipLabel": "performer category and a specific kind of performer within it",
+      "explanation": "An auguste is a specific breed of clown, just as a tumbler is a specific breed of acrobat — each pair moves from the general act to its named specialist.",
+      "pairs": [
+        [
+          "clown",
+          "auguste"
+        ],
+        [
+          "acrobat",
+          "tumbler"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "clown types",
+        "acrobat types"
+      ]
+    },
+    {
+      "id": "set-cue-to-act",
+      "relationshipLabel": "a cueing moment that belongs to the larger act it accompanies",
+      "explanation": "A drumroll always precedes a stunt and a fanfare always precedes a parade — each cue is the announcing beat of a larger performance, not the performance itself.",
+      "pairs": [
+        [
+          "drumroll",
+          "stunt"
+        ],
+        [
+          "fanfare",
+          "parade"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "circus sounds",
+        "performance structure"
+      ]
+    }
+  ]
+}

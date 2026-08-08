@@ -1,0 +1,88 @@
+{
+  "id": "board-astolib-01",
+  "title": "The Library Shelf",
+  "sets": [
+    {
+      "id": "set-genre-work",
+      "relationshipLabel": "a literary genre and its canonical work",
+      "explanation": "Each genre is paired with the work most people would name first as its defining example.",
+      "pairs": [
+        [
+          "epic",
+          "Iliad"
+        ],
+        [
+          "tragedy",
+          "Hamlet"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "literary",
+        "genre"
+      ]
+    },
+    {
+      "id": "set-craft-tool",
+      "relationshipLabel": "a craftsperson and the tool of their trade",
+      "explanation": "Each artisan is defined by the hand-tool that no one in their trade works without.",
+      "pairs": [
+        [
+          "bookbinder",
+          "awl"
+        ],
+        [
+          "calligrapher",
+          "quill"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "craft",
+        "tool",
+        "writing"
+      ]
+    },
+    {
+      "id": "set-object-part",
+      "relationshipLabel": "an object and the physical part it always has",
+      "explanation": "A book always has a spine and a scroll always has a rod — the structural part is what makes each object function as it does.",
+      "pairs": [
+        [
+          "book",
+          "spine"
+        ],
+        [
+          "scroll",
+          "rod"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "object",
+        "structure"
+      ]
+    },
+    {
+      "id": "set-span-bounds",
+      "relationshipLabel": "the start and end of a span",
+      "explanation": "Checkout/return and opening/closing each mark the two edges of a bounded span, one for a loan and one for an event.",
+      "pairs": [
+        [
+          "checkout",
+          "return"
+        ],
+        [
+          "opening",
+          "closing"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "time",
+        "span",
+        "boundary"
+      ]
+    }
+  ]
+}

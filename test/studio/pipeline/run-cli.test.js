@@ -97,3 +97,62 @@ test('a revision without a run to revise is refused up front', () => {
 test('an unknown flag is refused rather than ignored', () => {
   assert.throws(() => parseArgv(['--yolo']));
 });
+
+// --- the CLI and the Studio must build the same brief (design.md D-8, D-13) ---
+//
+// The themed branch here used to be assembled by hand and was THINNER than the
+// Studio's: stance quotas and nothing else, so a themed CLI run lost both
+// cross-board steers. Both doors now ask `variety.js`, and this pins that the
+// CLI's own decision routes a themed run to the themed brief rather than to a
+// hand-rolled subset.
+
+const RUTTED_INDEX = {
+  counts: {},
+  recent: [],
+  unknown: 0,
+  hardestSources: ['vocabulary', 'vocabulary', 'vocabulary'],
+  hardestStances: ['time', 'time', 'time', 'time', 'time', 'cause', 'event', 'inclusion'],
+};
+
+test('a themed CLI run carries the steers, and not the surprise-me shapes', async () => {
+  const { briefFor } = await import('../../../studio/run.js');
+  const brief = briefFor({ index: RUTTED_INDEX, theme: 'caves', count: 14 });
+
+  assert.equal(brief.varyHardestStance, 'time', 'the stance steer did not reach a themed CLI run');
+  assert.equal(brief.varyHardestFrom, 'vocabulary', 'the difficulty steer did not reach a themed CLI run');
+  assert.ok(Array.isArray(brief.stanceQuotas) && brief.stanceQuotas.length === 4);
+  // `relationshipShapes` is what marks a run as surprise-me on the manifest.
+  assert.equal('relationshipShapes' in brief, false);
+});
+
+test('a surprise-me CLI run still gets its shape brief', async () => {
+  const { briefFor } = await import('../../../studio/run.js');
+  const brief = briefFor({ index: RUTTED_INDEX, theme: null, count: 14 });
+
+  assert.ok(brief.relationshipShapes.length >= 2);
+  assert.equal(brief.varyHardestStance, 'time');
+});
+
+// A CLI `--mock` run must be MARKED mock, not merely run against fixtures.
+// `variety.js` skips a run whose `brief.mock` is true, so an unmarked replay
+// tells every future brief that First Light's shapes are heavily used — and
+// studio/runs/.gitignore names that same field as what separates a fixture
+// replay from Max's real editorial signal. The Studio has always recorded it;
+// this door did not, and a verification run during D-13's own gate landed in
+// the library because of it.
+test('a --mock CLI run is recorded as mock, so it never steers the library', async () => {
+  const { briefFor } = await import('../../../studio/run.js');
+  const briefOf = (argv) => {
+    const options = parseArgv(argv);
+    return briefFor({
+      index: RUTTED_INDEX,
+      theme: options.theme,
+      count: options.brief.count,
+      mock: options.mock,
+    });
+  };
+  assert.equal(briefOf(['--mock', '--theme', 'caves']).mock, true, 'a --mock run was not marked mock');
+  assert.equal(briefOf(['--theme', 'caves']).mock, false);
+  // Surprise-me too — the flag is about the transport, not about the theme.
+  assert.equal(briefOf(['--mock']).mock, true);
+});

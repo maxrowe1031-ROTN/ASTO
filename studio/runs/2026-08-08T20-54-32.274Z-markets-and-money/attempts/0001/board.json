@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-finance-01",
+  "title": "Money Matters",
+  "sets": [
+    {
+      "id": "set-item-location",
+      "relationshipLabel": "a place and the thing kept there",
+      "explanation": "A vault holds gold and a wallet holds cash — each pair names a container and what it's built to store.",
+      "pairs": [
+        [
+          "vault",
+          "gold"
+        ],
+        [
+          "wallet",
+          "cash"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "container-contents",
+        "everyday-finance"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "An auctioneer swings a gavel and a trader watches ticker tape — each is the signature tool of a financial profession.",
+      "pairs": [
+        [
+          "auctioneer",
+          "gavel"
+        ],
+        [
+          "trader",
+          "ticker tape"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "market-vocabulary",
+        "trader-stock-exchange-trap"
+      ]
+    },
+    {
+      "id": "set-cause-effect",
+      "relationshipLabel": "a broken obligation and its rule-bound consequence",
+      "explanation": "Default triggers foreclosure and a bounced check triggers an overdraft fee — each is the formal penalty a lender or bank imposes for a broken promise.",
+      "pairs": [
+        [
+          "default",
+          "foreclosure"
+        ],
+        [
+          "bounced check",
+          "overdraft fee"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "penalty-chain",
+        "banking-terms"
+      ]
+    },
+    {
+      "id": "set-dimensional-similarity",
+      "relationshipLabel": "the same kind of trading venue, smaller then larger in scale",
+      "explanation": "A flea market scales up into a shopping mall, and a farmers market scales up into a stock exchange — same trading function, wildly different size and formality.",
+      "pairs": [
+        [
+          "flea market",
+          "shopping mall"
+        ],
+        [
+          "farmers market",
+          "stock exchange"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "scale-jump",
+        "stock-exchange-red-herring"
+      ]
+    }
+  ]
+}

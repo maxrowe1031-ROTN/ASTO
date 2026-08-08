@@ -213,6 +213,35 @@
   said nothing, because it reports the effort profile — which had not changed. The page now
   carries a banner whenever the source on disk is newer than the server's boot time. Still
   manual: it tells you to restart, it does not restart itself.
+- **The staleness banner fired mid-review and was RIGHT — the diagnosis was wrong
+  (2026-08-08).** Recorded because the first version of this entry got it backwards and the
+  correction is the useful part. The banner named `studio/corpus/vocabulary.js`, whose mtime
+  had moved past the server's boot time while `git diff` showed the file byte-identical to
+  the commit — so it was written up as a false positive caused by a formatter. The real
+  cause was **a second agent working in this repo at the same time**
+  (`agent/run.js`, Max's handbook assignment), which was reading and editing under
+  `studio/` and committed a `studio/pipeline.js` change on its own branch minutes later.
+  Source really was changing under the running server. The banner did its job.
+  **The lesson is about diagnosis, not about the banner:** "content is identical *right
+  now*" does not mean "nothing is editing this tree", and a concurrent writer is invisible
+  to a single `git diff` taken between its writes. The same mistake produced a phantom
+  "flaky test" the same session (see below). **Still worth doing eventually:** hash the
+  `.js` files under `studio/` and `src/` at boot and re-hash per `/api/config` call, so the
+  banner reports a real content difference rather than a timestamp — `server.js` already
+  owns that computation and `api.js` does not touch the filesystem. Low priority now that
+  the loud case turned out to be a true positive.
+- **A concurrent agent in the same worktree is invisible to the test suite (2026-08-08).**
+  `test/studio/pipeline/integrity-gate.test.js` failed twice with `03-difficulty-rater`
+  where it expects `04a-integrity`, then passed 15/15 and 1171/1171 afterward. It was
+  diagnosed as CPU-load flakiness and it was nothing of the kind: `agent/run.js` was
+  mid-edit on `studio/pipeline.js`, and its own commit message says it *"restores the
+  gate's original pool-too-small handling (stageId 04a-integrity, unchanged)"* — the exact
+  assertion that had been failing. **A green suite means nothing if another process can
+  write to the tree between the edit and the run.** No code fix is proposed: the answer is
+  workflow (one writer per worktree, or `git worktree` per agent — which
+  `agent/run.js` could use). Worth remembering the next time a test looks flaky and the
+  timing is suspicious — check `git log --all` and `ps` before reaching for a load
+  explanation.
 - `budget.js` cost caps only bite once every model in play is priced. Rates are estimates
   until A5 measures real spend; unpriced models are surfaced in `usage.unpricedModels`.
 - Studio run artifacts accumulate under the git-ignored `studio/runs/`; no pruning yet.

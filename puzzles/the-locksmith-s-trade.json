@@ -1,0 +1,86 @@
+{
+  "id": "asto-the-locksmith-s-trade",
+  "title": "The Locksmith's Trade",
+  "sets": [
+    {
+      "id": "set-location-activity",
+      "relationshipLabel": "a place and the activity it exists for",
+      "explanation": "A locksmith shop exists to cut keys, and a vault exists to keep things safe — each place is defined by its one purpose.",
+      "pairs": [
+        [
+          "locksmith shop",
+          "key cutting"
+        ],
+        [
+          "vault",
+          "safekeeping"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "key",
+        "vault"
+      ]
+    },
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "broad category and a specific kind of thing within it",
+      "explanation": "A deadbolt is one kind of lock, and a skeleton key is one kind of key — each pair moves from the general class to a named variety.",
+      "pairs": [
+        [
+          "lock",
+          "deadbolt"
+        ],
+        [
+          "key",
+          "skeleton key"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "lock",
+        "key"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the start and end of a process or career",
+      "explanation": "An apprentice becomes a master, and an installed part eventually gets replaced — each pair traces a beginning to its eventual end.",
+      "pairs": [
+        [
+          "apprentice",
+          "master"
+        ],
+        [
+          "install",
+          "replace"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "install",
+        "replace"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "a lock mechanism and the internal part that defines its function",
+      "explanation": "A plug turns because of its pins, and a warded lock works because of its ward — each mechanism is defined by the hidden part inside it.",
+      "pairs": [
+        [
+          "plug",
+          "pin"
+        ],
+        [
+          "warded lock",
+          "ward"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "warded lock",
+        "lock"
+      ]
+    }
+  ]
+}

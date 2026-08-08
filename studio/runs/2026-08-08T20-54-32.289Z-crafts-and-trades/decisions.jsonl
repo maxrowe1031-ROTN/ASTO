@@ -1,0 +1,3 @@
+{"type":"attempt-completed","attemptId":"0001","boardId":"asto-craft-board-01","at":"2026-08-08T21:01:42.919Z"}
+{"type":"approve","attemptId":"0001","at":"2026-08-08T21:28:14.547Z"}
+{"type":"publish","attemptId":"0001","boardId":"asto-craft-board-01","publishedAs":"tools-of-the-trade.json","publishedId":"asto-tools-of-the-trade","republished":false,"at":"2026-08-08T21:28:16.710Z"}

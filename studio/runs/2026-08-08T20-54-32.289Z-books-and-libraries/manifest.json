@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T20-54-32.289Z-books-and-libraries",
+  "createdAt": "2026-08-08T20:54:32.290Z",
+  "theme": "books and libraries",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "event",
+      "possession"
+    ],
+    "varyHardestStance": "time",
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}
