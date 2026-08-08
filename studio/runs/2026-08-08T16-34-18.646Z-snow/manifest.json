@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T16-34-18.646Z-snow",
+  "createdAt": "2026-08-08T16:34:18.647Z",
+  "theme": "Snow",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "possession",
+      "cause"
+    ],
+    "varyHardestFrom": "arrangement",
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

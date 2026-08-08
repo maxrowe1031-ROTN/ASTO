@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T16-05-44.366Z-music",
+  "createdAt": "2026-08-08T16:05:44.366Z",
+  "theme": "music",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "plan",
+      "synonymity",
+      "instrument-action"
+    ],
+    "avoidShapes": [
+      "before-after",
+      "prevention"
+    ],
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "possession",
+      "event"
+    ],
+    "varyHardestFrom": "arrangement",
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

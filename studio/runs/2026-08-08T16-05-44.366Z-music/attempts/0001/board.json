@@ -1,0 +1,83 @@
+{
+  "id": "asto-music-board-1",
+  "title": "Music, Start to Finish",
+  "sets": [
+    {
+      "id": "set-instrument-action",
+      "relationshipLabel": "tool and the action it exists to perform",
+      "explanation": "A plectrum exists to pluck and a mallet exists to strike — each tool is defined by the single motion it was built for.",
+      "pairs": [
+        [
+          "plectrum",
+          "pluck"
+        ],
+        [
+          "mallet",
+          "strike"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "tool-verb"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "written notation and the piece it records",
+      "explanation": "A score is the notation for a symphony and a lead sheet is the notation for a tune — the paper stands in for the performed piece.",
+      "pairs": [
+        [
+          "score",
+          "symphony"
+        ],
+        [
+          "lead sheet",
+          "tune"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "notation-piece"
+      ]
+    },
+    {
+      "id": "set-item-location",
+      "relationshipLabel": "place an item is kept and the item kept there",
+      "explanation": "A gig bag holds a banjo and a pedalboard holds pedals — each is a dedicated home for the gear it carries.",
+      "pairs": [
+        [
+          "gig bag",
+          "banjo"
+        ],
+        [
+          "pedalboard",
+          "pedals"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "container-item"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "opening moment and closing moment of an event",
+      "explanation": "A soundcheck opens a show and an encore closes it, just as a debut opens a career and a farewell closes it — the same start-to-end shape at two different scales.",
+      "pairs": [
+        [
+          "soundcheck",
+          "encore"
+        ],
+        [
+          "debut",
+          "farewell"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "career-scale",
+        "show-scale"
+      ]
+    }
+  ]
+}

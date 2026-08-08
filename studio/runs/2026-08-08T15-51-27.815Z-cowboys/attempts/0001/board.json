@@ -1,0 +1,86 @@
+{
+  "id": "asto-western-analogies",
+  "title": "Old West Wordplay",
+  "sets": [
+    {
+      "id": "set-location-activity",
+      "relationshipLabel": "a place and the activity it exists for",
+      "explanation": "A corral exists for branding cattle just as a saloon exists for gambling — each place is defined by the activity it houses.",
+      "pairs": [
+        [
+          "corral",
+          "branding"
+        ],
+        [
+          "saloon",
+          "gambling"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "fencing",
+        "western-locations"
+      ]
+    },
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "category and a specific kind of it",
+      "explanation": "A Stetson is a specific kind of headgear, just as a lariat is a specific kind of rope.",
+      "pairs": [
+        [
+          "headgear",
+          "Stetson"
+        ],
+        [
+          "rope",
+          "lariat"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "rope-restraint",
+        "cowboy-gear"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "the thing that stops another thing from happening",
+      "explanation": "Barbed wire is built to prevent straying, and a hobble is built to prevent bolting — each device exists to stop a specific escape.",
+      "pairs": [
+        [
+          "barbed wire",
+          "straying"
+        ],
+        [
+          "hobble",
+          "bolting"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "rope-restraint",
+        "fencing"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "two moments facing each other across a span",
+      "explanation": "Daybreak and nightfall bookend a day just as spring and fall bookend a year — each pair marks opposite turns of the same cycle.",
+      "pairs": [
+        [
+          "daybreak",
+          "nightfall"
+        ],
+        [
+          "spring",
+          "fall"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "cycle",
+        "seasons"
+      ]
+    }
+  ]
+}

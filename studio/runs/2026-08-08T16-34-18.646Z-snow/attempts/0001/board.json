@@ -1,0 +1,86 @@
+{
+  "id": "board-snow-analogies-01",
+  "title": "Snowbound Logic",
+  "sets": [
+    {
+      "id": "set-time-activity-snow-occasions",
+      "relationshipLabel": "a time or weather event and the activity or occasion it brings",
+      "explanation": "Winter and snowfall are conditions that necessarily open the door to skiing and snow days, so each pair links a weather state to what it enables.",
+      "pairs": [
+        [
+          "winter",
+          "skiing"
+        ],
+        [
+          "snowfall",
+          "snow day"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "weather",
+        "winter-activity"
+      ]
+    },
+    {
+      "id": "set-conversion-snow-melt",
+      "relationshipLabel": "a snow form and the water it becomes through melting",
+      "explanation": "A snowman and a snowfall both end the same way once the temperature turns, leaving a puddle or meltwater behind.",
+      "pairs": [
+        [
+          "snowman",
+          "puddle"
+        ],
+        [
+          "snow",
+          "meltwater"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "melting",
+        "snow-water"
+      ]
+    },
+    {
+      "id": "set-synonymity-winter-gear",
+      "relationshipLabel": "two names for the same winter object",
+      "explanation": "A toboggan is just another word for a sled, and a toque is the same hat as a beanie under a different regional name.",
+      "pairs": [
+        [
+          "sled",
+          "toboggan"
+        ],
+        [
+          "beanie",
+          "toque"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "synonyms",
+        "gear"
+      ]
+    },
+    {
+      "id": "set-object-component-snow-features",
+      "relationshipLabel": "a snow mass and a structural feature it has",
+      "explanation": "A snowdrift wears a crust the way an iceberg carries a keel — each is a defining structural part of the larger mass.",
+      "pairs": [
+        [
+          "snowdrift",
+          "crust"
+        ],
+        [
+          "iceberg",
+          "keel"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "ice-structure",
+        "terrain"
+      ]
+    }
+  ]
+}

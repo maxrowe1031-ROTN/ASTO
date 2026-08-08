@@ -1,0 +1,86 @@
+{
+  "id": "asto-music-board-1",
+  "title": "The Sound of Structure",
+  "sets": [
+    {
+      "id": "set-component",
+      "relationshipLabel": "an instrument and a feature it simply has",
+      "explanation": "Every instrument has parts that are just built into it — a fretboard on a guitar, a bridge on a violin — no cause or event required, just structure.",
+      "pairs": [
+        [
+          "guitar",
+          "fretboard"
+        ],
+        [
+          "violin",
+          "bridge"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "instrument-parts",
+        "string-instruments"
+      ]
+    },
+    {
+      "id": "set-representation",
+      "relationshipLabel": "a piece of music or release and its made visual representation",
+      "explanation": "A song gets a music video and an album gets cover art — each is the visual object created to represent the audio release.",
+      "pairs": [
+        [
+          "song",
+          "music video"
+        ],
+        [
+          "album",
+          "cover art"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "music-media",
+        "visual-pairing"
+      ]
+    },
+    {
+      "id": "set-enabling",
+      "relationshipLabel": "the substance or part that lets the instrument produce sound at all",
+      "explanation": "Without a reed a clarinet stays silent, and without rosin a bow can't grip the strings — both are the small enabling agent behind the sound.",
+      "pairs": [
+        [
+          "reed",
+          "clarinet"
+        ],
+        [
+          "rosin",
+          "bow"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "instrument-accessories",
+        "hidden-function"
+      ]
+    },
+    {
+      "id": "set-scale",
+      "relationshipLabel": "same kind of thing, small scale then large scale",
+      "explanation": "A tune scaled up becomes a symphony, and applause scaled up becomes an ovation — the same phenomenon, just magnified.",
+      "pairs": [
+        [
+          "tune",
+          "symphony"
+        ],
+        [
+          "applause",
+          "ovation"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "scale",
+        "abstract-magnitude"
+      ]
+    }
+  ]
+}
