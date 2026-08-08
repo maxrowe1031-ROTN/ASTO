@@ -191,7 +191,13 @@
   fix does not reach a running server.~~ **Partly done 2026-08-04:** `GET /api/config` reports
   the config the *runner holds* and the run list shows it, so a stale server is visible at a
   glance. Still manual — the server does not exit on a config change, and a restart is still
-  the fix. Revisit only if the visible line proves insufficient.
+  the fix. Revisit only if the visible line proves insufficient. **Closed 2026-08-08 (design.md
+  D-12): it proved insufficient in the worst possible way.** A server booted at 19:16 ran a
+  revision at 20:00 against a fix merged at 20:48; the revision churned exactly as before and
+  the only reasonable reading was that the fix had failed. The config line was right there and
+  said nothing, because it reports the effort profile — which had not changed. The page now
+  carries a banner whenever the source on disk is newer than the server's boot time. Still
+  manual: it tells you to restart, it does not restart itself.
 - `budget.js` cost caps only bite once every model in play is priced. Rates are estimates
   until A5 measures real spend; unpriced models are surfaced in `usage.unpricedModels`.
 - Studio run artifacts accumulate under the git-ignored `studio/runs/`; no pruning yet.
@@ -210,24 +216,46 @@
   previous version keeps serving, so a broken deploy is invisible from the outside
   (2026-08-05: five failed builds, most of a day stale). `.nojekyll` fixed the cause;
   the *detection* gap remains. A post-push build-status check would close it.
-- **The pair author can still truncate itself out of a run (2026-08-08, the `painting` run).**
-  01 hit the 16k ceiling, `llm.js` raised it once to 24k as designed, and it truncated again —
-  terminal, run failed, **$0.62 spent for nothing**. Same family as the stage-02 headroom entry
-  below and the same conclusion: a bigger ceiling is not the lever, because a non-streaming
-  300s timeout lands before a much larger reply finishes. The cheap lever is cutting 01's work
-  (it is shown all 36 vocabulary entries); the real one is streaming. n=1 so far — revisit if a
-  second theme dies the same way.
+- **01 is REPRODUCING its own prompt example, and one is already published (2026-08-08).**
+  D-8 added an illustration of arrangement-hard difficulty to 01's prompt:
+  `planting : felling :: budding : withering`. **`trees-tools-and-time`'s Black is that line
+  verbatim** — published, in the game, since 2026-08-05 — and tonight's rose board returned
+  `planting : uprooting :: budding : wilting`, the same two subjects with near-synonym second
+  terms. So the example is functioning as a template rather than an illustration, which means
+  a published board's hardest set is not the pipeline's own work and every future
+  arrangement-hard set is anchored to planting/budding. Needs a decision, not just a patch:
+  abstract the example (describe the shape without naming words), rotate a pool of examples,
+  or mark it explicitly as forbidden output. Worth checking the other published boards for
+  echoes of 03's and 04's examples too — nothing has ever looked.
+- ~~**The pair author can still truncate itself out of a run.**~~ **Closed 2026-08-08 at n=5 —
+  see design.md D-12.** painting, shadows, bald eagle, sculpture and a rose all died the same
+  death (~$0.62 each, $3.10 total). Raising the ceiling alone could never work, because what
+  overran it was thinking, not answer. The escalation retry now steps effort down one rung as
+  well, and `a rose` — a theme that had died — completed on the retry at medium/24k against the
+  real API. **What remains from the original entry:** the cheap lever is still cutting 01's work
+  (it is shown all 36 vocabulary entries) and the real one is still streaming, if a stage ever
+  legitimately needs more than the 300s timeout buys.
 - **Nothing governs tile capitalization.** `Ascent` shipped with Title Case tiles (`Piton`,
   `Carabiner`) where every earlier board is lowercase; Max noticed and asked why. The answer is
   that nothing decides it — not the schema, not `validate-puzzle`, not 08, which said nothing
   about case on that run. It is the model's habit, varying run to run. Cheap fix if consistency
   is wanted: a case rule in 01's editorial rules plus an 08 check. Not a defect until Max says
   the boards look inconsistent side by side in the select screen.
-- **`Ascent` was published with an unactioned `revise-set` on its Green.** Max recorded
-  `revise-set` + `change-difficulty` on `set-object-component`, then approved and published the
-  board unchanged. Almost certainly deliberate (the note was minor), but nothing in the Studio
-  distinguishes "I changed my mind" from "I forgot I flagged that" — a published board carrying
-  an open set-level request is invisible. Revisit only if it happens again.
+- ~~**`Ascent` was published with an unactioned `revise-set` on its Green.**~~ **Addressed
+  2026-08-08 — see design.md D-12.** It had happened four times (Ascent, bbq ×2, cinema) before
+  anyone noticed; publishing now refuses once with `reason: 'unapplied-edits'` and names every
+  change that will not be applied. It warns, it does not block — Max is the editor. **What
+  remains:** this is a workaround for B2 being deferred. If he starts acknowledging routinely,
+  hand-editing has become due and HR-2 should be revisited.
+- **The cross-reading note had never rendered once, and crashed the page when it fired
+  (2026-08-08, design.md D-12).** Fixed the same session, but the shape of the miss is the
+  lesson: 06's output is keyed `{id: "set-seasons#1", valid, note}` and the page read
+  `reading.setId` and `reading.reading`, neither of which has ever existed. It was invisible
+  because `valid: false` skipped before the destructure — so the code was only *reachable* on a
+  finding, and findings were near-silent. **What remains:** nothing checks that a UI reader and
+  an agent's schema still agree. `prompt-schema-agreement.test.js` does this for prompts and
+  output schemas; the review page's readers have no equivalent, and this is the second
+  consumer-side field-name mismatch (the first being `machineNotesBySet` itself, now covered).
 - ~~**A proposal that fails validation twice leaves no trace at all.**~~ **Closed 2026-08-07.**
   Both empty exits from `proposeRevision` now write `revision-proposal-<attemptId>-failure.json`
   through `run-store` — category, message, what each round got wrong, the prompt, and **the

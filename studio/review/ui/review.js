@@ -7,6 +7,7 @@
 // create a second version that can be wrong.
 
 import { boardHtml } from './board-html.js';
+import { machineNotesBySet } from './machine-notes.js';
 import { simulatedSoClose } from './so-close.js';
 import { feedbackControls, collectFeedback, FORM_VERSION } from './feedback.js';
 import { STAGE_IDS_FOR_REVISION } from '../../stage-registry.js';
@@ -45,7 +46,15 @@ async function api(path, options) {
     headers: options?.body ? { 'content-type': 'application/json' } : undefined,
   });
   const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(body.error ?? `${response.status} ${response.statusText}`);
+  if (!response.ok) {
+    const error = new Error(body.error ?? `${response.status} ${response.statusText}`);
+    // The whole refusal, not just its sentence. A caller that can DO something
+    // about a particular `reason` needs the fields that came with it — see the
+    // unapplied-edits confirm in wirePublish.
+    error.body = body;
+    error.status = response.status;
+    throw error;
+  }
   return body;
 }
 
@@ -183,102 +192,6 @@ function soCloseLine(attempt) {
   return `<p class="studio-muted">Simulated: ${soClose} of ${submissions} submission(s) were right-words-wrong-order.</p>`;
 }
 
-/**
- * The evaluators' findings, regrouped from stage-shaped to set-shaped.
- *
- * 05 and 06 have been describing real defects for weeks, filed by stage in a
- * collapsed panel at the foot of the page — so Max rediscovered them by
- * playing the boards instead. Their findings were per-set all along; this is
- * only a regrouping, and `board-html.js` stays ignorant of which stage said
- * what.
- *
- * A cross-reading answered `valid: true` is the loudest thing on the page,
- * because it is the one defect that makes a board actively unfair: the engine
- * refuses that reading, so a player who finds it is marked wrong for being
- * right. Answered `false` is silent — a checklist item that passed is not news.
- */
-function machineNotesBySet(attempt) {
-  const notes = {};
-  const add = (setId, note) => {
-    if (!setId) return;
-    (notes[setId] ??= []).push(note);
-  };
-
-  for (const verdict of attempt.reports['05-analogy-validator']?.verdicts ?? []) {
-    // Only the failures. A pass note says the set works, which is what the set
-    // already looks like — it would be noise on every card.
-    if (verdict.pass === false) {
-      add(verdict.setId, { source: 'analogy validator', level: 'medium', text: verdict.notes });
-    }
-  }
-
-  const solver = attempt.reports['06-adversarial-solver'];
-  const setIdsByWord = new Map();
-  for (const set of attempt.board?.sets ?? []) {
-    for (const word of (set.pairs ?? []).flat()) setIdsByWord.set(word, set.id);
-  }
-  for (const finding of solver?.findings ?? []) {
-    // A finding names words, not a set. It belongs to a set when all its words
-    // come from one; anything spanning sets is a board-level observation and
-    // stays in the panel below rather than being filed under a set arbitrarily.
-    const owners = new Set((finding.words ?? []).map((word) => setIdsByWord.get(word)));
-    if (owners.size === 1) {
-      const [setId] = [...owners];
-      add(setId, { source: finding.kind, level: finding.severity, text: finding.note });
-    }
-  }
-  // 07 is blind by construction — it names words, never sets — so the mapping
-  // from word to set happens here, exactly as it does for 06's findings above.
-  // This is the detector for a set only its subject's fans can solve, which is
-  // the defect Max found by playing (design.md D-8).
-  for (const gated of attempt.reports['07-test-player']?.knowledgeGated ?? []) {
-    add(setIdsByWord.get(gated.word), {
-      source: 'needs knowledge',
-      level: 'medium',
-      text: `"${gated.word}" — ${gated.note}`,
-    });
-  }
-
-  for (const reading of solver?.crossReadings ?? []) {
-    if (!reading.valid) continue;
-    const [a, b, c, d] = reading.reading;
-    add(reading.setId, {
-      source: 'also reads',
-      level: 'high',
-      text: `${a} : ${b} :: ${c} : ${d} — ${reading.note} The engine refuses this reading, so a player who finds it loses a mistake.`,
-    });
-  }
-
-  // Order fairness (design.md D-9). Three sources, deliberately combined here
-  // rather than shown as three panels: 04a says which sets are structurally
-  // symmetric, 06 says whether the words rescue the order, 07 says whether it
-  // felt like a guess. Only the unrescued ones are news — a set 06 cleared is
-  // silent for the same reason a cross-reading answered `false` is.
-  const cleared = new Set(
-    (solver?.orderReadings ?? []).filter((entry) => entry.inferable).map((entry) => entry.setId),
-  );
-  for (const flag of attempt.reports['04a-integrity']?.orderFairness?.flagged ?? []) {
-    if (cleared.has(flag.setId)) continue;
-    const verdict = (solver?.orderReadings ?? []).find((entry) => entry.setId === flag.setId);
-    add(flag.setId, {
-      source: 'order may be a coin flip',
-      level: 'high',
-      text:
-        `${flag.note ?? `this set's relationship reads the same both ways round`}. ` +
-        `The engine accepts a flip only when BOTH pairs flip together, so a player who reads one pair the other way round loses a mistake on a grouping they had right` +
-        (verdict ? '. The adversarial solver agrees a player would be guessing' : ''),
-    });
-  }
-  // 07 names words, never sets — mapped here like everything else it reports.
-  for (const guessed of attempt.reports['07-test-player']?.orderGuessed ?? []) {
-    const owners = new Set((guessed.words ?? []).map((word) => setIdsByWord.get(word)));
-    if (owners.size !== 1) continue;
-    const [setId] = [...owners];
-    add(setId, { source: 'test player guessed the order', level: 'medium', text: guessed.note });
-  }
-
-  return notes;
-}
 
 
 async function renderRun(runId) {
@@ -436,6 +349,24 @@ function publishPanel(runId, manifest, decisions, board) {
 // The server's last-resort fallback, mirrored so the preview matches it.
 const slugOfRun = (runId) => runId.slice(runId.indexOf('Z-') + 2);
 
+/** What the publish confirm actually says: every change, named. */
+function unappliedPrompt(unapplied = []) {
+  const lines = unapplied.map((edit) => {
+    const where = edit.setId ? ` on ${edit.setId}` : '';
+    const change =
+      edit.to !== undefined ? ` (difficulty ${edit.from ?? '?'} → ${edit.to})` : '';
+    return `· ${edit.action}${where}${change}`;
+  });
+  return [
+    'Publishing ships the board exactly as the pipeline generated it.',
+    '',
+    `You recorded ${unapplied.length} change${unapplied.length === 1 ? '' : 's'} that will NOT be applied:`,
+    ...lines,
+    '',
+    'Publish anyway?',
+  ].join('\n');
+}
+
 function wirePublish(runId) {
   const panel = document.getElementById('publish');
   if (!panel) return;
@@ -444,11 +375,33 @@ function wirePublish(runId) {
     if (event.target.dataset?.act !== 'publish') return;
     event.preventDefault();
     event.target.disabled = true;
-    try {
-      const { published } = await api(`/runs/${encodeURIComponent(runId)}/publish`, {
+
+    const publish = (acknowledgeUnapplied = false) =>
+      api(`/runs/${encodeURIComponent(runId)}/publish`, {
         method: 'POST',
-        body: JSON.stringify({}),
+        body: JSON.stringify(acknowledgeUnapplied ? { acknowledgeUnapplied } : {}),
       });
+
+    try {
+      let result;
+      try {
+        result = await publish();
+      } catch (error) {
+        // Publishing ships the board as generated — hand-editing is still B2.
+        // The API refuses once when recorded changes would evaporate, so the
+        // choice is made knowingly rather than discovered later in a diff.
+        // A modal is right here where it is wrong elsewhere on this page:
+        // this is a question, and the answer decides what reaches players.
+        if (error.body?.reason !== 'unapplied-edits') throw error;
+        if (!confirm(unappliedPrompt(error.body.unapplied))) {
+          event.target.disabled = false;
+          notify('Not published.', 'info');
+          return;
+        }
+        result = await publish(true);
+      }
+
+      const { published } = result;
       notify(
         `Published as puzzles/${published.filename} — integrity ${published.integrity.acceptedCount}/${published.integrity.expectedAccepted}.`,
         'info',
@@ -810,13 +763,55 @@ function schedulePoll(working, runId) {
 
 // --- routing ---
 
+/**
+ * "This server is not running the code on disk."
+ *
+ * Above the view rather than inside it, because it is true of the whole
+ * process and not of one page — and because the page it matters most on is a
+ * run detail, where the buttons that spend money live.
+ *
+ * On 2026-08-07 a server booted at 19:16 ran a revision at 20:00 against a fix
+ * merged at 20:48. The revision churned exactly as it had before the fix, and
+ * the only reasonable reading was that the fix had failed. It had not — it was
+ * not running. This line is the difference between that hour and a restart.
+ */
+async function renderStaleBanner() {
+  const existing = document.getElementById('stale-code');
+  const config = await api('/config').catch(() => null);
+  if (!config?.staleCode) {
+    existing?.remove();
+    return;
+  }
+  const banner = existing ?? document.createElement('div');
+  banner.id = 'stale-code';
+  banner.className = 'stale-banner';
+  banner.innerHTML = `<strong>This server is running old code.</strong>
+    It started ${escape(shortTime(config.startedAt))} and the Studio source changed
+    ${escape(shortTime(config.codeChangedAt))}. Restart it (<code>npm run studio:review</code>)
+    before generating or revising anything — a running server keeps the modules it booted with.`;
+  if (!existing) view.parentNode.insertBefore(banner, view);
+}
+
+const shortTime = (iso) => {
+  if (!iso) return 'at an unknown time';
+  const at = new Date(iso);
+  return Number.isNaN(at.getTime()) ? 'at an unknown time' : `at ${at.toLocaleTimeString()}`;
+};
+
 async function route() {
   clearTimeout(pollTimer);
   const match = /^#\/runs\/(.+)$/.exec(location.hash);
+  // Deliberately not awaited: a stale check that hung would take the page with
+  // it, and the banner is context — the run is the page.
+  renderStaleBanner();
   try {
     if (match) await renderRun(decodeURIComponent(match[1]));
     else await renderList();
   } catch (error) {
+    // The stack goes to the console as well as the page: a render failure that
+    // only ever says "undefined is not iterable" costs more time to locate than
+    // the line costs to write.
+    console.error('render failed', error);
     view.innerHTML = `<section class="panel"><p class="failure">${escape(error.message)}</p>
       <p><a class="text-action" href="#/">Back to all runs</a></p></section>`;
   }

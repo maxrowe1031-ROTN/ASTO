@@ -2,6 +2,98 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-08 — Four defects the batches exposed, and a crash nobody had ever seen
+
+Max ran nine more themes and asked what I made of them. The answer was four defects, none of
+them designed for — all found by running the pipeline hard enough that its failure modes
+became visible. Fixed in one session, and the last one was found by verifying the others.
+
+### The batch first
+
+Cinema and music approved and published; **`puzzles/` is at 15, all clean** (`18b7a6a`).
+Odyssey and naruto rejected. Five themes — painting, shadows, bald eagle, sculpture, a rose —
+died identically in the pair author. D-5 is at **3 of ~10** verdicts, all `accepted` unedited.
+
+### 1. The truncation rescue — a bigger ceiling was never the fix
+
+Five deaths, all the same: truncate at 16k, retry at 24k, truncate again. **~$0.62 each,
+$3.10 for nothing.** All five narrow single-subject themes; ensemble themes sailed through.
+The retry only raised the ceiling, and what overran the ceiling was **thinking** — at `high`
+a narrow theme reasons until the budget is gone and never speaks. `pipeline-config.js` had
+documented this exact disease on 06 in 2026-08-05 (*"it spent all 16,000 output tokens on
+thinking and returned NO TEXT"*) and the lesson had never been generalised.
+
+The retry now **steps effort down one rung as well**. First attempts untouched, so nothing on
+the happy path gets cheaper. Terminal truncations keep the partial reply as
+`response.truncated.txt` — all five dead runs threw theirs away.
+
+### 2, 3, 4 — briefly
+
+- **The stale server is visible.** `/api/config` reports `startedAt` / `staleCode` /
+  `codeChangedAt`; the page carries a banner. This is what cost a wrong conclusion on
+  2026-08-07 — a server booted at 19:16 ran a revision at 20:00 against a fix merged at 20:48,
+  and D-11 looked like it had failed when it simply was not running.
+- **Self-matching pairs are detected and reported, never gated** — Max's `fade in : fade out`
+  observation, made computable. `studio/corpus/lexical.js`, pure. It found one immediately:
+  music's Black `stage name : birth name` also self-matches, on "name", which nobody had seen.
+- **Publishing warns when recorded edits would evaporate.** Fourth occurrence (Ascent, bbq ×2,
+  cinema) and the first anyone noticed. It refuses publishing *without knowing*, not
+  publishing.
+
+### The one that was already there: a crash on the loudest note on the page
+
+Found while verifying the self-matching card. Stage 06 answers the cross-reading checklist
+**by id** — `{id: "set-seasons#1", valid, note}` — and the review page read `reading.setId`
+and destructured `reading.reading`. **Neither field has ever existed.**
+
+`valid: false` skipped before the destructure, so every board rendered perfectly while the
+check found nothing — and the first board where a check came back **true** blanked the entire
+review page. A crash that fires only when the finding is real, on the note the code itself
+calls *the one defect that makes a board actively unfair*. It survived because the check had
+tuned itself into near-silence (backlog) and because `machineNotesBySet` lived in `review.js`,
+which touches `document` at module scope and so could not be tested in node at all.
+
+Now `studio/review/ui/machine-notes.js` — pure, exported, covered by eight tests. Same split,
+same reason, as `board-html.js`.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1067 pass, 0 fail** (was 1031; +36).
+  `node tools/check-board.js` → **15 boards, all clean.** Bite-checked both mechanisms:
+  remove the effort step-down and the retry test fails; remove the lexical flag and the
+  rater-input test fails.
+- **Claude-verifiable: PASSED.** Fresh server → no banner; `touch` a source file → banner
+  appears with both timestamps. `POST /publish` on the real cinema run → **409
+  `unapplied-edits` naming its difficulty 3→1**, the actual change that vanished. Card notes
+  render at all three levels including the never-before-seen `also reads`. Zero render
+  failures across three runs.
+- **Real API: PASSED, and this is the proof that matters.** Re-ran **`a rose`**, a theme that
+  had died. Attempt 1 truncated at high/16k; **attempt 2 completed at medium/24k** using 6,229
+  output tokens, gate green, board built. Same $0.61 — but now it produces a board.
+- **Max acceptance: OPEN.** Two things wait on him: whether a rescued board reads as good
+  (D-12's reconsider-when), and D-11's revision gate, which has still never had a fair test.
+
+### Found and NOT fixed — needs a decision
+
+**01 is reproducing its own prompt example.** D-8 put
+`planting : felling :: budding : withering` in 01's prompt as an illustration of
+arrangement-hard difficulty. **`trees-tools-and-time`'s Black is that line verbatim** —
+published, in the game, since 2026-08-05 — and tonight's rose board returned
+`planting : uprooting :: budding : wilting`. The illustration is working as a template. That
+means a published board's hardest set is not the pipeline's own work, and every
+arrangement-hard set is anchored to planting/budding. Backlogged rather than patched: the fix
+is a choice (abstract the example, rotate a pool, or forbid it as output) and it is Max's.
+
+- **Next:** two open gates and one decision.
+  1. **Review the rose board** (`2026-08-08T04-22-15.760Z-a-rose`, awaiting review) — it is
+     the first board the truncation rescue produced, so judging it answers D-12's
+     reconsider-when: does a board rescued at lower effort read as good?
+  2. **Request a real revision.** D-11's gate has still never had a fair test — the one attempt
+     ran through a stale server. The-seasons is waiting, or the rose board if it needs one.
+  3. **Decide what to do about 01 copying its example** (backlog, top entry). Includes deciding
+     whether `trees-tools-and-time` should stay published as-is.
+  4. **Publishing to GitHub Pages** remains the next real milestone.
+
 ## 2026-08-08 — A revision has to be told what to revise
 
 Max ran a six-theme batch and reviewed all of it. Three boards published, two rejected — and

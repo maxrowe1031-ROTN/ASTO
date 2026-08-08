@@ -33,6 +33,7 @@ import {
   retriesFor,
 } from './pipeline-config.js';
 import { isSymmetric, stanceOf, symmetricNote } from './corpus/vocabulary.js';
+import { selfMatchingBySet, selfMatchingCount } from './corpus/lexical.js';
 import { validatePuzzle } from '../src/source/validate-puzzle.js';
 import { checkBoard } from '../src/engine/board-integrity.js';
 import { deriveWords } from '../src/engine/arrangements.js';
@@ -71,6 +72,12 @@ const STAGE_INPUTS = {
     sets: (board.get('02-theme-grouper')?.sets ?? []).map((set) => ({
       ...set,
       stance: stanceOf(set.shape) ?? 'unknown',
+      // A fact the rater cannot derive from the relationship it is grading:
+      // how many of the set's pairs a player can match on sight, without
+      // reading the relationship at all (design.md D-12). Difficulty-relevant
+      // by construction — a set that assembles itself is easier than the
+      // question it asks.
+      selfMatchingPairs: selfMatchingCount(set),
     })),
   }),
   [BOARD_STAGE]: (board, { revision }) => ({ gradedSets: gradedSets(board), revision }),
@@ -459,14 +466,26 @@ async function sendOrRecord(ctx, stage, request, options) {
     // with validation.json as finished, and nothing here should look like a
     // stage that got as far as producing output.
     store.writeStageText(runId, attemptId, stage.id, 'prompt.txt', request.prompt);
+
+    // What the model managed to say before it died, when it said anything.
+    // Named apart from response.txt on purpose: resume must never mistake this
+    // for a stage that produced output. Five runs died truncated on 2026-08-08
+    // and all five threw their partial answers away, so the one question worth
+    // asking — what was it doing with all those tokens? — had no evidence at
+    // all. A dead run should at least leave a body.
+    if (error.partialText) {
+      store.writeStageText(runId, attemptId, stage.id, 'response.truncated.txt', error.partialText);
+    }
+
     store.writeStageArtifact(runId, attemptId, stage.id, 'request.failed.json', {
       stageId: stage.id,
       model: request.model,
-      // Two numbers because a truncation raises the ceiling once: the one we
-      // configured, and the one the last attempt actually went out with.
+      // Two numbers each, because a truncation changes both once: what we
+      // configured, and what the last attempt actually went out with.
       maxTokensConfigured: request.maxTokens,
       maxTokens: error.maxTokens ?? request.maxTokens,
-      effort: request.effort ?? null,
+      effortConfigured: request.effort ?? null,
+      effort: error.effort ?? request.effort ?? null,
       category: error.category,
       message: error.message,
       requests: error.requests ?? [],
@@ -654,12 +673,30 @@ function gateReport(blackboard) {
 
   const orderFairness = orderIndistinguishability(output.board, blackboard);
 
+  // Which sets can be paired up on sight, without the relationship being read
+  // (design.md D-12). Reports only, and for a stronger reason than probation:
+  // Max is genuinely torn on whether these sets are bad — *"It seems too easy
+  // but maybe that needs testing from other audiences"* — and one of his
+  // favourite sets ever carries one. A gate would decide a question he has
+  // explicitly left open.
+  const lexical = { bySet: selfMatchingBySet(output.board.sets) };
+
   // `ok` last, and derived from the reasons: `...integrity` carries an `ok` of
   // its own that would otherwise silently win and re-admit the board.
   //
-  // `orderFairness` is deliberately absent from `reasons` — it reports and does
-  // not gate (design.md D-9), the same probation the cross-reading check served.
-  return { ...integrity, schema, variety, stances, orderFairness, reasons, ok: reasons.length === 0 };
+  // `orderFairness` and `lexical` are deliberately absent from `reasons` — they
+  // report and do not gate (design.md D-9, D-12), the same probation the
+  // cross-reading check served.
+  return {
+    ...integrity,
+    schema,
+    variety,
+    stances,
+    orderFairness,
+    lexical,
+    reasons,
+    ok: reasons.length === 0,
+  };
 }
 
 // Four sets that all express the same kind of relationship make a board that

@@ -12,6 +12,7 @@ import {
   classifyOutputFailure,
   classifyTransportError,
   isRetryable,
+  stepDownEffort,
 } from './failures.js';
 
 const DEFAULT_MAX_ATTEMPTS = 3;
@@ -38,14 +39,20 @@ export function createLlm({
     // Feedback from a caller's earlier validation failure is appended to the
     // prompt so a retry can actually correct itself rather than repeating.
     let pendingFeedback = feedback;
-    // Raised once, and only by a truncation. Tracked here rather than mutating
-    // `request` so the caller's config stays the caller's.
+    // Both changed once, and only by a truncation. Tracked here rather than
+    // mutating `request` so the caller's config stays the caller's.
     let maxTokens = request.maxTokens;
+    let effort = request.effort;
     let escalated = false;
     let lastFailure;
+    // The last thing the model actually said, kept so a terminal failure can
+    // carry it out. A truncated reply is evidence — five runs died on
+    // 2026-08-08 and every one of them threw its partial answer away, so what
+    // the stage was doing when it ran out of room is unknowable for all five.
+    let lastText = null;
 
     for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-      const outbound = buildOutbound(request, pendingFeedback, maxTokens);
+      const outbound = buildOutbound(request, pendingFeedback, maxTokens, effort);
       const attemptStartedMs = now();
 
       let reply;
@@ -67,6 +74,7 @@ export function createLlm({
 
       inputTokens += reply.usage?.inputTokens ?? 0;
       outputTokens += reply.usage?.outputTokens ?? 0;
+      if (typeof reply.text === 'string' && reply.text.length > 0) lastText = reply.text;
 
       const stopFailure = classifyStopReason(reply.stopReason, reply);
       if (stopFailure) {
@@ -80,8 +88,17 @@ export function createLlm({
         });
 
         // Truncation is the only failure here whose retry has to change the
-        // request to stand a chance. Raise the ceiling once; a second
-        // truncation means the stage wants more than we will spend blind.
+        // request to stand a chance. Change it once, in BOTH directions that
+        // matter — more room to answer in, less time spent thinking before it
+        // does — and a second truncation means the stage wants more than we
+        // will spend blind.
+        //
+        // The effort step-down is the half that was missing until 2026-08-08,
+        // and its absence is what made five runs terminal at ~$0.62 each: a
+        // bigger ceiling only buys a stage that is over-thinking more room to
+        // over-think in. The first attempt is untouched, so nothing on the
+        // happy path gets cheaper — this fires only where the alternative is a
+        // dead run.
         if (stopFailure.escalateMaxTokens) {
           if (escalated) {
             lastFailure = classifyOutputFailure({
@@ -92,6 +109,7 @@ export function createLlm({
           }
           escalated = true;
           maxTokens = Math.round(request.maxTokens * stopFailure.escalateMaxTokens);
+          if (stopFailure.stepDownEffort) effort = stepDownEffort(effort) ?? effort;
         }
 
         if (!isRetryable(stopFailure) || attempt === maxAttempts) break;
@@ -118,9 +136,12 @@ export function createLlm({
           model: reply.model ?? request.model,
           // The ceiling and effort actually used, not the ones configured.
           // Establishing which of those a run had required arithmetic once;
-          // once was enough.
+          // once was enough. `effort` is the local, not `request.effort`: a
+          // rescued truncation answers at a lower effort than it was sent at,
+          // and a record that reported the configured value would quietly
+          // misattribute that board's quality to a setting it never ran under.
           maxTokens,
-          effort: request.effort ?? null,
+          effort: effort ?? null,
           system: request.system,
           prompt: outbound.prompt,
           response: reply.text,
@@ -141,7 +162,10 @@ export function createLlm({
         outputTokens,
         model: request.model,
         maxTokens,
-        effort: request.effort ?? null,
+        effort: effort ?? null,
+        // Whatever the model managed to say before it died. The caller decides
+        // whether to keep it; llm.js only refuses to throw it away.
+        ...(lastText ? { partialText: lastText } : {}),
       },
     );
   }
@@ -149,11 +173,17 @@ export function createLlm({
   return { send };
 }
 
-function buildOutbound(request, feedback, maxTokens) {
+function buildOutbound(request, feedback, maxTokens, effort) {
   // apiKey is consumed by the transport and deliberately not part of the
   // request record — secrets never reach a run directory.
   const { apiKey, ...rest } = request;
   const outbound = { ...rest, maxTokens, ...(apiKey === undefined ? {} : { apiKey }) };
+  // Deleted rather than set to null when absent: an absent effort has to reach
+  // the transport as an absent KEY, since some models reject the parameter
+  // outright. `rest` carries the request's own effort, so a step-down has to
+  // overwrite it here rather than rely on the spread.
+  if (effort === undefined || effort === null) delete outbound.effort;
+  else outbound.effort = effort;
   if (feedback) outbound.prompt = `${request.prompt}\n\n${feedback}`;
   return outbound;
 }

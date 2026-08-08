@@ -1,0 +1,82 @@
+{
+  "id": "asto-rose-board-01",
+  "title": "A Rose By Any Relationship",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "a thing and the feature it bears",
+      "explanation": "Every cane bears its thorn and every bloom its petal — the whole always carries that part.",
+      "pairs": [
+        [
+          "cane",
+          "thorn"
+        ],
+        [
+          "bloom",
+          "petal"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "botanical-part"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a rose class and its famous named cultivar",
+      "explanation": "Peace is the hybrid tea everyone names, and Iceberg is the floribunda everyone names — a class giving rise to its signature member.",
+      "pairs": [
+        [
+          "hybrid tea",
+          "Peace"
+        ],
+        [
+          "floribunda",
+          "Iceberg"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "cultivar-name"
+      ]
+    },
+    {
+      "id": "set-agent-object",
+      "relationshipLabel": "a worker and the thing their work is about",
+      "explanation": "A florist's work is the bouquet, a breeder's work is the cultivar — each worker defined by the object their labor produces.",
+      "pairs": [
+        [
+          "florist",
+          "bouquet"
+        ],
+        [
+          "breeder",
+          "cultivar"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "cultivar-name"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "two moments facing each other across a span",
+      "explanation": "Planting and uprooting are the opening and closing acts of a rose's life, just as budding and wilting bracket its bloom — start and end of the same arc, not simple opposites.",
+      "pairs": [
+        [
+          "planting",
+          "uprooting"
+        ],
+        [
+          "budding",
+          "wilting"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "life-cycle"
+      ]
+    }
+  ]
+}

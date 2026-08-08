@@ -10,7 +10,7 @@ import { join } from 'node:path';
 import { runPipeline } from '../../../studio/pipeline.js';
 import { RETRYABLE_TRANSPORT, TERMINAL_CONTENT } from '../../../studio/failures.js';
 import { DEFAULT_CONFIG, effortFor } from '../../../studio/pipeline-config.js';
-import { makeStore, mockTransport, seedRun, fastTime, fixturesWith } from './helpers.js';
+import { makeStore, mockTransport, seedRun, fastTime, fixturesWith, fixturesDir } from './helpers.js';
 
 const runWith = async (overrides, extra = {}) => {
   const { store, rootDir, cleanup: dropStore } = makeStore();
@@ -190,7 +190,13 @@ test('a stage that dies in transport still leaves its prompt and request on disk
     // point is that neither has to be worked out from token arithmetic.
     assert.equal(failed.maxTokensConfigured, 16_000);
     assert.equal(failed.maxTokens, 24_000, 'the ceiling the last attempt actually used');
-    assert.equal(failed.effort, effortFor('02-theme-grouper'));
+    // Both efforts, for the same reason as both ceilings: since 2026-08-08 a
+    // truncation retry steps the effort DOWN as well as raising the ceiling,
+    // so the configured value and the one that actually went out differ. A
+    // record that reported only the configured value would misattribute the
+    // attempt to a setting it never ran under.
+    assert.equal(failed.effortConfigured, effortFor('02-theme-grouper'), 'medium, as configured');
+    assert.equal(failed.effort, 'low', 'one rung down — what the last attempt actually used');
     assert.equal(failed.category, TERMINAL_CONTENT);
     assert.ok(Array.isArray(failed.requests) && failed.requests.length > 0);
 
@@ -248,6 +254,84 @@ test('a truncated reply is never silently accepted as a finished stage', async (
     assert.match(result.failure.message, /truncated at max_tokens \d+, and again/);
     assert.equal(result.failure.stageId, '01-pair-author', 'the failure must name its stage');
     const stageDir = join(rootDir, runId, 'attempts', result.attemptId, 'stages', '01-pair-author');
+    assert.equal(existsSync(join(stageDir, 'validation.json')), false);
+  } finally {
+    cleanup();
+  }
+});
+
+// --- the truncation rescue (2026-08-08, design.md D-12) ---
+//
+// Five themes died identically on 2026-08-08 — painting, shadows, bald eagle,
+// sculpture, a rose — each truncating at 16k, retrying at 24k, and truncating
+// again. ~$0.62 a run, five times, for nothing. Raising the ceiling alone was
+// never going to work: what overran it was THINKING, so a bigger budget only
+// bought a stage that was over-thinking more room to over-think in.
+//
+// The retry now steps effort down one rung as well. These pin both halves,
+// and the evidence a dead run leaves behind.
+
+/** The committed good reply, as a fixture entry the mock transport replays. */
+const goodPairs = () =>
+  JSON.parse(readFileSync(join(fixturesDir, '01-pair-author.json'), 'utf8'));
+
+test('a truncation retry lowers the effort as well as raising the ceiling', async () => {
+  // Truncate once, then answer. The second reply is what a rescued stage
+  // looks like: same request, one rung cheaper to think in.
+  const { result, rootDir, runId, cleanup } = await runWith({
+    '01-pair-author': [{ text: '{"pairs": [', stopReason: 'max_tokens' }, goodPairs()],
+  });
+  try {
+    assert.equal(result.status, 'complete', result.failure?.message);
+
+    const request = JSON.parse(
+      readFileSync(
+        join(rootDir, runId, 'attempts', result.attemptId, 'stages', '01-pair-author', 'request.json'),
+        'utf8',
+      ),
+    );
+    assert.equal(request.attempts, 2, 'it took the retry to get there');
+    assert.equal(request.maxTokens, 24_000, 'the ceiling was raised');
+    // 01 is configured high; the rescue answers at medium.
+    assert.equal(effortFor('01-pair-author'), 'high', 'the configured effort, for contrast');
+    assert.equal(request.effort, 'medium', 'the effort the answer actually came back at');
+  } finally {
+    cleanup();
+  }
+});
+
+test('a stage with no configured effort is retried without one', async () => {
+  // Some models reject the parameter outright, so an absent effort must stay
+  // absent — there is nothing to step down from, and the ceiling raise alone
+  // still gets its chance.
+  const { result, cleanup } = await runWith(
+    { '01-pair-author': [{ text: '{"pairs": [', stopReason: 'max_tokens' }, goodPairs()] },
+    { config: { ...DEFAULT_CONFIG, effort: {} } },
+  );
+  try {
+    assert.equal(result.status, 'complete', result.failure?.message);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a run that dies truncated leaves the partial reply behind', async () => {
+  const { result, rootDir, runId, cleanup } = await runWith({
+    '01-pair-author': { text: '{"pairs": [{"a": "rose", "b": "thorn"', stopReason: 'max_tokens' },
+  });
+  try {
+    assert.equal(result.status, 'failed');
+    const stageDir = join(rootDir, runId, 'attempts', result.attemptId, 'stages', '01-pair-author');
+
+    // The question worth asking about a dead run is what it was doing with all
+    // those tokens. Five runs on 2026-08-08 threw the answer away.
+    const partial = readFileSync(join(stageDir, 'response.truncated.txt'), 'utf8');
+    assert.match(partial, /rose/);
+
+    // …but it must not read as a stage that produced output. Resume treats a
+    // stage with validation.json as finished, and response.txt is what a
+    // successful stage writes; neither may appear here.
+    assert.equal(existsSync(join(stageDir, 'response.txt')), false);
     assert.equal(existsSync(join(stageDir, 'validation.json')), false);
   } finally {
     cleanup();

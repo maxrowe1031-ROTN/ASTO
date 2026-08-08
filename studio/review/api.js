@@ -94,6 +94,15 @@ export function createApi({
   // store is: a test publishes into a throwaway directory, never into the
   // game's real content.
   puzzles = createPuzzleStore(),
+  // Is this server running the code that is on disk?
+  //
+  // A node process holds the modules it started with, so a fix merged after
+  // boot simply does not exist for a running Studio. On 2026-08-07 that cost a
+  // real conclusion: the revision fix merged at 20:48, a server booted at 19:16
+  // ran a revision at 20:00, it churned exactly as before, and Max reasonably
+  // read that as the fix not working. Injected rather than computed here
+  // because api.js does not touch the filesystem — server.js does.
+  codeState = null,
 }) {
   // runId → the in-flight proposal, so a second rejection cannot start two.
   const proposalsInFlight = new Map();
@@ -142,7 +151,9 @@ export function createApi({
   // than read from disk — see runner.configOf. The values are settings, not
   // secrets: two version strings, nothing about the key or the environment.
   function readConfig() {
-    return ok(runner.configOf());
+    // Spread rather than nulled when no provider is injected: a test that does
+    // not care about staleness should see the response it always saw.
+    return ok({ ...runner.configOf(), ...(codeState ? codeState() : {}) });
   }
 
   function readRun(runId) {
@@ -395,10 +406,46 @@ export function createApi({
   // board whose title slugs to nothing at all.
   const slugOfRun = (runId) => runId.slice(runId.indexOf('Z-') + 2);
 
+  /**
+   * The set-level changes Max recorded on the attempt about to be published,
+   * and which publishing will not apply.
+   *
+   * Publishing ships `board.json` exactly as the pipeline generated it —
+   * hand-editing is B2, still deferred (HR-2). That is a fine limitation and a
+   * terrible silence: on 2026-08-08 Behind the Scenes was published carrying a
+   * recorded difficulty change from 3 to 1 that simply evaporated, the fourth
+   * time that had happened (Ascent, bbq twice, cinema) and the first time
+   * anyone noticed. Nothing distinguished "I changed my mind" from "I forgot
+   * I flagged that".
+   *
+   * Only the CURRENT attempt counts. A request answered by a revision is not
+   * outstanding — the revision is the answer.
+   */
+  const UNAPPLIED_ACTIONS = new Set([
+    'change-difficulty',
+    'set-needs-edit',
+    'set-replace',
+    'revise-set',
+  ]);
+
+  function unappliedEdits(runId, attemptId) {
+    return store
+      .readFeedback(runId)
+      .filter((event) => event.attemptId === attemptId && UNAPPLIED_ACTIONS.has(event.action))
+      .map((event) => ({
+        action: event.action,
+        setId: event.scope?.setId ?? null,
+        ...(event.after?.difficulty !== undefined
+          ? { from: event.before?.difficulty ?? null, to: event.after.difficulty }
+          : {}),
+        ...(event.note ? { note: event.note } : {}),
+      }));
+  }
+
   function publishRun(runId, body) {
     if (!isPlainObject(body)) return bad('body must be an object');
     for (const key of Object.keys(body)) {
-      if (key !== 'slug') return bad(`unknown field: ${key}`);
+      if (key !== 'slug' && key !== 'acknowledgeUnapplied') return bad(`unknown field: ${key}`);
     }
 
     const manifest = store.readManifest(runId);
@@ -410,6 +457,25 @@ export function createApi({
 
     const board = currentBoard(runId);
     if (!board) return conflict(`run ${runId} has no board to publish`);
+
+    // Refused once, then allowed on the retry that carries the acknowledgement.
+    // Deliberately not a hard block: the board is often right to publish as-is
+    // and Max is the editor. What it refuses is publishing WITHOUT KNOWING.
+    if (!body.acknowledgeUnapplied) {
+      const unapplied = unappliedEdits(runId, manifest.currentAttemptId);
+      if (unapplied.length > 0) {
+        return {
+          status: 409,
+          body: {
+            error:
+              `publishing ships the board exactly as generated, and ${unapplied.length} recorded ` +
+              `change${unapplied.length === 1 ? '' : 's'} would not be applied`,
+            reason: 'unapplied-edits',
+            unapplied,
+          },
+        };
+      }
+    }
 
     // Default: the board's own title. A run slug is a lifecycle name —
     // `beach-retry` records that the first beach run truncated — and baking

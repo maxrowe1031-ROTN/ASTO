@@ -17,7 +17,7 @@
 //   protected by a traversal check — they are simply not mounted.
 
 import { createServer } from 'node:http';
-import { createReadStream, existsSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, normalize, resolve, sep, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -155,6 +155,63 @@ function readBody(req) {
   });
 }
 
+/**
+ * Whether this process is still running the code that is on disk.
+ *
+ * A node process holds the modules it imported at boot, so a fix merged while
+ * the Studio is up simply does not exist for it. That is not theoretical: on
+ * 2026-08-07 the revision fix merged at 20:48, a server booted at 19:16 ran a
+ * revision at 20:00, the revision churned exactly as it had before, and the
+ * only reasonable reading was that the fix had failed. It had not — it was not
+ * running. A whole conclusion was wrong for want of one line on a page.
+ *
+ * Newest mtime of the source the server actually runs, against boot time.
+ * Recomputed per call, so a restart-worthy edit shows up on the next reload
+ * rather than at the next boot — which would be far too late to help.
+ *
+ * Cheap enough to do on demand: a few hundred stat calls behind one endpoint a
+ * page polls. `studio/runs` is skipped because it changes constantly and is
+ * data, not code — watching it would make every run look like a stale server.
+ */
+function makeCodeState({ startedAtMs = Date.now(), roots = ['studio', 'src'] } = {}) {
+  const startedAt = new Date(startedAtMs).toISOString();
+
+  const newestMtime = (dir) => {
+    let newest = 0;
+    let entries;
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return 0; // unreadable is not stale — say nothing rather than cry wolf
+    }
+    for (const entry of entries) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name === 'runs' || entry.name === 'node_modules' || entry.name.startsWith('.')) {
+          continue;
+        }
+        newest = Math.max(newest, newestMtime(full));
+      } else if (entry.name.endsWith('.js')) {
+        try {
+          newest = Math.max(newest, statSync(full).mtimeMs);
+        } catch {
+          // Vanished between readdir and stat. Not our problem to report.
+        }
+      }
+    }
+    return newest;
+  };
+
+  return () => {
+    const newest = Math.max(...roots.map((root) => newestMtime(join(REPO, root))));
+    return {
+      startedAt,
+      staleCode: newest > startedAtMs,
+      ...(newest > 0 ? { codeChangedAt: new Date(newest).toISOString() } : {}),
+    };
+  };
+}
+
 export async function createReviewServer({
   store,
   rootDir,
@@ -169,7 +226,7 @@ export async function createReviewServer({
     makeTransport,
     loadContext: loadContext ?? (() => ({ rules: loadRules().map((rule) => rule.text) })),
   });
-  const api = createApi({ store: runStore, runner });
+  const api = createApi({ store: runStore, runner, codeState: makeCodeState() });
 
   const server = createServer(async (req, res) => {
     const pathname = (req.url ?? '/').split('?')[0];

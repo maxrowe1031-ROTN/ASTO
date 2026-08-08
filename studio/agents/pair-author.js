@@ -107,6 +107,12 @@ export function buildPrompt(input = {}, context) {
           ? 'The last few boards all got their hardest set from ARRANGEMENT. This pool may reach its top tier through a word that belongs to the subject instead, if the theme offers one worth knowing.'
           : '',
       'The order of a pair must matter: A : B should not read the same as B : A. A pair whose direction is reversible is a weak pair.',
+      // design.md D-12, from Max's own reading of the boards. A pair that
+      // shares visible text couples itself on sight — the player matches the
+      // words the way you match two socks, and the relationship the set is
+      // built on is never read. One such pair is a foothold; two make the set
+      // free, and the analogy might as well not be there.
+      'Watch for pairs that match themselves on sight: two words sharing visible text ("fade in : fade out", "load-in : load-out", "wrap : unwrap") get coupled by looking rather than by understanding. At most ONE such pair per matched group, never both — a group of two self-matching pairs solves itself. And the group you make hard through ARRANGEMENT must not contain one at all.',
       '',
       // design.md D-8. The sentence removed from the theme block above said a
       // hard set "may ask for the word an enthusiast knows" — one route up, and
