@@ -1,0 +1,58 @@
+
+ASTO Studio — evaluator report
+66 judged attempt(s) across 59 run(s).
+skipped: 8 mock run(s) · 20 unjudged run(s) · 0 unjudged attempt(s) · 2 with no board
+
+-- set populations (never pooled) --
+  102 set verdicts from formVersion 2+ (trusted)
+  42 from version 1, read through TAGS only
+  73 carrying no classifiable verdict
+
+-- 05 analogy validator: pass/fail vs Max, per set --
+  agreed        94 of 144  (65%)
+    both liked        67
+    both rejected     27
+  05 flagged, Max liked it     32   <- the paris failure mode
+  05 passed, Max rejected it   18   <- what it misses
+  no comparable verdict        120
+
+-- 06 adversarial solver: findings vs rejected sets --
+  254 finding(s); 68 touched a set Max rejected (27%)
+  100 touched only sets he kept · 0 could not be joined to a set
+  by severity: high 41 · medium 134 · low 79
+  NB: "touched" is word overlap, not proof it found his reason.
+
+-- 07 test player: self-reported blind spots --
+  32 attempt(s) could report knowledgeGated; it fired on 24 (75%)
+  77 gated word(s), 14 on a set Max then rejected
+  solved 71 of 76 trial(s)
+
+-- 08 style guide: board verdict vs Max's --
+  agreed 38 of 66 (58%)
+  08 happy / Max not: 11 · Max happy / 08 not: 17
+
+-- tags --
+   134  strong-reveal
+   130  good-unchanged
+   122  feels-like-asto
+   119  difficulty-accurate
+    18  not-evocative
+    15  relationship-does-not-click
+    14  too-easy
+    12  cross-set-association
+  retired (counted, never re-sorted): valid-but-unfair 9
+
+-- D-5 revision proposer: graduation evidence --
+  5 verdict(s) recorded: 5 accepted · 0 edited · 0 discarded
+
+  brief -> revision -> outcome:
+    bbq                accepted  NOTES NEVER ARRIVED (pre-D-11)  -> rejected
+    nintendo           accepted  NOTES NEVER ARRIVED (pre-D-11)  -> rejected
+    naruto             accepted  NOTES NEVER ARRIVED (pre-D-11)  -> rejected
+    flowers            accepted  notes arrived                   -> open
+    cowboys            accepted  notes arrived                   -> rejected
+
+  3 of 5 revision(s) never received the notes, and are excluded:
+  a blind re-roll's rejection is not evidence about the brief that asked for it.
+  USABLE evidence: 0 published of 2 (0 approved, 1 rejected, 1 still open).
+
