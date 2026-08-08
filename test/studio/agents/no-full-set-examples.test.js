@@ -45,6 +45,7 @@ import assert from 'node:assert/strict';
 
 import { STAGES } from '../../../studio/stage-registry.js';
 import { loadAgent } from '../../../studio/agents/index.js';
+import { loadRules } from '../../../studio/corpus/rules.js';
 
 const AGENT_IDS = STAGES.filter((s) => s.kind === 'agent').map((s) => s.agent);
 
@@ -76,14 +77,91 @@ const someInput = {
  * A quoted, concrete, four-term analogy: `"planting : felling :: budding :
  * withering"`.
  *
- * Lowercase words only, which is what makes this safe to run over every
- * prompt: the abstract form the prompts legitimately use everywhere is
- * `A : B :: C : D`, single uppercase letters, and it does not match. Real
- * words do.
+ * The word-length floor of three characters is what keeps this safe to run
+ * over every prompt: the abstract form the prompts legitimately use everywhere
+ * is `A : B :: C : D`, single letters, and it does not match. Real words do.
+ *
+ * Case-insensitive, and that was not the original spelling. It matched
+ * lowercase only, which meant `"Sonar : mapping :: Submersible : exploration"`
+ * — carried into 01's real prompt by rule-008 — slipped past unexamined. The
+ * guard was passing by accident, on capitalisation.
  */
-const FULL_SET_EXAMPLE = /"[a-z][a-z' -]{2,} : [a-z][a-z' -]{2,} :: [a-z][a-z' -]{2,} : [a-z][a-z' -]{2,}"/;
+const FULL_SET_EXAMPLE = /"[a-z][a-z' -]{2,} : [a-z][a-z' -]{2,} :: [a-z][a-z' -]{2,} : [a-z][a-z' -]{2,}"/i;
 
-const promptOf = (id) => loadAgent(id).buildPrompt(someInput[id], {});
+/**
+ * Full sets allowed to reach a generative prompt, each with the reason.
+ *
+ * All five live in the RULES corpus, which every generative prompt renders as
+ * its `context` block — and they were invisible to this guard until it started
+ * rendering with production context.
+ *
+ * ═══ WHY THESE ARE SAFE, AND THE LEAKED ONE WAS NOT ═══
+ *
+ * The first cut of this reasoning was "counter-examples are safe, exemplars
+ * leak". The corpus does not support that: rule-009 carries two PRESCRIBED
+ * sets — "use `Second : Minute :: Hour : Day` instead", "needs a second
+ * subject — `President : Air Force One :: Monarch : royal train`" — and a sweep
+ * of **82 boards** (every board.json in all 59 run directories plus the 15
+ * published) found **zero** occurrences of any of them, prescribed or
+ * forbidden.
+ *
+ * The distinction the evidence actually supports is narrower: what leaks is a
+ * full set held up as a model of QUALITY in the stage's own creative
+ * dimension. `planting : felling :: budding : withering` was introduced as
+ * "one of the hardest sets ever written for this game" to a stage being asked
+ * to write a hard set — an aspiration, in the exact register of the work. Both
+ * kinds of rule example are MECHANICAL demonstrations instead: rule-008 shows
+ * a grain mismatch, rule-009 shows word-distinctness. Nobody would aspire to
+ * author `Second : Minute :: Hour : Day`; it is dull on purpose, which is
+ * precisely what makes it safe.
+ *
+ * rule-008 and rule-009 also genuinely need both pairs — the defects they
+ * teach (mismatched grain, a repeated word across pairs) exist BETWEEN the
+ * pairs and cannot be shown with one.
+ *
+ * An entry here is a decision with evidence behind it, not a parking space for
+ * a failing string. A new rule quoting an admired set must fail this suite and
+ * be argued about, which is the point.
+ */
+const KNOWN_COUNTER_EXAMPLES = [
+  {
+    text: '"Sonar : mapping :: Submersible : exploration"',
+    source: 'rule-008 — a grain mismatch, shown as the thing that FAILS',
+  },
+  {
+    text: '"Second : Minute :: Minute : Hour"',
+    source: 'rule-009 — a progression chain, shown as the thing to NEVER build',
+  },
+  {
+    text: '"Second : Minute :: Hour : Day"',
+    source: 'rule-009 — the mechanical fix for it: four distinct words, dull by design',
+  },
+  {
+    text: '"President : Air Force One :: President : Marine One"',
+    source: 'rule-009 — a repeated SUBJECT, the trap the Obama run died on',
+  },
+  {
+    text: '"President : Air Force One :: Monarch : royal train"',
+    source: 'rule-009 — the mechanical fix for it: a second subject',
+  },
+];
+
+/**
+ * The prompt as the model actually receives it, context included.
+ *
+ * Rendering with `{}` is what hid the context door: every prompt carries a
+ * `context` block (`renderContext` in agent-kit.js), and in production that
+ * block is the rules corpus — `server.js` builds `{ rules: loadRules()... }`.
+ * So the one channel that really does carry full sets into the author's prompt
+ * was the one channel this guard could not see.
+ */
+const productionContext = () => ({ rules: loadRules().map((rule) => rule.text) });
+
+const promptOf = (id) => loadAgent(id).buildPrompt(someInput[id], productionContext());
+
+/** The prompt minus the sets we have knowingly allowed. */
+const withoutKnown = (prompt) =>
+  KNOWN_COUNTER_EXAMPLES.reduce((text, known) => text.split(known.text).join(''), prompt);
 
 // `difficulty-rater` is in the generative list even though it grades rather
 // than authors: it is the stage that DEFINES what arrangement-hard means for
@@ -91,17 +169,40 @@ const promptOf = (id) => loadAgent(id).buildPrompt(someInput[id], {});
 // or the two drift about what they are naming.
 for (const id of GENERATIVE) {
   test(`${id}: its prompt quotes no finished set`, () => {
-    const prompt = promptOf(id);
-    const found = prompt.match(FULL_SET_EXAMPLE);
+    const found = withoutKnown(promptOf(id)).match(FULL_SET_EXAMPLE);
     assert.equal(
       found,
       null,
       `${id} makes boards and its prompt shows a complete four-word set (${found?.[0]}). ` +
-        'Teach with a PAIR — a finished set is an answer, and an answer in the prompt comes ' +
-        'back as output. See studio/corpus/examples.js.',
+        'A set held up as a model of QUALITY is an answer, and an answer in the prompt ' +
+        'comes back as output — teach that with a PAIR. If it is a MECHANICAL ' +
+        'demonstration instead (a rule violated or satisfied, dull on purpose), add it to ' +
+        'KNOWN_COUNTER_EXAMPLES with the reason. See studio/corpus/examples.js and ' +
+        'design.md D-12.',
     );
   });
 }
+
+// The allowlist must describe the prompt, not a memory of one. A stale entry
+// would silently widen the guard's blind spot — the exact failure this whole
+// file exists to prevent, one level up.
+test('every allowed counter-example is actually still in the prompt', () => {
+  const prompt = promptOf('pair-author');
+  for (const known of KNOWN_COUNTER_EXAMPLES) {
+    assert.ok(
+      prompt.includes(known.text),
+      `${known.text} is allowlisted but no longer reaches 01 (${known.source}) — drop it`,
+    );
+  }
+});
+
+// The reason the allowlist is needed at all: production context carries these
+// into the prompt. If this ever passes with an empty context, the rules have
+// stopped being handed to the author and something upstream is broken.
+test('the rules corpus really does reach the generative prompts', () => {
+  assert.match(promptOf('pair-author'), /Editorial rules you must follow/);
+  assert.notEqual(loadRules().length, 0, 'no rules loaded — the context channel is empty');
+});
 
 // The mirror, so nobody later "fixes" an evaluator by deleting the examples it
 // needs. 06 and 07 judge sets; showing them one is how they learn the call.

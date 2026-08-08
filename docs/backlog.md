@@ -223,10 +223,14 @@
   prompt may quote a finished set (every stage, not just the two caught), and no published
   board may be built from a taught pair. `trees-tools-and-time` stays published by Max's
   decision, grandfathered per-slug with its provenance recorded in design.md.
-  **What remains:** the sweep only covers the arrangement example. **Nothing has looked at
-  02's or 04's prompts for examples shaped like *their* deliverables** — 04's output is a
-  whole board, so a fully-worked board in its prompt would be the same defect one level up.
-  The class guard would catch a four-word set there; it would not catch a sixteen-word one.
+  **02 and 04 checked 2026-08-08 and both clean** — neither quotes an example, and 04 is
+  protected by its own design ("choose and relabel; do not author"). The check found the
+  **context door** instead: the rules corpus rides into every generative prompt and carries
+  five full sets, which the guard could not see because it rendered with empty context. Now
+  guarded, allowlisted with an 82-board zero-leak sweep behind it, and the rule sharpened to
+  *quality exemplar* vs *mechanical demonstration*. **What remains:** the class guard matches
+  four-word sets, so a fully-worked **sixteen-word board** in a prompt would still slip past —
+  no prompt carries one today, and 04 is the only stage whose deliverable is that shape.
 - ~~**The pair author can still truncate itself out of a run.**~~ **Closed 2026-08-08 at n=5 —
   see design.md D-12.** painting, shadows, bald eagle, sculpture and a rose all died the same
   death (~$0.62 each, $3.10 total). Raising the ceiling alone could never work, because what
