@@ -1,0 +1,86 @@
+{
+  "id": "board-bbq-analogies-01",
+  "title": "Smoke & Fire: A BBQ Analogy Board",
+  "sets": [
+    {
+      "id": "set-bbq-taxonomy",
+      "relationshipLabel": "a category and a specific kind within it",
+      "explanation": "Cut and wood are broad categories, while brisket and mesquite name a specific member of each.",
+      "pairs": [
+        [
+          "cut",
+          "brisket"
+        ],
+        [
+          "wood",
+          "mesquite"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "category",
+        "example"
+      ]
+    },
+    {
+      "id": "set-equipment-part",
+      "relationshipLabel": "a cooking apparatus and the component it necessarily has",
+      "explanation": "An offset smoker always has a firebox and a grill always has a grate — the part is built into the definition of the whole.",
+      "pairs": [
+        [
+          "offset smoker",
+          "firebox"
+        ],
+        [
+          "grill",
+          "grate"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "apparatus",
+        "component"
+      ]
+    },
+    {
+      "id": "set-tool-action",
+      "relationshipLabel": "a tool and the action it exists to perform",
+      "explanation": "A mop exists to baste and a spatula exists to flip — each tool is defined by the single motion it's built for.",
+      "pairs": [
+        [
+          "mop",
+          "baste"
+        ],
+        [
+          "spatula",
+          "flip"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "tool",
+        "purpose"
+      ]
+    },
+    {
+      "id": "set-action-undo",
+      "relationshipLabel": "an action and the action that undoes it",
+      "explanation": "Extinguish undoes ignite and unwrap undoes wrap — each right-hand word cancels what the left-hand word set in motion.",
+      "pairs": [
+        [
+          "ignite",
+          "extinguish"
+        ],
+        [
+          "wrap",
+          "unwrap"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "reversal",
+        "negation"
+      ]
+    }
+  ]
+}

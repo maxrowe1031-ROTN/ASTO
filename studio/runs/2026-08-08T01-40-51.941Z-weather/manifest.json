@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T01-40-51.941Z-weather",
+  "createdAt": "2026-08-08T01:40:51.943Z",
+  "theme": "weather",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "concealment",
+      "instrument-action",
+      "taxonomic"
+    ],
+    "avoidShapes": [
+      "agent-object",
+      "representation"
+    ],
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

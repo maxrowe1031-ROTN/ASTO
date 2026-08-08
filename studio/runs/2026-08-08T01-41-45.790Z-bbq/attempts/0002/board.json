@@ -1,0 +1,82 @@
+{
+  "id": "asto-bbq-board-01",
+  "title": "Smoke & Craft",
+  "sets": [
+    {
+      "id": "set-worker-object",
+      "relationshipLabel": "a worker and the object their craft is centered on",
+      "explanation": "A pitmaster's craft centers on brisket just as a butcher's centers on sausage — worker and signature object, side by side.",
+      "pairs": [
+        [
+          "pitmaster",
+          "brisket"
+        ],
+        [
+          "butcher",
+          "sausage"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "meat-prep theme overlaps with membrane/spare ribs pair"
+      ]
+    },
+    {
+      "id": "set-wood-type",
+      "relationshipLabel": "a material category and a specific type within it",
+      "explanation": "Hickory is a type of wood the same way a briquette is a type of charcoal — category and specific instance.",
+      "pairs": [
+        [
+          "wood",
+          "hickory"
+        ],
+        [
+          "charcoal",
+          "briquette"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "charcoal echoes firebox and embers as a fire-word red herring"
+      ]
+    },
+    {
+      "id": "set-first-last",
+      "relationshipLabel": "the first moment and the last moment of a single span",
+      "explanation": "Kindling ends as embers and raw meat ends charred — each pair marks the opening and closing state of the same process.",
+      "pairs": [
+        [
+          "kindling",
+          "embers"
+        ],
+        [
+          "raw",
+          "charred"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "embers and charred both suggest fire imagery shared with charcoal/firebox"
+      ]
+    },
+    {
+      "id": "set-built-in-feature",
+      "relationshipLabel": "a whole thing and the built-in feature it has",
+      "explanation": "An offset smoker has a firebox and spare ribs have a membrane — each whole comes with a fixed structural feature.",
+      "pairs": [
+        [
+          "offset smoker",
+          "firebox"
+        ],
+        [
+          "spare ribs",
+          "membrane"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "firebox pulls toward the fire/fuel theme of set-wood-type and set-first-last"
+      ]
+    }
+  ]
+}

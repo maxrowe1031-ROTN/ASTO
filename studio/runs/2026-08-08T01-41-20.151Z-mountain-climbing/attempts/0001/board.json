@@ -1,0 +1,82 @@
+{
+  "id": "asto-mountaineering-01",
+  "title": "Ascent",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "thing and the feature it always has",
+      "explanation": "A piton always has an eye and a carabiner always has a gate — each object named alongside the part that defines its function.",
+      "pairs": [
+        [
+          "Piton",
+          "Eye"
+        ],
+        [
+          "Carabiner",
+          "Gate"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "hardware-pairing"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "category of peak and a named member of it",
+      "explanation": "Eight-thousander and fourteener are altitude categories, with K2 and Rainier standing as their real-world examples.",
+      "pairs": [
+        [
+          "Eight-thousander",
+          "K2"
+        ],
+        [
+          "Fourteener",
+          "Rainier"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "famous-peaks"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A belayer is defined by their belay device just as a lead climber is defined by the rack they carry.",
+      "pairs": [
+        [
+          "Belayer",
+          "Belay device"
+        ],
+        [
+          "Lead climber",
+          "Rack"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "gear-vocabulary"
+      ]
+    },
+    {
+      "id": "set-sequence",
+      "relationshipLabel": "opening stage of the larger whole it belongs to",
+      "explanation": "The approach opens a route and the basecamp opens an expedition — each is the first phase of something bigger, not a separate thing.",
+      "pairs": [
+        [
+          "Approach",
+          "Route"
+        ],
+        [
+          "Basecamp",
+          "Expedition"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "expedition-language"
+      ]
+    }
+  ]
+}

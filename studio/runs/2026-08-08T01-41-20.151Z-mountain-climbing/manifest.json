@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T01-41-20.151Z-mountain-climbing",
+  "createdAt": "2026-08-08T01:41:20.152Z",
+  "theme": "Mountain Climbing",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

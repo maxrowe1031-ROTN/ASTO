@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T01-41-45.790Z-bbq",
+  "createdAt": "2026-08-08T01:41:45.790Z",
+  "theme": "BBQ",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}

@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-mario-relations",
+  "title": "Mushroom Kingdom Connections",
+  "sets": [
+    {
+      "id": "set-powerup-transform",
+      "relationshipLabel": "power-up and the transformed state it always produces",
+      "explanation": "Each power-up guarantees the same transformation every time it's used, no exceptions.",
+      "pairs": [
+        [
+          "Super Mushroom",
+          "Super Mario"
+        ],
+        [
+          "Fire Flower",
+          "Fire Mario"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "mario-universe",
+        "power-up-lore"
+      ]
+    },
+    {
+      "id": "set-creature-vehicle",
+      "relationshipLabel": "creature and the vehicle that belongs to it",
+      "explanation": "Each character is inseparable from their signature ride in the games.",
+      "pairs": [
+        [
+          "Bowser",
+          "Koopa Clown Car"
+        ],
+        [
+          "Kirby",
+          "Warp Star"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "character-vehicle",
+        "game-lore"
+      ]
+    },
+    {
+      "id": "set-race-signals",
+      "relationshipLabel": "signal that opens an event and the signal that closes it",
+      "explanation": "One signal always marks the beginning of the timed event, the other its definitive end.",
+      "pairs": [
+        [
+          "Green Flag",
+          "Checkered Flag"
+        ],
+        [
+          "Sunrise",
+          "Sunset"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "start-end",
+        "time-symmetry"
+      ]
+    },
+    {
+      "id": "set-agent-tool",
+      "relationshipLabel": "worker and the tool identified with his trade",
+      "explanation": "Each figure is defined by the tool they wield, even when one identification is less obvious than the other.",
+      "pairs": [
+        [
+          "Mario",
+          "Hammer"
+        ],
+        [
+          "Fox",
+          "Blaster"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "signature-weapon",
+        "uneven-icon"
+      ]
+    }
+  ]
+}

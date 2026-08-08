@@ -1,0 +1,86 @@
+{
+  "id": "asto-weather-board-1",
+  "title": "Weather Watch",
+  "sets": [
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "opening and closing moment of one span",
+      "explanation": "Each pair marks the start and end of a natural cycle — day gives way to night, and cold gives way to warmth.",
+      "pairs": [
+        [
+          "sunrise",
+          "sunset"
+        ],
+        [
+          "freeze",
+          "thaw"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "temporal-bookends",
+        "cycle"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "storm system and its defining structural feature",
+      "explanation": "The eye and the anvil are the signature structural parts that let you identify each storm type at a glance.",
+      "pairs": [
+        [
+          "hurricane",
+          "eye"
+        ],
+        [
+          "thunderstorm",
+          "anvil"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "storm-anatomy",
+        "cloud-shape"
+      ]
+    },
+    {
+      "id": "set-cause-effect",
+      "relationshipLabel": "atmospheric cause and the physical effect it necessarily produces",
+      "explanation": "A pressure difference always produces wind, just as lightning always produces the thunder that follows it.",
+      "pairs": [
+        [
+          "air pressure",
+          "wind"
+        ],
+        [
+          "lightning",
+          "thunder"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "causal-chain",
+        "storm-physics"
+      ]
+    },
+    {
+      "id": "set-sign-significant",
+      "relationshipLabel": "visible sign and the severe weather it announces",
+      "explanation": "Storm-watchers read a wall cloud or a green sky as a warning sign that a specific hazard is imminent.",
+      "pairs": [
+        [
+          "wall cloud",
+          "tornado"
+        ],
+        [
+          "green sky",
+          "hail"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "storm-omen",
+        "specialist-knowledge"
+      ]
+    }
+  ]
+}

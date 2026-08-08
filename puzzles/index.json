@@ -45,6 +45,21 @@
       "slug": "yankees-baseball",
       "id": "asto-yankees-baseball",
       "title": "Yankees Baseball"
+    },
+    {
+      "slug": "weather-watch",
+      "id": "asto-weather-watch",
+      "title": "Weather Watch"
+    },
+    {
+      "slug": "ascent",
+      "id": "asto-ascent",
+      "title": "Ascent"
+    },
+    {
+      "slug": "furniture-craft-analogies",
+      "id": "asto-furniture-craft-analogies",
+      "title": "Furniture & Craft Analogies"
     }
   ]
 }

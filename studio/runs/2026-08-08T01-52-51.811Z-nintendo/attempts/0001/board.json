@@ -1,0 +1,82 @@
+{
+  "id": "asto-board-mario",
+  "title": "Mushroom Kingdom Relations",
+  "sets": [
+    {
+      "id": "set-recipient-instrument",
+      "relationshipLabel": "a role and the object that marks it",
+      "explanation": "A crown signals a princess just as a cap signals a plumber — each object is the instantly recognizable badge of its role.",
+      "pairs": [
+        [
+          "Princess",
+          "Crown"
+        ],
+        [
+          "Plumber",
+          "Cap"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "possession-not-cause"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "earlier moment facing a later moment across one span",
+      "explanation": "Each pair marks the start and end of one natural cycle: a sprout that later wilts, a dawn that later gives way to nightfall.",
+      "pairs": [
+        [
+          "Sprout",
+          "Wilt"
+        ],
+        [
+          "Dawn",
+          "Nightfall"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "looks-like-sequence-set"
+      ]
+    },
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "device category and a specific kind of it",
+      "explanation": "Game Boy is a handheld and Switch is a console — even though Switch can act as both, here it's grouped by the category it's most classically named for.",
+      "pairs": [
+        [
+          "Handheld",
+          "Game Boy"
+        ],
+        [
+          "Console",
+          "Switch"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "switch-double-category"
+      ]
+    },
+    {
+      "id": "set-cause-effect",
+      "relationshipLabel": "item and the effect it necessarily produces",
+      "explanation": "Touching a Star guarantees invincibility just as igniting a Fire Flower's power guarantees a fireball — both are read as automatic, not merely possible, effects.",
+      "pairs": [
+        [
+          "Fire Flower",
+          "Fireball"
+        ],
+        [
+          "Star",
+          "Invincibility"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "power-up-object-trap"
+      ]
+    }
+  ]
+}

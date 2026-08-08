@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T02-12-25.409Z-painting",
+  "createdAt": "2026-08-08T02:12:25.409Z",
+  "theme": "painting",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "plan",
+      "enabling-agent",
+      "coordinates"
+    ],
+    "avoidShapes": [
+      "concealment",
+      "prevention"
+    ],
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "failed",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

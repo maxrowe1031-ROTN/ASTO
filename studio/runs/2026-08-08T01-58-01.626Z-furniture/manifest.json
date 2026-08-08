@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T01-58-01.626Z-furniture",
+  "createdAt": "2026-08-08T01:58:01.628Z",
+  "theme": "furniture",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "concealment",
+      "prevention",
+      "synonymity"
+    ],
+    "avoidShapes": [
+      "cause-effect",
+      "taxonomic"
+    ],
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "event",
+      "possession"
+    ],
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

@@ -1,0 +1,82 @@
+{
+  "id": "asto-furniture-craft-analogies",
+  "title": "Furniture & Craft Analogies",
+  "sets": [
+    {
+      "id": "set-instrument-action",
+      "relationshipLabel": "a tool and the exact action it exists to perform",
+      "explanation": "A chisel exists to carve just as a lathe exists to turn — each tool is defined by its one signature motion.",
+      "pairs": [
+        [
+          "chisel",
+          "carve"
+        ],
+        [
+          "lathe",
+          "turn"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "tool-material confusion with veneer/particleboard"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "an object placed to stop the mark it would otherwise cause",
+      "explanation": "A coaster exists to stop a stain and a felt pad exists to stop a scratch — both are small guards against damage from the object they sit under.",
+      "pairs": [
+        [
+          "coaster",
+          "stain"
+        ],
+        [
+          "felt pad",
+          "scratch"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "object-mark pairing could be mistaken for tool-action"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "a surface that conceals the cheaper or structural material beneath it",
+      "explanation": "Veneer hides particleboard and upholstery hides a frame — both are the visible skin covering the cheaper structure underneath.",
+      "pairs": [
+        [
+          "veneer",
+          "particleboard"
+        ],
+        [
+          "upholstery",
+          "frame"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "upholstery/frame could look like a synonym pair for furniture parts"
+      ]
+    },
+    {
+      "id": "set-synonymity",
+      "relationshipLabel": "an older, specific name for the same everyday furniture piece",
+      "explanation": "A davenport is an old-fashioned word for a sofa, and a hassock is an old-fashioned word for an ottoman — each pair names the same object across generations.",
+      "pairs": [
+        [
+          "davenport",
+          "sofa"
+        ],
+        [
+          "hassock",
+          "ottoman"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "dated vocabulary reads as unrelated furniture terms at first"
+      ]
+    }
+  ]
+}
