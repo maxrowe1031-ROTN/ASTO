@@ -104,11 +104,20 @@ exists with no commit. Neither is merged; `main` holds only reviewed work.
 
 ### Session gate
 
-- **Automated: PASSED.** `npm test` → **1171 pass, 0 fail** (1113 at session start; +7 from
-  this session's guards, the rest from re-gating the six published boards).
-  `node tools/check-board.js` → **21 boards, all clean.** The fix was additionally verified in
-  an isolated worktree at `cc7cd93` — **1120/0 with the agent's commit absent** — because the
-  earlier green runs had its unreviewed `pipeline.js` in the tree.
+- **Automated: PASSED.** `npm test` → **1126 pass, 0 fail.** It reconciles exactly: 1113 at
+  session start → **+7** this session's guards = 1120, which is what the isolated worktree at
+  `cc7cd93` reported with the agent's commit absent → **+6** from re-gating the six published
+  boards = 1126. `node tools/check-board.js` → **21 boards, all clean.**
+
+  **Corrected 2026-08-08, after this entry was pushed.** It first said **1171**, and
+  attributed the growth to the guards plus the published boards. The extra **45 were
+  `test/agent/**`** — the handbook agent's own untracked tests, swept into the run by the
+  `test/**/*.test.js` glob and gone once that work moved to `work/goal-oriented-agent`.
+  Nothing failed and no conclusion changes; the figure and its attribution were wrong.
+  **The lesson is the same one as the phantom flaky test:** a suite total is only a fact
+  about ASTO if nothing else is writing into the tree. The glob counts whatever is on disk,
+  including another project's untracked tests — which is a third way the concurrent worktree
+  bit this session, after the false regression and the true-positive-called-false banner.
 - **Bite-checked all three guards**, plus the mock flag: drop `varyHardestStance` from the
   themed brief → the class test and the CLI test both fail, naming the field; strip it in
   `api.js` → the api test fails; hard-code `mock: false` → the CLI test fails. All restored.
