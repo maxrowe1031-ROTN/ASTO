@@ -2,6 +2,73 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-08 — 04 is clean; the guard was passing on capitalisation
+
+Max asked me to check 04's prompt for the same defect. It does not have it — and neither does
+02. 04 is protected by its own design: *"choose and relabel; do not author"* leaves it
+nothing deliverable-shaped to show.
+
+The check found the real gap somewhere else.
+
+### The context door
+
+Every generative prompt renders a `context` block, and in production that block is the
+**rules corpus** — `server.js` builds `{ rules: loadRules()… }`. The guard written an hour
+earlier rendered prompts with **empty context**, so the one channel that actually carries
+full sets into the author's prompt was the one channel it could not see.
+
+It was also passing **by accident**: the regex required a lowercase first letter, and
+rule-008's `"Sonar : mapping :: Submersible : exploration"` is capitalised. Two properties
+had to both hold for the guard to be meaningful, and neither did.
+
+### The theory was wrong, and the corpus said so
+
+My first reasoning was *counter-examples are safe, exemplars leak*. rule-009 refutes it — it
+carries two **prescribed** sets (*"use `Second : Minute :: Hour : Day` instead"*). So I swept
+**82 boards**: every `board.json` across all 59 run directories plus the 15 published.
+**Zero occurrences of any of the five rule sets**, prescribed or forbidden.
+
+The narrower rule the evidence supports: **what leaks is a full set held up as a model of
+QUALITY in the stage's own creative dimension.** `planting : felling :: budding : withering`
+arrived as *"one of the hardest sets ever written for this game"* — an aspiration, in the
+register of the work — to a stage being asked for exactly that. The rule examples are
+mechanical demonstrations, and `Second : Minute :: Hour : Day` is **dull by design**, which is
+precisely what makes it safe.
+
+### Built — tests only, no model-visible change
+
+- **`no-full-set-examples.test.js`** now renders **production context**, matches
+  case-insensitively, and allowlists the five rule sets each with its rationale. A *new* rule
+  quoting an admired set fails all four generative stages, with a message that teaches the
+  quality-vs-mechanical distinction. Two further tests keep the allowlist honest: every entry
+  must still be present in the prompt, and the rules must actually reach it.
+- **`example-leak.test.js`** bans rule-008's pairs and **deliberately not** rule-009's:
+  `second : minute` and `president : air force one` are sets a themed board could honestly
+  author — the backlog's own Obama analysis says the latter is fine *"once it has a partner
+  from elsewhere"*. Banning them would fail real work to stop a copy 82 boards say has never
+  happened. The line, recorded in the test: **ban a taught pair only when nothing but the
+  lesson would produce it.** A `DELIBERATELY_UNBANNED` list plus a test keeps that decision
+  from being quietly reversed.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1095 pass, 0 fail** (was 1092; +3 net, with the four
+  generative assertions now doing real work). `node tools/check-board.js` → **15 clean.**
+- **Bite-checked both.** A well-formed new rule quoting `"kindling : bonfire :: whisper :
+  roar"` as *"one of the finest ever written"* fails all four generative stages; rule-008's
+  pair planted in `by-the-shore` fails the content sweep. Both restore clean.
+- **No Max acceptance needed** — not one byte of model-visible text changed this session.
+  Only what the suite can see changed.
+
+- **Next:** unchanged.
+  1. **Review the rose board** (`2026-08-08T04-22-15.760Z-a-rose`, awaiting review).
+  2. **Request a real revision** — D-11's gate has still never had a fair test.
+  3. **Watch the next batch's arrangement-hard sets** (D-12's reconsider-when).
+  4. **Publishing to GitHub Pages** remains the next real milestone.
+  5. Backlog's new remainder: the class guard matches four-word sets, so a fully-worked
+     **sixteen-word board** in a prompt would still slip past. None exists today; 04 is the
+     only stage whose deliverable is that shape.
+
 ## 2026-08-08 — A teaching example must not be shaped like the deliverable
 
 Max asked what "abstract the example" meant, and the answer turned out to be *don't* —

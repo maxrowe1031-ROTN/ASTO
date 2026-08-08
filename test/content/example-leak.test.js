@@ -34,7 +34,30 @@ const PUZZLES = join(import.meta.dirname, '..', '..', 'puzzles');
 const TAUGHT_PAIRS = [
   { pair: ['planting', 'felling'], source: "01's arrangement-hard example" },
   { pair: ['budding', 'withering'], source: "01's arrangement-hard example" },
+  // rule-008's failing set, which rides into every generative prompt as
+  // context. Safe to ban outright: neither pair is a plausible board pair a
+  // real theme would reach for, so a match can only be the rule coming back.
+  { pair: ['sonar', 'mapping'], source: 'rule-008, the grain-mismatch example' },
+  { pair: ['submersible', 'exploration'], source: 'rule-008, the grain-mismatch example' },
 ];
+
+/**
+ * Deliberately NOT banned, though they are also taught in rule-009.
+ *
+ * `second : minute`, `hour : day` — the rule's own fix for a repeated word,
+ * and a set a themed time board could honestly author on its own. Banning it
+ * would fail real work to prevent a copy that 82 boards say has never happened.
+ *
+ * `president : air force one`, `monarch : royal train` — same, and the backlog's
+ * own analysis of the Obama run says `President : Air Force One` is a perfectly
+ * good pair "once it has a partner from elsewhere". A ban here would contradict
+ * a conclusion already reached.
+ *
+ * The line: ban a taught pair only when nothing but the lesson would produce
+ * it. Everything else is watched at the prompt instead
+ * (test/studio/agents/no-full-set-examples.test.js).
+ */
+const DELIBERATELY_UNBANNED = ['second : minute', 'hour : day', 'president : air force one'];
 
 /**
  * Boards that predate the rule and are knowingly kept.
@@ -84,6 +107,15 @@ test('every board on disk was actually checked', () => {
   // A guard that silently checked nothing would look exactly like a guard that
   // passed — the same failure mode manifest.test.js was written against.
   assert.ok(boardFiles.length >= 15, `only ${boardFiles.length} boards found in puzzles/`);
+});
+
+// Keeps the judgment above honest: if someone later adds one of these to
+// TAUGHT_PAIRS, they have to delete it here and read why it was left out.
+test('the pairs we chose not to ban are still not banned', () => {
+  const banned = new Set(TAUGHT_PAIRS.map((t) => t.pair.join(' : ')));
+  for (const pair of DELIBERATELY_UNBANNED) {
+    assert.ok(!banned.has(pair), `${pair} was banned — see DELIBERATELY_UNBANNED for why not`);
+  }
 });
 
 test('the grandfather list still describes reality', () => {

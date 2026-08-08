@@ -1284,8 +1284,40 @@ credit the pipeline with authoring that Black.
 planting/budding, this worked. If they **vanish** instead — the pipeline drifting back to
 vocabulary-hard Blacks — the pair-level anchor is too weak and D-8's rut has reopened; the
 answer then is a rotating pool of pair-level examples, which `examples.js` makes a data
-change rather than a prompt edit. Nothing has yet swept 02's and 04's prompts for examples of
-*other* kinds that might be shaped like their own deliverables.
+change rather than a prompt edit.
+
+**02 and 04 checked, and the rule sharpened (2026-08-08).** Both are clean: neither quotes an
+example at all, and 04 is protected by its own design — *"choose and relabel; do not author"*
+leaves it nothing deliverable-shaped to show.
+
+The check found something else. Every generative prompt renders a `context` block, and in
+production that block is the **rules corpus** (`server.js` builds `{ rules: loadRules()… }`)
+— so the one channel that really does carry full sets into the author's prompt was the one
+channel the guard could not see, because it rendered with empty context. It was also passing
+by accident: its regex required a lowercase first letter, and rule-008's
+`"Sonar : mapping :: …"` is capitalised. Both fixed; the guard now renders production context
+and matches case-insensitively.
+
+**Five full sets live in the rules, and all five stay** — with a sharper reason than the one
+first written down. The first cut was "counter-examples are safe, exemplars leak", and the
+corpus refutes it: rule-009 carries two **prescribed** sets (*"use `Second : Minute :: Hour :
+Day` instead"*), and a sweep of **82 boards** — every `board.json` across all 59 run
+directories plus the 15 published — found **zero** occurrences of any of the five, prescribed
+or forbidden. What the evidence actually supports is narrower: **what leaks is a full set held
+up as a model of QUALITY in the stage's own creative dimension.**
+`planting : felling :: budding : withering` arrived as *"one of the hardest sets ever written
+for this game"* to a stage being asked to write a hard set — an aspiration, in the register of
+the work. The rule examples are **mechanical demonstrations** — a grain mismatch, a repeated
+word — and `Second : Minute :: Hour : Day` is dull by design, which is exactly what makes it
+safe. They are allowlisted with that rationale, and a *new* rule quoting an admired set fails
+the suite so a human decides.
+
+The content sweep bans only rule-008's pairs, deliberately: `second : minute` and
+`president : air force one` are sets a themed board could honestly author — the backlog's own
+Obama-run analysis says the latter is fine *"once it has a partner from elsewhere"* — so
+banning them would fail real work to prevent a copy 82 boards say has never happened. The
+line recorded in the test: **ban a taught pair only when nothing but the lesson would produce
+it**; everything else is watched at the prompt.
 
 ## House-rule exceptions
 
