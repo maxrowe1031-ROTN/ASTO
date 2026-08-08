@@ -27,7 +27,7 @@ import { buildRelationshipIndex, buildStanceQuotas, buildVarietyBrief } from '..
 // see pipeline-config.js for why the floor is where it is.
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-config.js';
 import { pickSubject } from '../corpus/subjects.js';
-import { proposalFile, proposeRevision, wantsProposal } from './proposer.js';
+import { proposalFailureFile, proposalFile, proposeRevision, wantsProposal } from './proposer.js';
 import { defaultTransport } from './runner.js';
 import { createPuzzleStore, PublishRefused } from '../storage/puzzle-store.js';
 import { slugify } from '../slug.js';
@@ -484,9 +484,21 @@ export function createApi({
   /**
    * The revision brief for the current attempt, if one exists yet.
    *
-   * Three distinguishable answers, because "not ready" and "never coming" ask
-   * different things of the page: `working` while the model is out, `null`
-   * when the proposer ran and could not produce one, and the proposal itself.
+   * FOUR distinguishable answers, because "not ready", "never coming" and
+   * "never asked for" ask different things of the page:
+   *
+   *   the proposal          — it is here
+   *   `working: true`       — the model is out; poll again
+   *   `failure`             — it ran and could not produce one
+   *   neither, both absent  — nothing was ever attempted
+   *
+   * The fourth used to be indistinguishable from the third, which is the whole
+   * point of this endpoint growing a field. `failure` is omitted rather than
+   * nulled when there is nothing: absent artifacts are absent, not errors.
+   *
+   * A proposal outranks a failure record. They can coexist — a proposer re-run
+   * for the same attempt succeeds without erasing the earlier attempt's trace —
+   * and the brief is the answer whenever there is one.
    */
   function readProposal(runId) {
     if (!runExists(runId)) return notFound(`no run ${runId}`);
@@ -498,7 +510,26 @@ export function createApi({
         working: false,
       });
     } catch {
-      return ok({ proposal: null, working: proposalsInFlight.has(runId) });
+      if (proposalsInFlight.has(runId)) return ok({ proposal: null, working: true });
+
+      const failureFile = proposalFailureFile(currentAttemptId);
+      if (!store.hasRunArtifact(runId, failureFile)) {
+        return ok({ proposal: null, working: false });
+      }
+      let failure;
+      try {
+        failure = store.readRunArtifact(runId, failureFile);
+      } catch {
+        // The record exists but will not parse. Still an answer worth giving:
+        // something was attempted. Falling silent here would reproduce the
+        // exact ambiguity this field was added to remove.
+        failure = {
+          attemptId: currentAttemptId,
+          category: 'unreadable',
+          message: 'a failure was recorded but could not be read',
+        };
+      }
+      return ok({ proposal: null, working: false, failure });
     }
   }
 

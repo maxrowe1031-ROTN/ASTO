@@ -632,6 +632,10 @@ function wireDecisions(runId, attemptId) {
  * `'ready'`, `'working'`, or null. A run whose proposal endpoint errors — an
  * older run, a server mid-restart — answers null, so the raw path still works
  * and the button never becomes unclickable because of an advisory nicety.
+ *
+ * A recorded `failure` deliberately answers null too, and that is the whole
+ * reason this function ignores the field: a brief that is never coming must
+ * not deadlock the button that exists for exactly that case.
  */
 async function proposalPending(runId) {
   try {
@@ -669,8 +673,9 @@ async function showProposal(runId, attemptId) {
 
   let proposal = null;
   let working = false;
+  let failure = null;
   try {
-    ({ proposal, working } = await api(`/runs/${encodeURIComponent(runId)}/proposal`));
+    ({ proposal, working, failure = null } = await api(`/runs/${encodeURIComponent(runId)}/proposal`));
   } catch {
     return; // an older run with no proposal endpoint answer is simply silent
   }
@@ -679,6 +684,22 @@ async function showProposal(runId, attemptId) {
     panel.hidden = false;
     panel.innerHTML = '<h2>Suggested fix</h2><p class="studio-muted">Working on a revision brief…</p>';
     schedulePoll(true, runId);
+    return;
+  }
+
+  // Tried and could not. Said out loud, because the alternative is an empty
+  // page that looks identical to a proposer that was never asked — which is
+  // how the 2026-08-06 Harry Potter brief became unknowable. No buttons: there
+  // is nothing to accept or discard, and Request revision below still works.
+  if (!proposal && failure) {
+    panel.hidden = false;
+    panel.innerHTML = `
+      <h2>Suggested fix</h2>
+      <p class="studio-muted">The proposer ran and could not produce a usable brief.</p>
+      <p class="studio-muted">${escape(failure.message ?? 'no reason recorded')}${
+        failure.category ? ` (${escape(failure.category)})` : ''
+      }</p>
+      <p class="studio-muted">Request a revision below with your own notes — the full record is in the run directory.</p>`;
     return;
   }
   if (!proposal) return;

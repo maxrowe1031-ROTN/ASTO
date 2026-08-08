@@ -12,6 +12,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { createApi } from '../../../studio/review/api.js';
+import { proposalFailureFile, proposalFile } from '../../../studio/review/proposer.js';
 import { createPuzzleStore } from '../../../studio/storage/puzzle-store.js';
 import { makeStore } from '../pipeline/helpers.js';
 
@@ -811,6 +812,68 @@ test('no rut, no steer — a themed brief stays exactly as it was', async () => 
     const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
     const detail = await api.handle({ method: 'GET', path: `/api/runs/${body.runs[0].runId}` });
     assert.equal('varyHardestFrom' in detail.body.manifest.brief, false);
+  } finally {
+    cleanup();
+  }
+});
+
+// --- GET /api/runs/:id/proposal ---
+//
+// The endpoint's job is to be unambiguous. Before 2026-08-07 it answered
+// `{proposal: null, working: false}` both when the proposer had never been
+// asked and when it had answered twice with nothing usable, so a brief that
+// failed looked exactly like one that was never attempted. These three pin the
+// distinction it now draws.
+
+test('a proposal that failed is reported as a failure, not as silence', async () => {
+  const { store, api, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    store.writeRunArtifact(runId, proposalFailureFile(attemptId), {
+      attemptId,
+      category: 'invalid-output',
+      message: 'the model answered twice and neither reply was a valid brief',
+    });
+
+    const { status, body } = await api.handle({ method: 'GET', path: `/api/runs/${runId}/proposal` });
+
+    assert.equal(status, 200);
+    assert.equal(body.proposal, null);
+    assert.equal(body.working, false);
+    assert.equal(body.failure.category, 'invalid-output');
+  } finally {
+    cleanup();
+  }
+});
+
+test('a proposer that was never asked carries no failure field at all', async () => {
+  const { store, api, cleanup } = setup();
+  try {
+    const { runId } = seedReviewable(store);
+
+    const { body } = await api.handle({ method: 'GET', path: `/api/runs/${runId}/proposal` });
+
+    assert.equal(body.proposal, null);
+    assert.equal(body.working, false);
+    // Absent, not null: nothing was attempted, so there is nothing to report.
+    assert.equal('failure' in body, false);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a brief outranks a failure record left beside it', async () => {
+  const { store, api, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    // The order a re-run leaves behind: the earlier failure is not erased.
+    store.writeRunArtifact(runId, proposalFailureFile(attemptId), { attemptId, category: 'invalid-output' });
+    store.writeRunArtifact(runId, proposalFile(attemptId), { summary: 'one set blocks it', fromStage: '04-board-builder' });
+
+    const { body } = await api.handle({ method: 'GET', path: `/api/runs/${runId}/proposal` });
+
+    assert.equal(body.proposal.summary, 'one set blocks it');
+    assert.equal('failure' in body, false);
   } finally {
     cleanup();
   }

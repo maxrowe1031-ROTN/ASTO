@@ -22,6 +22,13 @@ export const PROPOSER_STAGE = '09-revision-proposer';
 // rather than inside the attempt whose work it comments on.
 export const proposalFile = (attemptId) => `revision-proposal-${attemptId}.json`;
 
+// Its counterpart, and the reason it exists: a brief that never arrives has to
+// say so. On 2026-08-06 the Harry Potter run carried a `revise-board` verdict
+// and no proposal, and re-running the proposer by hand produced a good brief on
+// the first try — so what went wrong the first time was unknowable by
+// construction. Absence looked exactly like "not attempted".
+export const proposalFailureFile = (attemptId) => `revision-proposal-${attemptId}-failure.json`;
+
 // The evaluator outputs the proposer reads as evidence. The gate is left out:
 // it is deterministic and a board that reached review already passed it.
 const EVALUATOR_STAGES = [
@@ -84,9 +91,30 @@ export function buildInput(store, runId, attemptId, feedback) {
 }
 
 /**
+ * Records why a brief never arrived, so an absent proposal is never silent.
+ *
+ * Both empty exits below write the same shape through `run-store` — the only
+ * writer of run artifacts — and neither is allowed to raise: the review page
+ * must still save Max's feedback, which is the irreplaceable half of this
+ * transaction. A recorder that could throw would trade the valuable half of
+ * the work for the advisory half.
+ */
+function recordFailure(store, runId, attemptId, fields) {
+  try {
+    store.writeRunArtifact(runId, proposalFailureFile(attemptId), { attemptId, ...fields });
+  } catch {
+    // Nothing left to do: the trace itself is what could not be written. The
+    // caller still returns null, and the page still works.
+  }
+}
+
+/**
  * Runs the proposer and stores its brief. Returns the proposal, or null when
  * the model could not produce a valid one — a failed proposal is never fatal,
  * because Max can always write revision notes himself.
+ *
+ * Null is never bare, though: every path out of here that returns null leaves a
+ * failure artifact behind it.
  *
  * @param transport injected, exactly as the pipeline does it, so tests replay
  *                  a fixture and mock runs never reach the API.
@@ -116,6 +144,13 @@ export async function proposeRevision({
     ...(effort ? { effort } : {}),
   };
 
+  const at = clock ?? (() => new Date().toISOString());
+  // What each round got wrong, and the last thing the model actually said.
+  // Kept rather than folded away into the retry string, because "it could not
+  // produce a valid brief" is not a diagnosis — the reply is.
+  const rounds = [];
+  let lastReply = null;
+
   // One validation retry, not the pipeline's loop: a brief is advisory, and if
   // the model cannot produce a usable one twice, Max writes revision notes
   // himself exactly as he does today. Nothing here is allowed to be fatal.
@@ -123,6 +158,7 @@ export async function proposeRevision({
     let feedbackForRetry;
     for (let round = 1; round <= 2; round += 1) {
       const { text } = await llm.send(request, { maxAttempts: 2, feedback: feedbackForRetry });
+      lastReply = text;
       const parsed = agent.parse(text);
       const validation = parsed.ok
         ? agent.validateOutput(parsed.value, { board: input.board })
@@ -144,20 +180,43 @@ export async function proposeRevision({
         });
         return parsed.value;
       }
-      feedbackForRetry = `Your previous reply was rejected: ${
-        parsed.ok
-          ? validation.errors.map((e) => `${e.path}: ${e.message}`).join('; ')
-          : validation.message
-      }. Reply with corrected JSON only.`;
+
+      const errors = parsed.ok
+        ? validation.errors
+        : [{ path: '(parse)', message: validation.message }];
+      rounds.push({ round, errors });
+
+      feedbackForRetry = `Your previous reply was rejected: ${errors
+        .map((e) => `${e.path}: ${e.message}`)
+        .join('; ')}. Reply with corrected JSON only.`;
     }
+
+    // The path that used to be a bare `return null`. The model answered twice
+    // and neither answer was usable — a real, reportable outcome, and the one
+    // that left no trace at all until now.
+    recordFailure(store, runId, attemptId, {
+      category: 'invalid-output',
+      message: 'the model answered twice and neither reply was a valid brief',
+      at: at(),
+      rounds,
+      prompt: request.prompt,
+      model: request.model,
+      reply: lastReply,
+    });
     return null;
   } catch (error) {
     // Recorded, never thrown: the review page must still save Max's feedback,
     // which is the irreplaceable half of this transaction.
-    store.writeRunArtifact(runId, `revision-proposal-${attemptId}-failure.json`, {
-      attemptId,
-      message: error.message,
+    recordFailure(store, runId, attemptId, {
       category: error.category ?? 'unknown',
+      message: error.message,
+      at: at(),
+      // Same fields as the path above, so one reader understands both records.
+      // A throw can happen on round 2, and what round 1 got wrong is evidence.
+      rounds,
+      prompt: request.prompt,
+      model: request.model,
+      reply: lastReply,
     });
     return null;
   }
