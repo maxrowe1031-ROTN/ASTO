@@ -70,6 +70,36 @@
       "slug": "on-stage-and-behind-it",
       "id": "asto-on-stage-and-behind-it",
       "title": "On Stage and Behind It"
+    },
+    {
+      "slug": "mail-call",
+      "id": "asto-mail-call",
+      "title": "Mail Call"
+    },
+    {
+      "slug": "the-library-shelf",
+      "id": "asto-the-library-shelf",
+      "title": "The Library Shelf"
+    },
+    {
+      "slug": "money-matters",
+      "id": "asto-money-matters",
+      "title": "Money Matters"
+    },
+    {
+      "slug": "the-locksmith-s-trade",
+      "id": "asto-the-locksmith-s-trade",
+      "title": "The Locksmith's Trade"
+    },
+    {
+      "slug": "tools-of-the-trade",
+      "id": "asto-tools-of-the-trade",
+      "title": "Tools of the Trade"
+    },
+    {
+      "slug": "under-the-big-top",
+      "id": "asto-under-the-big-top",
+      "title": "Under the Big Top"
     }
   ]
 }

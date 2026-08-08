@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T20-54-32.289Z-crafts-and-trades",
+  "createdAt": "2026-08-08T20:54:32.297Z",
+  "theme": "crafts and trades",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "event",
+      "possession"
+    ],
+    "varyHardestStance": "time",
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

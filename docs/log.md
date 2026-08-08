@@ -2,6 +2,140 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-08 — A steer that only reaches half the runs is not a steer
+
+Max chose to run the batch D-13's reconsider-when asks for. A pre-flight check found the
+batch could not have answered the question.
+
+### The gap, found before anything was spent
+
+**D-13's `varyHardestStance` never reached themed runs.** Verified against the live corpus
+before a line was changed: the rut was live (`hardestStances` ending
+`time, time, time, time, time, dimension, possession` — 5 of 8), a surprise-me brief carried
+`varyHardestStance: "time"`, and a themed brief carried nothing. `api.js` had a `steerOnly()`
+helper forwarding D-8's `varyHardestFrom` and knowing nothing about D-13's field; `run.js`
+was thinner still and forwarded neither.
+
+**Every board Max complained about was themed** — flowers, cowboys, bbq, snow all carry no
+`relationshipShapes`. The lever built to answer him was switched off for exactly the runs he
+makes. Same shape as D-11: recorded faithfully, never read.
+
+### Fixed as a class
+
+`variety.js` gains `buildThemedBrief`, derived from `buildVarietyBrief` by deleting a named
+`SURPRISE_ME_ONLY` list — so a steer added tomorrow reaches themed runs **by construction**,
+and the only thing to remember is whether it belongs on the exclusion list. Both doors ask
+`variety.js`; `run.js` exports `briefFor` so the CLI's own decision is testable rather than
+inline. Three guards, all bite-checked: the key-set invariant over a fully-steered index, the
+same invariant over the **real** library (phrased as an invariant so it survives the rut
+clearing), and the CLI's themed brief.
+
+**Found while verifying, and fixed:** a `--mock` CLI run was never marked `brief.mock` — the
+flag `variety.js` reads to keep a fixture replay from telling every future brief that First
+Light's shapes are heavily used, and which `studio/runs/.gitignore` names as the separator
+between a replay and real editorial signal. The Studio has recorded it since the flag existed;
+this door never did. The corpus is clean; the only unflagged replay was this session's
+verification run, deleted.
+
+### The batch — six themes, six boards, six approvals
+
+| theme | Black | stance |
+|---|---|---|
+| letters and post | `send : return :: dispatch : recall` | dimension |
+| markets and money | `flea market : shopping mall :: farmers market : stock exchange` | dimension |
+| keys and locks | `plug : pin :: warded lock : ward` | possession |
+| crafts and trades | `knit : unravel :: weld : cut` | dimension |
+| circuses | `drumroll : stunt :: fanfare : parade` | event |
+| books and libraries | `checkout : return :: opening : closing` | **time** |
+
+**1 of 6 tops out on a time span (17%), against the 35% that motivated D-13.** 04 named the
+steer out loud on markets and money — *"over set-before-after (also arrangement, but a
+time-stance set), since recent boards overused time at the top slot"*. On books and libraries
+it kept the span and said why: *"the only genuinely hard set in the pool (graded 4)"* — the
+steer deferring to D-8's rule that a genuine hardest set still gets the slot. `spanFairness`
+flagged that set with both refused readings, so it reached review pre-examined.
+
+**The steer has already re-aimed itself.** The window is now `dimension` at 4 of 8, so the next
+themed brief steers away from *dimension* with no code change — the rut-fixer catching its own
+rut on the first pass, which D-13 predicted it would have to.
+
+### Max's verdict, and the tension inside it
+
+**Six approved, six published — the first batch ever with zero rejections.** His summary:
+*"this was by far the best round yet."*
+
+His per-board notes say something narrower, and it is recorded here because it will matter
+later: five of six are *publishable, not exciting* — *"not overall so exciting"*, *"not
+necessarily super exciting of evocative"*, *"i don't love this puzzle but i do think it's
+publishable"*, *"not super exciting but it does meet the criteria"*, *"very challenging but
+publishable"*. One was unqualified: circuses — *"this one was great. lots of fun, challenge"*.
+That is **D-8's finding almost verbatim** (*"while these are publishable, i didn't get the same
+rush"*): craft up, delight flat. Publishability went to 6/6; by his own prose delight went 1/6.
+Not acted on — D-8's two axes already name it, and one batch is not evidence that its steer
+failed.
+
+**Not measurable this batch:** he judged at board level only, so there are **no praise tags at
+all** and D-8's praise-tags-per-set comparison cannot be run. Also recorded, bearing on D-7's
+graduation trigger: *"seems like the machine notes are pretty much catching everything."*
+
+### A second agent was committing to this repo mid-session
+
+`agent/run.js` — Max's handbook assignment, pointed at this repo — picked a **backlog item**
+(`backlog:the-difficulty-rater-can-abstain-the-pool-below`), branched off this session's
+commit, edited `studio/pipeline.js`, checked its branch out over the working tree, and
+committed `12aaecc`, marked *"Not reviewed by a human at commit time"*. A `/wrapup` backlog
+commit landed on its branch by accident and was cherry-picked back.
+
+**It caused two wrong diagnoses, both corrected in `docs/backlog.md`:**
+
+- A test failing twice with `03-difficulty-rater` where it expects `04a-integrity` was written
+  off as CPU-load flakiness. It was the agent mid-edit — its own commit message says it
+  *"restores the gate's original pool-too-small handling (stageId 04a-integrity)"*, the exact
+  assertion that had been failing. **A green suite means nothing if another process can write
+  to the tree between the edit and the run.**
+- The stale-code banner was called a false positive on the strength of one `git diff`. It was a
+  **true positive** — source really was changing under the running server. "Identical right
+  now" does not mean "nothing is editing this tree".
+
+`12aaecc` is left unmerged on `work/agent-the-difficulty-rater-can-abstain-the-pool-below-f`
+for review against a real diff, which is what its own message asks for. It touches the
+pipeline's failure routing and nothing here vouches for it. `work/agent-stage-02-s-headroom-…`
+exists with no commit. Neither is merged; `main` holds only reviewed work.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1171 pass, 0 fail** (1113 at session start; +7 from
+  this session's guards, the rest from re-gating the six published boards).
+  `node tools/check-board.js` → **21 boards, all clean.** The fix was additionally verified in
+  an isolated worktree at `cc7cd93` — **1120/0 with the agent's commit absent** — because the
+  earlier green runs had its unreviewed `pipeline.js` in the tree.
+- **Bite-checked all three guards**, plus the mock flag: drop `varyHardestStance` from the
+  themed brief → the class test and the CLI test both fail, naming the field; strip it in
+  `api.js` → the api test fails; hard-code `mock: false` → the CLI test fails. All restored.
+- **Claude-verifiable: PASSED.** A themed mock run's manifest carried the steer, and **both
+  `01-pair-author/prompt.txt` and `04-board-builder/prompt.txt` carry the steer sentence read
+  back from disk** — D-11's lesson that recorded is not the same as arrived. All six real
+  briefs confirmed carrying it before the runs proceeded.
+- **Max acceptance: PASSED** — six approved, six published, *"by far the best round yet"*.
+- **Cost, recorded because the estimate was wrong:** $3.99 for six runs (~$0.66 each) against
+  the $1.50–2.00 quoted from a backlog figure measured under the older `lean-2` profile.
+  `keys and locks` cost $0.94 after a stage-01 truncation retry — D-12's step-down working.
+
+- **Next:**
+  1. **Watch the `dimension` slot.** The steer is now aimed there and has never been tested on
+     a stance other than `time`. Two of this batch's six Blacks were `reverse`-shaped sets
+     labelled *"the action that undoes it"* — a second monoculture forming inside the fix,
+     which is D-13's own prediction that every rut fix creates the next one.
+  2. **The delight gap is the open question, not the clock.** 6/6 publishable and 1/6 exciting
+     is D-8's finding one batch larger. Before adding a lever, ask what separated circuses from
+     the other five — and note it was the only `event`-stance Black in the batch.
+  3. **Review or drop `12aaecc`** on the agent branch, and decide whether `agent/run.js` should
+     work in its own `git worktree` so a concurrent writer can never invalidate a test run
+     again.
+  4. Backlog gained the two corrected diagnoses above, and keeps `keys and locks`' Black
+     (`warded lock : ward`) as a vocabulary-hard set worth watching at n=1 — D-8's original rut,
+     one notch reopened.
+
 ## 2026-08-08 — Order is the game, so the Black slot cannot be a clock
 
 Max ran six themes and reviewed them, and the session's finding is his: he flagged

@@ -1,0 +1,3 @@
+{"type":"attempt-completed","attemptId":"0001","boardId":"asto-board-finance-01","at":"2026-08-08T21:00:44.615Z"}
+{"type":"approve","attemptId":"0001","at":"2026-08-08T21:15:15.126Z"}
+{"type":"publish","attemptId":"0001","boardId":"asto-board-finance-01","publishedAs":"money-matters.json","publishedId":"asto-money-matters","republished":false,"at":"2026-08-08T21:15:17.572Z"}

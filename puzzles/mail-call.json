@@ -1,0 +1,83 @@
+{
+  "id": "asto-mail-call",
+  "title": "Mail Call",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "thing and a feature it simply has",
+      "explanation": "An envelope always has a flap and a stamp always has a perforation — each pair names a whole and a physical part it inherently possesses.",
+      "pairs": [
+        [
+          "envelope",
+          "flap"
+        ],
+        [
+          "stamp",
+          "perforation"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "postal-marking-lookalike"
+      ]
+    },
+    {
+      "id": "set-location-activity",
+      "relationshipLabel": "place and the activity it exists for",
+      "explanation": "A pillar box exists for collection and a sorting office exists for distribution — each place is defined by the single job it was built to do.",
+      "pairs": [
+        [
+          "pillar box",
+          "collection"
+        ],
+        [
+          "sorting office",
+          "distribution"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "postal-jargon"
+      ]
+    },
+    {
+      "id": "set-sign-significant",
+      "relationshipLabel": "signal and what it announces",
+      "explanation": "A postmark necessarily announces a dispatch date and a frank necessarily announces postage paid — each mark is proof of the fact, not just a hint at it.",
+      "pairs": [
+        [
+          "postmark",
+          "dispatch date"
+        ],
+        [
+          "frank",
+          "postage paid"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "postal-marking-lookalike",
+        "dispatch-echo"
+      ]
+    },
+    {
+      "id": "set-reverse",
+      "relationshipLabel": "action and the action that undoes it",
+      "explanation": "Return undoes send and recall undoes dispatch — both pairs are opposite actions where the second cancels the first's effect.",
+      "pairs": [
+        [
+          "send",
+          "return"
+        ],
+        [
+          "dispatch",
+          "recall"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "dispatch-echo"
+      ]
+    }
+  ]
+}

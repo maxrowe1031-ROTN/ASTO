@@ -1379,6 +1379,45 @@ Max's `order-ambiguous` calls over ~6 boards promotes the check to blocking at `
 **Max's D-8 instruction still governs everything above** — *"they can both be black, depending
 on the puzzle"* — so all three levers report or nudge, and none reserves a tier.
 
+### D-13 amendment — the steer reached half the runs, and the half that did not matter (2026-08-08)
+
+**The defect.** Lever 1 above says the steer reaches *both* 01 and 04. True of the stages, and
+it left out the question nobody asked: which **runs**. `varyHardestStance` was added to
+`buildVarietyBrief` — the surprise-me brief — and a themed run's brief was assembled separately
+by each caller. `api.js` re-listed what a themed brief carries (`steerOnly()`, which forwarded
+D-8's field and knew nothing about D-13's); `run.js` re-listed a thinner version still and
+forwarded neither. **Every board that motivated D-13 was themed** — flowers, cowboys, bbq, snow.
+The lever built to answer the complaint was off for exactly the runs that produced it.
+
+Measured before the fix: the rut was live (`time` 5 of the last 8), a surprise-me brief carried
+`varyHardestStance: "time"`, a themed brief carried nothing.
+
+**Fixed as a class, not as the field.** `variety.js` owns both shapes; `buildThemedBrief` is
+`buildVarietyBrief` minus a named `SURPRISE_ME_ONLY` list (`relationshipShapes`, `avoidShapes` —
+the surprise-me markers `api.js` reads to classify a run). A steer added later therefore reaches
+themed runs **by construction**, and the guard is a test asserting every non-marker key travels,
+run over both a fully-steered fixture and the real library. This is the repo's recurring scar —
+a rule at one door — and the third time it has been paid for (the 04a count floor, D-11's
+revision channel, this).
+
+**First evidence, the same day.** Six themed runs under the repaired steer: **1 of 6 Blacks was a
+time span (17%), against the 35% that motivated D-13**. Max approved and published all six — the
+first batch with zero rejections. Stage 04 named the steer in its reasoning on one board and
+deferred to D-8's rule on another (*"the only genuinely hard set in the pool"*), which is the
+intended behaviour, not a miss.
+
+**The window has already moved to `dimension` (4 of 8)**, so the next themed brief steers away
+from it. That is the mechanism catching its own rut on the first pass, exactly as D-13 predicted
+every rut fix would need to. **Reconsider-when for the amendment:** the steer has only ever been
+tested against `time`; if `dimension` boards come back feeling samey in a way the steer does not
+move, the window/share calibration was fitted to one stance and needs re-deriving on the second.
+
+**A caveat on the batch's evidence, recorded rather than smoothed over.** Max's summary was *"by
+far the best round yet"* and the publish rate supports it, but five of his six per-board notes
+say *publishable, not exciting*. That is D-8's craft-vs-delight gap one batch larger, and it is
+**not** what this amendment fixed. It is also unmeasurable here: he judged at board level, so the
+batch carries no praise tags and D-8's per-set density comparison cannot be run on it.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

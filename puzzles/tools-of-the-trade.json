@@ -1,0 +1,86 @@
+{
+  "id": "asto-tools-of-the-trade",
+  "title": "Tools of the Trade",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool central to their trade",
+      "explanation": "Each artisan is defined by the one implement most associated with their craft.",
+      "pairs": [
+        [
+          "blacksmith",
+          "anvil"
+        ],
+        [
+          "cobbler",
+          "awl"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "craft",
+        "tool"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "raw material transformed into crafted material",
+      "explanation": "Each raw substance is processed into the finished material craftspeople actually work with.",
+      "pairs": [
+        [
+          "hide",
+          "leather"
+        ],
+        [
+          "wool",
+          "yarn"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "material",
+        "craft"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "tool and the feature it inherently has",
+      "explanation": "Every one of these tools necessarily has this structural part as a defining feature, not an accessory.",
+      "pairs": [
+        [
+          "chisel",
+          "bevel"
+        ],
+        [
+          "plane",
+          "sole"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "tool",
+        "anatomy"
+      ]
+    },
+    {
+      "id": "set-reverse",
+      "relationshipLabel": "an action and the action that undoes it",
+      "explanation": "Each second action structurally reverses the first, unmaking exactly what the first action made.",
+      "pairs": [
+        [
+          "knit",
+          "unravel"
+        ],
+        [
+          "weld",
+          "cut"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "action",
+        "process"
+      ]
+    }
+  ]
+}

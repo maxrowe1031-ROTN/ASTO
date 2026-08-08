@@ -1,0 +1,3 @@
+{"type":"attempt-completed","attemptId":"0001","boardId":"board-locksmith-01","at":"2026-08-08T21:05:08.054Z"}
+{"type":"approve","attemptId":"0001","at":"2026-08-08T21:20:55.580Z"}
+{"type":"publish","attemptId":"0001","boardId":"board-locksmith-01","publishedAs":"the-locksmith-s-trade.json","publishedId":"asto-the-locksmith-s-trade","republished":false,"at":"2026-08-08T21:21:01.479Z"}
