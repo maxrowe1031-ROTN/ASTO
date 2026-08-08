@@ -11,7 +11,14 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { buildRelationshipIndex, buildStanceQuotas, buildVarietyBrief, SHAPES } from '../../studio/variety.js';
+import {
+  buildRelationshipIndex,
+  buildStanceQuotas,
+  buildThemedBrief,
+  buildVarietyBrief,
+  SHAPES,
+  SURPRISE_ME_ONLY,
+} from '../../studio/variety.js';
 import { PORTABLE_STANCES, STANCES, resolveShape } from '../../studio/corpus/vocabulary.js';
 import { makeStore } from './pipeline/helpers.js';
 
@@ -550,4 +557,79 @@ test('the stance steer reaches BOTH the author and the builder', async () => {
 
   assert.doesNotMatch(author.buildPrompt({ theme: 'caves', brief: { count: 8 } }, {}), /HARDEST set a/);
   assert.doesNotMatch(builder.buildPrompt({ gradedSets: [] }, {}), /set at difficulty 4\. If this pool/);
+});
+
+// --- one door for the brief (the D-13 gap) ---
+//
+// D-13's `varyHardestStance` was added to the variety brief and reached only
+// surprise-me runs, because two callers each re-listed what a themed brief
+// carries and neither list learned about the new field. Every board Max was
+// complaining about when he asked for that steer was a THEMED run, so the
+// lever built to answer him was switched off for exactly the runs he makes.
+//
+// These tests pin the rule as a CLASS rather than as the one field that was
+// caught: a themed brief differs from a variety brief by the surprise-me
+// markers and by nothing else, ever.
+
+/** An index that fires every cross-board steer at once, so no key is missing by luck. */
+const FULLY_STEERED_INDEX = {
+  counts: {},
+  recent: [],
+  unknown: 0,
+  hardestSources: ['vocabulary', 'vocabulary', 'vocabulary'],
+  hardestStances: ['time', 'time', 'time', 'time', 'time', 'cause', 'event', 'inclusion'],
+};
+
+test('a themed brief carries every steer the variety brief carries', () => {
+  const variety = buildVarietyBrief({ index: FULLY_STEERED_INDEX, count: 14 });
+  const themed = buildThemedBrief({ index: FULLY_STEERED_INDEX, count: 14 });
+
+  // Derived from the variety brief rather than from a hand-written list: a
+  // steer added tomorrow is in this comparison the moment it exists.
+  const shouldTravel = Object.keys(variety).filter((key) => !SURPRISE_ME_ONLY.includes(key));
+  assert.ok(shouldTravel.includes('varyHardestStance'), 'the fixture index must fire the stance steer');
+  assert.ok(shouldTravel.includes('varyHardestFrom'), 'the fixture index must fire the source steer');
+
+  for (const key of shouldTravel) {
+    assert.deepEqual(
+      themed[key],
+      variety[key],
+      `"${key}" reaches surprise-me runs but not themed ones. Either forward it in ` +
+        `buildThemedBrief or add it to SURPRISE_ME_ONLY with a reason — a steer that ` +
+        `only fires on half the runs is D-13's gap reopening.`,
+    );
+  }
+});
+
+test('the surprise-me markers are the ONLY difference', () => {
+  const variety = buildVarietyBrief({ index: FULLY_STEERED_INDEX, count: 14 });
+  const themed = buildThemedBrief({ index: FULLY_STEERED_INDEX, count: 14 });
+
+  assert.deepEqual(
+    Object.keys(variety).filter((key) => !(key in themed)).sort(),
+    [...SURPRISE_ME_ONLY].sort(),
+  );
+  // `relationshipShapes` is what the rest of the Studio reads to classify a run,
+  // so a themed run growing one would silently become a surprise-me run.
+  for (const marker of SURPRISE_ME_ONLY) assert.equal(marker in themed, false, marker);
+  assert.deepEqual(Object.keys(themed).filter((key) => !(key in variety)), []);
+});
+
+// The live corpus, not a fixture. Last session's lesson: every stance test fed
+// `hardestStances` in by hand, so nothing proved the real index populates it.
+// Phrased as an invariant rather than a value — when the rut clears, this test
+// must keep passing rather than needing an edit.
+test('the two doors agree on the real library', async () => {
+  const { createRunStore } = await import('../../studio/storage/run-store.js');
+  const { fileURLToPath } = await import('node:url');
+  const store = createRunStore({
+    rootDir: fileURLToPath(new URL('../../studio/runs/', import.meta.url)),
+  });
+  const index = buildRelationshipIndex({ store });
+
+  const variety = buildVarietyBrief({ index, count: 14 });
+  const themed = buildThemedBrief({ index, count: 14 });
+  for (const key of Object.keys(variety).filter((k) => !SURPRISE_ME_ONLY.includes(k))) {
+    assert.deepEqual(themed[key], variety[key], `"${key}" differs between the two doors on the real library`);
+  }
 });

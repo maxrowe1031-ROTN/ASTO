@@ -22,7 +22,7 @@
 import { isValidStageId } from '../stage-registry.js';
 import { validateFeedbackEvent } from '../schemas.js';
 import { StudioFailure } from '../failures.js';
-import { buildRelationshipIndex, buildStanceQuotas, buildVarietyBrief } from '../variety.js';
+import { buildRelationshipIndex, buildThemedBrief, buildVarietyBrief } from '../variety.js';
 // The pair-count bounds are the pipeline's arithmetic, not this API's policy —
 // see pipeline-config.js for why the floor is where it is.
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-config.js';
@@ -51,16 +51,6 @@ const isPlainObject = (value) =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 /**
- * The parts of a variety brief a THEMED run should also carry.
- *
- * Not `relationshipShapes` — that is what marks a run as surprise-me on the
- * manifest, and a themed run's steer is its theme. But the difficulty-source
- * nudge is about ruts across boards rather than about subject matter, so it
- * applies to every run.
- */
-const steerOnly = ({ varyHardestFrom } = {}) => (varyHardestFrom ? { varyHardestFrom } : {});
-
-/**
  * Maps a throw from the store or the pipeline onto a status.
  *
  * Everything the store refuses on purpose — an illegal transition, a second
@@ -83,7 +73,7 @@ export function createApi({
   runner,
   clock = () => new Date().toISOString(),
   buildBrief = ({ count }) => buildVarietyBrief({ index: buildRelationshipIndex({ store }), count }),
-  buildQuotas = () => buildStanceQuotas({ index: buildRelationshipIndex({ store }) }),
+  buildThemed = ({ count }) => buildThemedBrief({ index: buildRelationshipIndex({ store }), count }),
   chooseSubject = pickSubject,
   // The Revision Proposer's transport and learning package. Injected the same
   // way the runner's are, so a test replays a fixture and a mock run never
@@ -258,23 +248,23 @@ export function createApi({
 
     // Surprise-me runs get a positive variety brief: which underused shapes to
     // reach for, which recent ones to leave alone (locked decision 6). Themed
-    // runs keep the theme as the steer — but EVERY brief carries stance
-    // quotas, because a board wants four kinds of question regardless of
-    // where its words came from (design.md D-3). What still marks a run as
+    // runs keep the theme as the steer — but EVERY brief carries stance quotas
+    // (design.md D-3) and every cross-board steer, because a rut is about the
+    // library rather than about subject matter. What still marks a run as
     // surprise-me is `relationshipShapes` on its manifest, which a themed run
     // never carries.
+    //
+    // Both shapes come from `variety.js` rather than being assembled here.
+    // This file used to re-list what a themed brief carries, and D-13's
+    // `varyHardestStance` was added to the variety brief without that list
+    // learning about it — so the steer built to answer Max's complaint reached
+    // surprise-me runs only, while every board he complained about was themed.
+    //
     // `mock` is recorded on the run, not just passed to this launch: a
     // revision must not silently switch to the real API, and a fixture-derived
     // board must stay identifiable so it never counts as editorial signal.
-    // A themed run now takes the difficulty-source steer too (design.md D-8).
-    // It fires only when the last three boards all reached their hardest set
-    // the same way, and it is a nudge rather than a quota — so it belongs on
-    // every board, not only the ones with no theme. `relationshipShapes` stays
-    // the surprise-me marker.
     const brief = {
-      ...(theme === null
-        ? buildBrief({ count })
-        : { count, stanceQuotas: buildQuotas(), ...steerOnly(buildBrief({ count })) }),
+      ...(theme === null ? buildBrief({ count }) : buildThemed({ count })),
       mock,
     };
     const { runId } = store.createRun({ slug, theme: runTheme, brief });

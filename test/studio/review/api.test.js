@@ -763,23 +763,27 @@ test('publish takes no fields beyond an optional slug', async () => {
   }
 });
 
-// --- the difficulty-source steer reaches themed runs too (design.md D-8) ---
+// --- the cross-board steers reach themed runs too (design.md D-8, D-13) ---
 //
-// Themed runs have never received anything from the variety index except stance
-// quotas — `relationshipShapes` is what marks a run as surprise-me. But the
-// difficulty steer is about a rut across boards, not about subject matter, so
-// it belongs on every run.
+// Themed runs once received nothing from the variety index except stance quotas
+// — `relationshipShapes` is what marks a run as surprise-me. But a steer is
+// about a rut across boards, not about subject matter, so it belongs on every
+// run. D-13's stance steer was the field that proved it: it was added to the
+// variety brief and reached surprise-me runs only, while every board Max was
+// complaining about was themed.
+//
+// `variety.js` now answers both doors, so what this suite checks is the wiring:
+// the themed branch calls the themed builder and the manifest keeps what it
+// returns.
 
-test('a themed run carries the difficulty steer but not the surprise-me shapes', async () => {
+test('a themed run carries both steers but not the surprise-me shapes', async () => {
   const { api, cleanup } = setup(undefined, {
-    buildBrief: () => ({
+    buildThemed: () => ({
       count: 14,
-      relationshipShapes: ['conversion'],
-      avoidShapes: [],
-      stanceQuotas: ['time'],
+      stanceQuotas: ['inclusion', 'time', 'event', 'possession'],
       varyHardestFrom: 'vocabulary',
+      varyHardestStance: 'time',
     }),
-    buildQuotas: () => ['inclusion', 'time', 'event', 'possession'],
   });
   try {
     const { status } = await api.handle({
@@ -793,7 +797,8 @@ test('a themed run carries the difficulty steer but not the surprise-me shapes',
     const detail = await api.handle({ method: 'GET', path: `/api/runs/${runId}` });
     const { brief } = detail.body.manifest;
 
-    assert.equal(brief.varyHardestFrom, 'vocabulary', 'the steer did not reach a themed run');
+    assert.equal(brief.varyHardestFrom, 'vocabulary', 'the difficulty steer did not reach a themed run');
+    assert.equal(brief.varyHardestStance, 'time', 'the stance steer did not reach a themed run');
     // Still the surprise-me marker, and still not on a themed run.
     assert.equal(brief.relationshipShapes, undefined);
     assert.deepEqual(brief.stanceQuotas, ['inclusion', 'time', 'event', 'possession']);
@@ -804,14 +809,39 @@ test('a themed run carries the difficulty steer but not the surprise-me shapes',
 
 test('no rut, no steer — a themed brief stays exactly as it was', async () => {
   const { api, cleanup } = setup(undefined, {
-    buildBrief: () => ({ count: 14, relationshipShapes: ['conversion'], avoidShapes: [], stanceQuotas: ['time'] }),
-    buildQuotas: () => ['inclusion', 'time', 'event', 'possession'],
+    buildThemed: () => ({ count: 14, stanceQuotas: ['inclusion', 'time', 'event', 'possession'] }),
   });
   try {
     await api.handle({ method: 'POST', path: '/api/runs', body: { theme: 'caves' } });
     const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
     const detail = await api.handle({ method: 'GET', path: `/api/runs/${body.runs[0].runId}` });
-    assert.equal('varyHardestFrom' in detail.body.manifest.brief, false);
+    const { brief } = detail.body.manifest;
+    assert.equal('varyHardestFrom' in brief, false);
+    assert.equal('varyHardestStance' in brief, false);
+  } finally {
+    cleanup();
+  }
+});
+
+// A surprise-me run must not lose its shape brief to the same refactor.
+test('a surprise-me run still carries the shape brief', async () => {
+  const { api, cleanup } = setup(undefined, {
+    buildBrief: () => ({
+      count: 14,
+      relationshipShapes: ['conversion'],
+      avoidShapes: ['sequence'],
+      stanceQuotas: ['time'],
+      varyHardestStance: 'time',
+    }),
+  });
+  try {
+    await api.handle({ method: 'POST', path: '/api/runs', body: { count: 14 } });
+    const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
+    const detail = await api.handle({ method: 'GET', path: `/api/runs/${body.runs[0].runId}` });
+    const { brief } = detail.body.manifest;
+    assert.deepEqual(brief.relationshipShapes, ['conversion']);
+    assert.deepEqual(brief.avoidShapes, ['sequence']);
+    assert.equal(brief.varyHardestStance, 'time');
   } finally {
     cleanup();
   }

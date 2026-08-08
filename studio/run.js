@@ -21,7 +21,7 @@ import { createRunStore } from './storage/run-store.js';
 import { createAnthropicTransport } from './llm.js';
 import { createMockTransport } from './mock-transport.js';
 import { isValidStageId } from './stage-registry.js';
-import { buildRelationshipIndex, buildStanceQuotas, buildVarietyBrief } from './variety.js';
+import { buildRelationshipIndex, buildThemedBrief, buildVarietyBrief } from './variety.js';
 import { loadRules } from './corpus/rules.js';
 import { loadEnv } from './env.js';
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from './pipeline-config.js';
@@ -83,6 +83,32 @@ export function parseArgv(argv) {
   };
 }
 
+/**
+ * Pure: which brief a CLI-started run carries. The same brief the Review Studio
+ * builds, so a run started here and a run started from the web surface are the
+ * same kind of run.
+ *
+ * Exported because this used to be assembled inline, and inline it assembled a
+ * THINNER brief than the Studio's in two separate ways — no cross-board steers
+ * on a themed run, and no `mock` flag on any run. Neither was visible from
+ * anywhere. The decision is testable now; the two brief shapes themselves live
+ * in `variety.js`.
+ */
+export function briefFor({ index, theme, count, mock = false }) {
+  return {
+    ...(theme === null ? buildVarietyBrief({ index, count }) : buildThemedBrief({ index, count })),
+    // Recorded on the run, not just handed to this launch. It is what separates
+    // a fixture replay from real editorial signal — `variety.js` reads it to
+    // keep a replayed board from telling every future brief that First Light's
+    // shapes are heavily used, and `studio/runs/.gitignore` names it as the
+    // field that makes that distinction readable at all. The Studio has
+    // recorded it since the flag existed; this door never did, so a `--mock`
+    // run from the CLI counted into the library as though someone had authored
+    // it. Found by running one during this session's own verification.
+    mock,
+  };
+}
+
 async function main(argv) {
   const options = parseArgv(argv);
   loadEnv();
@@ -93,15 +119,13 @@ async function main(argv) {
 
   let runId = options.runId;
   if (runId === null) {
-    // Same brief the Review Studio builds, so a run started here and a run
-    // started from the web surface are the same kind of run. Every brief
-    // carries stance quotas (a board wants four kinds of question regardless
-    // of where its words came from); only surprise-me adds shape steering.
     const index = buildRelationshipIndex({ store });
-    const brief =
-      options.theme === null
-        ? buildVarietyBrief({ index, count: options.brief.count })
-        : { ...options.brief, stanceQuotas: buildStanceQuotas({ index }) };
+    const brief = briefFor({
+      index,
+      theme: options.theme,
+      count: options.brief.count,
+      mock: options.mock,
+    });
     // A surprise-me run picks a subject too — the Studio does the same, and a
     // run started here must be the same kind of run as one started there.
     // The slug follows the subject so the run id names what the board is

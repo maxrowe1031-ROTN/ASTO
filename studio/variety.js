@@ -307,6 +307,40 @@ export function buildVarietyBrief({ index, count = 8 } = {}) {
 }
 
 /**
+ * The brief fields that MARK a run as surprise-me, and so the only fields a
+ * themed brief drops.
+ *
+ * `relationshipShapes` is what tells the rest of the Studio a run had no
+ * subject of its own — `api.js` reads it back to classify a run, and a themed
+ * run's steer is its theme rather than a shape list. `avoidShapes` is its
+ * negative half and travels with it.
+ *
+ * Everything else is about ruts ACROSS boards rather than about subject
+ * matter, so it applies to every run whatever its theme.
+ */
+export const SURPRISE_ME_ONLY = Object.freeze(['relationshipShapes', 'avoidShapes']);
+
+/**
+ * The brief a THEMED run carries — the variety brief minus its surprise-me
+ * markers.
+ *
+ * Derived by subtraction, deliberately, and this is the whole point of the
+ * function. It used to be re-listed by hand at each caller, so D-13's
+ * `varyHardestStance` reached surprise-me runs and silently missed every themed
+ * one — including every board Max was complaining about when he asked for the
+ * steer. Two callers each re-deriving "what does a brief carry" is a rule at
+ * one door, which is this repo's recurring scar; a new steer added to
+ * `buildVarietyBrief` now reaches themed runs by construction, and the only
+ * thing anyone has to remember is whether it belongs on the exclusion list
+ * above.
+ */
+export function buildThemedBrief({ index, count = 8 } = {}) {
+  const brief = buildVarietyBrief({ index, count });
+  for (const key of SURPRISE_ME_ONLY) delete brief[key];
+  return brief;
+}
+
+/**
  * How many boards in a row have reached their hardest set the same way.
  *
  * The recent window only — this is about a rut, not about lifetime balance, and
