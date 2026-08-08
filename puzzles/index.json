@@ -60,6 +60,16 @@
       "slug": "furniture-craft-analogies",
       "id": "asto-furniture-craft-analogies",
       "title": "Furniture & Craft Analogies"
+    },
+    {
+      "slug": "behind-the-scenes",
+      "id": "asto-behind-the-scenes",
+      "title": "Behind the Scenes"
+    },
+    {
+      "slug": "on-stage-and-behind-it",
+      "id": "asto-on-stage-and-behind-it",
+      "title": "On Stage and Behind It"
     }
   ]
 }

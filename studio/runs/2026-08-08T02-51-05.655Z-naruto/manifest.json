@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T02-51-05.655Z-naruto",
+  "createdAt": "2026-08-08T02:51:05.655Z",
+  "theme": "Naruto",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "cause"
+    ],
+    "mock": false
+  },
+  "status": "rejected",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}

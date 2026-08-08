@@ -1,0 +1,86 @@
+{
+  "id": "odyssey-analogies",
+  "title": "Wine-Dark Analogies",
+  "sets": [
+    {
+      "id": "set-category-kind",
+      "relationshipLabel": "a broad category and a fearsome or violent kind within it",
+      "explanation": "Monster is the broad category and Gorgon a specific fearsome kind within it, just as Wind names the general phenomenon and Squall a violent kind of it.",
+      "pairs": [
+        [
+          "Monster",
+          "Gorgon"
+        ],
+        [
+          "Wind",
+          "Squall"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "mythic-creature",
+        "weather"
+      ]
+    },
+    {
+      "id": "set-power-instrument",
+      "relationshipLabel": "a divine or magical figure and the instrument that marks their power",
+      "explanation": "Poseidon is marked by his trident and Circe by her wand, each object a signature the possessor cannot be separated from.",
+      "pairs": [
+        [
+          "Poseidon",
+          "Trident"
+        ],
+        [
+          "Circe",
+          "Wand"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "Circe",
+        "magic-object"
+      ]
+    },
+    {
+      "id": "set-transformation",
+      "relationshipLabel": "raw material or being reshaped by a process into a new form",
+      "explanation": "Circe's magic reshapes sailors into swine just as craft reshapes an olive log into a stake, both showing raw material remade by a deliberate process.",
+      "pairs": [
+        [
+          "Sailor",
+          "Swine"
+        ],
+        [
+          "Olive log",
+          "Stake"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "Circe",
+        "transformation"
+      ]
+    },
+    {
+      "id": "set-journey-arc",
+      "relationshipLabel": "the departure point of the voyage and the homecoming/true state that answers it",
+      "explanation": "Troy is the point of departure and Ithaca the true home Odysseus seeks, just as a beggar's disguise conceals the true king beneath it.",
+      "pairs": [
+        [
+          "Troy",
+          "Ithaca"
+        ],
+        [
+          "Beggar",
+          "King"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "voyage",
+        "disguise"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "asto-board-001",
+  "title": "Harvest and Habit",
+  "sets": [
+    {
+      "id": "set-creature-possession",
+      "relationshipLabel": "creature and the thing belonging to it",
+      "explanation": "A groundhog's burrow and a squirrel's cache are both possessions tied to the creature that made them.",
+      "pairs": [
+        [
+          "groundhog",
+          "burrow"
+        ],
+        [
+          "squirrel",
+          "cache"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "animal-object"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A shearer wields shears just as a vintner relies on a press — each worker paired with the instrument that defines their craft.",
+      "pairs": [
+        [
+          "shearer",
+          "shears"
+        ],
+        [
+          "vintner",
+          "press"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "tool-domain"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "written plan and the thing it produces",
+      "explanation": "A pattern yields a sweater and a recipe yields preserves — each a set of instructions realized as a finished product.",
+      "pairs": [
+        [
+          "pattern",
+          "sweater"
+        ],
+        [
+          "recipe",
+          "preserves"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "instrument-overlap",
+        "food-domain"
+      ]
+    },
+    {
+      "id": "set-enabling-agent",
+      "relationshipLabel": "condition that lets a natural process occur",
+      "explanation": "A thaw allows germination and a frost triggers dormancy — each weather condition is the necessary cause of a specific biological state.",
+      "pairs": [
+        [
+          "thaw",
+          "germination"
+        ],
+        [
+          "frost",
+          "dormancy"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "weather-opposite"
+      ]
+    }
+  ]
+}

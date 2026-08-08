@@ -1,0 +1,80 @@
+{
+  "id": "asto-naruto-01",
+  "title": "Hidden Leaf Connections",
+  "sets": [
+    {
+      "id": "set-specialist-tool",
+      "relationshipLabel": "a shinobi specialist and the signature tool of their craft",
+      "explanation": "Each specialist is defined by the tool that makes their craft possible: medical-nin cut with chakra scalpels, puppeteers command chakra strings.",
+      "pairs": [
+        [
+          "medical-nin",
+          "chakra scalpel"
+        ],
+        [
+          "puppeteer",
+          "chakra strings"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "chakra"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a class of being and one specific member named",
+      "explanation": "A tailed beast is a category and Kurama is one of its nine members, just as Jiraiya is one of the three legendary Sannin.",
+      "pairs": [
+        [
+          "tailed beast",
+          "Kurama"
+        ],
+        [
+          "Sannin",
+          "Jiraiya"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "Kurama"
+      ]
+    },
+    {
+      "id": "set-scale-growth",
+      "relationshipLabel": "the same kind of thing, early and small scale then later and greater scale",
+      "explanation": "Each pair tracks the same thing growing from its smallest form to its largest: a recruit becomes a veteran, a spark becomes an inferno.",
+      "pairs": [
+        [
+          "recruit",
+          "veteran"
+        ],
+        [
+          "spark",
+          "inferno"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": []
+    },
+    {
+      "id": "set-turning-points",
+      "relationshipLabel": "an earlier turning point and the later moment it leads to across one story",
+      "explanation": "Each first event sets up the later one as its narrative consequence: sealing the Kyuubi made its extraction possible, and the Uchiha Massacre set Itachi on the path to his own death.",
+      "pairs": [
+        [
+          "Kyuubi sealing",
+          "Kyuubi extraction"
+        ],
+        [
+          "Uchiha Massacre",
+          "Itachi's death"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "Kyuubi"
+      ]
+    }
+  ]
+}

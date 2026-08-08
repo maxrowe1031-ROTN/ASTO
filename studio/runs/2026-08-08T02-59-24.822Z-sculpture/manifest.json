@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T02-59-24.822Z-sculpture",
+  "createdAt": "2026-08-08T02:59:24.822Z",
+  "theme": "sculpture",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "plan",
+      "coordinates",
+      "enabling-agent"
+    ],
+    "avoidShapes": [
+      "reverse",
+      "before-after"
+    ],
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "failed",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

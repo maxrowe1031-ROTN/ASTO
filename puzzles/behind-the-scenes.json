@@ -1,0 +1,83 @@
+{
+  "id": "asto-behind-the-scenes",
+  "title": "Behind the Scenes",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "device and the component it always carries",
+      "explanation": "A camera without a lens or a projector without a lamp can't do its job — each device inherently carries this part.",
+      "pairs": [
+        [
+          "camera",
+          "lens"
+        ],
+        [
+          "projector",
+          "lamp"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "equipment"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "moments bracketing a span of filmmaking",
+      "explanation": "Opening and closing credits bookend a screening just as greenlight and wrap bookend a production.",
+      "pairs": [
+        [
+          "opening credits",
+          "closing credits"
+        ],
+        [
+          "greenlight",
+          "wrap"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "production status",
+        "timeline"
+      ]
+    },
+    {
+      "id": "set-representation",
+      "relationshipLabel": "subject and the made image that stands for it",
+      "explanation": "A poster represents a film the same way a headshot represents a star — each is the image made to stand in for the real thing.",
+      "pairs": [
+        [
+          "film",
+          "poster"
+        ],
+        [
+          "star",
+          "headshot"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "credits pairing"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "safeguard that stops a specific harm",
+      "explanation": "A stunt double exists to prevent injury, and a completion bond exists to prevent a shutdown — each is a safeguard tied to one specific risk.",
+      "pairs": [
+        [
+          "stunt double",
+          "injury"
+        ],
+        [
+          "completion bond",
+          "shutdown"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "production status"
+      ]
+    }
+  ]
+}

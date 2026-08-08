@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T03-30-25.857Z-music",
+  "createdAt": "2026-08-08T03:30:25.857Z",
+  "theme": "music",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "concealment",
+      "coordinates",
+      "contiguity"
+    ],
+    "avoidShapes": [
+      "prevention",
+      "representation"
+    ],
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "event"
+    ],
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

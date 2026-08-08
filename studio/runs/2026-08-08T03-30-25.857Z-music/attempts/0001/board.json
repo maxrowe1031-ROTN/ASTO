@@ -1,0 +1,85 @@
+{
+  "id": "asto-board-music-performance",
+  "title": "On Stage and Behind It",
+  "sets": [
+    {
+      "id": "set-performer-tool",
+      "relationshipLabel": "a performer and the tool of their trade",
+      "explanation": "A singer needs a microphone and a drummer needs drumsticks — each performer is defined by the instrument that makes their part possible.",
+      "pairs": [
+        [
+          "singer",
+          "microphone"
+        ],
+        [
+          "drummer",
+          "drumsticks"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "voice-links-to-singer",
+        "stage-name-links-to-performer"
+      ]
+    },
+    {
+      "id": "set-bookend-live",
+      "relationshipLabel": "moments that bookend a live show or a recording",
+      "explanation": "Load-in opens the physical setup and load-out closes it, just as fade-in opens a track's sound and fade-out closes it — matched bookends at two different grains of a performance.",
+      "pairs": [
+        [
+          "load-in",
+          "load-out"
+        ],
+        [
+          "fade-in",
+          "fade-out"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "fade-out-suggests-audio-processing-set"
+      ]
+    },
+    {
+      "id": "set-touching-parts",
+      "relationshipLabel": "two instrument parts defined by touching, one setting the other vibrating",
+      "explanation": "A reed only sounds when it touches the mouthpiece, and a string only sounds when the bow touches it — each pair is a contact point that creates the vibration.",
+      "pairs": [
+        [
+          "reed",
+          "mouthpiece"
+        ],
+        [
+          "bow",
+          "string"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "mouthpiece-suggests-microphone-tool-set",
+        "string-suggests-guitarist-role"
+      ]
+    },
+    {
+      "id": "set-cover-vs-truth",
+      "relationshipLabel": "a public cover concealing the true identity or sound",
+      "explanation": "A stage name hides the birth name and Auto-Tune hides the raw voice — both pairs trade a polished public surface for the truth underneath.",
+      "pairs": [
+        [
+          "stage name",
+          "birth name"
+        ],
+        [
+          "Auto-Tune",
+          "voice"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "voice-echoes-singer-microphone-set",
+        "stage-name-echoes-performer-set"
+      ]
+    }
+  ]
+}

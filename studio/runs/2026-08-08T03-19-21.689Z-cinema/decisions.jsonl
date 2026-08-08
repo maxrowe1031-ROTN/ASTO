@@ -1,0 +1,3 @@
+{"type":"attempt-completed","attemptId":"0001","boardId":"asto-film-board-1","at":"2026-08-08T03:24:36.106Z"}
+{"type":"approve","attemptId":"0001","at":"2026-08-08T03:30:02.476Z"}
+{"type":"publish","attemptId":"0001","boardId":"asto-film-board-1","publishedAs":"behind-the-scenes.json","publishedId":"asto-behind-the-scenes","republished":false,"at":"2026-08-08T03:30:07.206Z"}

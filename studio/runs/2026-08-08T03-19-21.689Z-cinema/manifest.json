@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T03-19-21.689Z-cinema",
+  "createdAt": "2026-08-08T03:19:21.689Z",
+  "theme": "cinema",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "representation",
+      "coordinates",
+      "prevention"
+    ],
+    "avoidShapes": [
+      "enabling-agent",
+      "plan"
+    ],
+    "stanceQuotas": [
+      "time",
+      "inclusion",
+      "possession",
+      "cause"
+    ],
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

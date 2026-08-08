@@ -1,0 +1,86 @@
+{
+  "id": "naruto-board-01",
+  "title": "Hidden Leaf Logic",
+  "sets": [
+    {
+      "id": "set-ability-category",
+      "relationshipLabel": "a broad category of ability or technique and a specific kind within it",
+      "explanation": "Kekkei Genkai and Jutsu are broad classes of technique, while Sharingan and Shadow Clone Jutsu are specific examples that fall under each.",
+      "pairs": [
+        [
+          "Kekkei Genkai",
+          "Sharingan"
+        ],
+        [
+          "Jutsu",
+          "Shadow Clone Jutsu"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "taxonomy",
+        "technique"
+      ]
+    },
+    {
+      "id": "set-technique-impact",
+      "relationshipLabel": "a technique and the physical mark it leaves on impact",
+      "explanation": "Each technique is defined by the distinct kind of damage it leaves behind: a Rasengan carves a crater, a Chidori leaves a puncture.",
+      "pairs": [
+        [
+          "Rasengan",
+          "Crater"
+        ],
+        [
+          "Chidori",
+          "Puncture"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "cause-effect",
+        "technique"
+      ]
+    },
+    {
+      "id": "set-training-span",
+      "relationshipLabel": "earlier moment and later moment across the same training span",
+      "explanation": "Enrollment and Graduation bookend a shinobi's schooling just as the Chunin Exam Prelims and Finals bookend a single trial.",
+      "pairs": [
+        [
+          "Enrollment",
+          "Graduation"
+        ],
+        [
+          "Chunin Exam Prelims",
+          "Chunin Exam Finals"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "timeline",
+        "exam"
+      ]
+    },
+    {
+      "id": "set-answering-action",
+      "relationshipLabel": "an action and the action that answers or undoes it",
+      "explanation": "A Counter answers an Attack the way a Release undoes a Seal, each pair closing a loop the first move opened.",
+      "pairs": [
+        [
+          "Attack",
+          "Counter"
+        ],
+        [
+          "Seal",
+          "Release"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "combat",
+        "reversal"
+      ]
+    }
+  ]
+}
