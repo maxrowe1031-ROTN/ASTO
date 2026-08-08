@@ -2,6 +2,83 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-08 — A teaching example must not be shaped like the deliverable
+
+Max asked what "abstract the example" meant, and the answer turned out to be *don't* —
+something better was available, and finding it took one measurement.
+
+### The measurement
+
+01's prompt carries the vocabulary block's **36 pair-level examples** (`flower : tulip`,
+`moon : crater`) and **one full-set example**, D-8's `planting : felling :: budding :
+withering`. Swept across all 15 published boards:
+
+| Example shape | Count | Verbatim leaks |
+|---|---|---|
+| Pair-level | 36 | **0** |
+| Full-set | 1 | **1** — plus a paraphrase the next night |
+
+So the problem was never that examples get copied. It is that **this one is shaped like the
+deliverable**. A pair illustrates a property and leaves the model everything to do; a
+finished four-word set is an answer, and an answer in the prompt comes back as output. That
+reframing chose the fix — demote, don't delete — and kept the concrete grounding D-8 added
+the example for in the first place.
+
+### Built
+
+- **`studio/corpus/examples.js`** (new, pure) — the example as **content**, held once at
+  pair level and rendered into both prompts. 01 and 03 had been teaching one lesson from two
+  hand-written copies; that is exactly the drift `vocabulary.js` exists to prevent for shapes.
+  The rendered line warns off **near-synonyms**, because what happened was paraphrase
+  (`planting : uprooting`), not copying — a literal ban would have missed it.
+- **`no-full-set-examples.test.js`** — the rule pinned as a **class over every generative
+  stage**, not the one instance caught. Fixing 01 and 03 would have left the same mistake
+  available in 02 and 04.
+- **`test/content/example-leak.test.js`** — the other half, beside `manifest.test.js`:
+  prompts can be edited back, and a published board stays published.
+
+### The narrowing, which is the part worth keeping
+
+Run over all eight agents, the guard immediately flagged **06 and 07 — and both are right**.
+06 shows `"guitarist : drummer :: guitar : drum kit"` and says of it *"symmetry, not analogy…
+the answer is false"*; 07 shows `"dawn : dusk :: birth : death"` against
+`"Ruth : Gehrig :: Mantle : Maris"`. Neither can leak, because **neither agent's output is a
+set**. The hazard was never "a full set in a prompt" — it is "a full set in the prompt of a
+stage whose job is to produce one". A stage that judges sets needs to be shown sets, and a
+second test now pins that their counter-examples are never deleted in the name of this rule.
+
+I nearly deleted two good examples to make a red test go green. The test was wrong.
+
+### Decided
+
+- **`trees-tools-and-time` stays published (Max).** Good set, no player can perceive its
+  provenance, and republishing costs a board for an invisible reason. Grandfathered
+  **per-slug** — a new board with the same defect still fails — with the provenance recorded
+  in design.md so a rubric compiled from the corpus never credits the pipeline with authoring
+  that Black.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1092 pass, 0 fail** (was 1067; +25).
+  `node tools/check-board.js` → **15 boards, all clean.** Both guards bite-checked: restore
+  the full set to the corpus render → four prompt tests fail; plant the taught pair in a
+  board → the content sweep fails. Both restore clean.
+- **D-8's own test updated, not deleted.** It pinned the full-set string; it now pins the
+  demoted pair and asserts the old form is *absent*. The D-8 lesson — two kinds of hard,
+  neither preferred — is untouched.
+- **Max acceptance: OPEN, and it is behavioural.** Whether arrangement-hard sets now
+  *diversify* rather than *vanish* can only be seen in the next batch.
+
+- **Next:** unchanged from the previous entry, plus one.
+  1. **Review the rose board** (`2026-08-08T04-22-15.760Z-a-rose`, awaiting review) — the
+     first board the truncation rescue produced, and now also the last one authored under the
+     old full-set example.
+  2. **Request a real revision.** D-11's gate has still never had a fair test.
+  3. **Watch the next batch's arrangement-hard sets.** If they diversify, D-12's addendum
+     worked. If they vanish, the pair-level anchor is too weak and D-8's rut has reopened —
+     the answer is a rotating pool, which `examples.js` makes a data change.
+  4. **Publishing to GitHub Pages** remains the next real milestone.
+
 ## 2026-08-08 — Four defects the batches exposed, and a crash nobody had ever seen
 
 Max ran nine more themes and asked what I made of them. The answer was four defects, none of

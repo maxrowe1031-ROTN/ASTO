@@ -12,6 +12,7 @@
 
 import { JSON_ONLY, composePrompt, parseJson, renderRevision, validateAgainst } from './agent-kit.js';
 import { SHAPE_IDS, renderVocabulary, stanceOf } from '../corpus/vocabulary.js';
+import { renderArrangementHard } from '../corpus/examples.js';
 
 export const id = 'pair-author';
 export const stageId = '01-pair-author';
@@ -124,7 +125,11 @@ export function buildPrompt(input = {}, context) {
       //
       // Both routes are wanted. What was missing is the first one.
       'TWO KINDS OF HARD. A set can be difficult in two quite different ways, and you have both available:',
-      '  - ARRANGEMENT — ordinary words whose placement is the puzzle. "planting : felling :: budding : withering" is four words a child knows, and it is one of the hardest sets ever written for this game: the work is seeing that both pairs run start-to-end across different spans. Opposites facing each other, a shift of scale, a reversal, a pair that runs the other way.',
+      // Rendered from the corpus, not written here, and PAIR-level rather than
+      // a finished set. The full-set version of this line was handed in twice —
+      // verbatim into `trees-tools-and-time`'s Black and paraphrased into the
+      // rose board. See studio/corpus/examples.js and design.md D-12.
+      `  - ARRANGEMENT — ${renderArrangementHard('author')}`,
       '  - VOCABULARY — a plain relationship carried by a word that belongs to the subject. "constellation : Cassiopeia" is a category and one of its members; the pleasure is the word. This is where a theme gets its colour, and it is not a lesser kind of set.',
       'Neither is better and a good board wants both. But arrangement difficulty is the one that gets lost, so: at least one of your matched groups must be hard through its ARRANGEMENT ALONE — every word in it ordinary, the difficulty entirely in how the four sit together. Do not mark it, and do not assume it will be the hardest set on the board; that is decided downstream. Just make sure the board could reach its top tier without reaching for a rarer word.',
       // This line used to read "Prefer familiar words", full stop — which a

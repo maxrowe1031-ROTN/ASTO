@@ -7,6 +7,7 @@
 // than guess, which the schema allows via difficulty: null + abstained.
 
 import { JSON_ONLY, asJsonBlock, composePrompt, parseJson, validateAgainst } from './agent-kit.js';
+import { renderArrangementHard } from '../corpus/examples.js';
 
 export const id = 'difficulty-rater';
 export const stageId = '03-difficulty-rater';
@@ -68,7 +69,11 @@ export function buildPrompt(input = {}, context) {
       // to place. What changed is that the rater must now say so out loud,
       // because "hard" turns out to be two different things wearing one number.
       'A set can be hard in two quite different ways, and you must say WHICH in "difficultySource":',
-      '  - "arrangement" — ordinary words whose placement is the puzzle. "planting : felling :: budding : withering" is four words a child knows, and it is a grade 4: the work is seeing that both pairs run start-to-end across different spans.',
+      // The same corpus example 01 authors from, rendered for a grader rather
+      // than an author. One source, so the two stages cannot drift apart about
+      // what "arrangement" means — and pair-level, for the reason in
+      // studio/corpus/examples.js.
+      `  - "arrangement" — ${renderArrangementHard('grade')}`,
       '  - "vocabulary" — a plain relationship carried by a word not everyone knows. "speleothem : stalactite" is a category and a kind within it, which is grade-1 reasoning; what makes it hard is the word.',
       '  - "both" — genuinely each.',
       'Neither is better. A board wants both kinds, and this field is how the rest of the pipeline can tell them apart — so grade honestly and label honestly rather than reaching for the answer you think is wanted.',
