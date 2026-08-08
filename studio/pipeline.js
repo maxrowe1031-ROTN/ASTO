@@ -49,9 +49,21 @@ const GATE_STAGE = '04a-integrity';
 // How each stage's input is assembled from what earlier stages produced. This
 // is orchestration knowledge — which output feeds which input — so it lives
 // here rather than inside the agents, which stay unaware of each other.
+// `revision` reaches the three GENERATIVE stages and no others. The evaluators
+// (05–08) are deliberately blind to it: their job is to judge the board in
+// front of them, and an evaluator that had read the editor's instructions
+// would be marking its own homework — agreeing that the asked-for change was
+// made is not the same as finding the board good. See design.md D-11.
 const STAGE_INPUTS = {
-  '01-pair-author': (board, { manifest }) => ({ brief: manifest.brief, theme: manifest.theme }),
-  '02-theme-grouper': (board) => ({ pairs: board.get('01-pair-author')?.pairs ?? [] }),
+  '01-pair-author': (board, { manifest, revision }) => ({
+    brief: manifest.brief,
+    theme: manifest.theme,
+    revision,
+  }),
+  '02-theme-grouper': (board, { revision }) => ({
+    pairs: board.get('01-pair-author')?.pairs ?? [],
+    revision,
+  }),
   // Sets are handed to the rater with their stance made explicit: the kind of
   // question a set asks changes what the player does (design.md D-3), so it is
   // difficulty-relevant context, not decoration the rater should re-derive.
@@ -61,7 +73,7 @@ const STAGE_INPUTS = {
       stance: stanceOf(set.shape) ?? 'unknown',
     })),
   }),
-  [BOARD_STAGE]: (board) => ({ gradedSets: gradedSets(board) }),
+  [BOARD_STAGE]: (board, { revision }) => ({ gradedSets: gradedSets(board), revision }),
   '05-analogy-validator': (board) => ({ board: boardOf(board) }),
   '06-adversarial-solver': (board) => ({
     board: boardOf(board),
@@ -160,7 +172,18 @@ export async function runPipeline({
     replayOutputs(store, runId, attemptId, attempt.parentAttemptId, entryStage),
   );
 
-  const ctx = { store, runId, attemptId, llm, blackboard, budget, config, context, manifest };
+  const ctx = {
+    store,
+    runId,
+    attemptId,
+    llm,
+    blackboard,
+    budget,
+    config,
+    context,
+    manifest,
+    revision: revisionOf(store, runId, attempt),
+  };
 
   // Written after every stage, not only at the end. A process killed mid-run
   // must not lose what it already spent — otherwise each resume would start
@@ -289,6 +312,43 @@ function replayOutputs(store, runId, attemptId, parentAttemptId, entryStage) {
   return outputs;
 }
 
+/**
+ * What a revision attempt is revising: the editor's notes, and the parent's
+ * finished board.
+ *
+ * `requestRevision` has written `revision.json` since the beginning; until
+ * 2026-08-08 **nothing read it back**, so a revision was a blind re-roll of
+ * the theme and Max kept getting an entirely new board when he had asked for
+ * one small change. This function is the missing half of that channel. It is
+ * the sibling of `replayOutputs` above — that one carries forward what the
+ * parent MADE, this one carries forward what the editor SAID about it.
+ *
+ * Returns null for a fresh attempt or a resume. Degrades rather than throws: a
+ * parent that failed before producing a board still lets the notes travel,
+ * because the notes are the part that cannot be re-derived.
+ */
+function revisionOf(store, runId, attempt) {
+  if (!attempt.parentAttemptId) return null;
+
+  let revision;
+  try {
+    revision = store.readAttemptArtifact(runId, attempt.attemptId, 'revision.json');
+  } catch {
+    return null; // a child attempt that is not a revision has nothing to say
+  }
+
+  let parentBoard = null;
+  try {
+    parentBoard = store.readAttemptArtifact(runId, attempt.parentAttemptId, 'board.json');
+  } catch {
+    // The parent never finished a board. Less context, not a failure.
+  }
+
+  const notes = revision.notes ?? '';
+  if (!notes.trim() && !parentBoard) return null;
+  return { notes, fromStage: revision.fromStage ?? null, scope: revision.scope ?? null, parentBoard };
+}
+
 function runUsageBefore(store, runId, attemptId) {
   const total = { requests: 0, tokens: 0, costUsd: 0, ms: 0 };
   for (const id of store.listAttempts(runId)) {
@@ -303,9 +363,9 @@ function runUsageBefore(store, runId, attemptId) {
 // --- stages -------------------------------------------------------------
 
 async function runAgentStage(ctx, stage, { feedback: seedFeedback } = {}) {
-  const { store, runId, attemptId, llm, blackboard, budget, config, context, manifest } = ctx;
+  const { store, runId, attemptId, llm, blackboard, budget, config, context, manifest, revision } = ctx;
   const agent = loadAgent(stage.agent);
-  const input = STAGE_INPUTS[stage.id](blackboard, { manifest, config });
+  const input = STAGE_INPUTS[stage.id](blackboard, { manifest, config, revision });
   const prompt = agent.buildPrompt(input, context);
   const effort = effortFor(stage.id, config);
   const request = {

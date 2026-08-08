@@ -10,7 +10,7 @@
 // requirement lands here first — a floor downstream can only reject what this
 // stage failed to author.
 
-import { JSON_ONLY, composePrompt, parseJson, validateAgainst } from './agent-kit.js';
+import { JSON_ONLY, composePrompt, parseJson, renderRevision, validateAgainst } from './agent-kit.js';
 import { SHAPE_IDS, renderVocabulary, stanceOf } from '../corpus/vocabulary.js';
 
 export const id = 'pair-author';
@@ -43,8 +43,12 @@ export function getOutputSchema() {
 }
 
 export function buildPrompt(input = {}, context) {
-  const { brief = {}, theme = null } = input;
+  const { brief = {}, theme = null, revision = null } = input;
   const { relationshipShapes = [], count = 8, avoidShapes = [], stanceQuotas = [], varyHardestFrom = null } = brief;
+  // Leads the task, because a revision changes what the whole rest of the
+  // instruction means: "author N pairs" reads as "author a fresh pool" unless
+  // the model has already been told it is repairing an existing board.
+  const revising = renderRevision(revision);
 
   return composePrompt({
     role:
@@ -56,6 +60,7 @@ export function buildPrompt(input = {}, context) {
       'The board should make someone who cares about the subject feel recognised.',
     context,
     task: [
+      ...(revising ? [`${revising}\n`] : []),
       `Author ${count} candidate pairs.`,
       // The theme instruction used to read "Theme to work within: X", which
       // asks only that words stay inside a boundary — and the safest place

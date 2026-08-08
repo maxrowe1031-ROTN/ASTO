@@ -210,6 +210,24 @@
   previous version keeps serving, so a broken deploy is invisible from the outside
   (2026-08-05: five failed builds, most of a day stale). `.nojekyll` fixed the cause;
   the *detection* gap remains. A post-push build-status check would close it.
+- **The pair author can still truncate itself out of a run (2026-08-08, the `painting` run).**
+  01 hit the 16k ceiling, `llm.js` raised it once to 24k as designed, and it truncated again —
+  terminal, run failed, **$0.62 spent for nothing**. Same family as the stage-02 headroom entry
+  below and the same conclusion: a bigger ceiling is not the lever, because a non-streaming
+  300s timeout lands before a much larger reply finishes. The cheap lever is cutting 01's work
+  (it is shown all 36 vocabulary entries); the real one is streaming. n=1 so far — revisit if a
+  second theme dies the same way.
+- **Nothing governs tile capitalization.** `Ascent` shipped with Title Case tiles (`Piton`,
+  `Carabiner`) where every earlier board is lowercase; Max noticed and asked why. The answer is
+  that nothing decides it — not the schema, not `validate-puzzle`, not 08, which said nothing
+  about case on that run. It is the model's habit, varying run to run. Cheap fix if consistency
+  is wanted: a case rule in 01's editorial rules plus an 08 check. Not a defect until Max says
+  the boards look inconsistent side by side in the select screen.
+- **`Ascent` was published with an unactioned `revise-set` on its Green.** Max recorded
+  `revise-set` + `change-difficulty` on `set-object-component`, then approved and published the
+  board unchanged. Almost certainly deliberate (the note was minor), but nothing in the Studio
+  distinguishes "I changed my mind" from "I forgot I flagged that" — a published board carrying
+  an open set-level request is invisible. Revisit only if it happens again.
 - ~~**A proposal that fails validation twice leaves no trace at all.**~~ **Closed 2026-08-07.**
   Both empty exits from `proposeRevision` now write `revision-proposal-<attemptId>-failure.json`
   through `run-store` — category, message, what each round got wrong, the prompt, and **the

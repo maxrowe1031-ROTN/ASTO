@@ -5,7 +5,7 @@
 // It sets pairs aside explicitly rather than inventing a theme to force a
 // grouping — the GDD's stop condition.
 
-import { JSON_ONLY, asJsonBlock, composePrompt, parseJson, validateAgainst } from './agent-kit.js';
+import { JSON_ONLY, asJsonBlock, composePrompt, parseJson, renderRevision, validateAgainst } from './agent-kit.js';
 import { SHAPE_IDS, renderVocabulary, stanceOf } from '../corpus/vocabulary.js';
 
 export const id = 'theme-grouper';
@@ -52,7 +52,8 @@ export function getOutputSchema() {
 }
 
 export function buildPrompt(input = {}, context) {
-  const { pairs = [] } = input;
+  const { pairs = [], revision = null } = input;
+  const revising = renderRevision(revision);
 
   return composePrompt({
     role:
@@ -62,6 +63,9 @@ export function buildPrompt(input = {}, context) {
       'four sets that feel like four different kinds of question about one world.',
     context,
     task: [
+      // Spread rather than a conditional '': this task list is joined without
+      // filtering, so an absent revision must contribute no line at all.
+      ...(revising ? [`${revising}\n`] : []),
       'Cluster the candidate pairs into sets of exactly two pairs each.',
       'Both pairs in a set must share the same relationship in the same direction. If the second pair reverses the relation, they do not belong together.',
       'Give each set one relationship label that is true of both pairs, and its shape id from the vocabulary below.',

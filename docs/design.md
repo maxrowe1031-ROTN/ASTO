@@ -1104,6 +1104,53 @@ gap already in the backlog). If the tier dots read as scoring rather than progre
 playtest, they come off. And if losing the visible mistake count turns out to matter once
 Max has lived with it, the fix is bean pips beside the cup — the header already draws them.
 
+### D-11 — A revision has to be told what to revise (2026-08-08)
+
+**The defect, and how long it was there.** `requestRevision` has written the editor's notes
+to `revision.json` since revisions existed. **Nothing ever read them back.** Stage inputs are
+assembled by `STAGE_INPUTS`, which saw only prior stage outputs and the manifest — so a
+revision re-entering at `01-pair-author` was a **blind re-roll of the theme**: fresh pool,
+fresh grouping, fresh board, with no idea it was revising anything.
+
+**How it surfaced.** Max ran a six-theme batch on 2026-08-08 and said the same thing twice,
+on bbq and on nintendo: *"i only asked for one small change in the previous puzzle and this
+is an entirely new puzzle set. So thats something we should figure out."* Ground truth was in
+the run directory — the bbq revision's `01-pair-author/prompt.txt` contained no mention of
+`wrap:unwrap`, "too easy", or "Do not change". Both revisions were rejected, and nintendo's
+re-roll reproduced the exact flaw the brief was fixing (off-theme filler), because nothing
+told it there was a flaw.
+
+**It also re-explains 2026-08-05.** The paris revision "churned the three good sets and came
+back with the identical broken one", and that was blamed on the raw notes lacking a
+protection list. The protection list was never the problem: **no notes were traveling at
+all.** The entire brief apparatus D-5 built was writing to a channel with no receiver.
+
+**The fix.** `revisionOf()` reads the attempt's `revision.json` and the parent's `board.json`
+and puts them on the pipeline context beside `manifest` and `config` — the sibling of
+`replayOutputs`, which carries forward what the parent *made* where this carries forward what
+the editor *said*. One shared `renderRevision()` block in `agent-kit.js` leads the prompt of
+the three generative stages: the parent board, the notes verbatim, and the rule that any set
+the notes approve must survive unchanged and the board must not be re-themed or re-titled.
+
+**Not on the blackboard, deliberately.** The obvious home was `blackboard.put('revision', …)`,
+and the blackboard **rejects any key that is not a stage id**. That guard is right — the
+blackboard is stage outputs and nothing else, which is what makes an attempt reconstructable
+from its stage folders — so the revision travels as orchestration context instead.
+
+**The evaluators (05–08) stay blind, by design.** An evaluator that had read the editor's
+instructions would be marking its own homework: agreeing the asked-for change was made is not
+the same as finding the board good. Pinned by a test.
+
+**The test gap that hid it for that long.** `revision.test.js` asserted the notes were
+*recorded*, never that they *arrived*. Recording passed the whole time. The suite now reads
+the prompt the stage actually sent — the assertion that would have caught this on day one.
+
+**Deliberately not built yet:** structural carry-forward of protected sets. The prompt-level
+instruction plus the parent board is the smallest honest step. **Reconsider-when:** if a
+revision with the notes and the board in hand still churns a set the notes named as approved,
+the instruction is not enough and the protected sets need to be carried structurally rather
+than asked for.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
