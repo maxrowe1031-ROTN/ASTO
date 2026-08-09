@@ -1,0 +1,3 @@
+{"type":"attempt-completed","attemptId":"0001","boardId":"board-asto-construction-01","at":"2026-08-08T23:35:22.405Z"}
+{"type":"approve","attemptId":"0001","at":"2026-08-08T23:51:54.577Z"}
+{"type":"publish","attemptId":"0001","boardId":"board-asto-construction-01","publishedAs":"house-rules.json","publishedId":"asto-house-rules","republished":false,"at":"2026-08-08T23:51:57.297Z"}

@@ -80,14 +80,15 @@ const STAGE_INPUTS = {
       selfMatchingPairs: selfMatchingCount(set),
     })),
   }),
-  // The builder gets the hardest-stance steer as well as the author, because
-  // the builder is what actually assigns difficulty 4 (design.md D-13). Steering
-  // 01 alone only changes what is available; a pool can still be topped by the
-  // stance we are trying to move away from. Only this one field travels — the
-  // rest of the brief is 01's business.
+  // The builder gets the hardest-slot ask as well as the author, because the
+  // builder is what actually assigns difficulty 4 (design.md D-13). Steering
+  // 01 alone only changes what is available; a pool can still be topped
+  // against the ask. Only these two fields travel — the rest of the brief is
+  // 01's business.
   [BOARD_STAGE]: (board, { manifest, revision }) => ({
     gradedSets: gradedSets(board),
-    varyHardestStance: manifest?.brief?.varyHardestStance ?? null,
+    hardestStanceAsk: manifest?.brief?.hardestStanceAsk ?? [],
+    hardestStanceLean: manifest?.brief?.hardestStanceLean ?? null,
     revision,
   }),
   '05-analogy-validator': (board) => ({ board: boardOf(board) }),

@@ -1,0 +1,87 @@
+{
+  "id": "asto-board-architecture-01",
+  "title": "Building Blocks",
+  "sets": [
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "raw material converted by a process into a building material",
+      "explanation": "Clay is fired into brick and sand is melted into glass — each pair is a raw material transformed by heat into something structural.",
+      "pairs": [
+        [
+          "clay",
+          "brick"
+        ],
+        [
+          "sand",
+          "glass"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "material",
+        "process"
+      ]
+    },
+    {
+      "id": "set-tradesperson-tool",
+      "relationshipLabel": "a tradesperson and the tool of their trade",
+      "explanation": "A mason reaches for a trowel and a carpenter for a chisel — each trade is defined by the tool that does its signature work.",
+      "pairs": [
+        [
+          "mason",
+          "trowel"
+        ],
+        [
+          "carpenter",
+          "chisel"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "trade",
+        "tool"
+      ]
+    },
+    {
+      "id": "set-structural-feature",
+      "relationshipLabel": "a structural element and the feature it always has",
+      "explanation": "Every column has a capital and every vault has a keystone — the named part is a fixed, defining feature of the structure.",
+      "pairs": [
+        [
+          "column",
+          "capital"
+        ],
+        [
+          "vault",
+          "keystone"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "architecture",
+        "component"
+      ]
+    },
+    {
+      "id": "set-open-close",
+      "relationshipLabel": "the ceremony or moment that opens a project and the one that closes it",
+      "explanation": "Excavation and cornerstone-laying begin a project just as occupancy and ribbon-cutting close it out — one marks the start, the other the finish, at different scales of ceremony.",
+      "pairs": [
+        [
+          "excavation",
+          "occupancy"
+        ],
+        [
+          "cornerstone",
+          "ribbon-cutting"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "ceremony",
+        "timeline",
+        "project-stage"
+      ]
+    }
+  ]
+}

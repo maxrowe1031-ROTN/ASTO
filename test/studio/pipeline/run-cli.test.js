@@ -118,7 +118,8 @@ test('a themed CLI run carries the steers, and not the surprise-me shapes', asyn
   const { briefFor } = await import('../../../studio/run.js');
   const brief = briefFor({ index: RUTTED_INDEX, theme: 'caves', count: 14 });
 
-  assert.equal(brief.varyHardestStance, 'time', 'the stance steer did not reach a themed CLI run');
+  assert.ok(brief.hardestStanceAsk.length >= 2, 'the ask did not reach a themed CLI run');
+  assert.equal(brief.hardestStanceLean, 'time', 'the lean did not reach a themed CLI run');
   assert.equal(brief.varyHardestFrom, 'vocabulary', 'the difficulty steer did not reach a themed CLI run');
   assert.ok(Array.isArray(brief.stanceQuotas) && brief.stanceQuotas.length === 4);
   // `relationshipShapes` is what marks a run as surprise-me on the manifest.
@@ -130,7 +131,7 @@ test('a surprise-me CLI run still gets its shape brief', async () => {
   const brief = briefFor({ index: RUTTED_INDEX, theme: null, count: 14 });
 
   assert.ok(brief.relationshipShapes.length >= 2);
-  assert.equal(brief.varyHardestStance, 'time');
+  assert.equal(brief.hardestStanceLean, 'time');
 });
 
 // A CLI `--mock` run must be MARKED mock, not merely run against fixtures.

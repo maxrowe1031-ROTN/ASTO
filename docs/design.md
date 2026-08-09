@@ -1418,6 +1418,64 @@ say *publishable, not exciting*. That is D-8's craft-vs-delight gap one batch la
 **not** what this amendment fixed. It is also unmeasurable here: he judged at board level, so the
 batch carries no praise tags and D-8's per-set density comparison cannot be run on it.
 
+### D-13 second amendment — the ask is positive, and it is always on (2026-08-08)
+
+**What the second batch proved.** Six themes ran the same evening under the repaired steer,
+now aimed at `dimension` (4 of the last 8 Blacks). **Five of six Blacks came back
+`before-after` time spans** — against 1 of 6 the batch before, and against the 35% baseline
+that created D-13 — and the causation is in the builders' own words. school: *"over the
+dimensional-similarity set (also arrangement, but tagged with the 'dimension' stance this
+board deliberately avoided at the top)"*. The steer was **obeyed**, and the obedience produced
+clocks, because among arrangement-hard sets a span is always the easiest thing to author next.
+The lone escape (gardening, `rootstock : scion`) got out by going vocabulary-hard — D-8's
+original rut. An exclusion cannot diversify the slot; it can only relocate it, and the window
+mechanism would have oscillated between `time` and `dimension` indefinitely.
+
+**Max's verdicts, which sharpen the target.** Six approved, five published (architecture held
+back — *"not very juicy"*). He confirmed the diagnosis unprompted — *"clearly something in the
+agent pipeline is stuck or fixated… **All puzzles should pull from all taxonomies**"* — and
+drew the line the fix must respect: theatre's span earned **all four praise tags** (*"does it
+in an acceptable way… not overtly obvious"*). Anti-monoculture, never anti-time. He also named
+the real prize twice: houses' sign-significant set — *"two seemingly unrelated topics in the
+theme sharing similarity in their relationship. **This is truly what we are after**"* — and
+gardening's pattern-breaking Black: *"we need to support more of this action."*
+
+**The change: polarity and cadence.** `varyHardestStance` (name one stance to avoid, fire on a
+rut) is replaced by **`hardestStanceAsk`** — the 2–3 stances *least used in the hardest slot*
+(window of 8, ties by all-time count then name; all eight stances candidates) — **on every
+brief**, with **`hardestStanceLean`** naming the rut when one exists (old window and share,
+kept) so the renderers can say why. Rendered with each stance's description and a pair-level
+paradigm via `renderStanceAsk` in `corpus/vocabulary.js`, shared by 01 and 04 so the two
+stages describe the territory in the same words. This restores `variety.js`'s founding rule to
+the one lever that broke it: *the brief is positive — it asks for what is underused rather
+than saying "be different."* D-8's law is untouched: still a nudge, the genuinely hardest set
+still wins the slot, no stance is banned or reserved.
+
+**Two ride-alongs from the same review, both Max's calls:**
+
+- **The hardest material must stay in the theme's world** (01, same sentence as the ask).
+  festivals' Black was `spark : ember :: hype : exhaustion` — *"spark and ember have nothing
+  to do with festivals"* — and his own fix kept the relationship and re-themed the words.
+- **A content line the pipeline had never been told** (01 rule + 08 report-only
+  `contentConcerns`): *"at least it didn't generate anything about mass shootings, that would
+  be an automatic throw out."* Real-world violence, tragedy and disaster are never material
+  for a pair; 08 names anything that comes close, shown on the card, never gating. The
+  throw-out stays his.
+
+**Also recorded here: D-5's first success.** festivals' revision ran through the proposer's
+brief and came back exactly as asked — *"my initial feedback was implemented exactly as
+intended"* — the **6th** `proposal-verdict` and the **first executed-and-published brief**.
+Usable evidence stands at 1 published of 3 usable (the evaluator report segments the three
+pre-D-11 confounded chains out).
+
+**Reconsider-when (this amendment).** If the next batches' Blacks stop being spans
+*entirely*, the always-on ask is over-steering — theatre proved a span done well is wanted —
+and the ask should revert to firing only on a lean. If the ask is ignored and clocks persist,
+the lever has failed twice and the next conversation is about the pool itself (01's
+arrangement-hard instruction names spans' natural shape too readily). And D-7's graduation
+trigger keeps running regardless: `spanFairness` flagged all six boards correctly this batch
+and remains the deterministic half of the answer.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

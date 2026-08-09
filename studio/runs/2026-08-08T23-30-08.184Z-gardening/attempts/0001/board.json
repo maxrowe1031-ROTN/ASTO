@@ -1,0 +1,86 @@
+{
+  "id": "board-garden-analogies",
+  "title": "In the Garden",
+  "sets": [
+    {
+      "id": "set-worker-tool",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A gardener wields a trowel just as an arborist wields a chainsaw — each worker paired with the instrument that defines their trade.",
+      "pairs": [
+        [
+          "gardener",
+          "trowel"
+        ],
+        [
+          "arborist",
+          "chainsaw"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "tool",
+        "object-instrument"
+      ]
+    },
+    {
+      "id": "set-plant-family",
+      "relationshipLabel": "plant family and a member species",
+      "explanation": "Nightshade contains the tomato and legume contains the pea — each pair links a plant family to one of its familiar members.",
+      "pairs": [
+        [
+          "nightshade",
+          "tomato"
+        ],
+        [
+          "legume",
+          "pea"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "botany",
+        "category"
+      ]
+    },
+    {
+      "id": "set-season-span",
+      "relationshipLabel": "start of a growing or dormancy span and its end",
+      "explanation": "Sowing leads to harvest and frost leads to thaw — each pair marks the start and close of a seasonal span.",
+      "pairs": [
+        [
+          "sowing",
+          "harvest"
+        ],
+        [
+          "frost",
+          "thaw"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "season",
+        "cycle"
+      ]
+    },
+    {
+      "id": "set-enabling-support",
+      "relationshipLabel": "the part or support that lets another part grow",
+      "explanation": "A rootstock lets a scion grow and a trellis lets a climber grow — each pair names a support structure and the growth it enables.",
+      "pairs": [
+        [
+          "rootstock",
+          "scion"
+        ],
+        [
+          "trellis",
+          "climber"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "gardening jargon",
+        "support"
+      ]
+    }
+  ]
+}

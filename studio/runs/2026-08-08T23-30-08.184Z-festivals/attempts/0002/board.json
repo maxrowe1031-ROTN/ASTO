@@ -1,0 +1,86 @@
+{
+  "id": "board-astro-fest-1",
+  "title": "Festival Grounds",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A sound engineer works a mixing board the same way a lighting designer works a rig — each role names its one essential instrument.",
+      "pairs": [
+        [
+          "sound engineer",
+          "mixing board"
+        ],
+        [
+          "lighting designer",
+          "rig"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "crew",
+        "equipment"
+      ]
+    },
+    {
+      "id": "set-collection-member",
+      "relationshipLabel": "collection and the kind of thing it is made of",
+      "explanation": "A campground is just its tents and a market row is just its stalls — the whole is nothing but many of the part.",
+      "pairs": [
+        [
+          "campground",
+          "tent"
+        ],
+        [
+          "market row",
+          "artisan stall"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "venue",
+        "vendor-space"
+      ]
+    },
+    {
+      "id": "set-location-product",
+      "relationshipLabel": "place and what it exists to produce",
+      "explanation": "Each place is defined by the single product it was set up to deliver — tacos from the truck, beer from the tent.",
+      "pairs": [
+        [
+          "taco truck",
+          "street tacos"
+        ],
+        [
+          "brewery tent",
+          "craft beer"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "food-vendor",
+        "drink-vendor"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "start and end of one span",
+      "explanation": "A show ends as an encore and hype ends as exhaustion — both pairs trace the same arc from opening to burnout.",
+      "pairs": [
+        [
+          "opening act",
+          "encore"
+        ],
+        [
+          "hype",
+          "exhaustion"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "mood-arc",
+        "show-arc"
+      ]
+    }
+  ]
+}

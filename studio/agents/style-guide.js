@@ -86,6 +86,24 @@ const SCHEMA = {
         },
       },
     },
+    // Report-only, like everything else this stage renders (design.md D-13,
+    // second amendment). Max on the school board: "at least it didn't generate
+    // anything about mass shootings, that would be an automatic throw out" —
+    // the throw-out is HIS, so this only names what he should look at.
+    // Optional: an output without the field predates it, and the evaluator
+    // report's boundary rule applies — absence is "could not report", not a
+    // clean bill.
+    contentConcerns: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['word', 'note'],
+        properties: {
+          word: { type: 'string', minLength: 1 },
+          note: { type: 'string', minLength: 1 },
+        },
+      },
+    },
   },
 };
 
@@ -127,6 +145,11 @@ export function buildPrompt(input = {}, context) {
       '  - "generic": the most basic terms associated with the subject, arranged correctly. Technically fine, nothing learned, nothing felt.',
       'Unity is the floor here, not the evidence — a board of a subject\'s most obvious nouns will always be perfectly unified, and that is exactly the failure this verdict exists to catch.',
       'In "generic", name each word that settles for the general when a sharper one exists, and give the sharper one in "suggestion" where you can — "Stealie" for "Steal Your Face logo", "woodshop" for "workshop". A word only belongs here if the replacement would still be recognisable; swapping in something nobody knows is a different failure, not a fix.',
+      '',
+      // Report-only, never a verdict: the editor called this class of content
+      // "an automatic throw out", so the throw-out is his to make — this pass
+      // only makes sure nothing in it reaches him unexamined.
+      'Finally, CONTENT: name in "contentConcerns" any word or set that touches real-world violence, tragedy, disaster, or anything a player could reasonably find distressing — this is a cozy game, and such material is out of register whatever the theme. An empty list is the normal answer; do not manufacture concerns. This is a flag for the editor, not a judgement on the board.',
       'This is one pass. Do not iterate.',
     ].join('\n'),
     data: asJsonBlock(
@@ -136,7 +159,7 @@ export function buildPrompt(input = {}, context) {
       ),
     ),
     outputRules: [
-      'Return { "edits": [ { "setId", "field", "suggestion", "reason" } ], "compliant": true or false, "unity": { "verdict", "reasoning", "outliers": [ { "word", "note" } ] }, "evocativeness": { "verdict", "reasoning", "generic": [ { "word", "suggestion", "note" } ] } }.',
+      'Return { "edits": [ { "setId", "field", "suggestion", "reason" } ], "compliant": true or false, "unity": { "verdict", "reasoning", "outliers": [ { "word", "note" } ] }, "evocativeness": { "verdict", "reasoning", "generic": [ { "word", "suggestion", "note" } ] }, "contentConcerns": [ { "word", "note" } ] }.',
       '"field" is one of relationshipLabel, explanation, title — the one your "suggestion" would replace.',
       '"unity.verdict" is one of strong, adequate, weak. "evocativeness.verdict" is one of strong, adequate, generic.',
       'If everything is in voice, return "compliant": true and an empty "edits".',

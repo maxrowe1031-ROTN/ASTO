@@ -11,7 +11,7 @@
 // stage failed to author.
 
 import { JSON_ONLY, composePrompt, parseJson, renderRevision, validateAgainst } from './agent-kit.js';
-import { SHAPE_IDS, renderVocabulary, stanceOf } from '../corpus/vocabulary.js';
+import { SHAPE_IDS, renderStanceAsk, renderVocabulary, stanceOf } from '../corpus/vocabulary.js';
 import { renderArrangementHard } from '../corpus/examples.js';
 
 export const id = 'pair-author';
@@ -51,7 +51,8 @@ export function buildPrompt(input = {}, context) {
     avoidShapes = [],
     stanceQuotas = [],
     varyHardestFrom = null,
-    varyHardestStance = null,
+    hardestStanceAsk = [],
+    hardestStanceLean = null,
   } = brief;
   // Leads the task, because a revision changes what the whole rest of the
   // instruction means: "author N pairs" reads as "author a fresh pool" unless
@@ -114,16 +115,37 @@ export function buildPrompt(input = {}, context) {
         : varyHardestFrom === 'arrangement'
           ? 'The last few boards all got their hardest set from ARRANGEMENT. This pool may reach its top tier through a word that belongs to the subject instead, if the theme offers one worth knowing.'
           : '',
-      // design.md D-13, and the sibling of the nudge above. D-8 stopped every
-      // Black being a rare word; the space that opened filled with clocks —
-      // 19 of 54 hardest sets were a TIME question, against 17% for the next
-      // stance. Phrased to sit beside the stance quota rather than fight it:
-      // the quota may legitimately ask for this very stance on this very board,
-      // and a time set at difficulty 1 or 2 was never the problem.
-      varyHardestStance
-        ? `Recent boards have kept making their HARDEST set a ${varyHardestStance.toUpperCase()} question. A ${varyHardestStance} pair is still welcome on this board — just make sure the pool's most demanding material asks a different kind of question, so the top tier is not that stance again.`
+      // design.md D-13, second amendment. The first version of this sentence
+      // named one stance to AVOID and fired only on a rut — and the batch that
+      // tested it proved an exclusion can only relocate the slot: told to
+      // avoid `dimension`, five of six boards topped out on a time span, the
+      // easiest arrangement-hard set to author next. So the ask is positive
+      // and always on: name where the underused hardest-slot territory is,
+      // with the lean explaining WHY when there is one. Max's instruction:
+      // "All puzzles should pull from all taxonomies." Still a nudge — he
+      // approved five span Blacks the same evening he asked for this — and
+      // the quota may legitimately want any of these stances lower down too.
+      hardestStanceAsk.length > 0
+        ? [
+            hardestStanceLean
+              ? `Recent boards have kept making their HARDEST set a ${hardestStanceLean.toUpperCase()} question, and the top tier is where sameness shows first.`
+              : 'The top tier is where sameness shows first.',
+            `Kinds of question underused in the hardest slot so far: ${renderStanceAsk(hardestStanceAsk)}.`,
+            'Give the pool at least one matched group hard enough for the top tier that asks one of THESE kinds of question. Any stance is still welcome anywhere — this names where fresh territory is, not what is banned.',
+            // Ride-along from the festivals board (design.md D-13, second
+            // amendment): its Black was `spark : ember :: hype : exhaustion`
+            // on a FESTIVALS board — the hardest material had drifted out of
+            // the theme's world entirely, and Max's own fix kept the
+            // relationship and re-themed the words.
+            "The hardest material must live inside the theme's world as surely as the easiest does — difficulty is never a licence to leave the subject.",
+          ].join(' ')
         : '',
       'The order of a pair must matter: A : B should not read the same as B : A. A pair whose direction is reversible is a weak pair.',
+      // Max, reviewing the school board (design.md D-13, second amendment):
+      // "at least it didn't generate anything about mass shootings, that would
+      // be an automatic throw out." The pipeline had never been told. ASTO is
+      // a cozy game; this is the one place the register is non-negotiable.
+      'Real-world violence, tragedy and disaster are never material for a pair, whatever the theme offers — school shootings, abuse, atrocities, fatal accidents. A word a player could reasonably find distressing has no place on a cozy board.',
       // design.md D-12, from Max's own reading of the boards. A pair that
       // shares visible text couples itself on sight — the player matches the
       // words the way you match two socks, and the relationship the set is
