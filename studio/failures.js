@@ -32,15 +32,31 @@ const RETRYABLE_ERROR_CODES = new Set([
   'UND_ERR_SOCKET',
 ]);
 
+// An HTTP error's body is where the reason lives. The transport throws with
+// the response body as the error MESSAGE, and this function used to rebuild
+// `HTTP 400` bare — which cost two batches on 2026-08-09 alone: both died on
+// instant 400s that were actually "credit balance is too low", diagnosable
+// only by noticing every request at the tail of a batch failed in ~150ms.
+// Truncated because the record is for reading, not archiving: the API's JSON
+// error fits comfortably; an HTML error page from a proxy would not.
+const MAX_BODY_IN_MESSAGE = 400;
+
+const bodyOf = (error) => {
+  const body = String(error?.message ?? '').trim();
+  if (!body) return null;
+  return body.length > MAX_BODY_IN_MESSAGE ? `${body.slice(0, MAX_BODY_IN_MESSAGE)}…` : body;
+};
+
 export function classifyTransportError(error) {
   const status = error?.status;
   if (typeof status === 'number') {
     // 429 = rate limited, 5xx = overloaded or transient. Everything else in
     // 4xx is our request being wrong — retrying sends the same wrong request.
     const category = status === 429 || status >= 500 ? RETRYABLE_TRANSPORT : TERMINAL_CONTENT;
+    const body = bodyOf(error);
     return {
       category,
-      message: `HTTP ${status}`,
+      message: body ? `HTTP ${status}: ${body}` : `HTTP ${status}`,
       ...(error.retryAfterSeconds !== undefined
         ? { retryAfterSeconds: error.retryAfterSeconds }
         : {}),

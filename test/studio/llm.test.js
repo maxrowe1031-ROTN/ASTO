@@ -59,6 +59,31 @@ test('the record keeps the full prompt and response — the demo depends on it',
   assert.equal(record.response, 'the answer');
 });
 
+// The 2026-08-09 scar, pinned end to end: a 400 whose body says "credit
+// balance is too low" must surface that sentence in BOTH places a reader
+// looks — the thrown StudioFailure's message (→ failure.json) and the
+// per-attempt request record (→ request.failed.json).
+test("a refused request's body reaches the failure message and the request record", async () => {
+  const refusal = Object.assign(
+    new Error('{"type":"error","error":{"message":"Your credit balance is too low to access the Anthropic API."}}'),
+    { status: 400 },
+  );
+  const transport = scriptedTransport([refusal]);
+  const llm = createLlm({ transport });
+
+  await assert.rejects(
+    () => llm.send(request),
+    (error) => {
+      assert.ok(error instanceof StudioFailure);
+      assert.equal(error.category, TERMINAL_CONTENT);
+      assert.match(error.message, /HTTP 400: .*credit balance is too low/);
+      assert.equal(error.requests.length, 1);
+      assert.match(error.requests[0].error, /credit balance is too low/);
+      return true;
+    },
+  );
+});
+
 test('a retryable transport failure is retried and can then succeed', async () => {
   const transport = scriptedTransport([
     Object.assign(new Error('overloaded'), { status: 529 }),

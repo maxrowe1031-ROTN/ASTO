@@ -46,6 +46,34 @@ test('a retry-after hint is carried through for the caller to honor', () => {
   assert.equal(failure.retryAfterSeconds, 12);
 });
 
+// The body is where the reason lives. Two batches on 2026-08-09 died with six
+// records saying only "HTTP 400" while the API's actual answer was "credit
+// balance is too low" — a billing problem wearing a request-error status,
+// diagnosable only by a hand-written probe the record should have replaced.
+test("an HTTP error's body rides in the message — the status alone is not a reason", () => {
+  const error = Object.assign(
+    new Error('{"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API."}}'),
+    { status: 400 },
+  );
+  const failure = classifyTransportError(error);
+  assert.match(failure.message, /^HTTP 400: /);
+  assert.match(failure.message, /credit balance is too low/);
+});
+
+test('a bodyless HTTP error still reads as before, and a huge body is truncated', () => {
+  assert.equal(classifyTransportError({ status: 400 }).message, 'HTTP 400');
+  assert.equal(
+    classifyTransportError(Object.assign(new Error('   '), { status: 400 })).message,
+    'HTTP 400',
+  );
+
+  const failure = classifyTransportError(
+    Object.assign(new Error('x'.repeat(5000)), { status: 400 }),
+  );
+  assert.ok(failure.message.length < 500, 'an HTML error page must not flood the record');
+  assert.match(failure.message, /…$/);
+});
+
 // --- output failures ---
 
 test('malformed JSON and schema violations are retryable output failures', () => {
