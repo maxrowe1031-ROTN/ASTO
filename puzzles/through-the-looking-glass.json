@@ -1,0 +1,82 @@
+{
+  "id": "asto-through-the-looking-glass",
+  "title": "Through the Looking Glass",
+  "sets": [
+    {
+      "id": "set-mirror-collection",
+      "relationshipLabel": "a collection and the kind of thing it is made of",
+      "explanation": "A mirror maze is built from fun house mirrors and a disco ball is built from mirror tiles — each collection is simply made of its named unit.",
+      "pairs": [
+        [
+          "mirror maze",
+          "fun house mirror"
+        ],
+        [
+          "disco ball",
+          "mirror tile"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "mirror maze could be mistaken for a mirror-type in the enabling-agent set"
+      ]
+    },
+    {
+      "id": "set-enabling-agent",
+      "relationshipLabel": "the thing that lets another thing happen",
+      "explanation": "A one-way mirror enables surveillance and a convex mirror enables a wide-angle view — each mirror's shape is the mechanism that makes the effect possible.",
+      "pairs": [
+        [
+          "one-way mirror",
+          "surveillance"
+        ],
+        [
+          "convex mirror",
+          "wide-angle view"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "mirror types could be mistaken for the sign-significant set's mirrors"
+      ]
+    },
+    {
+      "id": "set-sign-significant",
+      "relationshipLabel": "a signal and the thing it announces",
+      "explanation": "In folk belief a cracked mirror signals coming misfortune and a tarnished mirror signals age — the mirror's state stands for a meaning beyond itself.",
+      "pairs": [
+        [
+          "cracked mirror",
+          "misfortune"
+        ],
+        [
+          "tarnished mirror",
+          "age"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "cracked mirror echoes cracking in the before-after set"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "two moments facing each other across a glass object's lifespan",
+      "explanation": "Installation and shattering bookend a mirror's working life, just as casting and cracking bookend the moment of its making — same shape, different scale.",
+      "pairs": [
+        [
+          "installation",
+          "shattering"
+        ],
+        [
+          "casting",
+          "cracking"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "shattering suggests the misfortune of the sign-significant set"
+      ]
+    }
+  ]
+}

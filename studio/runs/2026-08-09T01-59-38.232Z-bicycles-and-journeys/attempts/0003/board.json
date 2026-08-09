@@ -1,0 +1,84 @@
+{
+  "id": "board-cycling-analogies",
+  "title": "The Long Ride",
+  "sets": [
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "raw material becomes finished part through manufacture",
+      "explanation": "Steel is worked into a frame and rubber into a tire — each pair is a material transformed by making, not just a thing that has a part.",
+      "pairs": [
+        [
+          "steel",
+          "frame"
+        ],
+        [
+          "rubber",
+          "tire"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "bike parts"
+      ]
+    },
+    {
+      "id": "set-directional",
+      "relationshipLabel": "the moment a journey begins and the moment it ends",
+      "explanation": "A race has its start and finish, a trip its departure and arrival — each pair names the two fixed endpoints of the same journey, in that order.",
+      "pairs": [
+        [
+          "start",
+          "finish"
+        ],
+        [
+          "departure",
+          "arrival"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "journey",
+        "time"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a kind of thing and one of them by name",
+      "explanation": "A pass and a trail are categories; the Stelvio and the Camino de Santiago are specific, named instances of each.",
+      "pairs": [
+        [
+          "pass",
+          "Stelvio"
+        ],
+        [
+          "trail",
+          "Camino de Santiago"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "journey",
+        "named places"
+      ]
+    },
+    {
+      "id": "set-role-marker",
+      "relationshipLabel": "a role and the object that marks it",
+      "explanation": "The overall leader wears the yellow jersey and the best climber wears the polka dot jersey — a race role signaled by its distinctive garment.",
+      "pairs": [
+        [
+          "leader",
+          "yellow jersey"
+        ],
+        [
+          "climber",
+          "polka dot jersey"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "cycling terms"
+      ]
+    }
+  ]
+}

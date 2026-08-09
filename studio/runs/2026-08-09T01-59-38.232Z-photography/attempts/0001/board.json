@@ -1,0 +1,86 @@
+{
+  "id": "board-darkroom-analogies",
+  "title": "In the Darkroom",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A photographer works with a camera just as a darkroom technician works with an enlarger — each pair names a worker and the tool that defines their craft.",
+      "pairs": [
+        [
+          "photographer",
+          "camera"
+        ],
+        [
+          "darkroom technician",
+          "enlarger"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "camera also suggests object-component with lens/enlarger",
+        "enlarger overlaps in feel with concealment's lens cap"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "a source converted through a process into its result",
+      "explanation": "A negative becomes a print and an exposure becomes a photograph — each pair is a raw source transformed by a process into its finished output.",
+      "pairs": [
+        [
+          "negative",
+          "print"
+        ],
+        [
+          "exposure",
+          "photograph"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "exposure looks like it belongs with expose in the before-after set",
+        "photograph echoes camera from the agent-instrument set"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "opening and closing moments of one process",
+      "explanation": "Loading film starts the cycle that develop finishes, and exposing the shot starts the cycle that fix locks in — each pair marks the first and last step of the same darkroom sequence.",
+      "pairs": [
+        [
+          "load",
+          "develop"
+        ],
+        [
+          "expose",
+          "fix"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "expose nearly matches exposure from the conversion set",
+        "develop and fix sound like they could pair with each other instead"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "a cover and the true thing it hides",
+      "explanation": "A darkslide hides the film inside a holder and a lens cap hides the lens itself — each pair is a cover paired with the thing it conceals from light.",
+      "pairs": [
+        [
+          "darkslide",
+          "film"
+        ],
+        [
+          "lens cap",
+          "lens"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "lens recalls enlarger's lens from the agent-instrument set",
+        "film recalls negative and photograph from the conversion set"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "id": "board-cycling-analogies",
+  "title": "The Long Ride",
+  "sets": [
+    {
+      "id": "set-directional",
+      "relationshipLabel": "two ends of one axis of movement",
+      "explanation": "Ascent and descent, outbound and inbound each name the opposite poles of a single line of travel.",
+      "pairs": [
+        [
+          "ascent",
+          "descent"
+        ],
+        [
+          "outbound",
+          "inbound"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "journey",
+        "opposites"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "raw material becomes finished part through manufacture",
+      "explanation": "Steel is worked into a frame and rubber into a tire — each pair is a material transformed by making, not just a thing that has a part.",
+      "pairs": [
+        [
+          "steel",
+          "frame"
+        ],
+        [
+          "rubber",
+          "tire"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "bike parts"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "two moments facing each other across one journey",
+      "explanation": "Departure faces arrival and prologue faces final stage — the first and last markers of a single journey, whether a trip or a stage race.",
+      "pairs": [
+        [
+          "departure",
+          "arrival"
+        ],
+        [
+          "prologue",
+          "final stage"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "journey",
+        "cycling terms"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a kind of thing and one of them by name",
+      "explanation": "A pass and a trail are categories; the Stelvio and the Camino de Santiago are specific, named instances of each.",
+      "pairs": [
+        [
+          "pass",
+          "Stelvio"
+        ],
+        [
+          "trail",
+          "Camino de Santiago"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "journey",
+        "named places"
+      ]
+    }
+  ]
+}
