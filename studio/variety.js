@@ -28,6 +28,7 @@ import {
   PORTABLE_STANCES,
   SHAPES,
   SHIPPED_LABELS,
+  STANCES,
   isNameable,
   resolveShape,
   stanceOf,
@@ -302,7 +303,7 @@ export function buildVarietyBrief({ index, count = 8 } = {}) {
     avoidShapes,
     stanceQuotas: buildStanceQuotas({ index }),
     ...leanAgainstRecentDifficulty(index),
-    ...leanAgainstRecentStance(index),
+    ...askForHardestSlot(index),
   };
 }
 
@@ -370,32 +371,63 @@ const RUT_LENGTH = 3;
 const HARDEST_WINDOW = 8;
 const HARDEST_SHARE = 0.5;
 
+/** How many underused stances the hardest-slot ask names. */
+const ASK_COUNT = 3;
+
 /**
- * The stance that has been eating the hardest slot (design.md D-13).
+ * The hardest-slot ask (design.md D-13, second amendment): POSITIVE and
+ * ALWAYS ON.
  *
- * Deliberately NOT paired with an `avoidStances` sibling keyed to overall
- * usage, though that was the first design. The corpus refuses it: across all
- * sets the stances are well balanced — cause 19%, possession 18%, event 18%,
- * time 17% — so a lever reading total counts would fire on `cause` and do
- * nothing whatever about the rut. The monoculture lives ONLY in the hardest
- * slot, where time holds 35% against a next-best 17%. Steer the slot, not the
- * corpus.
+ * Its predecessor (`varyHardestStance`) named one stance to avoid and fired
+ * only on a rut — the one negative lever in a file whose founding rule is
+ * that the brief asks for what is underused rather than saying "be
+ * different". The 2026-08-08 evening batch measured what a negative buys:
+ * told to avoid `dimension`, five of six boards topped out on a `time` span,
+ * three builders citing the steer as their reason, and the sixth escaped only
+ * through a rare word — D-8's original rut. An exclusion can only relocate
+ * the slot, because among arrangement-hard sets a span is always the easiest
+ * thing to author next. Max's instruction, from his own review of that batch:
+ * "All puzzles should pull from all taxonomies."
+ *
+ * So the ask names the 2–3 stances LEAST used in the hardest slot — ranked in
+ * the recent window, ties broken by all-time count and then by name, so the
+ * same library always produces the same brief. All eight stances are
+ * candidates: this is a nudge for one slot, not a quota, so the portable-five
+ * restriction that governs `stanceQuotas` does not apply. The rutted stance
+ * can never be asked for, because it is by definition the most used.
+ *
+ * `hardestStanceLean` still names the rut when one exists (the old window and
+ * share, kept with their calibration) — the renderers use it to say WHY the
+ * ask matters — but the ask itself rides on every brief. Anti-monoculture,
+ * never anti-anything: Max approved five span Blacks the same evening he
+ * asked for this, and D-8's law stands — no stance is banned, no tier is
+ * reserved.
  */
-function leanAgainstRecentStance(index) {
+function askForHardestSlot(index) {
   const stances = index?.hardestStances ?? [];
-  if (stances.length < HARDEST_WINDOW) return {};
-
   const window = stances.slice(-HARDEST_WINDOW);
-  const tally = new Map();
-  for (const stance of window) tally.set(stance, (tally.get(stance) ?? 0) + 1);
-  // Ties break on name, like every other ordering in this file, so the same
-  // library always produces the same brief.
-  const [stance, used] = [...tally.entries()].sort(
-    (a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1),
-  )[0];
 
-  if (used / HARDEST_WINDOW < HARDEST_SHARE) return {};
-  return { varyHardestStance: stance };
+  const windowCounts = new Map();
+  for (const stance of window) windowCounts.set(stance, (windowCounts.get(stance) ?? 0) + 1);
+  const allTimeCounts = new Map();
+  for (const stance of stances) allTimeCounts.set(stance, (allTimeCounts.get(stance) ?? 0) + 1);
+
+  const hardestStanceAsk = STANCES.map((stance) => stance.id)
+    .sort(
+      (a, b) =>
+        (windowCounts.get(a) ?? 0) - (windowCounts.get(b) ?? 0) ||
+        (allTimeCounts.get(a) ?? 0) - (allTimeCounts.get(b) ?? 0) ||
+        (a < b ? -1 : 1),
+    )
+    .slice(0, ASK_COUNT);
+
+  const lean =
+    window.length >= HARDEST_WINDOW
+      ? [...windowCounts.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))[0]
+      : null;
+  const hasLean = lean !== null && lean[1] / HARDEST_WINDOW >= HARDEST_SHARE;
+
+  return { hardestStanceAsk, ...(hasLean ? { hardestStanceLean: lean[0] } : {}) };
 }
 
 function leanAgainstRecentDifficulty(index) {

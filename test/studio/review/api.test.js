@@ -782,7 +782,8 @@ test('a themed run carries both steers but not the surprise-me shapes', async ()
       count: 14,
       stanceQuotas: ['inclusion', 'time', 'event', 'possession'],
       varyHardestFrom: 'vocabulary',
-      varyHardestStance: 'time',
+      hardestStanceAsk: ['absence', 'dimension'],
+      hardestStanceLean: 'time',
     }),
   });
   try {
@@ -798,7 +799,8 @@ test('a themed run carries both steers but not the surprise-me shapes', async ()
     const { brief } = detail.body.manifest;
 
     assert.equal(brief.varyHardestFrom, 'vocabulary', 'the difficulty steer did not reach a themed run');
-    assert.equal(brief.varyHardestStance, 'time', 'the stance steer did not reach a themed run');
+    assert.deepEqual(brief.hardestStanceAsk, ['absence', 'dimension'], 'the ask did not reach a themed run');
+    assert.equal(brief.hardestStanceLean, 'time', 'the lean did not reach a themed run');
     // Still the surprise-me marker, and still not on a themed run.
     assert.equal(brief.relationshipShapes, undefined);
     assert.deepEqual(brief.stanceQuotas, ['inclusion', 'time', 'event', 'possession']);
@@ -817,7 +819,7 @@ test('no rut, no steer — a themed brief stays exactly as it was', async () => 
     const detail = await api.handle({ method: 'GET', path: `/api/runs/${body.runs[0].runId}` });
     const { brief } = detail.body.manifest;
     assert.equal('varyHardestFrom' in brief, false);
-    assert.equal('varyHardestStance' in brief, false);
+    assert.equal('hardestStanceLean' in brief, false);
   } finally {
     cleanup();
   }
@@ -831,7 +833,7 @@ test('a surprise-me run still carries the shape brief', async () => {
       relationshipShapes: ['conversion'],
       avoidShapes: ['sequence'],
       stanceQuotas: ['time'],
-      varyHardestStance: 'time',
+      hardestStanceAsk: ['absence'],
     }),
   });
   try {
@@ -841,7 +843,7 @@ test('a surprise-me run still carries the shape brief', async () => {
     const { brief } = detail.body.manifest;
     assert.deepEqual(brief.relationshipShapes, ['conversion']);
     assert.deepEqual(brief.avoidShapes, ['sequence']);
-    assert.equal(brief.varyHardestStance, 'time');
+    assert.deepEqual(brief.hardestStanceAsk, ['absence']);
   } finally {
     cleanup();
   }

@@ -464,65 +464,81 @@ test('the steer reaches the pair author as a nudge, and is silent otherwise', as
   assert.ok(!/top tier through arrangement/.test(without));
 });
 
-// --- the stance rut (design.md D-13) ---
+// --- the hardest-slot ask (design.md D-13, second amendment) ---
 //
-// D-8's steer stopped every Black being a rare word. What filled the space was
-// a clock: 19 of 54 hardest sets were a TIME question, against 17% for the next
-// stance. These pin the second axis, and specifically pin the two design
-// choices the corpus forced — a window rather than a run, and no sibling lever
-// keyed to overall stance usage.
+// D-8's steer stopped every Black being a rare word; what filled the space was
+// a clock. The FIRST stance lever named one stance to avoid and fired on a
+// rut — and the batch that tested it (2026-08-08 evening) proved an exclusion
+// only relocates the slot: told to avoid `dimension`, five of six boards
+// topped out on a time span, three builders citing the steer as their reason,
+// and the sixth escaped through a rare word. So the lever is now POSITIVE and
+// ALWAYS ON: every brief names the 2-3 stances least used in the hardest
+// slot, with the old lean kept as the explanation when a rut exists. Max:
+// "All puzzles should pull from all taxonomies."
 
 const stanceIndex = (hardestStances) => ({ counts: {}, recent: [], unknown: 0, hardestStances });
 
-test('a stance eating half the recent hardest slots asks the next board to vary', () => {
+test('the ask is on every brief — even a varied history names underused territory', () => {
+  const varied = buildVarietyBrief({
+    index: stanceIndex(['time', 'cause', 'time', 'event', 'inclusion', 'possession', 'time', 'dimension']),
+    count: 8,
+  });
+  // Varied enough that the OLD lever said nothing — the always-on ask still
+  // names the stances the hardest slot has never used.
+  assert.deepEqual(varied.hardestStanceAsk, ['absence', 'reference', 'cause']);
+  assert.equal(varied.hardestStanceLean, undefined, 'no rut, so nothing to lean against');
+
+  const empty = buildVarietyBrief({ index: stanceIndex([]), count: 8 });
+  assert.equal(empty.hardestStanceAsk.length, 3, 'an empty library still gets an ask');
+});
+
+test('the rutted stance can never be asked for, and the lean names it', () => {
   const brief = buildVarietyBrief({
     index: stanceIndex(['time', 'time', 'time', 'time', 'cause', 'event', 'inclusion', 'possession']),
     count: 8,
   });
-  assert.equal(brief.varyHardestStance, 'time');
+  assert.equal(brief.hardestStanceLean, 'time', 'four of eight is the calibrated half-share');
+  assert.ok(!brief.hardestStanceAsk.includes('time'), 'the most-used stance cannot be underused');
+  assert.deepEqual(brief.hardestStanceAsk, ['absence', 'dimension', 'reference']);
 });
 
-// The rule this replaced. D-8's axis has two values, so "the last three are
-// identical" is a strong signal there; stance has eight, and the transplanted
-// rule fired on 5 of 52 windows of real history — including NOT firing on the
-// evening Max complained, whose last three Blacks were time, dimension,
-// possession. A window is the point, not an implementation detail.
-test('a run of three is not enough on an eight-valued axis', () => {
-  const brief = buildVarietyBrief({
+test('below the half-share, or below the window, there is an ask but no lean', () => {
+  const threeOfEight = buildVarietyBrief({
     index: stanceIndex(['cause', 'inclusion', 'event', 'possession', 'dimension', 'time', 'time', 'time']),
     count: 8,
   });
-  assert.equal(brief.varyHardestStance, undefined, 'three of eight is not a rut');
+  assert.equal(threeOfEight.hardestStanceLean, undefined, 'three of eight is not a rut');
+  assert.ok(threeOfEight.hardestStanceAsk.length > 0);
+
+  const shortHistory = buildVarietyBrief({ index: stanceIndex(['time', 'time', 'time']), count: 8 });
+  assert.equal(shortHistory.hardestStanceLean, undefined, 'shorter than the window is not evidence of a rut');
+  assert.ok(!shortHistory.hardestStanceAsk.includes('time'));
 });
 
-// The same shape as D-8's load-bearing test, and for the same reason: a rule
-// that reserves the hardest slot away from a stance would be the opposite
-// monoculture. A balanced history must say nothing.
-test('a varied hardest-slot history carries no stance steer', () => {
-  for (const history of [
-    ['time', 'cause', 'time', 'event', 'inclusion', 'possession', 'time', 'dimension'],
-    ['cause', 'event', 'inclusion', 'possession', 'dimension', 'reference', 'time', 'absence'],
-    ['time', 'time', 'time'], // shorter than the window — not enough evidence yet
-    [],
-  ]) {
-    const brief = buildVarietyBrief({ index: stanceIndex(history), count: 8 });
-    assert.equal(brief.varyHardestStance, undefined, JSON.stringify(history));
-  }
+// Window count first, then ALL-TIME count, then name — so a stance heavily
+// used before the window does not sneak back in on an alphabetical tie.
+test('the ask ranks by window, then all-time, then name', () => {
+  const history = [
+    'cause', 'cause', // older than the window
+    'inclusion', 'possession', 'event', 'cause', 'time', 'dimension', 'reference', 'absence',
+  ];
+  const brief = buildVarietyBrief({ index: stanceIndex(history), count: 8 });
+  // Window: all eight tied at one use. All-time breaks the tie: cause has
+  // three, so it drops out of the bottom three despite its alphabetical rank.
+  assert.deepEqual(brief.hardestStanceAsk, ['absence', 'dimension', 'event']);
 });
 
-// Ties break on name like every other ordering in the file, so the same
-// library always produces the same brief.
-test('a tie for the rutted stance breaks deterministically', () => {
+test('the ask is deterministic — the same library always produces the same brief', () => {
   const history = ['time', 'time', 'time', 'time', 'cause', 'cause', 'cause', 'cause'];
   const first = buildVarietyBrief({ index: stanceIndex(history), count: 8 });
   const again = buildVarietyBrief({ index: stanceIndex(history), count: 8 });
-  assert.equal(first.varyHardestStance, again.varyHardestStance);
-  assert.equal(first.varyHardestStance, 'cause', 'alphabetical on a tie');
+  assert.deepEqual(first.hardestStanceAsk, again.hardestStanceAsk);
+  assert.equal(first.hardestStanceLean, again.hardestStanceLean);
 });
 
 // Both steers are independent — a board can be in both ruts at once, and
 // neither should suppress the other.
-test('the two steers ride the same brief without colliding', () => {
+test('the difficulty steer and the ask ride the same brief without colliding', () => {
   const brief = buildVarietyBrief({
     index: {
       counts: {},
@@ -534,29 +550,63 @@ test('the two steers ride the same brief without colliding', () => {
     count: 8,
   });
   assert.equal(brief.varyHardestFrom, 'arrangement');
-  assert.equal(brief.varyHardestStance, 'time');
+  assert.equal(brief.hardestStanceLean, 'time');
+  assert.ok(brief.hardestStanceAsk.length > 0);
 });
 
-test('the stance steer reaches BOTH the author and the builder', async () => {
+test('the ask reaches BOTH the author and the builder, with its paradigm teaching', async () => {
   const author = await import('../../studio/agents/pair-author.js');
   const builder = await import('../../studio/agents/board-builder.js');
 
-  const authored = author.buildPrompt({ theme: 'caves', brief: { count: 8, varyHardestStance: 'time' } }, {});
+  const authored = author.buildPrompt(
+    { theme: 'caves', brief: { count: 8, hardestStanceAsk: ['possession', 'cause'], hardestStanceLean: 'time' } },
+    {},
+  );
   assert.match(authored, /HARDEST set a TIME question/);
-  // Phrased so it cannot be read as banning the stance outright — the quota may
-  // legitimately ask for a time set on this very board.
-  assert.match(authored, /still welcome/);
+  assert.match(authored, /POSSESSION \(/, 'the ask names its stances with their descriptions');
+  // Phrased so it cannot be read as banning anything — Max approved five span
+  // Blacks the same evening he asked for this.
+  assert.match(authored, /Any stance is still welcome/);
+  // The festivals ride-along: hard material must not leave the theme.
+  assert.match(authored, /inside the theme's world/);
 
-  // The builder is what actually assigns difficulty 4; a steer that stopped at
+  // The builder is what actually assigns difficulty 4; an ask that stopped at
   // the author would only change what was available, not what got promoted.
   const built = builder.buildPrompt(
-    { gradedSets: [{ id: 's', stance: 'time', difficulty: 4, pairs: [['a', 'b'], ['c', 'd']] }], varyHardestStance: 'time' },
+    {
+      gradedSets: [{ id: 's', stance: 'time', difficulty: 4, pairs: [['a', 'b'], ['c', 'd']] }],
+      hardestStanceAsk: ['possession', 'cause'],
+      hardestStanceLean: 'time',
+    },
     {},
   );
   assert.match(built, /TIME set at difficulty 4/);
+  assert.match(built, /POSSESSION \(/);
+  assert.match(built, /genuinely hardest set/, "D-8's escape hatch survives the rewrite");
 
-  assert.doesNotMatch(author.buildPrompt({ theme: 'caves', brief: { count: 8 } }, {}), /HARDEST set a/);
-  assert.doesNotMatch(builder.buildPrompt({ gradedSets: [] }, {}), /set at difficulty 4\. If this pool/);
+  // Without a lean the ask still renders; without an ask nothing does.
+  const noLean = author.buildPrompt({ theme: 'caves', brief: { count: 8, hardestStanceAsk: ['event'] } }, {});
+  assert.match(noLean, /EVENT \(/);
+  assert.doesNotMatch(noLean, /HARDEST set a [A-Z]+ question/);
+  assert.doesNotMatch(author.buildPrompt({ theme: 'caves', brief: { count: 8 } }, {}), /underused in the hardest slot/);
+  assert.doesNotMatch(builder.buildPrompt({ gradedSets: [] }, {}), /underused in the hardest slot/);
+});
+
+// The content line (design.md D-13, second amendment, ride-along B): Max's
+// school note — "anything about mass shootings, that would be an automatic
+// throw out" — was a rule the pipeline had never been told. 01 carries it
+// always; 08 reports beside unity and evocativeness, never gating.
+test('the content line is always in 01, and 08 asks for contentConcerns', async () => {
+  const author = await import('../../studio/agents/pair-author.js');
+  const style = await import('../../studio/agents/style-guide.js');
+
+  assert.match(
+    author.buildPrompt({ theme: 'school', brief: { count: 8 } }, {}),
+    /never material for a pair/,
+  );
+  const stylePrompt = style.buildPrompt({ items: [], words: [], theme: 'school' }, {});
+  assert.match(stylePrompt, /contentConcerns/);
+  assert.match(stylePrompt, /flag for the editor, not a judgement/);
 });
 
 // --- one door for the brief (the D-13 gap) ---
@@ -587,7 +637,8 @@ test('a themed brief carries every steer the variety brief carries', () => {
   // Derived from the variety brief rather than from a hand-written list: a
   // steer added tomorrow is in this comparison the moment it exists.
   const shouldTravel = Object.keys(variety).filter((key) => !SURPRISE_ME_ONLY.includes(key));
-  assert.ok(shouldTravel.includes('varyHardestStance'), 'the fixture index must fire the stance steer');
+  assert.ok(shouldTravel.includes('hardestStanceAsk'), 'the fixture index must produce the ask');
+  assert.ok(shouldTravel.includes('hardestStanceLean'), 'the fixture index must fire the lean');
   assert.ok(shouldTravel.includes('varyHardestFrom'), 'the fixture index must fire the source steer');
 
   for (const key of shouldTravel) {

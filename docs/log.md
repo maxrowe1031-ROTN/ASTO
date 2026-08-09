@@ -2,6 +2,71 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-08 — An exclusion can only relocate the slot
+
+Second batch under D-13, six themes, steer aimed at `dimension` for the first time. **Five
+of six Blacks came back time spans** (1 of 6 the batch before; 35% is the baseline that
+created D-13), all five the same `before-after` shape, three builders citing the avoidance
+as their reason in `blackSetReasoning`. The lone escape went vocabulary-hard — D-8's
+original rut. The negative steer was obeyed perfectly and made the clocks worse: among
+arrangement-hard sets a span is the easiest thing to author next, so "not X" just routes
+the slot back to `time`.
+
+Max reviewed all six: **six approved, five published** (architecture held back, *"not very
+juicy"*), and confirmed the diagnosis unprompted — *"clearly something in the agent
+pipeline is stuck or fixated… All puzzles should pull from all taxonomies. We desperately
+need to fix this."* Nuance kept: theatre's span earned all four praise tags, so
+anti-monoculture, never anti-time. festivals ran the **first brief-driven revision to end
+in a publish** — *"my initial feedback was implemented exactly as intended"* — the 6th
+`proposal-verdict`; D-5's usable evidence is now 1 published of 3 usable.
+
+### Built (design.md D-13, second amendment)
+
+- **The ask replaces the steer** (`variety.js`): `hardestStanceAsk` — the 2–3 stances least
+  used in the hardest slot (window 8, ties by all-time then name, all eight stances
+  candidates) — **on every brief, always**, with `hardestStanceLean` naming the rut when one
+  exists. Positive, per the file's own founding rule. Rendered with descriptions and
+  pair-level paradigms by `renderStanceAsk` (`corpus/vocabulary.js`), shared by 01 and 04.
+  The morning's class guard carried both new fields to themed runs **with zero new wiring**
+  — the subtraction design paying out on its first exercise.
+- **Ride-along A** (festivals): the hardest material must live inside the theme's world —
+  in the ask sentence itself.
+- **Ride-along B** (school): real-world violence/tragedy is never material for a pair (01),
+  and 08 reports `contentConcerns` beside unity and evocativeness — shown, never gating,
+  optional in the schema so old outputs stay valid.
+- **The arrival test** (`pipeline.test.js`): runs the real pipeline and asserts the ask is
+  in the prompts 01 and 04 **actually sent** — the D-11 lesson pinned before it bites a
+  third time. No pipeline-level test covered the manifest→prompt plumbing before this.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1168 pass, 0 fail** (1160 at session start; net +8:
+  the stance-steer block rewritten for the new semantics, the arrival test, the content-line
+  test). `node tools/check-board.js` → **21 boards, all clean.**
+- **Bite-checked all three:** silence the ask in 01 → arrival test fails naming 01; drop the
+  STAGE_INPUTS field → arrival test fails naming 04; exclude the ask from themed briefs →
+  the class guard fails. All restored.
+- **Claude-verifiable: PASSED.** Mock run (deleted after): manifest carries
+  `hardestStanceAsk: [absence, reference, inclusion]` + `hardestStanceLean: time` +
+  `mock: true`, and **both 01's and 04's prompt.txt read back from disk** with the full ask —
+  descriptions, paradigms (`shadow : weight` — Night B's own pair) — plus 08's prompt
+  carrying the content check.
+- **Max acceptance: OPEN — the real gate.** Whether the Blacks spread across stances is
+  visible only in the next judged batch. Expectation is *spread*, not zero spans (the
+  amendment's reconsider-when covers both failure directions).
+
+- **Next:**
+  1. **Run the next batch under the ask and read the Black stances.** The live library's ask
+     is `absence, reference, inclusion` with lean `time`. Spread is the win condition; zero
+     spans means over-steering (revert to lean-only); persistent clocks mean the lever failed
+     twice and the pool itself is the conversation.
+  2. **The delight gap is still the open question** — architecture's approved-not-published
+     is its newest datapoint. What separated circuses and gardening (the two "great!"s) from
+     the merely publishable is unexamined.
+  3. The five newly published boards (backstage-logic, house-rules, school-days,
+     festival-grounds, in-the-garden) and the evening corpus are committed with this
+     session. `puzzles/` stands at 25 playable boards + tutorial, all clean.
+
 ## 2026-08-08 — The evaluators finally have an answer key
 
 Max wrote `tools/evaluator-report.js` (with `agent/run.js`) for MAIGD Assignment #6, and

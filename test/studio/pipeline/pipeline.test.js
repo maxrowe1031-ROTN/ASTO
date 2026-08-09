@@ -219,3 +219,31 @@ test('an attempt records the effort profile it ran under, beside the pricing ver
     }
   })();
 });
+
+// --- the brief's ask ARRIVES in the sent prompts (design.md D-13, 2nd amendment) ---
+//
+// The D-11 lesson, applied before it bites a third time: a field recorded on
+// the manifest is not a field a stage received — the revision notes and the
+// themed-run steer were both "recorded faithfully, never read". This runs the
+// real pipeline and reads the prompts 01 and 04 actually sent off disk.
+test("the hardest-slot ask reaches the prompts 01 and 04 actually send", async () => {
+  const { store, cleanup } = makeStore();
+  try {
+    const runId = seedRun(store, {
+      brief: { count: 8, hardestStanceAsk: ['absence', 'possession'], hardestStanceLean: 'time' },
+    });
+    const result = await runPipeline({ runId, store, transport: mockTransport(), ...fastTime() });
+    assert.equal(result.status, 'complete');
+
+    const promptOf = (stageId) =>
+      store.readStageArtifact(runId, result.attemptId, stageId, 'request.json').prompt;
+    for (const stageId of ['01-pair-author', '04-board-builder']) {
+      const prompt = promptOf(stageId);
+      assert.match(prompt, /ABSENCE \(/, `${stageId} did not receive the ask`);
+      assert.match(prompt, /POSSESSION \(/, `${stageId} did not receive the full ask`);
+      assert.match(prompt, /TIME/, `${stageId} did not receive the lean`);
+    }
+  } finally {
+    cleanup();
+  }
+});

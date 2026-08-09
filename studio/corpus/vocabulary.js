@@ -129,5 +129,28 @@ export function renderVocabulary(shapes = SHAPES) {
   ].join('\n');
 }
 
+/**
+ * The hardest-slot ask rendered for a prompt (design.md D-13, second
+ * amendment): each stance with its description and one paradigm pair from a
+ * shape inside it. Same teaching rule as renderVocabulary — a stance name
+ * without an example is the loose ask that produced a monoculture. The
+ * paradigm is pair-level, which the D-12 addendum measured as the shape of
+ * example that never leaks.
+ *
+ * Shared by the pair author and the board builder so the two stages describe
+ * the same territory in the same words — two hand-written copies of one
+ * lesson is how the revision channel drifted.
+ */
+export function renderStanceAsk(stanceIds = []) {
+  return stanceIds
+    .map((id) => {
+      const stance = STANCES.find((entry) => entry.id === id);
+      if (!stance) return id.toUpperCase();
+      const example = SHAPES.find((shape) => shape.stance === id);
+      return `${id.toUpperCase()} (${stance.description}${example ? `; like ${example.paradigm}` : ''})`;
+    })
+    .join(' · ');
+}
+
 /** Hand labels for boards that shipped before agents declared shapes. */
 export const SHIPPED_LABELS = Object.freeze(vocabulary.shippedLabels ?? {});

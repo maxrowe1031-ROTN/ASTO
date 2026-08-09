@@ -27,7 +27,11 @@
 - **Nothing looks for culturally loaded words (2026-08-08).** The clocks board authored
   `advance : retard` — horologically exact, and Max asked for it to be replaced. 08 checks style
   and never checks this. One report-only line in its prompt would cover it; his judgement stays
-  the authority. Offered and declined this session.
+  the authority. Offered and declined this session. **Adjacent but distinct as of the D-13
+  second amendment:** 08 now reports `contentConcerns` for *distressing subjects* (violence,
+  tragedy — Max's school note). A slur-adjacent technical term like `retard` is a different
+  failure — inadvertently loaded wording, not dark material — and is still uncovered; if it
+  recurs, the fix is one more clause in the same contentConcerns instruction.
 - **Misdirection has nowhere to be reported (design.md D-9).** `difficultySource` is
   `arrangement | vocabulary | both`, but 03's own grade-4 definition names three routes to
   hard — *"abstract, easily mistaken for another grouping, or dependent on noticing
@@ -157,7 +161,10 @@
 - **The Revision Proposer's graduation trigger:** at ~10 briefs with `proposal-verdict` events
   recorded (accepted / edited+diff / discarded), evaluate agreement. If Max accepts briefs
   substantially unedited, propose the bounded auto-revise loop — his stated aspiration, gated
-  on evidence rather than on enthusiasm (design.md D-5).
+  on evidence rather than on enthusiasm (design.md D-5). **Standing 2026-08-08 evening: 6
+  verdicts, all accepted — and festivals is the first executed-and-published brief** (*"my
+  initial feedback was implemented exactly as intended"*). Usable evidence 1 published of 3
+  usable; `node tools/evaluator-report.js` is the instrument.
 - **The shakedown slim-down lap** (~10 judged boards under `2026-08-04-taxonomy-shakedown`):
   re-run the lean-2 measurement pass — per-stage cost + thinking share against review verdicts
   — then re-aim effort, revisit 03/08's Sonnet upgrade, and revert the raised budget ceilings
