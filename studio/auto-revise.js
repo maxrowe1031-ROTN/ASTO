@@ -16,13 +16,21 @@
 //   condemning a set (medicine was his best board) must not trigger surgery.
 //   Taste NEVER triggers revision. Nothing from 05 or 08 is read at all.
 //
-// Bounds, all from the design: one auto-revision per run, ever, inside the
-// existing revision cap — never in addition to it. If the revision still trips
-// the allowlist, the board goes to Max as-is with the findings AND the
-// failed-fix diagnosis — never a second loop. And the loop fires only on
-// attempts that are not themselves revisions: after a Max-requested revision
-// his judgement exists, so the pre-review exception to D-5's authority
-// ordering (his reads outrank the machine's) no longer applies.
+// Bounds, all from the design: one auto-revision per BOARD — each fresh
+// attempt gets one shot, and no board lineage is ever machine-revised twice —
+// inside the existing revision cap, never in addition to it. (The unit was
+// the RUN until 2026-08-09, when a revision that died on credits before
+// running a single stage consumed the run's only shot, and the replacement
+// board reached Max carrying a defect three detectors had flagged. Max's
+// call: a re-rolled board is a new board, entitled to its own examination.)
+// If the revision still trips the allowlist, the board goes to Max as-is with
+// the findings AND the failed-fix diagnosis — never a second loop, and never
+// "revise until clear": the persist signal is the pipeline's least reliable
+// instrument, and Kitchen Relations was approved with full praise over five
+// persisted findings. And the loop fires only on attempts that are not
+// themselves revisions: after a Max-requested revision his judgement exists,
+// so the pre-review exception to D-5's authority ordering (his reads outrank
+// the machine's) no longer applies.
 //
 // Shared by both doors on purpose — runner.js (Studio) and run.js (CLI) call
 // the same three functions. A rule at one door is the repo's recurring scar,
@@ -151,8 +159,20 @@ export function shouldAutoRevise({ manifest, decisions = [], findings, attempt, 
   // A revision means Max's judgement exists on this run, and machine findings
   // do not outrank it (D-5). The loop is strictly pre-review.
   if (attempt?.parentAttemptId) return { ok: false, reason: 'attempt-is-a-revision' };
-  if (decisions.some((event) => event.type === 'auto-revision')) {
-    return { ok: false, reason: 'already-auto-revised' };
+  // Once per BOARD (Max, 2026-08-09): an `auto-revision` decision's attemptId
+  // is the board it examined, so this attempt having one means this specific
+  // board already had its shot. A fresh re-roll after a dead revision is a new
+  // board with its own entitlement — the previous once-per-run spelling let a
+  // ghost revision (died on credits, ran nothing) bar a never-examined board
+  // that three detectors had flagged. Together with the strictly-pre-review
+  // guard above, no lineage is ever machine-revised twice — the loop stays
+  // impossible by construction, not by counter.
+  if (
+    decisions.some(
+      (event) => event.type === 'auto-revision' && event.attemptId === attempt?.attemptId,
+    )
+  ) {
+    return { ok: false, reason: 'board-already-auto-revised' };
   }
   if ((manifest?.revisionCount ?? 0) >= (config?.maxRevisions ?? 0)) {
     return { ok: false, reason: 'revision-cap' };

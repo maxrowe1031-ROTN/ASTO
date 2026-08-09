@@ -1599,6 +1599,35 @@ End to end in the live Studio on a mock run — the committed fixtures trip the 
 by construction — attempt 0002 arrived as a revision of 0001 with the full audit panel,
 including the diagnosis path, since replayed fixtures cannot clear their own finding.
 
+### D-14 second amendment — the bound's unit is the board, not the run (2026-08-09)
+
+**What exposed it.** The credits outage killed two auto-revisions before they ran a
+single stage. Their runs were resumed as fresh attempts — genuinely new boards — and
+under "one auto-revision per run" the dead revisions' ghosts barred both from
+examination. Ink & Anatomy's fresh board then reached Max carrying a black set that
+**three detectors had flagged on that very attempt** (v4 cross-reading HOLDS naming his
+exact alternate solve, 04a's symmetric flag, 07's `orderGuessed`); he caught it by
+hand, and the proposer's fix — *"a great fix on my previous note"* — proved the loop
+would have done its job had it been allowed to look.
+
+**Max's call, after asking why the bound was one at all:** the unit moves to the
+**board**. Every fresh attempt is entitled to one auto-revision; a revision descendant
+never is (the strictly-pre-review guard, unchanged). No lineage is ever machine-revised
+twice, so "never a second loop" holds **by construction rather than by counter** — the
+guard now asks "has THIS attempt been examined?" instead of "has this run ever fired?".
+
+**Explicitly rejected, recorded so it stays rejected: "revise until the findings
+clear."** The persist signal is the pipeline's least reliable instrument — Kitchen
+Relations carried five persisted findings and was approved with full praise, so a
+persist-driven loop would churn boards Max loves on false flags, at a revision's price
+per churn.
+
+**Also recorded from the same batch, the loop's first real evidence:** where it ran, it
+earned its keep — travel's auto-revision produced the batch's *"mmm, this one was
+tasty"* board, theatre's cleared two sets. The trust ratchet's next click (any
+loosening of the allowlist itself, or of the one-shot rule) waits for more verdicts on
+auto-revised boards, per the original reconsider-when.
+
 ### D-15 — Fresh surprise-me subjects, and the world/lens experiment (2026-08-09)
 
 **What prompted it.** Max caught the surprise generator repeating themes within a day —

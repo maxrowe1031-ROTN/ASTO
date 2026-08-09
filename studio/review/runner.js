@@ -100,7 +100,7 @@ export function createRunner({
       // revision runs, `running` stays true, so the UI keeps showing work in
       // progress and a concurrent manual revision is refused the same way a
       // second start is. autoReviseIfNeeded owns every reason not to fire —
-      // the switches, the allowlist, the once-per-run bound — and returns
+      // the switches, the allowlist, the once-per-board bound — and returns
       // null for all of them.
       if (result.status === 'complete') {
         const auto = await autoReviseIfNeeded({

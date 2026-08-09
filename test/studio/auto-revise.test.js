@@ -136,7 +136,7 @@ test('empty reports and a missing board detect nothing rather than throwing', ()
 
 const FINDING = { source: '06-adversarial-solver', kind: 'cross-reading-holds', setIds: ['set-a'] };
 const openManifest = { brief: {}, revisionCount: 0 };
-const freshAttempt = { parentAttemptId: null };
+const freshAttempt = { attemptId: '0001', parentAttemptId: null };
 
 test('fires only when everything lines up, and names its refusal otherwise', () => {
   const base = {
@@ -159,13 +159,24 @@ test('fires only when everything lines up, and names its refusal otherwise', () 
     'run-off',
   );
   assert.equal(
-    shouldAutoRevise({ ...base, attempt: { parentAttemptId: '0001' } }).reason,
+    shouldAutoRevise({ ...base, attempt: { attemptId: '0002', parentAttemptId: '0001' } }).reason,
     'attempt-is-a-revision',
   );
+  // The bound is per BOARD (Max, 2026-08-09): THIS attempt having been
+  // examined blocks it; another board's spent shot does not.
   assert.equal(
     shouldAutoRevise({ ...base, decisions: [{ type: 'auto-revision', attemptId: '0001' }] })
       .reason,
-    'already-auto-revised',
+    'board-already-auto-revised',
+  );
+  assert.equal(
+    shouldAutoRevise({
+      ...base,
+      attempt: { attemptId: '0003', parentAttemptId: null },
+      decisions: [{ type: 'auto-revision', attemptId: '0001' }],
+    }).ok,
+    true,
+    'a fresh re-roll is a new board with its own entitlement',
   );
   assert.equal(
     shouldAutoRevise({ ...base, manifest: { ...openManifest, revisionCount: 3 } }).reason,
@@ -321,6 +332,42 @@ test('a failed auto-revision is named loudly, and the parent still holds its boa
     assert.ok(store.readAttemptArtifact(runId, '0001', 'board.json'));
   } finally {
     cleanFixtures();
+    cleanup();
+  }
+});
+
+test('a fresh re-roll after a dead auto-revision gets its own examination', async () => {
+  const { store, cleanup } = makeStore();
+  const goodBuilder = JSON.parse(readFileSync(join(fixturesDir, '04-board-builder.json'), 'utf8'));
+  // First launch: the parent board builds, its auto-revision returns garbage
+  // and fails — the exact shape of the credits outage, minus the network.
+  const { dir: failDir, cleanup: cleanFail } = fixturesWith({
+    '04-board-builder': [goodBuilder, { text: 'garbage' }],
+  });
+  try {
+    const runId = seedRun(store);
+    const failing = runnerOver(store, failDir);
+    failing.start(runId, { mock: true });
+    await failing.settled(runId);
+    assert.equal(store.readManifest(runId).status, 'failed');
+
+    // A fresh start rolls a NEW board (0003). Under the old once-per-run
+    // bound the dead revision's ghost barred it from examination — which is
+    // how Ink & Anatomy reached Max carrying a three-times-flagged defect.
+    const healthy = runnerOver(store);
+    healthy.start(runId, { fresh: true });
+    const result = await healthy.settled(runId);
+    assert.equal(result.status, 'complete', result.failure?.message);
+    assert.equal(result.attemptId, '0004', 'the re-rolled board was examined and revised');
+
+    const fired = store
+      .readDecisions(runId)
+      .filter((event) => event.type === 'auto-revision')
+      .map((event) => event.attemptId);
+    assert.deepEqual(fired, ['0001', '0003'], 'one shot per board, never two per lineage');
+    assert.equal(store.readAttempt(runId, '0004').parentAttemptId, '0003');
+  } finally {
+    cleanFail();
     cleanup();
   }
 });
