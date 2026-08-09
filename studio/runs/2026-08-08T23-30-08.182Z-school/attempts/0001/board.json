@@ -1,0 +1,86 @@
+{
+  "id": "board-school-analogies",
+  "title": "School Days",
+  "sets": [
+    {
+      "id": "set-agent-instrument-school",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "A teacher wields a chalkboard and a coach wields a whistle, so each professional pairs with the instrument that defines their role.",
+      "pairs": [
+        [
+          "teacher",
+          "chalkboard"
+        ],
+        [
+          "coach",
+          "whistle"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "worker",
+        "tool"
+      ]
+    },
+    {
+      "id": "set-conversion-school",
+      "relationshipLabel": "raw work transformed through effort into a finished form",
+      "explanation": "Lecture notes become a study guide and a rough draft becomes a polished essay, each pair showing raw material refined by deliberate effort into a finished product.",
+      "pairs": [
+        [
+          "lecture notes",
+          "study guide"
+        ],
+        [
+          "rough draft",
+          "polished essay"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "refinement",
+        "process"
+      ]
+    },
+    {
+      "id": "set-sign-significant-school",
+      "relationshipLabel": "a signal and the event it announces",
+      "explanation": "A fire alarm necessarily triggers an evacuation and a tornado siren necessarily triggers a shelter drill, so each signal is bound to the response it mandates.",
+      "pairs": [
+        [
+          "fire alarm",
+          "evacuation"
+        ],
+        [
+          "tornado siren",
+          "shelter drill"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "alert",
+        "response"
+      ]
+    },
+    {
+      "id": "set-before-after-school",
+      "relationshipLabel": "the start and end of a bounded span",
+      "explanation": "Homeroom opens a school day just as kindergarten opens a schooling career, and dismissal and graduation close each span, so the pairs share the same start-and-end shape at very different scales.",
+      "pairs": [
+        [
+          "homeroom",
+          "dismissal"
+        ],
+        [
+          "kindergarten",
+          "graduation"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "span",
+        "milestone"
+      ]
+    }
+  ]
+}

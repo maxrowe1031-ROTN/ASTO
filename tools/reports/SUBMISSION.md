@@ -62,5 +62,7 @@ evidence about the brief that asked for them. Honest standing: **0 published of 
 | `tools/reports/evaluator-report-2026-08-08.txt` | a saved run |
 | `tools/reports/evaluator-report-2026-08-08.json` | the same, machine-readable |
 
-Zero dependencies (House rule HR-1), Node ≥22, `node:test`. Suite: **1155 passing, 0
-failing**.
+Zero dependencies (House rule HR-1), Node ≥22, `node:test`. Suite at the time of writing:
+**1160 passing, 0 failing**. The total drifts as boards are added — `board-integrity.test.js`
+globs `puzzles/*.json` and regates every board on every run — so the zero is the part to
+read.

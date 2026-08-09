@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T23-30-08.184Z-gardening",
+  "createdAt": "2026-08-08T23:30:08.190Z",
+  "theme": "gardening",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "cause",
+      "event"
+    ],
+    "varyHardestFrom": "arrangement",
+    "varyHardestStance": "dimension",
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

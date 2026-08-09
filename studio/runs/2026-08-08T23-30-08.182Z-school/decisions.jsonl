@@ -1,0 +1,3 @@
+{"type":"attempt-completed","attemptId":"0001","boardId":"board-school-analogies","at":"2026-08-08T23:37:02.256Z"}
+{"type":"approve","attemptId":"0001","at":"2026-08-09T00:01:05.885Z"}
+{"type":"publish","attemptId":"0001","boardId":"board-school-analogies","publishedAs":"school-days.json","publishedId":"asto-school-days","republished":false,"at":"2026-08-09T00:01:18.685Z"}

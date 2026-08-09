@@ -1,0 +1,86 @@
+{
+  "id": "board-asto-construction-01",
+  "title": "House Rules",
+  "sets": [
+    {
+      "id": "set-agent-object",
+      "relationshipLabel": "a tradesperson and the structure or system their work is about",
+      "explanation": "Each tradesperson is defined by the specific structure or system their labor produces or maintains.",
+      "pairs": [
+        [
+          "mason",
+          "wall"
+        ],
+        [
+          "electrician",
+          "wiring"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "trade",
+        "building-parts"
+      ]
+    },
+    {
+      "id": "set-sign-significant",
+      "relationshipLabel": "a household signal and what it announces",
+      "explanation": "Each device exists solely to signal one specific event to the people inside the house.",
+      "pairs": [
+        [
+          "doorbell",
+          "visitor"
+        ],
+        [
+          "smoke alarm",
+          "fire"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "household-devices",
+        "electrician"
+      ]
+    },
+    {
+      "id": "set-taxonomic-home",
+      "relationshipLabel": "a category of home/roof and a specific style within it",
+      "explanation": "Each pair moves from a general architectural category to one named style that falls inside it.",
+      "pairs": [
+        [
+          "dwelling",
+          "bungalow"
+        ],
+        [
+          "roof",
+          "mansard"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "wall",
+        "structure-parts"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the start of a structure's or loan's life and its eventual end",
+      "explanation": "Each pair marks the ceremonial start and the final closing event of the same long-running process.",
+      "pairs": [
+        [
+          "groundbreaking",
+          "demolition"
+        ],
+        [
+          "closing",
+          "payoff"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "construction",
+        "finance"
+      ]
+    }
+  ]
+}

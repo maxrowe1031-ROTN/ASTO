@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-08T23-30-08.184Z-festivals",
+  "createdAt": "2026-08-08T23:30:08.187Z",
+  "theme": "festivals",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "time",
+      "cause",
+      "event"
+    ],
+    "varyHardestFrom": "arrangement",
+    "varyHardestStance": "dimension",
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}

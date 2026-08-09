@@ -1,0 +1,86 @@
+{
+  "id": "asto-backstage-logic",
+  "title": "Backstage Logic",
+  "sets": [
+    {
+      "id": "set-genre-icon",
+      "relationshipLabel": "a theatrical genre and its most iconic work",
+      "explanation": "Each genre is paired with the single work most people would name first if asked for an example.",
+      "pairs": [
+        [
+          "tragedy",
+          "Hamlet"
+        ],
+        [
+          "musical",
+          "Cats"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "genre",
+        "famous title"
+      ]
+    },
+    {
+      "id": "set-object",
+      "relationshipLabel": "a theatre worker and the material their work is centered on",
+      "explanation": "Costume designers work in wardrobe and dramaturgs work in script, each defined by the object their craft revolves around rather than a tool they wield.",
+      "pairs": [
+        [
+          "costume designer",
+          "wardrobe"
+        ],
+        [
+          "dramaturg",
+          "script"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "theatre worker",
+        "craft material"
+      ]
+    },
+    {
+      "id": "set-enabling",
+      "relationshipLabel": "a condition that lets a stage event happen unseen",
+      "explanation": "A blackout hides a scene change and a harness hides the mechanics of a flying effect, both concealing the means behind the moment.",
+      "pairs": [
+        [
+          "blackout",
+          "scene change"
+        ],
+        [
+          "harness",
+          "flying effect"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "stagecraft",
+        "concealment"
+      ]
+    },
+    {
+      "id": "set-span",
+      "relationshipLabel": "the first and last moment marking a theatrical span",
+      "explanation": "Casting opens and strike closes a production's life, just as the overture opens and the encore closes a single performance.",
+      "pairs": [
+        [
+          "casting",
+          "strike"
+        ],
+        [
+          "overture",
+          "encore"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "theatrical timeline",
+        "bookends"
+      ]
+    }
+  ]
+}

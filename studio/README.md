@@ -286,5 +286,7 @@ judgement were already on disk, just never joined.
 - **`docs/backlog.md`** — known gaps, openly. Several are about this pipeline's
   evaluators, and the report above is partly an answer to them.
 
-Zero dependencies, Node ≥22, `node:test`. `npm test` on this branch: **1155 passing, 0
-failing** — 29 of them covering the report tool and the five boundaries above.
+Zero dependencies, Node ≥22, `node:test`. `npm test` at the time of writing (2026-08-08):
+**1160 passing, 0 failing** — 29 of them covering the report tool and the five boundaries
+above. The total drifts as boards are added, because `board-integrity.test.js` globs
+`puzzles/*.json` and regates every board on every run; the zero is the part that matters.
