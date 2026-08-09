@@ -1,0 +1,86 @@
+{
+  "id": "asto-kitchen-relations",
+  "title": "Kitchen Relations",
+  "sets": [
+    {
+      "id": "set-tool-action",
+      "relationshipLabel": "kitchen tool and the action it exists to perform",
+      "explanation": "A whisk exists to beat and a grater exists to shred — each tool is defined by the single motion it's built for.",
+      "pairs": [
+        [
+          "whisk",
+          "beat"
+        ],
+        [
+          "grater",
+          "shred"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "kitchen-tool",
+        "cooking-action"
+      ]
+    },
+    {
+      "id": "set-synonymity",
+      "relationshipLabel": "informal household term becomes the formal/specific appliance name",
+      "explanation": "You call it a fridge, but its formal name is refrigerator; you call it a freezer, but the standalone unit is a deep freezer — each pair moves from everyday speech to the precise term.",
+      "pairs": [
+        [
+          "fridge",
+          "refrigerator"
+        ],
+        [
+          "freezer",
+          "deep freezer"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "appliance",
+        "register-shift"
+      ]
+    },
+    {
+      "id": "set-attachment",
+      "relationshipLabel": "fixture fastened to shield or complete the surface it's mounted to",
+      "explanation": "A backsplash is fastened to protect the wall behind it, and a toe-kick is fastened to finish off the cabinet base beneath it — each fixture exists to cover what it's attached to.",
+      "pairs": [
+        [
+          "backsplash",
+          "wall"
+        ],
+        [
+          "toe-kick",
+          "cabinet base"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "kitchen-fixture",
+        "mounted-on"
+      ]
+    },
+    {
+      "id": "set-dimensional",
+      "relationshipLabel": "same kind of cookware, smaller then larger",
+      "explanation": "A saucepan scales up to a stockpot and a ramekin scales up to a roasting pan — same category of vessel, just sized differently.",
+      "pairs": [
+        [
+          "saucepan",
+          "stockpot"
+        ],
+        [
+          "ramekin",
+          "roasting pan"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "cookware",
+        "size-scale"
+      ]
+    }
+  ]
+}

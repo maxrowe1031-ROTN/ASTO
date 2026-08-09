@@ -1,0 +1,87 @@
+{
+  "id": "asto-board-01",
+  "title": "Borders, Bounds, and Bearings",
+  "sets": [
+    {
+      "id": "set-waterway",
+      "relationshipLabel": "a category of waterway and a specific named example",
+      "explanation": "Strait and canal are types of waterway, and Gibraltar and Suez are the famous examples that fill in each blank.",
+      "pairs": [
+        [
+          "strait",
+          "Gibraltar"
+        ],
+        [
+          "canal",
+          "Suez"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "geography",
+        "waterway"
+      ]
+    },
+    {
+      "id": "set-contiguity",
+      "relationshipLabel": "two things defined by where one ends and the other begins",
+      "explanation": "A platform meets a track and a pier meets the sea — each pair marks the exact seam between two adjoining spaces.",
+      "pairs": [
+        [
+          "platform",
+          "track"
+        ],
+        [
+          "pier",
+          "sea"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "boundary",
+        "geography"
+      ]
+    },
+    {
+      "id": "set-worker-tool",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "A customs officer's defining tool is the stamp, just as a sherpa's is the ice axe — each object is inseparable from the job.",
+      "pairs": [
+        [
+          "customs officer",
+          "stamp"
+        ],
+        [
+          "sherpa",
+          "ice axe"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "profession",
+        "tool"
+      ]
+    },
+    {
+      "id": "set-campsite-span",
+      "relationshipLabel": "the two moments that open and close a campsite stay",
+      "explanation": "You pitch a tent to begin a stay and strike it to end one, just as departure opens a trip's absence and return closes it — each pair brackets the same kind of span.",
+      "pairs": [
+        [
+          "pitch",
+          "strike"
+        ],
+        [
+          "departure",
+          "return"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "camping",
+        "travel",
+        "time"
+      ]
+    }
+  ]
+}

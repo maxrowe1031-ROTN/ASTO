@@ -259,8 +259,20 @@
 - `budget.js` cost caps only bite once every model in play is priced. Rates are estimates
   until A5 measures real spend; unpriced models are surfaced in `usage.unpricedModels`.
 - Studio run artifacts accumulate under the git-ignored `studio/runs/`; no pruning yet.
-- **`llm.js` discards the body of an HTTP error, and the body is where the reason lives
-  (2026-08-09).** The whole third batch died with six records saying only `HTTP 400`; the
+- ~~**`llm.js` discards the body of an HTTP error, and the body is where the reason lives
+  (2026-08-09).**~~ **Closed 2026-08-09, the same day it bit a second time** — the evening
+  batch lost two auto-revisions to the identical bare `HTTP 400` (credits again), and the
+  diagnosis again ran on timing patterns instead of the record. The fix landed where the
+  reason was being dropped: `classifyTransportError` in `studio/failures.js` rebuilt
+  `HTTP <status>` bare while the transport had already preserved the body as the error's
+  message. It now appends the body (trimmed, truncated at 400 chars so a proxy's HTML
+  error page cannot flood a record), which propagates unchanged into the thrown
+  `StudioFailure`, every per-attempt `requests[]` entry, `request.failed.json` and
+  `failure.json` — no writer needed to change. Pinned by tests at both levels: the
+  classifier (body in message, bodyless unchanged, huge body truncated) and the llm loop
+  (a scripted 400 with the credit-balance body surfaces the sentence in the failure AND
+  the request record). The original entry:
+  The whole third batch died with six records saying only `HTTP 400`; the
   API's actual response was *"Your credit balance is too low to access the Anthropic API"*
   — a billing problem wearing a request-error status. Diagnosis took a hand-written probe
   call that the failure record should have made unnecessary. One line — keep

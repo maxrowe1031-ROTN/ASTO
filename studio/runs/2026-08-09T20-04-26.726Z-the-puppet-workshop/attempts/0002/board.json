@@ -1,0 +1,84 @@
+{
+  "id": "board-puppetry-crafts",
+  "title": "Strings, Tools, and Shadows",
+  "sets": [
+    {
+      "id": "set-synonymity",
+      "relationshipLabel": "common name leading to its technical name",
+      "explanation": "A string puppet is popularly called a marionette, and a hand puppet is popularly called a glove puppet — each pair moves from the everyday label to its more specific technical one.",
+      "pairs": [
+        [
+          "string puppet",
+          "marionette"
+        ],
+        [
+          "hand puppet",
+          "glove puppet"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "glove puppet now lives only here, resolving the earlier overlap with the concealment set",
+        "ordering now has a clear direction: common term first, technical term second"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "the worker and the tool of their trade",
+      "explanation": "A carver works with a chisel just as a marionettist works with a control bar — each craftsperson is defined by the tool in their hand.",
+      "pairs": [
+        [
+          "carver",
+          "chisel"
+        ],
+        [
+          "marionettist",
+          "control bar"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "marionettist echoes marionette from the synonymity set"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the start and finish of shaping a carved piece",
+      "explanation": "A rough-cut is finished by a polish and a sketch is finished by a sculpture — both pairs track the first rough attempt through to the same object's completed form.",
+      "pairs": [
+        [
+          "rough-cut",
+          "polish"
+        ],
+        [
+          "sketch",
+          "finished sculpture"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "polish and finished sculpture both read as 'the finished thing', tempting a mismatched cross-pair swap"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "the covering that hides the true thing beneath it",
+      "explanation": "Blacks are worn to hide the puppeteer from the audience's eye, just as a mask hides the face beneath it — in both pairs the visible cover conceals the real thing underneath.",
+      "pairs": [
+        [
+          "blacks",
+          "puppeteer"
+        ],
+        [
+          "mask",
+          "face"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "blacks reads like ordinary clothing vocabulary before its concealing function clicks",
+        "mask/face no longer shares roots with any puppet-type name, closing the old glove/hand loophole"
+      ]
+    }
+  ]
+}

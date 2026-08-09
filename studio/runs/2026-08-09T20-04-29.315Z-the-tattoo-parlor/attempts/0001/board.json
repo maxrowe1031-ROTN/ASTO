@@ -1,0 +1,80 @@
+{
+  "id": "asto-board-tattoo-01",
+  "title": "Ink & Aftercare",
+  "sets": [
+    {
+      "id": "set-item-location",
+      "relationshipLabel": "the place and the items kept there",
+      "explanation": "Each first word is a container built to hold the second: a sharps container holds spent needles, an autoclave holds instruments waiting to be sterilized.",
+      "pairs": [
+        [
+          "sharps container",
+          "needles"
+        ],
+        [
+          "autoclave",
+          "instruments"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "needles-could-suggest-tool-pairing"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "the thing applied to stop a change from taking hold",
+      "explanation": "Antiseptic is applied to keep infection from setting in, just as sunscreen is applied to keep a tattoo from fading — both are preventive measures against a specific harm.",
+      "pairs": [
+        [
+          "antiseptic",
+          "infection"
+        ],
+        [
+          "sunscreen",
+          "fading"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": []
+    },
+    {
+      "id": "set-sequence",
+      "relationshipLabel": "the stage that marks a boundary of the larger process",
+      "explanation": "Consultation opens the tattoo process the way sitting begins the work itself, and touch-up closes it out much as healing finishes the body's part — each word names a boundary stage of the same span.",
+      "pairs": [
+        [
+          "consultation",
+          "sitting"
+        ],
+        [
+          "touch-up",
+          "healing"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "touch-up-looks-like-a-preventive-fix"
+      ]
+    },
+    {
+      "id": "set-representation",
+      "relationshipLabel": "the original and its made image",
+      "explanation": "A sketch is transferred into a stencil to guide the needle, and a finished piece is captured in a Polaroid afterward — in both cases the first thing is rendered into a second, separate image of itself.",
+      "pairs": [
+        [
+          "sketch",
+          "stencil"
+        ],
+        [
+          "piece",
+          "Polaroid"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "stencil-looks-like-a-tool-not-an-image"
+      ]
+    }
+  ]
+}

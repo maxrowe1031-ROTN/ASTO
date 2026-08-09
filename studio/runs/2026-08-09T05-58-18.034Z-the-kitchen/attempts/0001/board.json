@@ -1,0 +1,86 @@
+{
+  "id": "kitchen-analogies-board",
+  "title": "Kitchen Relations",
+  "sets": [
+    {
+      "id": "set-tool-action",
+      "relationshipLabel": "kitchen tool and the action it exists to perform",
+      "explanation": "A whisk exists to beat and a grater exists to shred — each tool is defined by the single motion it's built for.",
+      "pairs": [
+        [
+          "whisk",
+          "beat"
+        ],
+        [
+          "grater",
+          "shred"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "kitchen-tool",
+        "cooking-action"
+      ]
+    },
+    {
+      "id": "set-synonymity",
+      "relationshipLabel": "two names for the same kitchen item",
+      "explanation": "A stove is a range and a skillet is a frying pan — each pair just swaps the everyday name for the slightly fancier one.",
+      "pairs": [
+        [
+          "stove",
+          "range"
+        ],
+        [
+          "skillet",
+          "frying pan"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "cookware",
+        "synonym"
+      ]
+    },
+    {
+      "id": "set-dimensional",
+      "relationshipLabel": "same kind of cookware, smaller then larger",
+      "explanation": "A saucepan scales up to a stockpot and a ramekin scales up to a roasting pan — same category of vessel, just sized differently.",
+      "pairs": [
+        [
+          "saucepan",
+          "stockpot"
+        ],
+        [
+          "ramekin",
+          "roasting pan"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "cookware",
+        "size-scale"
+      ]
+    },
+    {
+      "id": "set-contiguity",
+      "relationshipLabel": "surfaces or fixtures defined by where one ends and the other begins",
+      "explanation": "A backsplash exists only where it meets a countertop, and a baseboard only where it meets a cabinet — each fixture is defined by its border, not by itself.",
+      "pairs": [
+        [
+          "backsplash",
+          "countertop"
+        ],
+        [
+          "baseboard",
+          "cabinet"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "kitchen-fixture",
+        "adjacency"
+      ]
+    }
+  ]
+}

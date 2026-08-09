@@ -78,8 +78,14 @@ const MOUNTS = [
   // that list belongs in the registry rather than in two copies. `slug.js` is
   // here for the same reason: the destination the publish panel SHOWS and the
   // destination the server publishes to must be one derivation, and a puzzle
-  // id is the last thing that should be computed twice.
-  ['/studio/', join(REPO, 'studio'), new Set(['stage-registry.js', 'slug.js'])],
+  // id is the last thing that should be computed twice. `review/brief-text.js`
+  // likewise (D-14): the brief Max previews in the textarea and the brief the
+  // auto-revise loop sends must be one rendering.
+  [
+    '/studio/',
+    join(REPO, 'studio'),
+    new Set(['stage-registry.js', 'slug.js', 'review/brief-text.js']),
+  ],
 ];
 
 const send = (res, status, body, type = 'text/plain; charset=utf-8') => {

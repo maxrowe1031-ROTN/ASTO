@@ -74,7 +74,14 @@ export const DEFAULT_CONFIG = deepFreeze({
   //
   // 16k is also about the practical limit for a non-streaming request before
   // HTTP timeouts start to bite, which is what this transport makes.
-  maxTokens: { default: 16_000 },
+  maxTokens: {
+    default: 16_000,
+    // The Subject Scout (design.md D-15) answers with a 2–5 word subject.
+    // 2000 rather than a tighter fit because Sonnet's adaptive thinking
+    // shares this ceiling with the answer — the exact failure the note above
+    // records — and at `low` effort the thinking stays well inside it.
+    '00-subject-scout': 2_000,
+  },
 
   // How hard each stage thinks. Effort is the lever adaptive thinking left us:
   // the old one, a fixed `budget_tokens`, is now rejected outright. Disabling
@@ -151,6 +158,12 @@ export const DEFAULT_CONFIG = deepFreeze({
   // lean-2 measurement pass (per-stage cost + thinking share, read against
   // review verdicts) and re-aim downward with data.
   effort: {
+    // Not a pipeline stage: runs once at run creation, inventing a fresh
+    // surprise-me subject (design.md D-15). On the default Sonnet on purpose —
+    // the subject is the creative seed for everything downstream and the
+    // spend is ~a cent — but at low effort: it is a short creative pick, not
+    // a search.
+    '00-subject-scout': 'low',
     '01-pair-author': 'high',
     '02-theme-grouper': 'medium',
     '03-difficulty-rater': 'medium',
@@ -201,6 +214,16 @@ export const DEFAULT_CONFIG = deepFreeze({
 
   // Spec default: max 3 AI revision attempts per run.
   maxRevisions: 3,
+
+  // The pre-review fix loop (design.md D-14): when an allowlisted structural
+  // finding fires, one auto-revision runs before the board reaches Max —
+  // inside maxRevisions above, never in addition to it. This is the master
+  // switch; each run also carries `brief.autoRevise` (the Studio's checkbox,
+  // the CLI's --no-auto-revise), and either being false keeps the loop off.
+  // The switch exists because the trust is revocable by design: an
+  // auto-revision that churns a set Max then rejects shrinks the allowlist,
+  // and a batch run with the loop off is the comparison that shows its worth.
+  autoRevise: true,
 
   // An absent metric is not a cap. Cost caps only bite once every model in
   // play is priced — token and request caps are exact regardless.

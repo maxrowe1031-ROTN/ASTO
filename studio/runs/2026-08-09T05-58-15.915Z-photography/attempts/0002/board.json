@@ -1,0 +1,86 @@
+{
+  "id": "board-photography-analogies",
+  "title": "Through the Lens",
+  "sets": [
+    {
+      "id": "set-boundary",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A photographer relies on a tripod and an editor relies on software, each pairing a worker with the instrument that defines their craft.",
+      "pairs": [
+        [
+          "photographer",
+          "tripod"
+        ],
+        [
+          "editor",
+          "software"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "camera-gear",
+        "editing-tools"
+      ]
+    },
+    {
+      "id": "set-scale",
+      "relationshipLabel": "smaller then larger version on one scale",
+      "explanation": "35mm sits below medium format the way a postcard sits below a poster — each pair climbs the same size scale.",
+      "pairs": [
+        [
+          "35mm",
+          "medium format"
+        ],
+        [
+          "postcard",
+          "poster"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "print-sizes",
+        "film-formats"
+      ]
+    },
+    {
+      "id": "set-category-kind",
+      "relationshipLabel": "category and a kind of thing within it",
+      "explanation": "A rangefinder is a kind of camera, and a slide is a kind of film — each pair sets a broad category beside one of its members.",
+      "pairs": [
+        [
+          "camera",
+          "rangefinder"
+        ],
+        [
+          "film",
+          "slide"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "camera-parts",
+        "film-terms"
+      ]
+    },
+    {
+      "id": "set-first-last",
+      "relationshipLabel": "first and last moments of a photographic process",
+      "explanation": "Loading opens a roll and rewinding closes it, just as developing begins a print and fixing seals it — each pair bookends one process.",
+      "pairs": [
+        [
+          "loading",
+          "rewinding"
+        ],
+        [
+          "develop",
+          "fix"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "darkroom-steps",
+        "film-handling"
+      ]
+    }
+  ]
+}

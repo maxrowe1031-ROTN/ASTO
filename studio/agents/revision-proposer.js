@@ -75,6 +75,12 @@ export function getOutputSchema() {
 export function buildPrompt(input = {}, context) {
   const { board = null, feedback = [], findings = {}, vocabulary = [] } = input;
 
+  // The pre-review variant (design.md D-14): the loop that runs BEFORE Max sees
+  // the board, triggered by allowlisted structural findings. This is the stated
+  // exception to the authority ordering above, for the one case where his
+  // judgement does not exist yet — pre-review, there is no feedback to outrank.
+  if (input.preReview) return buildPreReviewPrompt(input, context);
+
   const maxSaid = feedback.filter((event) => event.source !== 'review-studio-play');
   const played = feedback.find((event) => event.action === 'playthrough');
 
@@ -106,6 +112,59 @@ export function buildPrompt(input = {}, context) {
     outputRules: [
       'Return { "summary", "fromStage", "reasoning", "fixes": [ { "setId", "problem", "source", "candidates" } ], "doNotChange": [ setId ] }.',
       '"source" is "max" when the editor found it, "evaluator" when only the machine did, "both" when they agree.',
+      '"candidates" holds one to three concrete fixes, most promising first.',
+      JSON_ONLY,
+    ].join(' '),
+  });
+}
+
+/**
+ * The pre-review prompt (design.md D-14). No editor judgement exists yet: the
+ * allowlisted structural findings — the only machine findings Max trusts to
+ * trigger a revision — are the reason for the brief, and the whole reason.
+ *
+ * Two rules distinguish it from the post-review prompt above:
+ *
+ *   Fix ONLY what the allowlisted findings name. The full evaluator reports
+ *   ride along as evidence, but a defect only they mention is Max's to judge —
+ *   widening the surgery beyond the allowlist would be exactly the trust the
+ *   graduation has not earned.
+ *
+ *   Every set with no allowlisted finding goes in "doNotChange". Post-review,
+ *   the protected list is the sets Max praised; pre-review nobody has praised
+ *   anything, so protection defaults to everything the findings leave alone.
+ */
+function buildPreReviewPrompt(input, context) {
+  const { board = null, findings = {}, vocabulary = [], preReview } = input;
+
+  return composePrompt({
+    role:
+      'You are the Revision Proposer for ASTO, running BEFORE any human review. A candidate board has ' +
+      'completed the pipeline, and specific automated structural checks — the only checks trusted to ' +
+      'trigger this — found defects worth fixing before the editor spends time on the board. Your job is ' +
+      'to turn those findings into the smallest concrete revision — and to propose it, never to write ' +
+      'the board yourself.',
+    context,
+    task: [
+      'No human has judged this board yet. The "allowlisted findings" below are your entire mandate.',
+      'Fix ONLY what the allowlisted findings name. The full evaluator reports are attached as supporting evidence, but a defect only they mention is the editor\'s to judge, not yours — leave it alone.',
+      'For each set an allowlisted finding touches, state the problem in one line and give one to three concrete candidate fixes.',
+      'A candidate fix is specific: name the word or pair to change and what to change it to, or name the constraint the replacement must satisfy. "Improve the relationship" is not a fix.',
+      'Every set with no allowlisted finding goes in "doNotChange". A revision that repairs one set and spoils another is a worse board.',
+      'Choose "fromStage": the earliest stage that can actually deliver the fix, and no earlier. Swapping one word is a board-builder problem; a pool with nothing groupable is a pair-author problem. Re-entering too early throws away work that was fine.',
+      'Be brief. This brief is audited by the editor after the fact, on the review card.',
+    ].join('\n'),
+    data: [
+      asJsonBlock('The board as built', board),
+      asJsonBlock('Allowlisted findings — the reason for this revision', preReview.findings),
+      asJsonBlock('The full evaluator reports (evidence only)', findings),
+      vocabulary.length > 0 ? asJsonBlock('Relationship vocabulary in play', vocabulary) : '',
+    ]
+      .filter(Boolean)
+      .join('\n\n'),
+    outputRules: [
+      'Return { "summary", "fromStage", "reasoning", "fixes": [ { "setId", "problem", "source", "candidates" } ], "doNotChange": [ setId ] }.',
+      '"source" is always "evaluator" here — no editor judgement exists yet.',
       '"candidates" holds one to three concrete fixes, most promising first.',
       JSON_ONLY,
     ].join(' '),
@@ -149,9 +208,27 @@ const noSetIsBothFixedAndProtected = (output) => {
       ];
 };
 
-export function validateOutput(output, { board = null } = {}) {
+// Pre-review only (design.md D-14): every board set must be either fixed or
+// protected. Post-review this is not required — Max may have said nothing about
+// a set — but pre-review "unmentioned" would mean "free to churn", which is
+// precisely what the bound forbids.
+const everySetIsFixedOrProtected = (output, board) => {
+  const mentioned = new Set([...output.fixes.map((fix) => fix.setId), ...(output.doNotChange ?? [])]);
+  const missing = (board?.sets ?? []).map((set) => set.id).filter((id) => !mentioned.has(id));
+  return missing.length === 0
+    ? []
+    : [
+        {
+          path: 'doNotChange',
+          message: `${missing.join(', ')} ${missing.length === 1 ? 'is' : 'are'} neither fixed nor protected — pre-review, every set with no allowlisted finding goes in "doNotChange"`,
+        },
+      ];
+};
+
+export function validateOutput(output, { board = null, preReview = false } = {}) {
   return validateAgainst(output, SCHEMA, [
     (value) => setsExistOnTheBoard(value, board),
     noSetIsBothFixedAndProtected,
+    ...(preReview ? [(value) => everySetIsFixedOrProtected(value, board)] : []),
   ]);
 }

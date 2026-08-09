@@ -252,6 +252,23 @@ test('a themeless run picks a subject, and the run id is named after it', async 
   }
 });
 
+// D-15: with no chooseSubject injected, the default is the fresh-subject
+// chain. A mock run reaches the scout through the mock transport, so the
+// fixture subject comes back with its provenance recorded on the brief.
+test('a themeless run without an injected picker draws a fresh subject and records provenance', async () => {
+  const { store, api, cleanup } = setup();
+  try {
+    const { status, body } = await api.handle({ method: 'POST', path: '/api/runs', body: { mock: true } });
+    assert.equal(status, 202);
+    const manifest = store.readManifest(body.runId);
+    assert.equal(manifest.theme, 'lighthouse keeping', 'the scout fixture answered');
+    assert.equal(manifest.brief.subjectSource, 'scout');
+    assert.ok(['world', 'lens'].includes(manifest.brief.subjectStyle));
+  } finally {
+    cleanup();
+  }
+});
+
 test('a run with an explicit theme is left alone — no subject is picked over it', async () => {
   const { store, api, cleanup } = setup({}, { chooseSubject: () => 'should not be used' });
   try {

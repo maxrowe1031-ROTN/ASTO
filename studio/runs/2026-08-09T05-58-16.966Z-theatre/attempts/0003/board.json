@@ -1,0 +1,90 @@
+{
+  "id": "asto-theater-board-1",
+  "title": "Behind the Curtain",
+  "sets": [
+    {
+      "id": "set-instrument-action-tools",
+      "relationshipLabel": "a stage tool, then the action it exists to perform",
+      "explanation": "A microphone exists to amplify a voice, just as a fog machine exists to obscure the stage, tool named before its purpose.",
+      "pairs": [
+        [
+          "microphone",
+          "amplify"
+        ],
+        [
+          "fog machine",
+          "obscure"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "stagecraft",
+        "mechanism",
+        "verb-pairing"
+      ]
+    },
+    {
+      "id": "set-taxonomic-stage",
+      "relationshipLabel": "a stage category, and a kind of thing within it",
+      "explanation": "A skull is a kind of prop and an ingenue is a kind of role, category named first and the specific instance second.",
+      "pairs": [
+        [
+          "prop",
+          "skull"
+        ],
+        [
+          "role",
+          "ingenue"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "taxonomy",
+        "theater-terms",
+        "casting"
+      ]
+    },
+    {
+      "id": "set-dimensional-venue-play",
+      "relationshipLabel": "the same kind of theatrical thing, smaller then larger",
+      "explanation": "A black box theater scales up to a Broadway house just as a one-act scales up to a full-length, each pair moving from small to large on its own axis.",
+      "pairs": [
+        [
+          "black box theater",
+          "Broadway house"
+        ],
+        [
+          "one-act",
+          "full-length"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "venue-layout",
+        "scale",
+        "runtime"
+      ]
+    },
+    {
+      "id": "set-contiguity-spaces",
+      "relationshipLabel": "two theatre spaces defined by touching, where one ends and the other begins",
+      "explanation": "The green room opens directly onto backstage just as the catwalk sits flush against the grid, each pair a boundary between adjoining spaces.",
+      "pairs": [
+        [
+          "green room",
+          "backstage"
+        ],
+        [
+          "catwalk",
+          "grid"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "venue-layout",
+        "spatial",
+        "backstage-geography"
+      ]
+    }
+  ]
+}

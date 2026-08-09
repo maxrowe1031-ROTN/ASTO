@@ -1,0 +1,3 @@
+{"type":"attempt-completed","attemptId":"0001","boardId":"board-seasonal-signs","at":"2026-08-09T20:12:52.104Z"}
+{"type":"approve","attemptId":"0001","at":"2026-08-09T21:07:51.235Z"}
+{"type":"publish","attemptId":"0001","boardId":"board-seasonal-signs","publishedAs":"signs-of-the-turning-season.json","publishedId":"asto-signs-of-the-turning-season","republished":false,"at":"2026-08-09T21:07:55.042Z"}

@@ -145,6 +145,51 @@
       "slug": "through-the-looking-glass",
       "id": "asto-through-the-looking-glass",
       "title": "Through the Looking Glass"
+    },
+    {
+      "slug": "borders-bounds-and-bearings",
+      "id": "asto-borders-bounds-and-bearings",
+      "title": "Borders, Bounds, and Bearings"
+    },
+    {
+      "slug": "kitchen-relations",
+      "id": "asto-kitchen-relations",
+      "title": "Kitchen Relations"
+    },
+    {
+      "slug": "behind-the-curtain",
+      "id": "asto-behind-the-curtain",
+      "title": "Behind the Curtain"
+    },
+    {
+      "slug": "apothecary-s-shelf",
+      "id": "asto-apothecary-s-shelf",
+      "title": "Apothecary's Shelf"
+    },
+    {
+      "slug": "signs-of-the-turning-season",
+      "id": "asto-signs-of-the-turning-season",
+      "title": "Signs of the Turning Season"
+    },
+    {
+      "slug": "in-the-bakery",
+      "id": "asto-in-the-bakery",
+      "title": "In the Bakery"
+    },
+    {
+      "slug": "festival-of-lanterns",
+      "id": "asto-festival-of-lanterns",
+      "title": "Festival of Lanterns"
+    },
+    {
+      "slug": "ink-anatomy",
+      "id": "asto-ink-anatomy",
+      "title": "Ink & Anatomy"
+    },
+    {
+      "slug": "the-tailor-s-bench",
+      "id": "asto-the-tailor-s-bench",
+      "title": "The Tailor's Bench"
     }
   ]
 }

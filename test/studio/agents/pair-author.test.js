@@ -120,6 +120,17 @@ test('the prompt asks for matched twos, not just a stance spread', () => {
   assert.match(prompt, /same "shape"/i);
 });
 
+// The range requirement runs BOTH ways since 2026-08-09: D-8's arrangement-hard
+// floor on the hard end, and the green door on the easy end — added when the
+// scout-subject batches measurably stopped producing easy sets (grade-1
+// candidates 12 → 4, knowledge-gated words doubled, every playthrough lost).
+test('the prompt requires a way in as well as a way up', () => {
+  const prompt = pairAuthor.buildPrompt({ brief: { count: 14 }, theme: 'the old apothecary' }, {});
+  assert.match(prompt, /hard through its ARRANGEMENT ALONE/);
+  assert.match(prompt, /OPEN to a general player on sight/);
+  assert.match(prompt, /never reaches the easiest one/);
+});
+
 test('a free-text shape is still rejected by the schema', () => {
   const result = pairAuthor.validateOutput({
     pairs: [...A_TREE.slice(0, 13), pair('x', 'y', 'something invented')],

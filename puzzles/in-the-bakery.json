@@ -1,0 +1,85 @@
+{
+  "id": "asto-in-the-bakery",
+  "title": "In the Bakery",
+  "sets": [
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "raw ingredient transformed into a new substance by a baking process",
+      "explanation": "Flour becomes dough and sugar becomes caramel — each pair is the same raw material remade into something structurally new through heat or hydration.",
+      "pairs": [
+        [
+          "flour",
+          "dough"
+        ],
+        [
+          "sugar",
+          "caramel"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "ingredient-transformation"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "the worker and the tool built for their trade",
+      "explanation": "A baker reaches for a peel just as a decorator reaches for a piping bag — each trade defined by the instrument it wields.",
+      "pairs": [
+        [
+          "baker",
+          "peel"
+        ],
+        [
+          "decorator",
+          "piping bag"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "worker-tool",
+        "trade"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "the applied cover and the whole baked item it hides",
+      "explanation": "Fondant coats a wedding cake and marzipan coats a fruitcake — each cover is a layer applied over a whole finished item, not another piece of interior cake, so the covering-to-covered direction can't be reversed.",
+      "pairs": [
+        [
+          "fondant",
+          "wedding cake"
+        ],
+        [
+          "marzipan",
+          "fruitcake"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "surface-vs-whole",
+        "coating"
+      ]
+    },
+    {
+      "id": "set-sequence",
+      "relationshipLabel": "the stage that opens a process and the stage that closes it",
+      "explanation": "Mixing starts the bake and cooling ends it, just as an apprentice begins a career that a master closes out — two spans framed by their first and last stage.",
+      "pairs": [
+        [
+          "mixing",
+          "cooling"
+        ],
+        [
+          "apprentice",
+          "master"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "start-end",
+        "career-arc"
+      ]
+    }
+  ]
+}

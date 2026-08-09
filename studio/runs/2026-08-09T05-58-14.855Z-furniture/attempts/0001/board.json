@@ -1,0 +1,82 @@
+{
+  "id": "board-furniture-and-craft",
+  "title": "Furniture & Craft",
+  "sets": [
+    {
+      "id": "set-tool-action",
+      "relationshipLabel": "tool and the action it exists to perform",
+      "explanation": "A chisel exists to carve and a plane exists to smooth — each tool is defined by the single action it performs.",
+      "pairs": [
+        [
+          "chisel",
+          "carve"
+        ],
+        [
+          "plane",
+          "smooth"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "woodworking-tools"
+      ]
+    },
+    {
+      "id": "set-furniture-category",
+      "relationshipLabel": "category and a kind of furniture within it",
+      "explanation": "A recliner is a kind of seating and a chest is a kind of storage — each pair names a broad furniture category and one member of it.",
+      "pairs": [
+        [
+          "seating",
+          "recliner"
+        ],
+        [
+          "storage",
+          "chest"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "storage-vs-storage"
+      ]
+    },
+    {
+      "id": "set-furniture-contents",
+      "relationshipLabel": "furniture piece and what it is built to keep",
+      "explanation": "A hutch is built to hold dishes and an armoire is built to hold linens — each piece is designed around what it stores.",
+      "pairs": [
+        [
+          "hutch",
+          "dishes"
+        ],
+        [
+          "armoire",
+          "linens"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "storage-vocabulary"
+      ]
+    },
+    {
+      "id": "set-furniture-scale",
+      "relationshipLabel": "same kind of furniture, smaller then larger",
+      "explanation": "A loveseat scales up to a sofa and a nightstand scales up to a dresser — each pair is the same furniture type at two sizes.",
+      "pairs": [
+        [
+          "loveseat",
+          "sofa"
+        ],
+        [
+          "nightstand",
+          "dresser"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "size-progression"
+      ]
+    }
+  ]
+}

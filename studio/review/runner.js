@@ -21,6 +21,7 @@
 // press, not an orphan run that failed for reasons nobody can see.
 
 import { runPipeline, requestRevision } from '../pipeline.js';
+import { autoReviseIfNeeded, reconcileAutoRevisionOutcome } from '../auto-revise.js';
 import { createAnthropicTransport } from '../llm.js';
 import { createMockTransport } from '../mock-transport.js';
 import { DEFAULT_CONFIG } from '../pipeline-config.js';
@@ -71,19 +72,61 @@ export function createRunner({
 
     state.set(runId, { running: true, startedAt: new Date().toISOString() });
 
-    const promise = runPipeline({
-      runId,
-      store: wrapStore(store),
-      transport,
-      config,
-      context: loadContext(),
-      fresh,
-      ...pipelineOptions,
-    })
-      .then((result) => {
-        state.set(runId, { running: false, status: result.status });
-        return result;
-      })
+    const wrapped = wrapStore(store);
+    const run = (overrides = {}) =>
+      runPipeline({
+        runId,
+        store: wrapped,
+        transport,
+        config,
+        context: loadContext(),
+        fresh,
+        ...pipelineOptions,
+        ...overrides,
+      });
+
+    const promise = (async () => {
+      const clockOpt = pipelineOptions.clock ? { clock: pipelineOptions.clock } : {};
+      let result = await run();
+
+      // If THIS result is an auto-revision attempt whose outcome was never
+      // recorded — a resume after a failure, a crash between the revision and
+      // its record — settle the ledger now. Idempotent, and quiet for every
+      // ordinary attempt.
+      reconcileAutoRevisionOutcome({ store: wrapped, runId, result, ...clockOpt });
+
+      // The pre-review fix loop (design.md D-14), inside this runner's
+      // in-flight guard on purpose: while the proposer deliberates and the
+      // revision runs, `running` stays true, so the UI keeps showing work in
+      // progress and a concurrent manual revision is refused the same way a
+      // second start is. autoReviseIfNeeded owns every reason not to fire —
+      // the switches, the allowlist, the once-per-board bound — and returns
+      // null for all of them.
+      if (result.status === 'complete') {
+        const auto = await autoReviseIfNeeded({
+          runId,
+          store: wrapped,
+          transport,
+          context: loadContext(),
+          config,
+          ...clockOpt,
+          attemptId: result.attemptId,
+        });
+        if (auto) {
+          // Never fresh: the revision child already exists, and `fresh` here
+          // would abandon it for a blank re-roll of the whole run.
+          const revised = await run({ fresh: false });
+          reconcileAutoRevisionOutcome({ store: wrapped, runId, result: revised, ...clockOpt });
+          // The revised attempt is what Max reviews — including when it
+          // failed, because the failure page names the parent attempt that
+          // still holds a complete board.
+          result = revised;
+        }
+      }
+
+      state.set(runId, { running: false, status: result.status });
+      return result;
+    })()
       .catch((error) => {
         // Not a recorded failure — a bug, or the filesystem going away.
         // Park it where the UI can see it rather than losing it to an

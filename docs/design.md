@@ -1544,6 +1544,184 @@ starts agreeing with 08's verdicts → a *taste* graduation gets its own decisio
 folded silently into this one. The loop fires on most runs → the generator prompt is the
 problem, not the reviser's throughput.
 
+### D-14 amendment — built, and the four calls made while building it (2026-08-09)
+
+**Status: BUILT.** `studio/auto-revise.js` owns the whole loop: `detectFindings` (the
+allowlist, pure), `shouldAutoRevise` (the guards, pure), `autoReviseIfNeeded` +
+`recordAutoRevisionOutcome` (the orchestration, through the existing seams —
+`proposeRevision` for the brief, `requestRevision` for the child attempt, `run-store`
+for every byte). The proposer's machine-findings variant is the one new seam D-14
+predicted: `buildPrompt` gains a pre-review mode whose mandate is the allowlisted
+findings alone, and whose validator enforces what the post-review prompt only asks —
+**every board set is either fixed or protected** ("unmentioned" pre-review would mean
+"free to churn", which is what the bound forbids). The post-review prompt is untouched,
+and a test pins that.
+
+**Three calls made with Max at the session's start:**
+
+1. **Kill switch, default ON.** `autoRevise: true` in `pipeline-config.js`, a checkbox on
+   the Studio's start-run form, `--no-auto-revise` at the CLI — recorded on the run's
+   `brief` at creation, so a resume obeys the choice made when the run was started.
+   Either switch being off keeps the loop off. The trust is revocable without a code
+   edit, which is what risk-tiered autonomy asks of a ratchet.
+2. **Both doors, one module.** `runner.js` (Studio) and `run.js` (CLI) call the same
+   three functions. The recurring one-door scar, paid for three times before this
+   module existed (the 04a count floor, D-11, D-13's themed-brief steer), pre-paid here.
+3. **A failed auto-revision is accepted and named loudly** — `auto-revision-failed` in
+   `decisions.jsonl` naming the parent attempt, which still holds a complete board
+   (`failed → running` is already a legal resume). No fragility guards whose conditions
+   would be guesswork until one has actually failed.
+
+**And one refinement made while wiring, recorded because it sharpens the design's own
+reasoning:** the loop fires **only on attempts that are not themselves revisions**
+(`parentAttemptId === null`). D-14's mechanism is a stated exception to D-5's authority
+ordering *for the one case where Max's judgement does not exist yet* — but after a
+Max-requested revision his judgement exists, so the exception's justification is gone
+and the loop stays out. Strictly pre-review, by construction.
+
+**How the intervention reads on disk and on the card.** One `auto-revision` decision
+before the child attempt opens (a crash between the two leaves intent, not an orphan);
+`auto-revision-<childId>.json` beside `feedback.jsonl` carrying findings, brief and
+notes; one `auto-revision-outcome` decision when the child settles, carrying
+`changedSetIds` and `persisted` — the failed-fix diagnosis when non-empty. The proposer's
+artifacts land under `auto-revision-proposal-*` names, distinct from the review-time
+`revision-proposal-*` files, so an auto brief is never mistaken for one Max asked for.
+The review card's "Auto-revised before review" panel renders all of it un-collapsed —
+a ratchet Max cannot inspect is one he cannot revoke — and the brief's protection line
+says *"no allowlisted finding touches them"* rather than the review path's *"these were
+approved"*, because pre-review nothing has been.
+
+**Verified 2026-08-09:** 1199 tests green (19 new — the allowlist's negative space is
+the load-bearing test: 05, 08, `knowledgeGated`, taste, span and lexical reports all
+constructed juicy and asserted silent). Both bite-checks bit: silencing the severity
+filter fails the detection test; dropping the once-per-run guard fails the guard test.
+End to end in the live Studio on a mock run — the committed fixtures trip the allowlist
+by construction — attempt 0002 arrived as a revision of 0001 with the full audit panel,
+including the diagnosis path, since replayed fixtures cannot clear their own finding.
+
+### D-14 second amendment — the bound's unit is the board, not the run (2026-08-09)
+
+**What exposed it.** The credits outage killed two auto-revisions before they ran a
+single stage. Their runs were resumed as fresh attempts — genuinely new boards — and
+under "one auto-revision per run" the dead revisions' ghosts barred both from
+examination. Ink & Anatomy's fresh board then reached Max carrying a black set that
+**three detectors had flagged on that very attempt** (v4 cross-reading HOLDS naming his
+exact alternate solve, 04a's symmetric flag, 07's `orderGuessed`); he caught it by
+hand, and the proposer's fix — *"a great fix on my previous note"* — proved the loop
+would have done its job had it been allowed to look.
+
+**Max's call, after asking why the bound was one at all:** the unit moves to the
+**board**. Every fresh attempt is entitled to one auto-revision; a revision descendant
+never is (the strictly-pre-review guard, unchanged). No lineage is ever machine-revised
+twice, so "never a second loop" holds **by construction rather than by counter** — the
+guard now asks "has THIS attempt been examined?" instead of "has this run ever fired?".
+
+**Explicitly rejected, recorded so it stays rejected: "revise until the findings
+clear."** The persist signal is the pipeline's least reliable instrument — Kitchen
+Relations carried five persisted findings and was approved with full praise, so a
+persist-driven loop would churn boards Max loves on false flags, at a revision's price
+per churn.
+
+**Also recorded from the same batch, the loop's first real evidence:** where it ran, it
+earned its keep — travel's auto-revision produced the batch's *"mmm, this one was
+tasty"* board, theatre's cleared two sets. The trust ratchet's next click (any
+loosening of the allowlist itself, or of the one-shot rule) waits for more verdicts on
+auto-revised boards, per the original reconsider-when.
+
+### D-15 — Fresh surprise-me subjects, and the world/lens experiment (2026-08-09)
+
+**What prompted it.** Max caught the surprise generator repeating themes within a day —
+photography (twice in one day), theatre, the kitchen. Structural, not unlucky:
+`pickSubject` drew blind from a static pool of 50 while the run history held 105
+themes. The pool had been lapped twice; a repeat was the *likely* outcome of every draw.
+
+**His requirement, verbatim in spirit:** no theme reuse — *"I'd prefer fresh themes
+every time if the generator and pipeline are capable of that"* — a ~50-board cooldown
+as the acceptable floor, and **no loop**.
+
+**The chain, loop-free by construction** (`studio/subject.js`, shared by both doors —
+the one-door scar, pre-paid a fourth time):
+
+1. **The Subject Scout** (`agents/subject-scout.js`, registered beside the proposer as
+   the second not-a-pipeline-stage agent) invents one fresh subject — two rounds max,
+   handed the full used list as a hard avoid-list *including close overlaps*, and the
+   pool's own curation guidance (everyday lean, science minority, whimsy prized). On
+   the default Sonnet at `low` effort: the subject is the creative seed for everything
+   downstream, and the spend is ~a cent, paid as ~2–4s on the surprise-me button press.
+2. **The mechanical guard:** an answer whose **slug** matches any used theme's slug is
+   rejected ("Photography" is not fresh next to "photography"). One retry; no third round.
+3. **Fallback A:** the static pool filtered to never-used entries — a single filter
+   pass, never rejection sampling. The pool widened 50 → 91 the same day so this tier
+   has room to work.
+4. **Fallback B:** every pool subject used → the **least-recently-used** one, which is
+   the cooldown floor by construction. Reachable only with the model unavailable AND
+   the pool exhausted.
+
+No path throws; a transport that cannot be built (missing key) or fails mid-call lands
+in Fallback A — a missing key must stop a pipeline run, never the creation of one.
+"Used" = every non-mock run's theme, themed and surprise alike; the rule governs only
+the generator's picks — Max typing a theme is never blocked.
+
+**The world/lens experiment (Max's call, after weighing the assessment).** He noticed
+the best-loved early board title, *First Light*, is not a category but a **lens** — an
+evocative angle that admits bread, clay and animals while painting one picture — and
+asked whether the picker should push that way. The mechanical case: category subjects
+put every word in one taxonomy, which is exactly what killed furniture (five storage
+words cross-associating) and photography (generic category nouns); a lens spreads the
+gravity across domains, and cross-domain pairs inside one theme — his *"this is truly
+what we are after"* — need a theme that spans domains. The unknown is delight, which
+has resisted every direct push (D-8). **His decision: a deliberate ~half-and-half mix**,
+so each batch carries its own comparison. The CALLER assigns style (a model asked to
+alternate drifts) — whichever of world/lens is underrepresented among past scout picks
+— and the brief records `subjectSource` (scout / pool / pool-lru) and `subjectStyle`
+(world / lens; null on fallbacks, which must not dilute the A/B). The verdict comes
+from segmenting his taste verdicts (formVersion 4), 08's unity and evocativeness, and
+06's cross-set findings by style. **On record, falsifiably: lens subjects should draw
+fewer cross-set-association findings.**
+
+**Accepted limitation, recorded:** two runs created in the same instant race the
+history read and could draw similar subjects. Runs are started one at a time in
+practice — each creation records its theme before the next POST reads the manifests —
+so this stays a comment, not machinery.
+
+**Reconsider-when:** scout subjects drift off-taste (too obscure, or samey in their own
+poetic register — every subject a time of day is D-13's law wearing new clothes) → the
+banding prompt gets recalibrated against the pool's curation, or generation demotes to
+fallback-only. The A/B reads clearly in either direction after ~2 batches → the style
+mix becomes a deliberate decision rather than a coin-weighted default. `subjectSource`
+shows the fallbacks carrying real load → the scout's ask or ceiling is wrong, and the
+fix is measurement first, per the repo's own effort-tuning scars.
+
+**Verified 2026-08-09:** 1212 tests green (13 new: the chain, the style balance, the
+guard, both fallbacks, and the API recording provenance). Both bite-checks bit —
+dropping the slug guard fails the case-variant test; flattening the LRU ordering fails
+the exhaustion test. Live: a mock surprise-me run draws the fixture subject through
+the same path, and a real surprise-me run drew a scout subject absent from all 105
+used themes, with `subjectSource: 'scout'` and its style on the manifest.
+
+**Gate evidence, same day — the first scout batch, judged.** Seven boards, **taste
+`delightful` on all seven** (against `solid`×5 / `delightful`×1 on the pool-subject
+batch the same morning — the subject source was the only variable between them), six
+approved, six published. Max: *"the change we made def made a huge difference in the
+delight factor."* The world/lens A/B's early read: **both arms delighted** (lens 3/3
+approved, world 3/4), so the active ingredient looks like specificity-and-freshness
+rather than the poetic register per se — the mix continues, n too small to call.
+
+**The ride-along, measured before any lever moved.** Every board also got harder, and
+the instruments agree on where: knowledge-gated words **1.17 → 2.71 per board**,
+difficulty-source `vocabulary` 56% → 63%, Max's sets-solved **1.83 → 1.12 of 4** with
+zero wins, `too-difficult` ×4 — and the sharpest number, **grade-1 candidate sets
+12 → 4** across comparable pools. The pools stopped *containing* easy sets, so the
+green slot was being filled by promotion from harder material. **Max's call: ship the
+mirror of D-8's range rule** — 01 now requires at least one matched group *open to a
+general player on sight*, with the subject's specialist vocabulary confined to the
+harder groups ("the easiest set is the door into the board, and a board with no door
+is a wall"). One line, at the door where the shortage measurably is, leaving the upper
+tiers as sharp as the batch that earned the delight. **Reconsider-when:** the next
+scout batches' grade-1 counts and his win rate recover without the taste verdicts
+falling — or greens come back generic ("slapped on the page") and the line overshot,
+in which case the fix is scaling specificity to tier, not abandoning either rule.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

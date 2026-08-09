@@ -170,6 +170,12 @@ export function buildPrompt(input = {}, context) {
       `  - ARRANGEMENT — ${renderArrangementHard('author')}`,
       '  - VOCABULARY — a plain relationship carried by a word that belongs to the subject. "constellation : Cassiopeia" is a category and one of its members; the pleasure is the word. This is where a theme gets its colour, and it is not a lesser kind of set.',
       'Neither is better and a good board wants both. But arrangement difficulty is the one that gets lost, so: at least one of your matched groups must be hard through its ARRANGEMENT ALONE — every word in it ordinary, the difficulty entirely in how the four sit together. Do not mark it, and do not assume it will be the hardest set on the board; that is decided downstream. Just make sure the board could reach its top tier without reaching for a rarer word.',
+      // The mirror requirement on the easy end (design.md D-15's difficulty
+      // ride-along, measured 2026-08-09): under evocative subjects the pools
+      // stopped containing easy sets at all — grade-1 candidates fell from 12
+      // to 4 across comparable batches, knowledge-gated words doubled, and Max
+      // lost every playthrough. The delight must not cost the door in.
+      'And the same range requirement points the other way: at least one of your matched groups must be OPEN to a general player on sight — four words anyone knows, plainly arranged. The subject\'s evocative, specialist vocabulary belongs in the harder groups; it never reaches the easiest one. The easiest set is the door into the board, and a board with no door is a wall.',
       // This line used to read "Prefer familiar words", full stop — which a
       // model reasonably hears as "prefer common words", and common is exactly
       // the generic middle the instruction above is trying to leave. Familiar

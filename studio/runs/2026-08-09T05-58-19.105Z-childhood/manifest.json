@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-09T05-58-19.105Z-childhood",
+  "createdAt": "2026-08-09T05:58:19.105Z",
+  "theme": "childhood",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "plan",
+      "instrument-action",
+      "contiguity"
+    ],
+    "avoidShapes": [
+      "distinctive-nonpart",
+      "object-component"
+    ],
+    "stanceQuotas": [
+      "inclusion",
+      "possession",
+      "time",
+      "event"
+    ],
+    "hardestStanceAsk": [
+      "event",
+      "dimension",
+      "possession"
+    ],
+    "mock": false,
+    "autoRevise": true
+  },
+  "status": "approved",
+  "currentAttemptId": "0004",
+  "attemptCount": 4,
+  "revisionCount": 3
+}

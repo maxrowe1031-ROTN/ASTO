@@ -1,0 +1,83 @@
+{
+  "id": "board-puppetry-crafts",
+  "title": "Strings, Tools, and Shadows",
+  "sets": [
+    {
+      "id": "set-synonymity",
+      "relationshipLabel": "two names for the same kind of puppet",
+      "explanation": "A marionette is simply another name for a string puppet, just as a glove puppet is another name for a hand puppet — each pair is one puppet type under two labels.",
+      "pairs": [
+        [
+          "marionette",
+          "string puppet"
+        ],
+        [
+          "glove puppet",
+          "hand puppet"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "puppet vocabulary",
+        "glove/hand overlap with concealment set"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "the worker and the tool of their trade",
+      "explanation": "A carver works with a chisel just as a marionettist works with a control bar — each craftsperson is defined by the tool in their hand.",
+      "pairs": [
+        [
+          "carver",
+          "chisel"
+        ],
+        [
+          "marionettist",
+          "control bar"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "marionettist echoes marionette from the synonymity set"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the start and finish of a process",
+      "explanation": "A rough-cut ends in a polish and an audition ends in a curtain call — each pair marks the first rough attempt and the final finished moment of the same undertaking.",
+      "pairs": [
+        [
+          "rough-cut",
+          "polish"
+        ],
+        [
+          "audition",
+          "curtain call"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "theater/film terms suggest tool-action pairing"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "the covering that hides the true thing beneath it",
+      "explanation": "Blacks are worn to hide the puppeteer from the audience's eye, just as a glove hides the hand that fills it — in both pairs the visible cover conceals the real actor underneath.",
+      "pairs": [
+        [
+          "blacks",
+          "puppeteer"
+        ],
+        [
+          "glove",
+          "hand"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "glove/hand echo glove puppet/hand puppet from the synonymity set"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "board-1",
+  "title": "School Days",
+  "sets": [
+    {
+      "id": "set-blueprint",
+      "relationshipLabel": "the written plan and the built thing it describes",
+      "explanation": "A blueprint or script is the document that must exist before the treehouse or play can be built or performed.",
+      "pairs": [
+        [
+          "blueprint",
+          "treehouse"
+        ],
+        [
+          "script",
+          "school play"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "school"
+      ]
+    },
+    {
+      "id": "set-toolaction",
+      "relationshipLabel": "a tool and the action it exists to perform",
+      "explanation": "A jump rope exists to be skipped with and a trampoline exists to be bounced on — each toy is defined by its one signature motion.",
+      "pairs": [
+        [
+          "jump rope",
+          "skip"
+        ],
+        [
+          "trampoline",
+          "bounce"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "playground"
+      ]
+    },
+    {
+      "id": "set-contiguity",
+      "relationshipLabel": "a boundary line and the larger surface it borders",
+      "explanation": "A hairline only exists as the edge of a forehead, and a hemline only exists as the edge of a dress — each boundary is defined by, and cannot be reversed with, the surface it bounds.",
+      "pairs": [
+        [
+          "hairline",
+          "forehead"
+        ],
+        [
+          "hemline",
+          "dress"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "outdoor"
+      ]
+    },
+    {
+      "id": "set-beforeafter",
+      "relationshipLabel": "two moments facing each other across one span",
+      "explanation": "The first day of school and reveille mark a beginning, while the last day of school and lights out mark the matching end of the very same stretch of time.",
+      "pairs": [
+        [
+          "first day of school",
+          "last day of school"
+        ],
+        [
+          "reveille",
+          "lights out"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "school",
+        "military"
+      ]
+    }
+  ]
+}
