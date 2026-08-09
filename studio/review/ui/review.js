@@ -14,6 +14,9 @@ import { STAGE_IDS_FOR_REVISION } from '../../stage-registry.js';
 // The same derivation the server publishes under, not a second copy of it: the
 // destination shown before the click has to be the destination.
 import { slugify } from '../../slug.js';
+// The same rendering the auto-revise loop sends, not a second copy of it: the
+// brief Max previews has to be the brief a revision actually receives.
+import { briefText } from '../brief-text.js';
 
 const view = document.getElementById('view');
 const POLL_MS = 2500;
@@ -93,6 +96,7 @@ async function renderList() {
         <label>Theme <input name="theme" placeholder="leave blank for surprise-me" /></label>
         <label>Pairs <input name="count" type="number" value="14" min="12" max="16" /></label>
         <label class="inline"><input name="mock" type="checkbox" /> mock (no API spend)</label>
+        <label class="inline"><input name="autoRevise" type="checkbox" checked /> auto-revise structural findings</label>
         <button class="pill primary" type="submit">Generate a board</button>
       </form>
       ${serverLine(config)}
@@ -129,6 +133,7 @@ async function renderList() {
           theme: theme.length > 0 ? theme : null,
           count: Number(form.get('count')),
           mock: form.get('mock') === 'on',
+          autoRevise: form.get('autoRevise') === 'on',
         }),
       });
       location.hash = `#/runs/${encodeURIComponent(runId)}`;
@@ -234,6 +239,8 @@ async function renderRun(runId) {
       }
     </section>
 
+    ${autoRevisionPanel(attempt, detail.decisions, attemptId)}
+
     ${publishPanel(runId, manifest, detail.decisions, attempt.board)}
 
     ${
@@ -301,6 +308,69 @@ async function renderRun(runId) {
   wirePlay(attempt.board);
   showProposal(runId, attemptId);
   schedulePoll(working, runId);
+}
+
+/**
+ * The pre-review fix loop's audit (design.md D-14): when the attempt on screen
+ * was created by an auto-revision, the card must say so — the finding, the
+ * brief, and what changed — because a trust ratchet Max cannot inspect is one
+ * he cannot revoke. His verdicts on auto-revised boards are the evidence that
+ * sustains (or ends) the graduation, so nothing here is collapsible.
+ *
+ * Two extra states, both loud: the fix FAILED to clear the findings (they are
+ * repeated beside what changed — the board arrived as-is plus diagnosis, never
+ * a second loop), and the revision attempt itself failed (the parent attempt
+ * still holds a complete, reviewable board, and the notice names it).
+ */
+function autoRevisionPanel(attempt, decisions, attemptId) {
+  const record = attempt.autoRevision;
+  const failed = (decisions ?? []).find(
+    (event) => event.type === 'auto-revision-failed' && event.attemptId === attemptId,
+  );
+  if (!record && !failed) return '';
+
+  const outcome = (decisions ?? []).find(
+    (event) => event.type === 'auto-revision-outcome' && event.attemptId === attemptId,
+  );
+
+  const findingLine = (finding) =>
+    `<li><strong>${escape(finding.setIds?.join(', ') || 'board')}</strong>
+       <span class="studio-muted">${escape(finding.kind)} · ${escape(finding.source)}</span>
+       ${finding.note ? `<div class="fb-log-note">${escape(finding.note)}</div>` : ''}</li>`;
+
+  return `
+    <section class="panel" id="auto-revision">
+      <h2>Auto-revised before review</h2>
+      ${
+        record
+          ? `<p class="studio-muted">Allowlisted findings on attempt ${escape(record.parentAttemptId)} triggered one automatic revision (design.md D-14).</p>
+             <ul class="fb-log">${record.findings.map(findingLine).join('')}</ul>
+             <p><strong>The brief it ran:</strong> ${escape(record.proposal?.summary ?? '')}</p>
+             <details><summary>Full revision notes</summary><pre>${escape(record.notes ?? '')}</pre></details>`
+          : ''
+      }
+      ${
+        outcome
+          ? `<p>Changed: ${
+              outcome.changedSetIds?.length
+                ? outcome.changedSetIds.map(escape).join(', ')
+                : '<span class="studio-muted">nothing — the revision returned the same sets</span>'
+            }</p>`
+          : ''
+      }
+      ${
+        outcome?.persisted?.length
+          ? `<p class="failure">The fix did not clear these findings — the board is shown as-is, with the diagnosis (never a second loop):</p>
+             <ul class="fb-log">${outcome.persisted.map(findingLine).join('')}</ul>`
+          : ''
+      }
+      ${
+        failed
+          ? `<p class="failure">The auto-revision failed: ${escape(failed.reason)}</p>
+             <p class="studio-muted">Attempt ${escape(failed.parentAttemptId)} still holds the complete board it tried to fix.</p>`
+          : ''
+      }
+    </section>`;
 }
 
 /**
@@ -736,21 +806,6 @@ async function showProposal(runId, attemptId) {
       notify(error.message, 'error');
     }
   });
-}
-
-/** The proposal as the plain text a revision actually travels as. */
-function briefText(proposal) {
-  return [
-    proposal.summary,
-    ...proposal.fixes.map(
-      (fix) => `- ${fix.setId}: ${fix.problem}\n  Try: ${fix.candidates.join('\n  Or: ')}`,
-    ),
-    proposal.doNotChange?.length
-      ? `Do not change: ${proposal.doNotChange.join(', ')} — these were approved.`
-      : '',
-  ]
-    .filter(Boolean)
-    .join('\n');
 }
 
 function schedulePoll(working, runId) {

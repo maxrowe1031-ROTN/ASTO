@@ -225,7 +225,13 @@ test('a revision that cannot build a transport creates no child attempt', async 
     pipelineOptions: fastTime(),
   });
   try {
-    const { runId } = store.createRun({ slug: 'lantern', brief: { count: 8, mock: true } });
+    // autoRevise off: this test is about revise()'s transport-first ordering,
+    // and the mock fixtures would otherwise trip D-14's loop and consume the
+    // attempt id the assertion below counts on.
+    const { runId } = store.createRun({
+      slug: 'lantern',
+      brief: { count: 8, mock: true, autoRevise: false },
+    });
     runner.start(runId, { mock: true });
     await runner.settled(runId);
 
@@ -247,7 +253,9 @@ test('a revision that cannot build a transport creates no child attempt', async 
 test('revise opens the child attempt and runs it', async () => {
   const { store, runner, cleanup } = setup();
   try {
-    const runId = seedRun(store);
+    // autoRevise off, so the child attempt of Max's OWN revision is 0002 —
+    // this test is about the manual path, not D-14's loop.
+    const runId = seedRun(store, { brief: { count: 8, autoRevise: false } });
     runner.start(runId, { mock: true });
     await runner.settled(runId);
 

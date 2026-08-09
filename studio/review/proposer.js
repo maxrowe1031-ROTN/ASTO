@@ -29,6 +29,15 @@ export const proposalFile = (attemptId) => `revision-proposal-${attemptId}.json`
 // construction. Absence looked exactly like "not attempted".
 export const proposalFailureFile = (attemptId) => `revision-proposal-${attemptId}-failure.json`;
 
+// The pre-review loop's names (design.md D-14), distinct on purpose: the
+// review page's proposal endpoint reads `proposalFile`/`proposalFailureFile`
+// for the CURRENT attempt, and an auto-brief written under those names would
+// surface as though Max had asked for a proposal and it had answered — or
+// worse, failed. The auto loop's record must never be mistaken for his.
+export const autoProposalFile = (attemptId) => `auto-revision-proposal-${attemptId}.json`;
+export const autoProposalFailureFile = (attemptId) =>
+  `auto-revision-proposal-${attemptId}-failure.json`;
+
 // The evaluator outputs the proposer reads as evidence. The gate is left out:
 // it is deterministic and a board that reached review already passed it.
 const EVALUATOR_STAGES = [
@@ -99,9 +108,9 @@ export function buildInput(store, runId, attemptId, feedback) {
  * transaction. A recorder that could throw would trade the valuable half of
  * the work for the advisory half.
  */
-function recordFailure(store, runId, attemptId, fields) {
+function recordFailure(store, runId, attemptId, fields, failureFile = proposalFailureFile) {
   try {
-    store.writeRunArtifact(runId, proposalFailureFile(attemptId), { attemptId, ...fields });
+    store.writeRunArtifact(runId, failureFile(attemptId), { attemptId, ...fields });
   } catch {
     // Nothing left to do: the trace itself is what could not be written. The
     // caller still returns null, and the page still works.
@@ -118,6 +127,12 @@ function recordFailure(store, runId, attemptId, fields) {
  *
  * @param transport injected, exactly as the pipeline does it, so tests replay
  *                  a fixture and mock runs never reach the API.
+ * @param preReview when set — `{ findings: [...] }`, the allowlisted machine
+ *                  findings from auto-revise.js — the proposer runs its
+ *                  pre-review variant (design.md D-14): no editor feedback
+ *                  exists, the findings are the mandate, and the artifacts land
+ *                  under the auto- names so they are never mistaken for a brief
+ *                  Max asked for.
  */
 export async function proposeRevision({
   store,
@@ -128,9 +143,15 @@ export async function proposeRevision({
   context = {},
   config = DEFAULT_CONFIG,
   clock,
+  preReview = null,
 }) {
   const agent = loadAgent('revision-proposer');
-  const input = buildInput(store, runId, attemptId, feedback);
+  const input = preReview
+    ? { ...buildInput(store, runId, attemptId, []), preReview }
+    : buildInput(store, runId, attemptId, feedback);
+  const files = preReview
+    ? { proposal: autoProposalFile, failure: autoProposalFailureFile }
+    : { proposal: proposalFile, failure: proposalFailureFile };
 
   const llm = createLlm({ transport, ...(clock ? { clock } : {}) });
   const effort = effortFor(PROPOSER_STAGE, config);
@@ -161,7 +182,7 @@ export async function proposeRevision({
       lastReply = text;
       const parsed = agent.parse(text);
       const validation = parsed.ok
-        ? agent.validateOutput(parsed.value, { board: input.board })
+        ? agent.validateOutput(parsed.value, { board: input.board, preReview: Boolean(preReview) })
         : parsed.failure;
 
       if (parsed.ok && validation.ok) {
@@ -172,7 +193,7 @@ export async function proposeRevision({
         // directory records what the PIPELINE did, and a brief written during
         // review is not that. So it lives at run level beside feedback.jsonl,
         // with the prompt along for the audit every stage keeps.
-        store.writeRunArtifact(runId, proposalFile(attemptId), {
+        store.writeRunArtifact(runId, files.proposal(attemptId), {
           ...parsed.value,
           attemptId,
           prompt: request.prompt,
@@ -194,30 +215,42 @@ export async function proposeRevision({
     // The path that used to be a bare `return null`. The model answered twice
     // and neither answer was usable — a real, reportable outcome, and the one
     // that left no trace at all until now.
-    recordFailure(store, runId, attemptId, {
-      category: 'invalid-output',
-      message: 'the model answered twice and neither reply was a valid brief',
-      at: at(),
-      rounds,
-      prompt: request.prompt,
-      model: request.model,
-      reply: lastReply,
-    });
+    recordFailure(
+      store,
+      runId,
+      attemptId,
+      {
+        category: 'invalid-output',
+        message: 'the model answered twice and neither reply was a valid brief',
+        at: at(),
+        rounds,
+        prompt: request.prompt,
+        model: request.model,
+        reply: lastReply,
+      },
+      files.failure,
+    );
     return null;
   } catch (error) {
     // Recorded, never thrown: the review page must still save Max's feedback,
     // which is the irreplaceable half of this transaction.
-    recordFailure(store, runId, attemptId, {
-      category: error.category ?? 'unknown',
-      message: error.message,
-      at: at(),
-      // Same fields as the path above, so one reader understands both records.
-      // A throw can happen on round 2, and what round 1 got wrong is evidence.
-      rounds,
-      prompt: request.prompt,
-      model: request.model,
-      reply: lastReply,
-    });
+    recordFailure(
+      store,
+      runId,
+      attemptId,
+      {
+        category: error.category ?? 'unknown',
+        message: error.message,
+        at: at(),
+        // Same fields as the path above, so one reader understands both records.
+        // A throw can happen on round 2, and what round 1 got wrong is evidence.
+        rounds,
+        prompt: request.prompt,
+        model: request.model,
+        reply: lastReply,
+      },
+      files.failure,
+    );
     return null;
   }
 }

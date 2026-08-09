@@ -28,6 +28,7 @@ import { buildRelationshipIndex, buildThemedBrief, buildVarietyBrief } from '../
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-config.js';
 import { pickSubject } from '../corpus/subjects.js';
 import { proposalFailureFile, proposalFile, proposeRevision, wantsProposal } from './proposer.js';
+import { autoRevisionFile } from '../auto-revise.js';
 import { defaultTransport } from './runner.js';
 import { createPuzzleStore, PublishRefused } from '../storage/puzzle-store.js';
 import { slugify } from '../slug.js';
@@ -204,6 +205,18 @@ export function createApi({
         reports[stageId] = store.readStageArtifact(runId, attemptId, stageId, filename);
       }
     }
+    // The pre-review fix loop's audit record (design.md D-14), keyed by the
+    // attempt it CREATED: the attempt Max lands on is the revised one, and the
+    // card's panel answers "why does this attempt exist". A run artifact, not
+    // an attempt artifact — completed work is never rewritten.
+    const autoRevision = (() => {
+      try {
+        return store.readRunArtifact(runId, autoRevisionFile(attemptId));
+      } catch {
+        return undefined;
+      }
+    })();
+
     return ok({
       attempt: store.readAttempt(runId, attemptId),
       board: optional('board.json'),
@@ -212,6 +225,7 @@ export function createApi({
       parentAttempt: optional('parent-attempt.json'),
       blackboard: optional('blackboard.json'),
       reports,
+      ...(autoRevision === undefined ? {} : { autoRevision }),
     });
   }
 
@@ -219,14 +233,15 @@ export function createApi({
 
   function createRun(body) {
     if (!isPlainObject(body)) return bad('body must be an object');
-    const allowed = new Set(['theme', 'slug', 'count', 'mock']);
+    const allowed = new Set(['theme', 'slug', 'count', 'mock', 'autoRevise']);
     for (const key of Object.keys(body)) {
       if (!allowed.has(key)) return bad(`unknown field: ${key}`);
     }
 
-    const { theme = null, count = DEFAULT_PAIR_COUNT, mock = false } = body;
+    const { theme = null, count = DEFAULT_PAIR_COUNT, mock = false, autoRevise = true } = body;
     if (theme !== null && typeof theme !== 'string') return bad('theme must be a string or null');
     if (typeof mock !== 'boolean') return bad('mock must be a boolean');
+    if (typeof autoRevise !== 'boolean') return bad('autoRevise must be a boolean');
     if (!Number.isInteger(count) || count < MIN_PAIR_COUNT || count > MAX_PAIR_COUNT) {
       return bad(`count must be an integer between ${MIN_PAIR_COUNT} and ${MAX_PAIR_COUNT}`);
     }
@@ -266,6 +281,10 @@ export function createApi({
     const brief = {
       ...(theme === null ? buildBrief({ count }) : buildThemed({ count })),
       mock,
+      // Whether the pre-review fix loop (design.md D-14) may touch this run.
+      // Recorded at creation for the same reason `mock` is: a resume must obey
+      // the choice made when the run was started, not the form's state today.
+      autoRevise,
     };
     const { runId } = store.createRun({ slug, theme: runTheme, brief });
     // Fire and forget: a real run takes minutes, so the answer is 202 and the

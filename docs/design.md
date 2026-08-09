@@ -1544,6 +1544,61 @@ starts agreeing with 08's verdicts → a *taste* graduation gets its own decisio
 folded silently into this one. The loop fires on most runs → the generator prompt is the
 problem, not the reviser's throughput.
 
+### D-14 amendment — built, and the four calls made while building it (2026-08-09)
+
+**Status: BUILT.** `studio/auto-revise.js` owns the whole loop: `detectFindings` (the
+allowlist, pure), `shouldAutoRevise` (the guards, pure), `autoReviseIfNeeded` +
+`recordAutoRevisionOutcome` (the orchestration, through the existing seams —
+`proposeRevision` for the brief, `requestRevision` for the child attempt, `run-store`
+for every byte). The proposer's machine-findings variant is the one new seam D-14
+predicted: `buildPrompt` gains a pre-review mode whose mandate is the allowlisted
+findings alone, and whose validator enforces what the post-review prompt only asks —
+**every board set is either fixed or protected** ("unmentioned" pre-review would mean
+"free to churn", which is what the bound forbids). The post-review prompt is untouched,
+and a test pins that.
+
+**Three calls made with Max at the session's start:**
+
+1. **Kill switch, default ON.** `autoRevise: true` in `pipeline-config.js`, a checkbox on
+   the Studio's start-run form, `--no-auto-revise` at the CLI — recorded on the run's
+   `brief` at creation, so a resume obeys the choice made when the run was started.
+   Either switch being off keeps the loop off. The trust is revocable without a code
+   edit, which is what risk-tiered autonomy asks of a ratchet.
+2. **Both doors, one module.** `runner.js` (Studio) and `run.js` (CLI) call the same
+   three functions. The recurring one-door scar, paid for three times before this
+   module existed (the 04a count floor, D-11, D-13's themed-brief steer), pre-paid here.
+3. **A failed auto-revision is accepted and named loudly** — `auto-revision-failed` in
+   `decisions.jsonl` naming the parent attempt, which still holds a complete board
+   (`failed → running` is already a legal resume). No fragility guards whose conditions
+   would be guesswork until one has actually failed.
+
+**And one refinement made while wiring, recorded because it sharpens the design's own
+reasoning:** the loop fires **only on attempts that are not themselves revisions**
+(`parentAttemptId === null`). D-14's mechanism is a stated exception to D-5's authority
+ordering *for the one case where Max's judgement does not exist yet* — but after a
+Max-requested revision his judgement exists, so the exception's justification is gone
+and the loop stays out. Strictly pre-review, by construction.
+
+**How the intervention reads on disk and on the card.** One `auto-revision` decision
+before the child attempt opens (a crash between the two leaves intent, not an orphan);
+`auto-revision-<childId>.json` beside `feedback.jsonl` carrying findings, brief and
+notes; one `auto-revision-outcome` decision when the child settles, carrying
+`changedSetIds` and `persisted` — the failed-fix diagnosis when non-empty. The proposer's
+artifacts land under `auto-revision-proposal-*` names, distinct from the review-time
+`revision-proposal-*` files, so an auto brief is never mistaken for one Max asked for.
+The review card's "Auto-revised before review" panel renders all of it un-collapsed —
+a ratchet Max cannot inspect is one he cannot revoke — and the brief's protection line
+says *"no allowlisted finding touches them"* rather than the review path's *"these were
+approved"*, because pre-review nothing has been.
+
+**Verified 2026-08-09:** 1199 tests green (19 new — the allowlist's negative space is
+the load-bearing test: 05, 08, `knowledgeGated`, taste, span and lexical reports all
+constructed juicy and asserted silent). Both bite-checks bit: silencing the severity
+filter fails the detection test; dropping the once-per-run guard fails the guard test.
+End to end in the live Studio on a mock run — the committed fixtures trip the allowlist
+by construction — attempt 0002 arrived as a revision of 0001 with the full audit panel,
+including the diagnosis path, since replayed fixtures cannot clear their own finding.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

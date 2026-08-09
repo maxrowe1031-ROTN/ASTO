@@ -17,6 +17,7 @@ import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 import { runPipeline, requestRevision } from './pipeline.js';
+import { autoReviseIfNeeded, recordAutoRevisionOutcome } from './auto-revise.js';
 import { createRunStore } from './storage/run-store.js';
 import { createAnthropicTransport } from './llm.js';
 import { createMockTransport } from './mock-transport.js';
@@ -40,6 +41,9 @@ const OPTIONS = {
   mock: { type: 'boolean', default: false },
   fresh: { type: 'boolean', default: false },
   count: { type: 'string' },
+  // Off-switch for the pre-review fix loop (design.md D-14). Spelled as a
+  // negative because the loop is on by default at both doors.
+  'no-auto-revise': { type: 'boolean', default: false },
 };
 
 /** Pure: argv → options. The only part of this file worth testing. */
@@ -79,6 +83,7 @@ export function parseArgv(argv) {
     notes: values.notes ?? '',
     mock: values.mock,
     fresh: values.fresh,
+    autoRevise: !values['no-auto-revise'],
     brief: { count },
   };
 }
@@ -94,7 +99,7 @@ export function parseArgv(argv) {
  * anywhere. The decision is testable now; the two brief shapes themselves live
  * in `variety.js`.
  */
-export function briefFor({ index, theme, count, mock = false }) {
+export function briefFor({ index, theme, count, mock = false, autoRevise = true }) {
   return {
     ...(theme === null ? buildVarietyBrief({ index, count }) : buildThemedBrief({ index, count })),
     // Recorded on the run, not just handed to this launch. It is what separates
@@ -106,6 +111,10 @@ export function briefFor({ index, theme, count, mock = false }) {
     // run from the CLI counted into the library as though someone had authored
     // it. Found by running one during this session's own verification.
     mock,
+    // Recorded for the same reason: whether the pre-review fix loop (D-14) may
+    // touch this run is the run's own setting, and a resume must obey the
+    // choice made at creation rather than whatever the flag says that day.
+    autoRevise,
   };
 }
 
@@ -125,6 +134,7 @@ async function main(argv) {
       theme: options.theme,
       count: options.brief.count,
       mock: options.mock,
+      autoRevise: options.autoRevise,
     });
     // A surprise-me run picks a subject too — the Studio does the same, and a
     // run started here must be the same kind of run as one started there.
@@ -148,13 +158,43 @@ async function main(argv) {
   }
 
   const rules = loadRules();
-  const result = await runPipeline({
+  const context = { rules: rules.map((rule) => rule.text) };
+  let result = await runPipeline({
     runId,
     store,
     transport,
     fresh: options.fresh,
-    context: { rules: rules.map((rule) => rule.text) },
+    context,
   });
+
+  // The pre-review fix loop (design.md D-14) — the same call the Review
+  // Studio's runner makes, because a rule at one door is the repo's recurring
+  // scar. autoReviseIfNeeded owns every reason not to fire and returns null
+  // for all of them, so a CLI run with nothing to fix prints nothing new.
+  if (result.status === 'complete') {
+    const auto = await autoReviseIfNeeded({
+      store,
+      runId,
+      attemptId: result.attemptId,
+      transport,
+      context,
+    });
+    if (auto) {
+      console.log(
+        `auto-revision (D-14): allowlisted findings on ${[
+          ...new Set(auto.findings.flatMap((finding) => finding.setIds)),
+        ].join(', ')} — revising as attempt ${auto.attemptId}`,
+      );
+      const revised = await runPipeline({ runId, store, transport, context });
+      recordAutoRevisionOutcome({ store, runId, auto, result: revised });
+      if (revised.status !== 'complete') {
+        console.log(
+          `auto-revision failed — the board at attempt ${auto.parentAttemptId} is still complete and reviewable`,
+        );
+      }
+      result = revised;
+    }
+  }
 
   console.log(`attempt ${result.attemptId}: ${result.status}`);
   if (result.resumedAt) console.log(`resumed at ${result.resumedAt}`);

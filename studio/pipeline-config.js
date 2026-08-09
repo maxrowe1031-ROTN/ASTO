@@ -202,6 +202,16 @@ export const DEFAULT_CONFIG = deepFreeze({
   // Spec default: max 3 AI revision attempts per run.
   maxRevisions: 3,
 
+  // The pre-review fix loop (design.md D-14): when an allowlisted structural
+  // finding fires, one auto-revision runs before the board reaches Max —
+  // inside maxRevisions above, never in addition to it. This is the master
+  // switch; each run also carries `brief.autoRevise` (the Studio's checkbox,
+  // the CLI's --no-auto-revise), and either being false keeps the loop off.
+  // The switch exists because the trust is revocable by design: an
+  // auto-revision that churns a set Max then rejects shrinks the allowlist,
+  // and a batch run with the loop off is the comparison that shows its worth.
+  autoRevise: true,
+
   // An absent metric is not a cap. Cost caps only bite once every model in
   // play is priced — token and request caps are exact regardless.
   //
