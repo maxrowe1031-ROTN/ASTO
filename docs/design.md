@@ -1699,6 +1699,29 @@ the exhaustion test. Live: a mock surprise-me run draws the fixture subject thro
 the same path, and a real surprise-me run drew a scout subject absent from all 105
 used themes, with `subjectSource: 'scout'` and its style on the manifest.
 
+**Gate evidence, same day — the first scout batch, judged.** Seven boards, **taste
+`delightful` on all seven** (against `solid`×5 / `delightful`×1 on the pool-subject
+batch the same morning — the subject source was the only variable between them), six
+approved, six published. Max: *"the change we made def made a huge difference in the
+delight factor."* The world/lens A/B's early read: **both arms delighted** (lens 3/3
+approved, world 3/4), so the active ingredient looks like specificity-and-freshness
+rather than the poetic register per se — the mix continues, n too small to call.
+
+**The ride-along, measured before any lever moved.** Every board also got harder, and
+the instruments agree on where: knowledge-gated words **1.17 → 2.71 per board**,
+difficulty-source `vocabulary` 56% → 63%, Max's sets-solved **1.83 → 1.12 of 4** with
+zero wins, `too-difficult` ×4 — and the sharpest number, **grade-1 candidate sets
+12 → 4** across comparable pools. The pools stopped *containing* easy sets, so the
+green slot was being filled by promotion from harder material. **Max's call: ship the
+mirror of D-8's range rule** — 01 now requires at least one matched group *open to a
+general player on sight*, with the subject's specialist vocabulary confined to the
+harder groups ("the easiest set is the door into the board, and a board with no door
+is a wall"). One line, at the door where the shortage measurably is, leaving the upper
+tiers as sharp as the batch that earned the delight. **Reconsider-when:** the next
+scout batches' grade-1 counts and his win rate recover without the taste verdicts
+falling — or greens come back generic ("slapped on the page") and the line overshot,
+in which case the fix is scaling specificity to tier, not abandoning either rule.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
