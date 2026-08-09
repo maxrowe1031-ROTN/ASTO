@@ -17,7 +17,7 @@ import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 import { runPipeline, requestRevision } from './pipeline.js';
-import { autoReviseIfNeeded, recordAutoRevisionOutcome } from './auto-revise.js';
+import { autoReviseIfNeeded, reconcileAutoRevisionOutcome } from './auto-revise.js';
 import { createRunStore } from './storage/run-store.js';
 import { createAnthropicTransport } from './llm.js';
 import { createMockTransport } from './mock-transport.js';
@@ -176,6 +176,11 @@ async function main(argv) {
     context,
   });
 
+  // A resumed auto-revision settles its own ledger: if this result is an
+  // auto-revision attempt whose outcome was lost to a failure, record it now.
+  // Idempotent, quiet for ordinary attempts — same call as the Studio door.
+  reconcileAutoRevisionOutcome({ store, runId, result });
+
   // The pre-review fix loop (design.md D-14) — the same call the Review
   // Studio's runner makes, because a rule at one door is the repo's recurring
   // scar. autoReviseIfNeeded owns every reason not to fire and returns null
@@ -195,7 +200,7 @@ async function main(argv) {
         ].join(', ')} — revising as attempt ${auto.attemptId}`,
       );
       const revised = await runPipeline({ runId, store, transport, context });
-      recordAutoRevisionOutcome({ store, runId, auto, result: revised });
+      reconcileAutoRevisionOutcome({ store, runId, result: revised });
       if (revised.status !== 'complete') {
         console.log(
           `auto-revision failed — the board at attempt ${auto.parentAttemptId} is still complete and reviewable`,

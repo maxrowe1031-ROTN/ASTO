@@ -365,7 +365,10 @@ function autoRevisionPanel(attempt, decisions, attemptId) {
           : ''
       }
       ${
-        failed
+        // An outcome outranks a stale failure record: a revision that failed
+        // and was later resumed to completion reads as what it became, with
+        // the failure kept in decisions.jsonl as history.
+        failed && !outcome
           ? `<p class="failure">The auto-revision failed: ${escape(failed.reason)}</p>
              <p class="studio-muted">Attempt ${escape(failed.parentAttemptId)} still holds the complete board it tried to fix.</p>`
           : ''

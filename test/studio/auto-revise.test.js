@@ -325,6 +325,85 @@ test('a failed auto-revision is named loudly, and the parent still holds its boa
   }
 });
 
+test('an interrupted auto-revision, resumed, settles its outcome on completion', async () => {
+  const { store, cleanup } = makeStore();
+  try {
+    const runId = seedRun(store);
+
+    // A store that dies writing the CHILD's 08 output — the parent's 08 is the
+    // first write, the auto-revision's is the second. The thrown error is not
+    // a StudioFailure, so the pipeline lets it escape exactly like a real
+    // crash: attempt 0002 stays `running`, the auto-revision decision is on
+    // the ledger, and no outcome ever got recorded.
+    let writes = 0;
+    const dieOnSecond08 = (wrapped) => ({
+      ...wrapped,
+      writeStageArtifact(rid, attemptId, stage, name, value) {
+        if (stage === '08-style-guide' && name === 'output.json' && ++writes === 2) {
+          throw new Error('simulated kill mid-write');
+        }
+        return wrapped.writeStageArtifact(rid, attemptId, stage, name, value);
+      },
+    });
+    const crashing = createRunner({
+      store,
+      makeTransport: () => mockTransport(),
+      wrapStore: dieOnSecond08,
+      pipelineOptions: fastTime(),
+    });
+    crashing.start(runId, { mock: true });
+    const crashed = await crashing.settled(runId);
+    assert.equal(crashed.status, 'crashed');
+    assert.equal(store.readAttempt(runId, '0002').status, 'running');
+    const ledger = store.readDecisions(runId);
+    assert.ok(ledger.some((event) => event.type === 'auto-revision'));
+    assert.ok(!ledger.some((event) => event.type.startsWith('auto-revision-outcome')));
+
+    // Resume with a healthy runner: 0002 picks up at its incomplete stage,
+    // completes, and reconcile settles the ledger the original launch lost.
+    const resuming = runnerOver(store);
+    resuming.start(runId, {});
+    const result = await resuming.settled(runId);
+    assert.equal(result.status, 'complete', result.failure?.message);
+    assert.equal(result.attemptId, '0002');
+
+    const outcomes = store
+      .readDecisions(runId)
+      .filter((event) => event.type === 'auto-revision-outcome' && event.attemptId === '0002');
+    assert.equal(outcomes.length, 1, 'the resumed revision settled its ledger exactly once');
+    assert.equal(outcomes[0].status, 'complete');
+    assert.ok(Array.isArray(outcomes[0].persisted));
+
+    // And the loop did not re-fire on the resumed completion.
+    assert.equal(
+      store.readDecisions(runId).filter((event) => event.type === 'auto-revision').length,
+      1,
+    );
+  } finally {
+    cleanup();
+  }
+});
+
+test('reconcile is quiet for ordinary attempts and never duplicates an outcome', async () => {
+  const { store, cleanup } = makeStore();
+  try {
+    const runId = seedRun(store);
+    const runner = runnerOver(store);
+    runner.start(runId, { mock: true });
+    await runner.settled(runId);
+
+    const before = store.readDecisions(runId);
+    // The happy path already recorded its outcome via the same reconcile —
+    // calling it again for both attempts must change nothing.
+    const { reconcileAutoRevisionOutcome } = await import('../../studio/auto-revise.js');
+    reconcileAutoRevisionOutcome({ store, runId, result: { attemptId: '0001', status: 'complete' } });
+    reconcileAutoRevisionOutcome({ store, runId, result: { attemptId: '0002', status: 'complete' } });
+    assert.deepEqual(store.readDecisions(runId), before);
+  } finally {
+    cleanup();
+  }
+});
+
 test("a manual revision after the auto-revision never re-fires the loop", async () => {
   const { store, cleanup } = makeStore();
   const runner = runnerOver(store);

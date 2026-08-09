@@ -290,6 +290,62 @@ export async function autoReviseIfNeeded({
  * decision naming the parent attempt, which still holds a complete, reviewable
  * board (`failed → running` is already a legal resume).
  */
+/**
+ * The resume-shaped hole in the outcome record, closed. `recordAutoRevisionOutcome`
+ * below is called by the launch flow that STARTED the auto-revision — so a
+ * revision that failed (credits, a crash) and was resumed later used to
+ * complete with its audit artifact but no outcome decision: the card showed
+ * why the attempt existed but not what it changed. Found live on 2026-08-09,
+ * when the batch that ran out of credits was resumed.
+ *
+ * Idempotent by decision-log check, and quiet when the attempt was never an
+ * auto-revision at all — both doors call it after every settled result.
+ */
+export function reconcileAutoRevisionOutcome({
+  store,
+  runId,
+  result,
+  clock = () => new Date().toISOString(),
+}) {
+  const attemptId = result?.attemptId;
+  if (!attemptId) return;
+
+  let record;
+  try {
+    record = store.readRunArtifact(runId, autoRevisionFile(attemptId));
+  } catch {
+    return; // not an auto-revision attempt
+  }
+
+  const decisions = store.readDecisions(runId);
+  if (
+    decisions.some(
+      (event) => event.type === 'auto-revision-outcome' && event.attemptId === attemptId,
+    )
+  ) {
+    return;
+  }
+  // A recorded failure stands while the attempt is still failed — but a resume
+  // that COMPLETED the attempt outranks it: the ledger appends the outcome,
+  // the failure stays as history, and the card prefers the outcome.
+  if (
+    result.status !== 'complete' &&
+    decisions.some(
+      (event) => event.type === 'auto-revision-failed' && event.attemptId === attemptId,
+    )
+  ) {
+    return;
+  }
+
+  recordAutoRevisionOutcome({
+    store,
+    runId,
+    auto: { attemptId, parentAttemptId: record.parentAttemptId },
+    result,
+    clock,
+  });
+}
+
 export function recordAutoRevisionOutcome({
   store,
   runId,
