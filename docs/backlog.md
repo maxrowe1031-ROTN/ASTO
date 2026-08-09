@@ -91,7 +91,12 @@
 - **The cross-reading check's gate-promotion trigger (design.md D-7).** It reports and does not
   block. If it agrees with Max's `valid-but-unfair` / `order-ambiguous` calls across roughly the
   next six boards, promote it to a blocking check at `04a`. If it disagrees, the question it
-  asks needs sharpening before it is trusted with a veto.
+  asks needs sharpening before it is trusted with a veto. **Running tally 2026-08-09: on the
+  two `order-ambiguous` calls Max has made since v4 shipped, the order cluster caught both** —
+  v4's cross-reading HOLDS on bicycles' yellow, and mirrors' green caught twice over (04a's
+  symmetric flag + 07's `orderGuessed`, though v4 itself was not the catcher there). Not
+  promoted to a gate — instead the cluster entered D-14's auto-revise allowlist, a milder
+  use of the same trust: a wrong fix gets reviewed, a wrong veto silently costs a board.
 - **Stage 05 flags almost exactly two sets per board.** Across 36 attempts the distribution is
   0/1/2/3 fails at 5/10/19/2 — 2 is the mode at 53%, and it was 2 on every board of the
   2026-08-05 batch. `boardPasses` is therefore false on 31 of 36 attempts (86%) and agrees with
@@ -158,13 +163,15 @@
   the pre-2026-08-05 form a set inherited the board button, so 21 of 79 tagged set-events say
   `reject-set` while carrying only praise. Events from `formVersion` 2 onward carry their own
   per-set verdict and can be read directly. Guarded by a test in `schemas.feedback.test.js`.
-- **The Revision Proposer's graduation trigger:** at ~10 briefs with `proposal-verdict` events
+- ~~**The Revision Proposer's graduation trigger:** at ~10 briefs with `proposal-verdict` events
   recorded (accepted / edited+diff / discarded), evaluate agreement. If Max accepts briefs
   substantially unedited, propose the bounded auto-revise loop — his stated aspiration, gated
-  on evidence rather than on enthusiasm (design.md D-5). **Standing 2026-08-08 evening: 6
-  verdicts, all accepted — and festivals is the first executed-and-published brief** (*"my
-  initial feedback was implemented exactly as intended"*). Usable evidence 1 published of 3
-  usable; `node tools/evaluator-report.js` is the instrument.
+  on evidence rather than on enthusiasm (design.md D-5).~~ **Fired 2026-08-09 — see design.md
+  D-14.** 9 verdicts, all accepted, and Max asked for the loop himself mid-review. The
+  bounded pre-review fix loop is designed (allowlist his: 06 high cross-set + the
+  order-ambiguity cluster; taste never), agreed, and deliberately not built until next
+  session. The evidence that clinched it: the machine caught all four structural defects he
+  caught on the 2026-08-09 batch, before he saw the boards.
 - **The shakedown slim-down lap** (~10 judged boards under `2026-08-04-taxonomy-shakedown`):
   re-run the lean-2 measurement pass — per-stage cost + thinking share against review verdicts
   — then re-aim effort, revisit 03/08's Sonnet upgrade, and revert the raised budget ceilings

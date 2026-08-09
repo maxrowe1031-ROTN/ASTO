@@ -18,6 +18,7 @@ import {
   FEEDBACK_FORM_VERSION,
   QUICK_TAGS,
   RETIRED_TAGS,
+  TASTE_VERDICTS,
   validateFeedbackEvent,
 } from '../../studio/schemas.js';
 
@@ -68,11 +69,12 @@ test('the action vocabulary is the spec\'s ten plus the 2026-08-05 instrument', 
   }
 });
 
-test('the spec\'s thirteen quick tags, plus five from the corpus, are all accepted', () => {
+test('the spec\'s thirteen quick tags, plus seven from the corpus, are all accepted', () => {
   // 13 from the spec · 4 added 2026-08-04 · `second-valid-reading` added
-  // 2026-08-05. The count only ever goes up: retiring a tag takes it out of the
-  // FORM, never out of the vocabulary.
-  assert.equal(QUICK_TAGS.length, 18);
+  // 2026-08-05 · the two taste tags added 2026-08-09 (formVersion 4). The
+  // count only ever goes up: retiring a tag takes it out of the FORM, never
+  // out of the vocabulary.
+  assert.equal(QUICK_TAGS.length, 20);
   assert.equal(validateFeedbackEvent(good({ tags: [...QUICK_TAGS] })).ok, true);
 });
 
@@ -270,8 +272,42 @@ test('the tags that absorbed the other two meanings are still in the vocabulary'
 });
 
 test('the form version moved with the instrument', () => {
-  // Version 3 exists so rubric compilation can tell the two populations apart:
-  // the ABSENCE of `valid-but-unfair` means something different before and
-  // after the retirement.
-  assert.equal(FEEDBACK_FORM_VERSION, 3);
+  // Version 3: rubric compilation can tell the two populations apart — the
+  // ABSENCE of `valid-but-unfair` means something different before and after
+  // the retirement. Version 4 (2026-08-09): the taste instrument — before it,
+  // an absent taste verdict means the question was never asked.
+  assert.equal(FEEDBACK_FORM_VERSION, 4);
+});
+
+// --- the taste instrument (formVersion 4) ---
+
+test('a board event may carry a taste verdict, and only the three real ones', () => {
+  for (const taste of TASTE_VERDICTS) {
+    const event = good({ action: 'approve-board', scope: { type: 'board' }, taste });
+    assert.deepEqual(validateFeedbackEvent(event).errors, [], taste);
+  }
+  assert.deepEqual(
+    errorPaths(good({ action: 'approve-board', scope: { type: 'board' }, taste: 'amazing' })),
+    ['taste'],
+    'an invented taste value must be refused — the vocabulary is the contract',
+  );
+});
+
+test('a set event cannot carry a taste verdict — taste is a property of the whole', () => {
+  assert.deepEqual(errorPaths(good({ taste: 'delightful' })), ['taste']);
+});
+
+test('an event without a taste verdict stays valid — declining is not an error', () => {
+  const event = good({ action: 'approve-board', scope: { type: 'board' } });
+  assert.deepEqual(validateFeedbackEvent(event).errors, []);
+});
+
+test('the taste tags are active vocabulary, and publishability praise is untouched', () => {
+  for (const tag of ['sharp-words', 'surprising-turn']) {
+    assert.ok(ACTIVE_TAGS.includes(tag), `${tag} missing from the active vocabulary`);
+  }
+  // The scorecard four still validate — the two axes coexist.
+  for (const tag of ['good-unchanged', 'feels-like-asto']) {
+    assert.deepEqual(validateFeedbackEvent(good({ tags: [tag] })).errors, []);
+  }
 });

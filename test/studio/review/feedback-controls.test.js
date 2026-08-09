@@ -153,7 +153,7 @@ function fakeBlock({ setId, difficulty, tags = [], note = '', tier = null, verdi
   };
 }
 
-const fakeRoot = (blocks, { boardVerdict = null, blockers = [] } = {}) => ({
+const fakeRoot = (blocks, { boardVerdict = null, blockers = [], taste = null } = {}) => ({
   querySelectorAll(selector) {
     if (selector === '.fb-block') return blocks;
     if (selector === 'input[data-role=blocker]:checked') {
@@ -165,13 +165,16 @@ const fakeRoot = (blocks, { boardVerdict = null, blockers = [] } = {}) => ({
     if (selector === 'input[data-role=board-verdict]:checked') {
       return boardVerdict === null ? null : { value: boardVerdict };
     }
+    if (selector === 'input[data-role=board-taste]:checked') {
+      return taste === null ? null : { value: taste };
+    }
     throw new Error(`unexpected querySelector(${selector})`);
   },
 });
 
 const collect = (blocks, options = {}) => {
-  const { boardVerdict, blockers, ...rest } = options;
-  return collectFeedback(fakeRoot(blocks, { boardVerdict, blockers }), {
+  const { boardVerdict, blockers, taste, ...rest } = options;
+  return collectFeedback(fakeRoot(blocks, { boardVerdict, blockers, taste }), {
     attemptId: '0001',
     ...rest,
   });
@@ -412,4 +415,52 @@ test('a judgement recorded today can still carry the new tag through validation'
   for (const event of events) {
     assert.equal(validateFeedbackEvent(event).ok, true, JSON.stringify(event));
   }
+});
+
+// --- the taste instrument (formVersion 4) ---
+//
+// Max's instruction after the 2026-08-09 batch: "lets start adding more
+// options in the reviewer regarding taste so we can capture more data on this
+// over time to train the agents." The batch's evidence: 08 rated the board he
+// called "boring" as evocativeness: strong — taste is the evaluators' blind
+// spot, and until now his delight verdicts lived only in prose ("publishable,
+// not exciting" five boards out of six, with no field to land in).
+
+test('the board block offers the taste verdict, separate from publishability', () => {
+  const html = feedbackControls(BOARD);
+  assert.match(html, /as an experience, it felt/);
+  for (const value of ['flat', 'solid', 'delightful']) {
+    assert.match(html, new RegExp(`data-role="board-taste" value="${value}"`));
+  }
+  // Two different radio groups — "publishable AND flat" must be expressible.
+  assert.match(html, /name="board-verdict"/);
+  assert.match(html, /name="board-taste"/);
+});
+
+test('the taste tags render in their own labelled row, apart from the scorecard', () => {
+  const html = feedbackControls(BOARD);
+  assert.match(html, /fb-taste/);
+  assert.match(html, /sharp-words/);
+  assert.match(html, /surprising-turn/);
+});
+
+test('a taste verdict alone is an opinion, and rides the board event', () => {
+  const events = collect(
+    [fakeBlock({ setId: '', difficulty: undefined })],
+    { taste: 'delightful', defaultAction: 'approve' },
+  );
+  assert.equal(events.length, 1);
+  assert.equal(events[0].scope.type, 'board');
+  assert.equal(events[0].taste, 'delightful');
+  const check = validateFeedbackEvent({ ...events[0], attemptId: '0001' });
+  assert.deepEqual(check.errors ?? [], [], JSON.stringify(check));
+});
+
+test('no taste picked means no taste field — declining the question is not an answer', () => {
+  const events = collect(
+    [fakeBlock({ setId: '', difficulty: undefined })],
+    { boardVerdict: 'approve-board' },
+  );
+  assert.equal(events.length, 1);
+  assert.equal('taste' in events[0], false);
 });

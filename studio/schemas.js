@@ -132,7 +132,23 @@ export const FEEDBACK_ACTIONS = Object.freeze([
 // the form in favour of `second-valid-reading`. Segmenting matters here too —
 // the ABSENCE of `valid-but-unfair` means something different before and after
 // this line.
-export const FEEDBACK_FORM_VERSION = 3;
+//
+// Version 4 (2026-08-09): taste capture. Max's instruction after the batch that
+// measured taste as the evaluators' blind spot — 08 rated the board he called
+// "boring" as `evocativeness: strong` — was "lets start adding more options in
+// the reviewer regarding taste so we can capture more data on this over time to
+// train the agents." A board-level `taste` verdict (flat / solid / delightful,
+// his own delight vocabulary) and two taste tags. Before version 4, an absent
+// taste verdict means the question was never asked; after, it means he
+// declined to answer it. Design.md D-14 records what this data is FOR.
+export const FEEDBACK_FORM_VERSION = 4;
+
+// The board-level taste verdict (formVersion 4), orthogonal to publishability
+// on purpose: the corpus's recurring pattern is "publishable, not exciting" —
+// craft and delight are two axes (design.md D-8), and only one of them had a
+// field. In his words: "flat" is "didn't get the same rush", "delightful" is
+// "YES! This whole puzzle absolutely nails it."
+export const TASTE_VERDICTS = Object.freeze(['flat', 'solid', 'delightful']);
 
 // The spec's thirteen, plus four added 2026-08-04 from the review corpus itself.
 //
@@ -176,6 +192,16 @@ export const QUICK_TAGS = Object.freeze([
   // Added 2026-08-05 with Max, from the corpus — the same way the four above
   // were. See RETIRED_TAGS below for what it replaces and why.
   'second-valid-reading',
+  // Added 2026-08-09 with Max (formVersion 4): taste positives, from his own
+  // notes. `sharp-words` is the fun-house-mirror fix — a specific word where a
+  // general one would do, specificity as delight ("'fun house mirror' works
+  // better here"). `surprising-turn` is the fairy-tales conversion set —
+  // "taking the transformed by magic relationship and mixing two different
+  // stories works really well here". Both exist to make the delight half of
+  // his judgement countable; what he keeps praising in prose becomes what a
+  // rubric can be compiled from.
+  'sharp-words',
+  'surprising-turn',
 ]);
 
 /**
@@ -234,6 +260,8 @@ const FEEDBACK_KEYS = new Set([
   'fixSuggestion',
   'playthrough',
   'proposal',
+  // 2026-08-09 (formVersion 4)
+  'taste',
 ]);
 
 export function validateFeedbackEvent(event) {
@@ -333,6 +361,20 @@ export function validateFeedbackEvent(event) {
           fail(`playthrough.${key}`, 'must be an integer when present');
         }
       }
+    }
+  }
+
+  // The delight axis (formVersion 4), board-scoped only: taste is a property
+  // of the whole experience — a per-set version would just duplicate the
+  // taste tags. Optional forever: every event before version 4 lacks it, and
+  // a version-4 event without one records that he declined the question, not
+  // an error. The APPEND-ONLY law applies — this may gain values, never lose
+  // them.
+  if (event.taste !== undefined) {
+    if (!TASTE_VERDICTS.includes(event.taste)) {
+      fail('taste', `must be one of ${TASTE_VERDICTS.join(', ')}, got ${JSON.stringify(event.taste)}`);
+    } else if (event.scope?.type !== 'board') {
+      fail('taste', 'only a board-scoped event carries a taste verdict');
     }
   }
 
