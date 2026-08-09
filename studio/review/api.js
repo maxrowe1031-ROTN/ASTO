@@ -26,7 +26,7 @@ import { buildRelationshipIndex, buildThemedBrief, buildVarietyBrief } from '../
 // The pair-count bounds are the pipeline's arithmetic, not this API's policy —
 // see pipeline-config.js for why the floor is where it is.
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-config.js';
-import { pickSubject } from '../corpus/subjects.js';
+import { pickFreshSubject } from '../subject.js';
 import { proposalFailureFile, proposalFile, proposeRevision, wantsProposal } from './proposer.js';
 import { autoRevisionFile } from '../auto-revise.js';
 import { defaultTransport } from './runner.js';
@@ -75,7 +75,11 @@ export function createApi({
   clock = () => new Date().toISOString(),
   buildBrief = ({ count }) => buildVarietyBrief({ index: buildRelationshipIndex({ store }), count }),
   buildThemed = ({ count }) => buildThemedBrief({ index: buildRelationshipIndex({ store }), count }),
-  chooseSubject = pickSubject,
+  // The fresh-subject chain (design.md D-15): scout → unused pool → LRU. The
+  // seam accepts a plain string return too — tests inject `() => 'clocks and
+  // time'` and a string is treated as an injected pick with no source or
+  // style, exactly as a typed theme would be.
+  chooseSubject = null,
   // The Revision Proposer's transport and learning package. Injected the same
   // way the runner's are, so a test replays a fixture and a mock run never
   // reaches the API.
@@ -231,7 +235,7 @@ export function createApi({
 
   // --- writes ---
 
-  function createRun(body) {
+  async function createRun(body) {
     if (!isPlainObject(body)) return bad('body must be an object');
     const allowed = new Set(['theme', 'slug', 'count', 'mock', 'autoRevise']);
     for (const key of Object.keys(body)) {
@@ -246,11 +250,38 @@ export function createApi({
       return bad(`count must be an integer between ${MIN_PAIR_COUNT} and ${MAX_PAIR_COUNT}`);
     }
 
+    // An explicit slug is judged BEFORE any subject work: a body this route
+    // will refuse anyway must not spend a model call finding that out.
+    if (body.slug !== undefined && !SLUG.test(body.slug)) {
+      return bad('slug must be lowercase letters, digits and hyphens');
+    }
+
     // Surprise-me also picks a SUBJECT, which shape variety never was. Both
     // surprise-me boards Max has judged were rejected for having no unifying
     // theme, while every themed board was approved — so the run gets a subject
-    // AND its shape brief.
-    const runTheme = theme ?? chooseSubject();
+    // AND its shape brief. Since D-15 the subject is FRESH — the scout invents
+    // one that no non-mock run has used, with the pool as loop-free fallback —
+    // which costs the surprise-me POST a couple of seconds of model latency,
+    // paid on the button press for a run that takes minutes.
+    let pick = null;
+    if (theme === null) {
+      // A transport that cannot even be BUILT (no API key) is the same case as
+      // one that fails mid-call: the chain falls back to the pool, because a
+      // missing key must stop a pipeline run, never the creation of one.
+      let transport = null;
+      try {
+        transport = makeTransport({ mock });
+      } catch {
+        transport = null;
+      }
+      const drawn = chooseSubject
+        ? await chooseSubject()
+        : await pickFreshSubject({ store, transport, context: loadContext() });
+      // A plain string is an injected pick (the test seam); it carries no
+      // source or style, exactly like a theme Max typed.
+      pick = typeof drawn === 'string' ? { subject: drawn, source: 'injected', style: null } : drawn;
+    }
+    const runTheme = theme ?? pick.subject;
 
     // The slug follows the SUBJECT, not the door the run came in through.
     // It was 'surprise-me' for a few hours on 2026-08-04 and Max caught it:
@@ -285,6 +316,10 @@ export function createApi({
       // Recorded at creation for the same reason `mock` is: a resume must obey
       // the choice made when the run was started, not the form's state today.
       autoRevise,
+      // Where the subject came from and which style was asked of the scout
+      // (design.md D-15) — the audit trail for whether generation carries the
+      // load, and the segmentation key for the world-vs-lens comparison.
+      ...(pick ? { subjectSource: pick.source, subjectStyle: pick.style } : {}),
     };
     const { runId } = store.createRun({ slug, theme: runTheme, brief });
     // Fire and forget: a real run takes minutes, so the answer is 202 and the
@@ -647,7 +682,9 @@ export function createApi({
       }
 
       try {
-        return run(
+        // Awaited INSIDE the try: createRun is async since D-15 (the subject
+        // scout), and a rejection returned un-awaited would escape fromThrow.
+        return await run(
           [match[0], ...(runId === undefined ? [] : [decodeURIComponent(runId)]), ...(attemptId === undefined ? [] : [attemptId])],
           { body },
         );

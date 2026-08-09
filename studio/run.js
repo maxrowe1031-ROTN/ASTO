@@ -26,7 +26,7 @@ import { buildRelationshipIndex, buildThemedBrief, buildVarietyBrief } from './v
 import { loadRules } from './corpus/rules.js';
 import { loadEnv } from './env.js';
 import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from './pipeline-config.js';
-import { pickSubject } from './corpus/subjects.js';
+import { pickFreshSubject } from './subject.js';
 import { slugify } from './slug.js';
 
 const RUNS_DIR = fileURLToPath(new URL('./runs/', import.meta.url));
@@ -99,7 +99,7 @@ export function parseArgv(argv) {
  * anywhere. The decision is testable now; the two brief shapes themselves live
  * in `variety.js`.
  */
-export function briefFor({ index, theme, count, mock = false, autoRevise = true }) {
+export function briefFor({ index, theme, count, mock = false, autoRevise = true, pick = null }) {
   return {
     ...(theme === null ? buildVarietyBrief({ index, count }) : buildThemedBrief({ index, count })),
     // Recorded on the run, not just handed to this launch. It is what separates
@@ -115,6 +115,10 @@ export function briefFor({ index, theme, count, mock = false, autoRevise = true 
     // touch this run is the run's own setting, and a resume must obey the
     // choice made at creation rather than whatever the flag says that day.
     autoRevise,
+    // Where a surprise-me subject came from and which style the scout was
+    // asked for (design.md D-15) — absent on themed runs, exactly as in the
+    // Studio's brief.
+    ...(pick ? { subjectSource: pick.source, subjectStyle: pick.style } : {}),
   };
 }
 
@@ -129,22 +133,27 @@ async function main(argv) {
   let runId = options.runId;
   if (runId === null) {
     const index = buildRelationshipIndex({ store });
+    // A surprise-me run picks a subject too — the Studio does the same, and a
+    // run started here must be the same kind of run as one started there.
+    // Since D-15 the pick is FRESH: the scout invents a subject no non-mock
+    // run has used, falling back to the unused pool, then LRU — never a loop.
+    const pick =
+      options.theme === null
+        ? await pickFreshSubject({ store, transport })
+        : null;
     const brief = briefFor({
       index,
       theme: options.theme,
       count: options.brief.count,
       mock: options.mock,
       autoRevise: options.autoRevise,
+      pick,
     });
-    // A surprise-me run picks a subject too — the Studio does the same, and a
-    // run started here must be the same kind of run as one started there.
-    // The slug follows the subject so the run id names what the board is
-    // about; only a run with no subject at all could fall back.
-    const theme = options.theme ?? pickSubject();
+    const theme = options.theme ?? pick.subject;
     const slug = options.slug ?? slugify(theme) ?? 'surprise-me';
     ({ runId } = store.createRun({ slug, theme, brief }));
     console.log(`run ${runId}`);
-    if (options.theme === null) console.log(`surprise-me subject: ${theme}`);
+    if (pick) console.log(`surprise-me subject: ${theme} (${pick.source}${pick.style ? `, ${pick.style}` : ''})`);
     if (brief.relationshipShapes?.length) {
       console.log(`surprise-me: reaching for ${brief.relationshipShapes.join(', ')}`);
     }

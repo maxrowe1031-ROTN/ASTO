@@ -1599,6 +1599,77 @@ End to end in the live Studio on a mock run — the committed fixtures trip the 
 by construction — attempt 0002 arrived as a revision of 0001 with the full audit panel,
 including the diagnosis path, since replayed fixtures cannot clear their own finding.
 
+### D-15 — Fresh surprise-me subjects, and the world/lens experiment (2026-08-09)
+
+**What prompted it.** Max caught the surprise generator repeating themes within a day —
+photography (twice in one day), theatre, the kitchen. Structural, not unlucky:
+`pickSubject` drew blind from a static pool of 50 while the run history held 105
+themes. The pool had been lapped twice; a repeat was the *likely* outcome of every draw.
+
+**His requirement, verbatim in spirit:** no theme reuse — *"I'd prefer fresh themes
+every time if the generator and pipeline are capable of that"* — a ~50-board cooldown
+as the acceptable floor, and **no loop**.
+
+**The chain, loop-free by construction** (`studio/subject.js`, shared by both doors —
+the one-door scar, pre-paid a fourth time):
+
+1. **The Subject Scout** (`agents/subject-scout.js`, registered beside the proposer as
+   the second not-a-pipeline-stage agent) invents one fresh subject — two rounds max,
+   handed the full used list as a hard avoid-list *including close overlaps*, and the
+   pool's own curation guidance (everyday lean, science minority, whimsy prized). On
+   the default Sonnet at `low` effort: the subject is the creative seed for everything
+   downstream, and the spend is ~a cent, paid as ~2–4s on the surprise-me button press.
+2. **The mechanical guard:** an answer whose **slug** matches any used theme's slug is
+   rejected ("Photography" is not fresh next to "photography"). One retry; no third round.
+3. **Fallback A:** the static pool filtered to never-used entries — a single filter
+   pass, never rejection sampling. The pool widened 50 → 91 the same day so this tier
+   has room to work.
+4. **Fallback B:** every pool subject used → the **least-recently-used** one, which is
+   the cooldown floor by construction. Reachable only with the model unavailable AND
+   the pool exhausted.
+
+No path throws; a transport that cannot be built (missing key) or fails mid-call lands
+in Fallback A — a missing key must stop a pipeline run, never the creation of one.
+"Used" = every non-mock run's theme, themed and surprise alike; the rule governs only
+the generator's picks — Max typing a theme is never blocked.
+
+**The world/lens experiment (Max's call, after weighing the assessment).** He noticed
+the best-loved early board title, *First Light*, is not a category but a **lens** — an
+evocative angle that admits bread, clay and animals while painting one picture — and
+asked whether the picker should push that way. The mechanical case: category subjects
+put every word in one taxonomy, which is exactly what killed furniture (five storage
+words cross-associating) and photography (generic category nouns); a lens spreads the
+gravity across domains, and cross-domain pairs inside one theme — his *"this is truly
+what we are after"* — need a theme that spans domains. The unknown is delight, which
+has resisted every direct push (D-8). **His decision: a deliberate ~half-and-half mix**,
+so each batch carries its own comparison. The CALLER assigns style (a model asked to
+alternate drifts) — whichever of world/lens is underrepresented among past scout picks
+— and the brief records `subjectSource` (scout / pool / pool-lru) and `subjectStyle`
+(world / lens; null on fallbacks, which must not dilute the A/B). The verdict comes
+from segmenting his taste verdicts (formVersion 4), 08's unity and evocativeness, and
+06's cross-set findings by style. **On record, falsifiably: lens subjects should draw
+fewer cross-set-association findings.**
+
+**Accepted limitation, recorded:** two runs created in the same instant race the
+history read and could draw similar subjects. Runs are started one at a time in
+practice — each creation records its theme before the next POST reads the manifests —
+so this stays a comment, not machinery.
+
+**Reconsider-when:** scout subjects drift off-taste (too obscure, or samey in their own
+poetic register — every subject a time of day is D-13's law wearing new clothes) → the
+banding prompt gets recalibrated against the pool's curation, or generation demotes to
+fallback-only. The A/B reads clearly in either direction after ~2 batches → the style
+mix becomes a deliberate decision rather than a coin-weighted default. `subjectSource`
+shows the fallbacks carrying real load → the scout's ask or ceiling is wrong, and the
+fix is measurement first, per the repo's own effort-tuning scars.
+
+**Verified 2026-08-09:** 1212 tests green (13 new: the chain, the style balance, the
+guard, both fallbacks, and the API recording provenance). Both bite-checks bit —
+dropping the slug guard fails the case-variant test; flattening the LRU ordering fails
+the exhaustion test. Live: a mock surprise-me run draws the fixture subject through
+the same path, and a real surprise-me run drew a scout subject absent from all 105
+used themes, with `subjectSource: 'scout'` and its style on the manifest.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

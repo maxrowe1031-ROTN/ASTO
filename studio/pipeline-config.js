@@ -74,7 +74,14 @@ export const DEFAULT_CONFIG = deepFreeze({
   //
   // 16k is also about the practical limit for a non-streaming request before
   // HTTP timeouts start to bite, which is what this transport makes.
-  maxTokens: { default: 16_000 },
+  maxTokens: {
+    default: 16_000,
+    // The Subject Scout (design.md D-15) answers with a 2–5 word subject.
+    // 2000 rather than a tighter fit because Sonnet's adaptive thinking
+    // shares this ceiling with the answer — the exact failure the note above
+    // records — and at `low` effort the thinking stays well inside it.
+    '00-subject-scout': 2_000,
+  },
 
   // How hard each stage thinks. Effort is the lever adaptive thinking left us:
   // the old one, a fixed `budget_tokens`, is now rejected outright. Disabling
@@ -151,6 +158,12 @@ export const DEFAULT_CONFIG = deepFreeze({
   // lean-2 measurement pass (per-stage cost + thinking share, read against
   // review verdicts) and re-aim downward with data.
   effort: {
+    // Not a pipeline stage: runs once at run creation, inventing a fresh
+    // surprise-me subject (design.md D-15). On the default Sonnet on purpose —
+    // the subject is the creative seed for everything downstream and the
+    // spend is ~a cent — but at low effort: it is a short creative pick, not
+    // a search.
+    '00-subject-scout': 'low',
     '01-pair-author': 'high',
     '02-theme-grouper': 'medium',
     '03-difficulty-rater': 'medium',

@@ -16,6 +16,9 @@ import * as styleGuide from './style-guide.js';
 // but it is an agent by every other measure, so it is registered here and
 // held to the same contract as the eight.
 import * as revisionProposer from './revision-proposer.js';
+// Also not a pipeline stage — it runs at run CREATION, inventing a fresh
+// surprise-me subject (design.md D-15). Same contract as the rest.
+import * as subjectScout from './subject-scout.js';
 
 export const AGENTS = Object.freeze({
   'pair-author': pairAuthor,
@@ -27,6 +30,7 @@ export const AGENTS = Object.freeze({
   'test-player': testPlayer,
   'style-guide': styleGuide,
   'revision-proposer': revisionProposer,
+  'subject-scout': subjectScout,
 });
 
 export function loadAgent(agentId) {
