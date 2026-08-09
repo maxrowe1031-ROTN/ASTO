@@ -125,6 +125,26 @@
       "slug": "festival-grounds",
       "id": "asto-festival-grounds",
       "title": "Festival Grounds"
+    },
+    {
+      "slug": "enchanted-analogies",
+      "id": "asto-enchanted-analogies",
+      "title": "Enchanted Analogies"
+    },
+    {
+      "slug": "river-systems",
+      "id": "asto-river-systems",
+      "title": "River Systems"
+    },
+    {
+      "slug": "the-long-ride",
+      "id": "asto-the-long-ride",
+      "title": "The Long Ride"
+    },
+    {
+      "slug": "through-the-looking-glass",
+      "id": "asto-through-the-looking-glass",
+      "title": "Through the Looking Glass"
     }
   ]
 }

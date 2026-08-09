@@ -1,0 +1,86 @@
+{
+  "id": "asto-river-systems",
+  "title": "River Systems",
+  "sets": [
+    {
+      "id": "set-named-instance",
+      "relationshipLabel": "a kind of landform and one named instance of it",
+      "explanation": "A gorge is a landform category and the Grand Canyon its most famous example, just as a waterfall names a category and Niagara names one of its most famous instances.",
+      "pairs": [
+        [
+          "gorge",
+          "Grand Canyon"
+        ],
+        [
+          "waterfall",
+          "Niagara"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "landform",
+        "famous-place"
+      ]
+    },
+    {
+      "id": "set-answering-action",
+      "relationshipLabel": "an action and the action that answers or undoes it",
+      "explanation": "Erosion is answered by deposition, and a flood is answered by its recession — each pair names a process and the opposite process that reverses it.",
+      "pairs": [
+        [
+          "erode",
+          "deposit"
+        ],
+        [
+          "flood",
+          "recede"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "water-process",
+        "flood"
+      ]
+    },
+    {
+      "id": "set-becomes",
+      "relationshipLabel": "a river feature converts into what it eventually becomes",
+      "explanation": "Alluvium deposited over time builds a floodplain, just as a meander cut off from its river becomes an oxbow lake — each pair traces a feature into its later form.",
+      "pairs": [
+        [
+          "alluvium",
+          "floodplain"
+        ],
+        [
+          "meander",
+          "oxbow lake"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "landform",
+        "geology"
+      ]
+    },
+    {
+      "id": "set-sign-of-flood",
+      "relationshipLabel": "a visible sign and what it necessarily signals",
+      "explanation": "White water is the visible proof of rapids beneath it, and a high-water mark is the visible proof that a deluge once passed through — each sign necessarily points to its cause.",
+      "pairs": [
+        [
+          "white water",
+          "rapids"
+        ],
+        [
+          "high-water mark",
+          "deluge"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "flood",
+        "water-process"
+      ]
+    }
+  ]
+}

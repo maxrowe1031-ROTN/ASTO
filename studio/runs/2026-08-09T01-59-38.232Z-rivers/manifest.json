@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-09T01-59-38.232Z-rivers",
+  "createdAt": "2026-08-09T01:59:38.233Z",
+  "theme": "rivers",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "possession",
+      "time",
+      "cause"
+    ],
+    "hardestStanceAsk": [
+      "absence",
+      "reference",
+      "inclusion"
+    ],
+    "hardestStanceLean": "time",
+    "mock": false
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

@@ -1,0 +1,84 @@
+{
+  "id": "asto-board-01",
+  "title": "Sky Relations",
+  "sets": [
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a named example of the category",
+      "explanation": "Orion is a specific constellation and Sirius is a specific star, so each pair names one member of its broader class.",
+      "pairs": [
+        [
+          "constellation",
+          "Orion"
+        ],
+        [
+          "star",
+          "Sirius"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "astronomy-vocab"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "a cover that hides or washes out the true view beneath it",
+      "explanation": "Cloud cover blocks the night sky and city lights drown out the Milky Way, both pairs showing something bright or dense obscuring the fainter truth behind it.",
+      "pairs": [
+        [
+          "cloud cover",
+          "night sky"
+        ],
+        [
+          "city lights",
+          "Milky Way"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "obscuring",
+        "void-galaxy-lookalike"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "a body and the surface feature it inherently bears",
+      "explanation": "A moon's crater and a comet's nucleus are both defining physical features that the body cannot be imagined without.",
+      "pairs": [
+        [
+          "moon",
+          "crater"
+        ],
+        [
+          "comet",
+          "nucleus"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "celestial-anatomy"
+      ]
+    },
+    {
+      "id": "set-distinctive-nonpart",
+      "relationshipLabel": "the one thing this thing is defined by lacking",
+      "explanation": "A black hole is defined by the absence of light and a void is defined by the absence of galaxies, each named for what it conspicuously does not contain.",
+      "pairs": [
+        [
+          "black hole",
+          "light"
+        ],
+        [
+          "void",
+          "galaxy"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "absence-vs-conversion",
+        "void-lookalike-with-concealment"
+      ]
+    }
+  ]
+}

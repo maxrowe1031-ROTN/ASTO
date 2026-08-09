@@ -2,6 +2,67 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-09 — The ask passed its gate, and the machine earned Max's question
+
+First batch under the positive always-on ask (six themes; one false start when API
+credits ran out mid-batch — $1.30 dead, backlog gained the HTTP-error-body lesson —
+then six clean runs, $5.03). **The Blacks spread**: reference ×2, absence ×2, inclusion,
+and one span kept through D-8's escape hatch with stated reasoning. Max: **"FINALLY! a
+black puzzle with a new relationship that is not about time"** — on fairy tales, which
+also drew *"YES! This whole puzzle absolutely nails it."* Four approved, four published
+(enchanted-analogies, river-systems, the-long-ride, through-the-looking-glass — the last
+two via revisions that *"targeted the fix exactly"*), two rejected (photography: generic
+words; night sky: named instances cross-associating). **D-13's second amendment gate:
+PASSED.** `puzzles/` stands at 29 playable boards + tutorial, all clean.
+
+### The finding: the machine caught everything he caught
+
+All four structural defects Max flagged were already in the evaluators' output — 06's
+[high] cross-set findings on bicycles and night sky (his two hardest calls, near-verbatim),
+v4's cross-reading HOLDS on bicycles' yellow, and mirrors' green caught twice over (04a's
+symmetric flag + 07's `orderGuessed`, with his exact reasoning). The one disagreement ran
+the other way: 08 rated the board he called "boring" `evocativeness: strong`. **Structure
+agrees with him; taste does not.** He then asked, unprompted: *"Are we at the point where
+we should have an agent review the machine's notes and make changes before the puzzle is
+presented for review?"* — D-5's graduation trigger, now at 9/9 accepted, firing from his
+side.
+
+### Decided and built (design.md D-14, and D-13 second amendment closed)
+
+- **D-14 designed, deliberately not built** (his call: build next session). Allowlist his:
+  06 high cross-set + the order-ambiguity cluster; `knowledgeGated` off; taste never. One
+  auto-revision inside the existing cap; escalate with diagnosis; audited on the card;
+  repeated fixes feed the generator prompt. Brain consulted (GER/Class-8,
+  circuit-breaker, validity-vs-taste, risk-tiered-autonomy).
+- **The taste instrument, built** (his ask, verbatim in D-14): formVersion 4. Board-level
+  `taste` verdict — flat / solid / delightful, his own delight vocabulary — as its own
+  radio row so "publishable AND flat" is finally expressible; two taste tags
+  (`sharp-words`, `surprising-turn`) in a labelled row apart from the validity scorecard.
+  Capture only; no agent reads it yet.
+
+### Session gate
+
+- **Automated: PASSED.** `npm test` → **1180 pass, 0 fail** (1168 at session start; +12
+  across the schema, form and collection tests). `node tools/check-board.js` → **30
+  boards, all clean.** The corpus-replay test still green — every historical event
+  validates under the v4 schema.
+- **Bite-checked:** disabling the taste validation fails the invented-value test; the
+  collection stub throws on any selector the module stops using.
+- **Claude-verifiable: PASSED.** Form renders the taste row and chips in the browser
+  (screenshot); a mock run's prompts are byte-identical before/after — nothing in this
+  session touches any agent prompt or pipeline behaviour.
+- **Max acceptance: not required for the instrument itself** — it was his specification.
+  Its worth shows up as taste data accumulating over the next batches.
+
+- **Next:**
+  1. **Build D-14** — the design is in design.md with the allowlist, bound, escalation and
+     audit agreed. The Revision Proposer's machine-findings variant is the only new seam.
+  2. **Watch the taste field fill in.** His prose has carried the delight verdicts for
+     eight batches; the field now exists. At ~6 boards with taste verdicts, compare
+     against 08's evocativeness (the evaluator report is the instrument).
+  3. The ask's next reading: `absence, reference, inclusion` remains the live ask until
+     the hardest-slot window digests this batch's spread.
+
 ## 2026-08-08 — An exclusion can only relocate the slot
 
 Second batch under D-13, six themes, steer aimed at `dimension` for the first time. **Five

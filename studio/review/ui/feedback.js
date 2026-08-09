@@ -28,6 +28,8 @@ export const QUICK_TAGS = [
   'not-evocative',
   'feels-like-asto',
   'second-valid-reading',
+  'sharp-words',
+  'surprising-turn',
 ];
 
 // Tags that read as praise, so the UI can tint them differently. Positive
@@ -100,6 +102,29 @@ const FAULT_GROUPS = [
   },
 ];
 
+// The taste axis (formVersion 4), its own row so the two kinds of praise stay
+// distinguishable in the data. The scorecard above says a set WORKS; these say
+// it delights, which the corpus keeps showing is a different question — five
+// of six boards on 2026-08-08 were approved as "publishable, not exciting".
+// Both from Max's own notes: `sharp-words` is the fun-house-mirror fix
+// (specificity as delight), `surprising-turn` is fairy-tales' story-mixing
+// conversion set ("works really well here").
+const TASTE_TAGS = [
+  ['sharp-words', 'the specific word where a general one would do — "fun house mirror", "Stealie"'],
+  ['surprising-turn', 'the relationship or pairing you did not see coming — and loved'],
+];
+
+// The board-level delight verdict (formVersion 4), in Max's own vocabulary:
+// "flat" is "didn't get the same rush", "delightful" is "YES! absolutely nails
+// it". Deliberately orthogonal to the publishability verdict above it — the
+// corpus's recurring pattern is boards that are one without the other, and
+// until now only prose could say so.
+export const TASTE_VERDICTS = [
+  ['flat', 'flat', 'publishable maybe, but no spark'],
+  ['solid', 'solid', 'good, enjoyable, does its job'],
+  ['delightful', 'delightful', 'the rush — this is ASTO'],
+];
+
 const POSITIVE_SET = new Set(POSITIVE);
 
 // The three set verdicts, in Max's words: publishable / publishable with an
@@ -157,6 +182,10 @@ export function tagChips(scopeKey, { boardOnly = false } = {}) {
     .map((tag) => chip(scopeKey, tag, '', ' chip-positive'))
     .join('');
 
+  // Taste is its own labelled row, never mixed into the scorecard: "it works"
+  // and "it delights" must stay two different claims in the data.
+  const taste = TASTE_TAGS.map(([tag, hint]) => chip(scopeKey, tag, hint, ' chip-positive')).join('');
+
   const groups = FAULT_GROUPS.map(({ label, tags }) => {
     const chips = tags
       .filter(([tag]) => allowed(tag))
@@ -171,6 +200,10 @@ export function tagChips(scopeKey, { boardOnly = false } = {}) {
 
   return `
       <div class="fb-scorecard"><div class="chips">${positives}</div></div>
+      <div class="fb-group fb-taste">
+        <span class="fb-group-label">taste</span>
+        <div class="chips">${taste}</div>
+      </div>
       ${groups}`;
 }
 
@@ -262,12 +295,28 @@ export function feedbackControls(board) {
       </label>`,
   ).join('');
 
+  // The delight row (formVersion 4). A separate radio group from the verdict
+  // above it, because they answer different questions and the corpus needs to
+  // be able to say "publishable AND flat" — which is exactly the combination
+  // prose kept carrying with no field to land in.
+  const tastes = TASTE_VERDICTS.map(
+    ([value, label, hint]) => `
+      <label class="chip chip-verdict" data-taste="${escape(value)}" title="${escape(hint)}">
+        <input type="radio" name="board-taste" data-role="board-taste" value="${escape(value)}" />
+        <span>${escape(label)}</span>
+      </label>`,
+  ).join('');
+
   return `
     <section class="fb-block fb-board" data-set-id="">
       <h4>The board as a whole</h4>
       <div class="fb-verdict">
         <span class="studio-muted">as a puzzle, this is</span>
         <div class="chips">${verdicts}</div>
+      </div>
+      <div class="fb-verdict fb-taste-verdict">
+        <span class="studio-muted">as an experience, it felt</span>
+        <div class="chips">${tastes}</div>
       </div>
       <div class="fb-blockers">
         <span class="studio-muted">blocked by</span>
@@ -322,9 +371,15 @@ export function collectFeedback(root, { attemptId, defaultAction = 'revise-set',
     const tierChange = tierChangeIn(block);
     const verdict = isBoard ? boardVerdictIn(root) : setVerdictIn(block);
     const blockers = isBoard ? blockersIn(root) : [];
+    const taste = isBoard ? tasteIn(root) : null;
 
     const saidSomething =
-      tags.length > 0 || note.length > 0 || fix.length > 0 || verdict !== null || blockers.length > 0;
+      tags.length > 0 ||
+      note.length > 0 ||
+      fix.length > 0 ||
+      verdict !== null ||
+      blockers.length > 0 ||
+      taste !== null;
 
     if (saidSomething) {
       events.push({
@@ -337,6 +392,7 @@ export function collectFeedback(root, { attemptId, defaultAction = 'revise-set',
         ...(note.length > 0 ? { note } : {}),
         ...(fix.length > 0 ? { fixSuggestion: fix } : {}),
         ...(isBoard && blockers.length > 0 ? { blockers } : {}),
+        ...(taste !== null ? { taste } : {}),
       });
     }
 
@@ -371,13 +427,20 @@ export function collectFeedback(root, { attemptId, defaultAction = 'revise-set',
 // Exported so review.js stamps the same number on the proposal-verdict events
 // it writes. It had its own literal `2` until 2026-08-05, which is one version
 // bump away from silently splitting one population into two.
-export const FORM_VERSION = 3;
+//
+// 4 (2026-08-09): the taste instrument — board-level flat/solid/delightful
+// verdict and the two taste tags. schemas.js FEEDBACK_FORM_VERSION documents
+// the population boundary.
+export const FORM_VERSION = 4;
 
 const setVerdictIn = (block) =>
   block.querySelector('input[data-role=verdict]:checked')?.value ?? null;
 
 const boardVerdictIn = (root) =>
   root.querySelector('input[data-role=board-verdict]:checked')?.value ?? null;
+
+const tasteIn = (root) =>
+  root.querySelector('input[data-role=board-taste]:checked')?.value ?? null;
 
 const blockersIn = (root) =>
   [...root.querySelectorAll('input[data-role=blocker]:checked')].map((box) => box.value);

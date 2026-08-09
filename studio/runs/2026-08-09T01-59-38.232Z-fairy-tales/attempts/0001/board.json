@@ -1,0 +1,86 @@
+{
+  "id": "board-fairytale-analogies-01",
+  "title": "Enchanted Analogies",
+  "sets": [
+    {
+      "id": "set-creature-possession",
+      "relationshipLabel": "a creature and the thing that belongs to it",
+      "explanation": "Each creature is defined by the thing it guards or lives in — a dragon's hoard, a fox's den.",
+      "pairs": [
+        [
+          "dragon",
+          "hoard"
+        ],
+        [
+          "fox",
+          "den"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "possession",
+        "fantasy-creature"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "a humble or cursed origin transformed by magic into its result",
+      "explanation": "Magic turns a lowly origin into its grander result — pumpkin becomes carriage, frog becomes prince.",
+      "pairs": [
+        [
+          "pumpkin",
+          "carriage"
+        ],
+        [
+          "frog",
+          "prince"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "transformation",
+        "fairy-tale-magic"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a kind of figure and one of them by name",
+      "explanation": "Each named figure is simply a specific instance of the broader fairy-tale role above it.",
+      "pairs": [
+        [
+          "princess",
+          "Cinderella"
+        ],
+        [
+          "witch",
+          "Baba Yaga"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "category",
+        "named-character"
+      ]
+    },
+    {
+      "id": "set-distinctive-nonpart",
+      "relationshipLabel": "the one property or utterance a magical thing can never have",
+      "explanation": "Each object's magic is defined by the very thing it categorically lacks — dust with no weight, a mirror that cannot lie.",
+      "pairs": [
+        [
+          "fairy dust",
+          "weight"
+        ],
+        [
+          "magic mirror",
+          "falsehood"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "absence",
+        "magical-property"
+      ]
+    }
+  ]
+}

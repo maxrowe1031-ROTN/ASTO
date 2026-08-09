@@ -1476,6 +1476,74 @@ arrangement-hard instruction names spans' natural shape too readily). And D-7's 
 trigger keeps running regardless: `spanFairness` flagged all six boards correctly this batch
 and remains the deterministic half of the answer.
 
+**Gate: PASSED (2026-08-09).** The first batch under the ask spread its Blacks across the
+asked-for stances — `reference` ×2, `absence` ×2, `inclusion`, and one span kept through
+D-8's escape hatch with the reasoning stated (mirrors: *"the genuinely hardest graded set"*).
+Max approved four and published four (two via revisions that *"targeted the fix exactly"*),
+rejected two for reasons unrelated to the slot, and wrote the verdict himself on fairy
+tales' `fairy dust : weight :: magic mirror : falsehood`: **"FINALLY! a black puzzle with a
+new relationship that is not about time. hopefully this trend continues."** The
+reconsider-when's healthy middle held: spans neither monoculture (1 of 6) nor extinct.
+
+### D-14 — The pre-review fix loop: designed, agreed, and deliberately not built (2026-08-09)
+
+**Max's question, unprompted, mid-review:** *"Are we at the point where we should have an
+agent review the machine's notes and make changes before the puzzle is presented for
+review?"* — D-5's graduation aspiration arriving from his side, at **9 proposal verdicts,
+all accepted**.
+
+**The evidence that makes it answerable now.** On the 2026-08-09 batch the machine caught
+**every structural defect Max caught, before he saw the boards**:
+
+| Max's catch | the machine's, already on disk |
+|---|---|
+| bicycles: green/red confusable (`outbound:inbound` ↔ `departure:arrival`) | 06 `cross-set-association` [high], same four words |
+| bicycles: yellow order-ambiguous | v4 cross-reading: HOLDS on that set |
+| mirrors: green unsolvable (`left:right::top:bottom`) | 04a symmetric flag **and** 07 `orderGuessed`, his exact reasoning |
+| night sky: Milky Way/Sirius/Orion all instances | 06 `cross-set-association` [high], near-verbatim |
+
+And the boundary, measured the same day: 08 rated the board Max rejected as *"boring"* at
+`evocativeness: strong`. **Structural findings agree with him; taste findings do not.**
+That is the validity-vs-taste line the Brain's pattern pages draw, and it is where the
+loop's authority stops.
+
+**The design (build next session — Max's decision, 2026-08-09):**
+
+- **Trigger:** after the evaluators complete and before `awaiting-review`, if an
+  **allowlisted** finding fires. The allowlist is Max's, chosen explicitly: 06
+  `cross-set-association` at `high` severity, and the order-ambiguity cluster (04a's
+  symmetric flag, 07's `orderGuessed`, v4's cross-reading-holds). `knowledgeGated` is
+  **off** the list — a flag that names a wall without condemning a set (medicine was his
+  best board) must not trigger surgery. **Taste never triggers revision.**
+- **Mechanism:** the existing Revision Proposer runs with the machine's findings as its
+  brief input. This is a stated exception to D-5's authority ordering (his judgement
+  first) for the one case where his judgement does not exist yet — pre-review, there is no
+  feedback to outrank. The brief feeds the existing `requestRevision` machinery unchanged.
+- **Bound:** **one auto-revision per run**, inside the existing 3-revision cap, never in
+  addition to it. If the revision still trips the allowlist, the board goes to Max as-is
+  with the findings AND the failed-fix diagnosis on the card — never a second loop
+  (circuit-breaker: a failure exit, not just a success exit).
+- **Audit:** the review card says "auto-revised before review" with the finding, the brief,
+  and what changed. Risk-tiered autonomy's caution is the reason: the trust ratchet must
+  stay inspectable so Max can revoke it per finding kind, and his verdicts on auto-revised
+  boards keep being recorded as the evidence that sustains (or ends) the graduation.
+- **Upstream feedback:** a finding kind auto-fixed on ~3 runs becomes a proposed line in
+  the generator's prompt — "refine the generator, not the artifact" (Brain, Class 8). The
+  loop must shrink its own workload or it is masking a generator defect.
+
+**Also decided (Max, same review):** *"lets start adding more options in the reviewer
+regarding taste so we can capture more data on this over time to train the agents."* Built
+this session as formVersion 4: a board-level `taste` verdict (flat / solid / delightful —
+his own delight vocabulary) and two taste tags (`sharp-words`, `surprising-turn`, both
+from his notes). Capture only — **no agent reads the taste data yet**; its use is a later
+decision once a corpus exists, the same discipline as the rubric's ~30-board threshold.
+
+**Reconsider-when (once built):** an auto-revision changes a set Max then rejects where
+the original was fine → the allowlist shrinks by that finding kind. The taste corpus
+starts agreeing with 08's verdicts → a *taste* graduation gets its own decision, never
+folded silently into this one. The loop fires on most runs → the generator prompt is the
+problem, not the reviser's throughput.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
