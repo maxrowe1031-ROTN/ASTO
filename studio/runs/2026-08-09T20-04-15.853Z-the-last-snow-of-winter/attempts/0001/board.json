@@ -1,0 +1,86 @@
+{
+  "id": "board-seasonal-signs",
+  "title": "Signs of the Turning Season",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "A sugarmaker boils sap in an evaporator just as a gardener starts seedlings in a cold frame — each pair names a tradesperson and the instrument that defines their craft.",
+      "pairs": [
+        [
+          "sugarmaker",
+          "evaporator"
+        ],
+        [
+          "gardener",
+          "cold frame"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "worker-tool",
+        "seasonal-craft"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "the thing that stops the other from happening",
+      "explanation": "A row cover keeps frost off tender plants and a windbreak keeps snow from drifting where it's unwanted — each first word exists specifically to block the second.",
+      "pairs": [
+        [
+          "row cover",
+          "frost"
+        ],
+        [
+          "windbreak",
+          "snowdrift"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "shelter",
+        "weather-harm"
+      ]
+    },
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "a category and a named kind within it",
+      "explanation": "An onion snow is a named kind of flurry, just as a robin snow is a named kind of shower — folk names nested inside the general weather category.",
+      "pairs": [
+        [
+          "flurry",
+          "onion snow"
+        ],
+        [
+          "shower",
+          "robin snow"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "snow-terms",
+        "category-species"
+      ]
+    },
+    {
+      "id": "set-sign-significant",
+      "relationshipLabel": "a sign and what it announces",
+      "explanation": "Skunk cabbage pushing through means mud season has arrived, and pussy willows budding mean the sap run has begun — each plant is nature's herald for the season it precedes.",
+      "pairs": [
+        [
+          "skunk cabbage",
+          "mud season"
+        ],
+        [
+          "pussy willow",
+          "sap run"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "folk-signs",
+        "seasonal-omen"
+      ]
+    }
+  ]
+}

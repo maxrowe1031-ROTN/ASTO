@@ -1,0 +1,90 @@
+{
+  "id": "asto-theater-board-1",
+  "title": "Behind the Curtain",
+  "sets": [
+    {
+      "id": "set-genre-example",
+      "relationshipLabel": "a kind of play, named — genre first, example second",
+      "explanation": "Tragedy and musical are genres named first, and Hamlet and Hamilton are the famous examples that follow, in that fixed order.",
+      "pairs": [
+        [
+          "tragedy",
+          "Hamlet"
+        ],
+        [
+          "musical",
+          "Hamilton"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "genre",
+        "title",
+        "famous-play"
+      ]
+    },
+    {
+      "id": "set-tool-action",
+      "relationshipLabel": "a stage tool, then the action it exists to perform",
+      "explanation": "A follow spot exists to illuminate a performer, just as a trap door exists to make one vanish, tool named before its purpose.",
+      "pairs": [
+        [
+          "follow spot",
+          "illuminate"
+        ],
+        [
+          "trap door",
+          "vanish"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "stagecraft",
+        "mechanism",
+        "verb-pairing"
+      ]
+    },
+    {
+      "id": "set-touching-spaces",
+      "relationshipLabel": "a smaller stage area nested inside the larger stage it belongs to",
+      "explanation": "The apron is the small forward slice of the larger stage, just as the house is the audience section nested within the larger theater.",
+      "pairs": [
+        [
+          "apron",
+          "stage"
+        ],
+        [
+          "house",
+          "theater"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "venue-layout",
+        "spatial",
+        "theater-terms"
+      ]
+    },
+    {
+      "id": "set-span-moments",
+      "relationshipLabel": "the opening moment of a span, then its closing moment",
+      "explanation": "An entrance opens a performance and a curtain call closes it, just as a debut opens a career and retirement closes it, on two different scales.",
+      "pairs": [
+        [
+          "entrance",
+          "curtain call"
+        ],
+        [
+          "debut",
+          "retirement"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "career-arc",
+        "performance-arc",
+        "start-end"
+      ]
+    }
+  ]
+}

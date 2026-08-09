@@ -1,0 +1,86 @@
+{
+  "id": "board-lanterns-01",
+  "title": "Festival of Lanterns",
+  "sets": [
+    {
+      "id": "set-object-stuff",
+      "relationshipLabel": "the part and the material it is made from",
+      "explanation": "Each lantern component is named alongside the raw material that physically forms it — shade from rice paper, tassel from silk thread.",
+      "pairs": [
+        [
+          "lantern shade",
+          "rice paper"
+        ],
+        [
+          "tassel",
+          "silk thread"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "lantern",
+        "craft-material"
+      ]
+    },
+    {
+      "id": "set-time-activity",
+      "relationshipLabel": "the occasion and the lantern activity that belongs to it",
+      "explanation": "Each festival is paired with the specific lantern custom performed on that occasion — releasing sky lanterns at Mid-Autumn, lighting diyas at Diwali.",
+      "pairs": [
+        [
+          "Mid-Autumn Festival",
+          "sky lantern release"
+        ],
+        [
+          "Diwali",
+          "diya lighting"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "light",
+        "festival"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "the fitting/structure that prevents this specific failure",
+      "explanation": "Each structural element exists precisely to stop one named failure — the glass chimney keeps the flame from a flameout, the bamboo frame keeps the shape from collapse.",
+      "pairs": [
+        [
+          "glass chimney",
+          "flameout"
+        ],
+        [
+          "bamboo frame",
+          "collapse"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "flame",
+        "structure"
+      ]
+    },
+    {
+      "id": "set-reverse",
+      "relationshipLabel": "the starting action, then the action that undoes it",
+      "explanation": "Each pair fixes a direction by process logic, not convention — you light a lantern before you extinguish it, and you must assemble one before you can disassemble it, so the from→to order can't be swapped without breaking the real-world sequence.",
+      "pairs": [
+        [
+          "light",
+          "extinguish"
+        ],
+        [
+          "assemble",
+          "disassemble"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "light",
+        "lantern-handling"
+      ]
+    }
+  ]
+}

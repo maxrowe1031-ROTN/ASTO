@@ -2,6 +2,80 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-09 — D-14 and D-15 built, and the batch that went all-delightful
+
+The session the pre-review fix loop and the fresh-subject scout both shipped, judged
+across two real batches the same day. `puzzles/` ends at **39 boards + tutorial, all
+clean**; nine were published today.
+
+### Built (six commits on `work/d15-fresh-subjects`, merged)
+
+- **D-14, the pre-review fix loop** (design.md D-14 amendments 1–2): `studio/auto-revise.js`
+  — the allowlist detector (06 cross-set@high + the order-ambiguity cluster; taste and
+  `knowledgeGated` never), the guards, and the orchestration through `proposeRevision` +
+  `requestRevision`. The proposer gained its pre-review variant (machine findings as
+  mandate; every set fixed or protected, enforced by validator). Both doors call it; kill
+  switch default ON (config + Studio checkbox + `--no-auto-revise`), audited un-collapsed
+  on the review card.
+- **D-15, fresh surprise-me subjects**: `studio/subject.js` + the Subject Scout agent.
+  Never-reuse enforced at slug level against all non-mock history; loop-free chain
+  (2 scout rounds → unused pool (widened 50→91) → LRU); `subjectSource`/`subjectStyle`
+  recorded per brief; the world/lens half-and-half experiment assigned by the caller.
+- **Three fixes the day demanded:** an HTTP error's body now rides in every failure
+  record (bit twice in one day — both credit outages; backlog entry closed); an
+  interrupted auto-revision settles its outcome ledger on resume (reconcile at both
+  doors); **the auto-revise bound's unit moved from run to board** (Max's call — a
+  ghost revision that died on credits before running a stage had barred a
+  three-times-flagged board from examination). "Revise until findings clear" explicitly
+  rejected: Kitchen Relations was approved with praise over 5 persisted findings.
+- **The green door** (Max's call, from measurement): 01's range requirement now runs
+  both ways — at least one matched group open to a general player on sight, specialist
+  vocabulary confined to the harder groups. Shipped after the numbers, not before.
+
+### The two batches, and what they proved
+
+- **Batch 1 (pool subjects, D-14 live): 4 approved, 2 rejected, taste `solid`×5 /
+  `delightful`×1.** The machine's structural catches matched Max's again; the one board
+  the loop skipped (furniture) was the hard reject — 06 had his exact complaint at
+  `medium`, below the allowlist bar. Kitchen approved over 5 persisted flags: the
+  persist signal over-fires.
+- **Batch 2 (scout subjects): `delightful` on ALL SEVEN, 6 approved, 6 published.**
+  Max: *"the change we made def made a huge difference in the delight factor."* Both
+  style arms delighted (lens 3/3, world 3/4) — early read: specificity-and-freshness is
+  the active ingredient, the A/B continues. **The ride-along:** every playthrough lost;
+  knowledge-gated words 1.17→2.71/board; grade-1 candidate sets **12→4** — the pools
+  stopped containing easy sets, hence the green door.
+- **D-14's evidence both ways:** travel's auto-revision produced the batch-favourite
+  board; tattoo-parlor's fresh roll reached Max with a defect three detectors had
+  flagged while the loop was barred by the ghost (now impossible). Proposer verdicts
+  now 12+ accepted, 0 edited — including *"this was a great fix on my previous note."*
+
+### Session gate
+
+- **Automated: PASSED** — `npm test` **1225 pass, 0 fail** (1180 at session start;
+  +45 across auto-revise, subject, proposer, failures/llm, pair-author). `check-board`:
+  **39 boards, all clean.** Every new guard bite-checked (allowlist severity, once-per-
+  board lineage, slug guard, LRU ordering, error-body, green-door arrival).
+- **Claude-verifiable: PASSED** — live Studio evidence throughout: the audit panel
+  rendered on a mock run (screenshots), the scout drew "the tailor's shop" fresh
+  against 105 used themes with provenance on the manifest, both credit-killed runs
+  recovered by resume.
+- **Max acceptance: PASSED for D-15's core** (his verdicts above are the gate) —
+  **OPEN for the green door and the widened bound**: both are judged by the next
+  scout batch (greens return + win rate recovers without taste falling; the per-board
+  loop behaves on a real re-roll).
+
+- **Next:**
+  1. **Run the next scout batch** (restart the Studio first — the running server
+     predates today's last three commits). It tests everything at once: the green
+     door, the per-board bound, the world/lens A/B's second round.
+  2. **childhood (School Days) is approved but unpublished** — publish or archive,
+     Max's call.
+  3. Watch for the scout's own rut: 6 of 7 subjects begin "the …" — D-15's
+     reconsider-when names poetic sameness; a batch of samey-toned subjects fires it.
+  4. The taste corpus now has 13 verdicts; at ~6 more, compare against 08's
+     evocativeness per D-14's reconsider-when.
+
 ## 2026-08-09 — The ask passed its gate, and the machine earned Max's question
 
 First batch under the positive always-on ask (six themes; one false start when API

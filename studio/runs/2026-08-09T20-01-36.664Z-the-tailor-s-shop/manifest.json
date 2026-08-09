@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-09T20-01-36.664Z-the-tailor-s-shop",
+  "createdAt": "2026-08-09T20:01:36.664Z",
+  "theme": "the tailor's shop",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "representation",
+      "prevention",
+      "coordinates"
+    ],
+    "avoidShapes": [
+      "contiguity",
+      "before-after"
+    ],
+    "stanceQuotas": [
+      "cause",
+      "inclusion",
+      "time",
+      "event"
+    ],
+    "varyHardestFrom": "arrangement",
+    "hardestStanceAsk": [
+      "absence",
+      "event",
+      "reference"
+    ],
+    "hardestStanceLean": "possession",
+    "mock": false,
+    "autoRevise": true,
+    "subjectSource": "scout",
+    "subjectStyle": "world"
+  },
+  "status": "approved",
+  "currentAttemptId": "0003",
+  "attemptCount": 3,
+  "revisionCount": 1
+}

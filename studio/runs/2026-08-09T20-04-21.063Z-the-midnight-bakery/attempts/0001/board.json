@@ -1,0 +1,84 @@
+{
+  "id": "asto-baking-board-01",
+  "title": "In the Bakery",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "the worker and the tool built for their trade",
+      "explanation": "A baker reaches for a peel just as a decorator reaches for a piping bag — each trade defined by the instrument it wields.",
+      "pairs": [
+        [
+          "baker",
+          "peel"
+        ],
+        [
+          "decorator",
+          "piping bag"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "worker-tool",
+        "trade"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "raw ingredient transformed into a new substance by a baking process",
+      "explanation": "Flour becomes dough and sugar becomes caramel — each pair is the same raw material remade into something structurally new through heat or hydration.",
+      "pairs": [
+        [
+          "flour",
+          "dough"
+        ],
+        [
+          "sugar",
+          "caramel"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "ingredient-transformation"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "the outer cover that hides the true thing beneath it",
+      "explanation": "Frosting hides the crumb and fondant hides the sponge — in both cases the visible surface is a deliberate disguise for the cake underneath.",
+      "pairs": [
+        [
+          "frosting",
+          "crumb"
+        ],
+        [
+          "fondant",
+          "sponge"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "surface-vs-interior"
+      ]
+    },
+    {
+      "id": "set-sequence",
+      "relationshipLabel": "the stage that opens a process and the stage that closes it",
+      "explanation": "Mixing starts the bake and cooling ends it, just as an apprentice begins a career that a master closes out — two spans framed by their first and last stage.",
+      "pairs": [
+        [
+          "mixing",
+          "cooling"
+        ],
+        [
+          "apprentice",
+          "master"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "start-end",
+        "career-arc"
+      ]
+    }
+  ]
+}

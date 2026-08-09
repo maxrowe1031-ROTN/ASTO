@@ -1,0 +1,86 @@
+{
+  "id": "board-photography-analogies",
+  "title": "Through the Lens",
+  "sets": [
+    {
+      "id": "set-category-kind",
+      "relationshipLabel": "category and a kind of thing within it",
+      "explanation": "A rangefinder is a kind of camera, and a slide is a kind of film — each pair sets a broad category beside one of its members.",
+      "pairs": [
+        [
+          "camera",
+          "rangefinder"
+        ],
+        [
+          "film",
+          "slide"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "camera-parts",
+        "film-terms"
+      ]
+    },
+    {
+      "id": "set-scale",
+      "relationshipLabel": "smaller then larger version on one scale",
+      "explanation": "35mm sits below medium format the way a postcard sits below a poster — each pair climbs the same size scale.",
+      "pairs": [
+        [
+          "35mm",
+          "medium format"
+        ],
+        [
+          "postcard",
+          "poster"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "print-sizes",
+        "film-formats"
+      ]
+    },
+    {
+      "id": "set-first-last",
+      "relationshipLabel": "first and last moments of a photographic process",
+      "explanation": "Loading opens a roll and rewinding closes it, just as developing begins a print and fixing seals it — each pair bookends one process.",
+      "pairs": [
+        [
+          "loading",
+          "rewinding"
+        ],
+        [
+          "develop",
+          "fix"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "darkroom-steps",
+        "film-handling"
+      ]
+    },
+    {
+      "id": "set-boundary",
+      "relationshipLabel": "two things meeting at a shared boundary",
+      "explanation": "A subject sits against its backdrop and an image sits inside its frame — each pair is defined by the edge where one meets the other.",
+      "pairs": [
+        [
+          "backdrop",
+          "subject"
+        ],
+        [
+          "frame",
+          "image"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "composition",
+        "print-parts"
+      ]
+    }
+  ]
+}

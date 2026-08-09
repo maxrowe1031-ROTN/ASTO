@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-01",
+  "title": "Borders, Bounds, and Bearings",
+  "sets": [
+    {
+      "id": "set-travel-category",
+      "relationshipLabel": "a category of travel and a specific kind within it",
+      "explanation": "Lodging and transport are broad travel categories, and hostel and ferry are the concrete examples that fill each one in.",
+      "pairs": [
+        [
+          "lodging",
+          "hostel"
+        ],
+        [
+          "transport",
+          "ferry"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "travel",
+        "category"
+      ]
+    },
+    {
+      "id": "set-worker-tool",
+      "relationshipLabel": "a tool and the action it exists to perform",
+      "explanation": "A rudder exists to steer and a throttle exists to accelerate — each control is defined by the single action it enables.",
+      "pairs": [
+        [
+          "rudder",
+          "steer"
+        ],
+        [
+          "throttle",
+          "accelerate"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "vehicle",
+        "control"
+      ]
+    },
+    {
+      "id": "set-storage-location",
+      "relationshipLabel": "a place and the thing it exists to hold",
+      "explanation": "A carousel exists to hold luggage and an overhead bin exists to hold carry-on bags — each space is defined by what it's built to store.",
+      "pairs": [
+        [
+          "carousel",
+          "luggage"
+        ],
+        [
+          "overhead bin",
+          "carry-on"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "airport",
+        "storage"
+      ]
+    },
+    {
+      "id": "set-campsite-span",
+      "relationshipLabel": "the action that erects or fills a camping item and the action that undoes it",
+      "explanation": "You pitch a tent and later strike it, just as you inflate a sleeping mattress and later deflate it — each pair bridges the same setup-and-teardown action on a camping object.",
+      "pairs": [
+        [
+          "pitch",
+          "strike"
+        ],
+        [
+          "inflate",
+          "deflate"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "camping",
+        "action"
+      ]
+    }
+  ]
+}

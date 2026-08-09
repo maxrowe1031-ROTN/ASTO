@@ -1,0 +1,86 @@
+{
+  "id": "asto-apothecary-s-shelf",
+  "title": "Apothecary's Shelf",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "Each worker is defined by the instrument they wield: the apothecary grinds with a pestle, the herbalist cuts with a sickle.",
+      "pairs": [
+        [
+          "apothecary",
+          "pestle"
+        ],
+        [
+          "herbalist",
+          "sickle"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "tools",
+        "trades"
+      ]
+    },
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "drug category and a substance within it",
+      "explanation": "Each pair names a class of medicine followed by a classic example that belongs to it: opium is a narcotic, senna is a purgative.",
+      "pairs": [
+        [
+          "narcotic",
+          "opium"
+        ],
+        [
+          "purgative",
+          "senna"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "categories",
+        "medicine"
+      ]
+    },
+    {
+      "id": "set-dimensional-similarity",
+      "relationshipLabel": "same liquid measure, smaller then larger",
+      "explanation": "Each pair climbs the same liquid-measure scale from small to large: a drop builds to a dose, a splash to a draught.",
+      "pairs": [
+        [
+          "drop",
+          "dose"
+        ],
+        [
+          "splash",
+          "draught"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "measurement",
+        "scale"
+      ]
+    },
+    {
+      "id": "set-time-activity",
+      "relationshipLabel": "traditional gathering time and the plant picked then",
+      "explanation": "Old herb-lore ties certain plants to a fixed moment for harvesting: St John's wort at midsummer, mandrake under a full moon.",
+      "pairs": [
+        [
+          "midsummer",
+          "St John's wort"
+        ],
+        [
+          "full moon",
+          "mandrake"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "folklore",
+        "harvest"
+      ]
+    }
+  ]
+}

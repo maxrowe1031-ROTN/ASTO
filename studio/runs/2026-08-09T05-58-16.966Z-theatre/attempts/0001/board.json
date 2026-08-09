@@ -1,0 +1,90 @@
+{
+  "id": "asto-theater-board-1",
+  "title": "Behind the Curtain",
+  "sets": [
+    {
+      "id": "set-genre-example",
+      "relationshipLabel": "a kind of play and one of them by name",
+      "explanation": "Tragedy and musical are genres, and Hamlet and Hamilton are famous examples of each.",
+      "pairs": [
+        [
+          "tragedy",
+          "Hamlet"
+        ],
+        [
+          "musical",
+          "Hamilton"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "genre",
+        "title",
+        "famous-play"
+      ]
+    },
+    {
+      "id": "set-tool-action",
+      "relationshipLabel": "a stage tool and the action it exists to perform",
+      "explanation": "A follow spot exists to illuminate a performer, just as a trap door exists to make one vanish.",
+      "pairs": [
+        [
+          "follow spot",
+          "illuminate"
+        ],
+        [
+          "trap door",
+          "vanish"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "stagecraft",
+        "mechanism",
+        "verb-pairing"
+      ]
+    },
+    {
+      "id": "set-touching-spaces",
+      "relationshipLabel": "two theater spaces touching, where one ends and the other begins",
+      "explanation": "The wing borders the stage and the house borders the apron, each pair meeting at a physical threshold.",
+      "pairs": [
+        [
+          "wing",
+          "stage"
+        ],
+        [
+          "house",
+          "apron"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "venue-layout",
+        "spatial",
+        "theater-terms"
+      ]
+    },
+    {
+      "id": "set-span-moments",
+      "relationshipLabel": "two moments facing each other across one span",
+      "explanation": "Entrance and bow bookend a performance, just as debut and retirement bookend a career.",
+      "pairs": [
+        [
+          "entrance",
+          "bow"
+        ],
+        [
+          "debut",
+          "retirement"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "career-arc",
+        "performance-arc",
+        "start-end"
+      ]
+    }
+  ]
+}

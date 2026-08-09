@@ -1,0 +1,84 @@
+{
+  "id": "asto-ink-anatomy",
+  "title": "Ink & Anatomy",
+  "sets": [
+    {
+      "id": "set-coordinates",
+      "relationshipLabel": "two counterpart approaches, side by side",
+      "explanation": "Coil and rotary are the two machine families, just as blackwork and color work are the two stylistic families they can produce.",
+      "pairs": [
+        [
+          "coil machine",
+          "rotary machine"
+        ],
+        [
+          "blackwork",
+          "color work"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "machine-style-pairing"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "thing that stops the harm it targets",
+      "explanation": "An antiseptic exists to prevent infection, and a barrier film exists to prevent cross-contamination — each is defined by the harm it blocks.",
+      "pairs": [
+        [
+          "antiseptic",
+          "infection"
+        ],
+        [
+          "barrier film",
+          "cross-contamination"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "hygiene-jargon"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "The tattoo artist's hand tool is the tube, just as the apprentice's practice surface is the practice skin — each worker paired with the instrument that defines their stage of the craft.",
+      "pairs": [
+        [
+          "tattoo artist",
+          "tube"
+        ],
+        [
+          "apprentice",
+          "practice skin"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "studio-jargon",
+        "body-adjacent-tools"
+      ]
+    },
+    {
+      "id": "set-sequence",
+      "relationshipLabel": "a stage and the larger whole it becomes",
+      "explanation": "A stencil is traced first and becomes the finished tattoo, just as a small cap piece is planned first and grows into a full sleeve — each pair names a starting stage and the larger whole it can only grow into, never the reverse.",
+      "pairs": [
+        [
+          "stencil",
+          "tattoo"
+        ],
+        [
+          "cap",
+          "sleeve"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "studio-jargon",
+        "progression-not-anatomy"
+      ]
+    }
+  ]
+}

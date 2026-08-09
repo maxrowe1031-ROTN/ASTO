@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-09T20-04-29.315Z-the-tattoo-parlor",
+  "createdAt": "2026-08-09T20:04:29.315Z",
+  "theme": "the tattoo parlor",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "representation",
+      "prevention",
+      "coordinates"
+    ],
+    "avoidShapes": [
+      "contiguity",
+      "before-after"
+    ],
+    "stanceQuotas": [
+      "cause",
+      "inclusion",
+      "time",
+      "event"
+    ],
+    "varyHardestFrom": "arrangement",
+    "hardestStanceAsk": [
+      "absence",
+      "event",
+      "reference"
+    ],
+    "hardestStanceLean": "possession",
+    "mock": false,
+    "autoRevise": true,
+    "subjectSource": "scout",
+    "subjectStyle": "world"
+  },
+  "status": "approved",
+  "currentAttemptId": "0005",
+  "attemptCount": 5,
+  "revisionCount": 2
+}

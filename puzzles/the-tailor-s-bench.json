@@ -1,0 +1,86 @@
+{
+  "id": "asto-the-tailor-s-bench",
+  "title": "The Tailor's Bench",
+  "sets": [
+    {
+      "id": "set-coordinates",
+      "relationshipLabel": "complementary fastener halves, side by side",
+      "explanation": "Each pair is the two halves of a single closure that only work when joined together.",
+      "pairs": [
+        [
+          "hook",
+          "eye"
+        ],
+        [
+          "button",
+          "buttonhole"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "fastener",
+        "garment-part-lookalike"
+      ]
+    },
+    {
+      "id": "set-reverse",
+      "relationshipLabel": "opposite alterations to a garment dimension",
+      "explanation": "Each pair names two opposite tailoring moves along the same axis of a garment: width or length.",
+      "pairs": [
+        [
+          "let out",
+          "take in"
+        ],
+        [
+          "lengthen",
+          "shorten"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "verb-pair",
+        "alteration"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "thing built to stop the damage it guards against",
+      "explanation": "Each first item exists specifically to prevent the exact damage named by its partner.",
+      "pairs": [
+        [
+          "thimble",
+          "pinprick"
+        ],
+        [
+          "selvage",
+          "fraying"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "garment-part-lookalike",
+        "obscure-term"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "document that dictates the finished garment",
+      "explanation": "Each first item is the specification that a maker follows to produce the exact garment named second.",
+      "pairs": [
+        [
+          "pattern",
+          "jacket"
+        ],
+        [
+          "measurements",
+          "bespoke suit"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "reference-lookalike",
+        "abstract-instance"
+      ]
+    }
+  ]
+}

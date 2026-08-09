@@ -1,0 +1,86 @@
+{
+  "id": "board-tailoring-analogies",
+  "title": "Cut, Sewn, Shaped",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "the worker and the tool of their trade",
+      "explanation": "A tailor is defined by the tape measure just as a seamstress is defined by the sewing machine — each pair names a craftsperson and the instrument that does their signature work.",
+      "pairs": [
+        [
+          "tailor",
+          "tape measure"
+        ],
+        [
+          "seamstress",
+          "sewing machine"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "sewing tools",
+        "craft roles"
+      ]
+    },
+    {
+      "id": "set-directional",
+      "relationshipLabel": "two ends of a garment's vertical axis, top to bottom",
+      "explanation": "Collar-to-waistband and shoulder-to-cuff each span a garment from its highest point to its lowest, the same top-to-bottom stretch measured on two different parts.",
+      "pairs": [
+        [
+          "collar",
+          "waistband"
+        ],
+        [
+          "shoulder",
+          "cuff"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "garment parts",
+        "jacket association"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "the thing that stops a specific flaw from occurring",
+      "explanation": "A thimble exists to stop the prick of a needle, and selvage exists to stop the fraying of cut fabric — each item is built specifically to prevent the flaw named beside it.",
+      "pairs": [
+        [
+          "thimble",
+          "prick"
+        ],
+        [
+          "selvage",
+          "fraying"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "sewing tools",
+        "fabric terms"
+      ]
+    },
+    {
+      "id": "set-representation",
+      "relationshipLabel": "the real form and the made image used to plan or fit it",
+      "explanation": "A dress form stands in for the torso and a sketch stands in for the jacket — both are made images used to plan or fit the real thing they represent, one sculpted, one drawn.",
+      "pairs": [
+        [
+          "torso",
+          "dress form"
+        ],
+        [
+          "jacket",
+          "sketch"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "garment vs part",
+        "planning tools"
+      ]
+    }
+  ]
+}

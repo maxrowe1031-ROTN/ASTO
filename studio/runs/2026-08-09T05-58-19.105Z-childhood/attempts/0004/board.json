@@ -1,0 +1,83 @@
+{
+  "id": "board-1",
+  "title": "School Days",
+  "sets": [
+    {
+      "id": "set-toolaction",
+      "relationshipLabel": "a tool and the action it exists to perform",
+      "explanation": "A jump rope exists to be skipped with and a trampoline exists to be bounced on — each toy is defined by its one signature motion.",
+      "pairs": [
+        [
+          "jump rope",
+          "skip"
+        ],
+        [
+          "trampoline",
+          "bounce"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "playground"
+      ]
+    },
+    {
+      "id": "set-blueprint",
+      "relationshipLabel": "the written plan and the built thing it describes",
+      "explanation": "A blueprint or script is the document that must exist before the treehouse or play can be built or performed.",
+      "pairs": [
+        [
+          "blueprint",
+          "treehouse"
+        ],
+        [
+          "script",
+          "school play"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "school"
+      ]
+    },
+    {
+      "id": "set-beforeafter",
+      "relationshipLabel": "two moments facing each other across one school day",
+      "explanation": "First bell and roll call mark the start of the school day, while final bell and dismissal mark the matching end of that same stretch.",
+      "pairs": [
+        [
+          "first bell",
+          "final bell"
+        ],
+        [
+          "roll call",
+          "dismissal"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "school"
+      ]
+    },
+    {
+      "id": "set-contiguity",
+      "relationshipLabel": "a boundary line and the larger surface it borders",
+      "explanation": "A treeline only exists as the edge of a backyard, and a fence line only exists as the edge of a schoolyard — each boundary is defined by, and cannot be reversed with, the surface it bounds.",
+      "pairs": [
+        [
+          "treeline",
+          "backyard"
+        ],
+        [
+          "fence line",
+          "schoolyard"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "childhood",
+        "outdoor"
+      ]
+    }
+  ]
+}
