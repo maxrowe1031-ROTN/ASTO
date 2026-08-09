@@ -252,6 +252,14 @@
 - `budget.js` cost caps only bite once every model in play is priced. Rates are estimates
   until A5 measures real spend; unpriced models are surfaced in `usage.unpricedModels`.
 - Studio run artifacts accumulate under the git-ignored `studio/runs/`; no pruning yet.
+- **`llm.js` discards the body of an HTTP error, and the body is where the reason lives
+  (2026-08-09).** The whole third batch died with six records saying only `HTTP 400`; the
+  API's actual response was *"Your credit balance is too low to access the Anthropic API"*
+  — a billing problem wearing a request-error status. Diagnosis took a hand-written probe
+  call that the failure record should have made unnecessary. One line — keep
+  `error.message` (never the request) in `request.failed.json` — turns every future 4xx
+  from a mystery into a sentence. Same family as D-5's amendment: an absent reason and a
+  failed one must not look alike.
 - R1 has no un-approve: `approved → archived` only. Fine for the rubric loop (a new run
   is cheap), but revisit if Max changes his mind about a board mid-loop.
 - R1 binds `127.0.0.1`, so the Studio is not reachable from the iPhone Max playtests on.
