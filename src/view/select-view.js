@@ -123,6 +123,10 @@ function buildRow(puzzle, result) {
 
     const cup = document.createElement('span');
     cup.className = 'result-cup-slot';
+    // Colour says HOW the board went the way the pose says how it ended: white is a
+    // clean board, brown means the player took the hint — "needed a coffee" (D-16
+    // addendum). Results saved before hints existed have no field and read clean.
+    if ((result.hintsUsed ?? 0) > 0) cup.classList.add('is-hinted');
     cup.innerHTML = result.status === 'won' ? CUP_STEAMING : CUP_SPILLED;
     status.appendChild(cup);
   } else {
@@ -157,10 +161,13 @@ function buildDots(solvedCount) {
 /** The cup says won-or-lost; this is where the detail the cup dropped still lives. */
 function spokenResult(result) {
   if (!result) return 'Not played yet.';
-  if (result.status !== 'won') return `Lost, ${result.solvedCount} of 4 sets solved.`;
-  return result.mistakes === 0
+  // The cup's colour axis, spoken: the visual drops the words, the sentence keeps them.
+  const hinted = (result.hintsUsed ?? 0) > 0 ? ' A hint was used.' : '';
+  if (result.status !== 'won') return `Lost, ${result.solvedCount} of 4 sets solved.${hinted}`;
+  const base = result.mistakes === 0
     ? 'Solved with no mistakes.'
     : `Solved with ${result.mistakes} mistake${result.mistakes === 1 ? '' : 's'}.`;
+  return `${base}${hinted}`;
 }
 
 /**

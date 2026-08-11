@@ -2,6 +2,71 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-11 — The hint button, and the cup that remembers the coffee
+
+The first post-ship game feature: Max's idea at breakfast, brainstormed, built
+TDD-first, playtested, and merged the same day (design.md **D-16 + addendum**). Two
+commits on `work/hint-button`.
+
+### Built
+
+- **The hint** (`8c710d0`): one free Hint per game. The pill tints a **random
+  unsolved set's** four tiles in the set's **tier colour** — persistently, until
+  solved. Membership and tier revealed; **order never** — the hint funnels the
+  player into the assembly challenge, the part of the game Connections doesn't have.
+  Engine mutator `hint(state, rand)` (injected RNG, shuffle's contract;
+  `hintsAllowed` rule dial, default 1, tutorial 0; never re-picks a hinted set);
+  `hintedSetIds` is engine state, so the tint survives shuffles by construction.
+  Wired identically in the game and the Studio play surface (one `onHint` callback
+  each — the boundary law's dividend). Tint styling reuses the solved-card tier
+  tokens verbatim (Max: "reuse the coloring from the reveals").
+- **The cup marking** (`5f3833e`): the select list's result cup gained a colour
+  axis, poles **swapped by Max over inline mockups**: white cup + faint-ink
+  hairline = played clean (the new everyday cup; legacy results read clean
+  truthfully), brown = "needed a coffee," both poses. `hintsUsed` rides the stored
+  result (additive, `?? 0`); aria sentences gain "A hint was used" (the D-10 move).
+- **Ride-along fix:** four pills overflowed a 375px viewport — controls compress
+  below 430px. Caught in browser verification before any device saw it.
+
+### Decisions (design.md D-16 + addendum)
+
+- Free + one per game; pure random selection (reconsider-when: hints feel wasted
+  on easy sets → weighted draw); persistent tint over the original flash idea
+  (Max's own upgrade — a flash makes the hint a memory test).
+- **Two sanctioned exceptions, recorded with triggers:** the early tier reveal
+  (GDD §9's tiers-never-on-board rule bends for the hinted set only — drama, not
+  spoiler, per playtest) and the reveal living in state while outcomes stay empty.
+- Deferred question from the morning ("mark a hinted win?") resolved same day by
+  the cup marking.
+
+### Verified
+
+- **Automated:** suite **1242 green** (10-test hint suite, headless hint
+  playthrough in game-flow, 3 new recorder tests — all watched fail first).
+- **Claude-verified in browser:** hint fires and tints (desktop + 375px mobile,
+  screenshots); tint survives shuffle; ink-fill selection wins over tint; solving
+  the hinted set departs normally, zero beans; pill spends and disables; tutorial
+  hides it; Studio play surface drew the black set on a candidate board; all four
+  cup pose-and-colour combinations staged and eyeballed, Max's real save restored.
+- **Max acceptance: PASSED** — "the hint works perfectly. i love it. its a stand
+  out addition that connections could never have." Cup marking accepted on review
+  of the live select screen.
+
+### Phase status
+
+Phases 1–5 remain complete (`v0.1.0-local`); this is post-ship feature work on the
+shipped game, delivered from the GDD's Could-have list (§14). Gate passed, merged
+to `main`.
+
+- **Next:** the 2026-08-10 batch's bookkeeping is still open — Max judged all six
+  (four published: harvest-almanac, light-life…, all-aboard…, sewing-room-logic;
+  runs + `puzzles/index.json` sit uncommitted in the tree): run `check-board` on
+  the four, compare instrument predictions against his verdicts (D-15's A/B read
+  lens-worse-than-world this round — against prediction), write that batch's log
+  entry, commit the corpus. Then the scout tone-rut recalibration (backlog; 6/6
+  subjects "the …" — D-15's reconsider-when has fired twice). B2 hand-editing
+  remains deferred.
+
 ## 2026-08-09 — D-14 and D-15 built, and the batch that went all-delightful
 
 The session the pre-review fix loop and the fresh-subject scout both shipped, judged

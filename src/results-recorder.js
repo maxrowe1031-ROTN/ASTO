@@ -41,7 +41,9 @@ export class ResultsRecorder {
     this.storage.recordResult(slug, {
       status: state.status,
       mistakes: state.mistakes,
-      solvedCount: state.solvedSetIds.length
+      solvedCount: state.solvedSetIds.length,
+      // ?? 0: a state from before hints existed still records a truthful zero.
+      hintsUsed: state.hintsUsed ?? 0
     });
   }
 }

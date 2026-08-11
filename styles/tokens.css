@@ -9,6 +9,7 @@
   --oat: #EAE0CB;        /* wells */
   --taupe: #D8CCB3;      /* borders */
   --faint-ink: #A5977F;  /* hints */
+  --cup-clean: #FFFFFF;  /* the no-hint result cup — --milk is the row it sits on */
   --soft-ink: #7A6B57;   /* secondary text */
   --ink: #40342A;        /* text, primary fill */
 

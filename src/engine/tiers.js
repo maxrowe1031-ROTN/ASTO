@@ -2,7 +2,8 @@
 //
 // Boards carry `difficulty` 1–4 and nothing else; the tier is derived. Schema v1.0 has no
 // `tier` field precisely so the two can never disagree. Tiers are revealed on solve and
-// are never shown on the board (GDD §9).
+// are never shown on the board (GDD §9) — except a hinted set, which wears its tier
+// colour early (design.md D-16, a sanctioned exception).
 
 export const TIERS = Object.freeze(['green', 'yellow', 'red', 'black']);
 

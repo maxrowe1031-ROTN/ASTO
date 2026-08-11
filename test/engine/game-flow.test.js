@@ -7,7 +7,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { clearSelection, initGame, select, shuffle, submit } from '../../src/engine/engine.js';
+import { clearSelection, hint, initGame, select, shuffle, submit } from '../../src/engine/engine.js';
 import { mulberry32 } from '../../src/engine/rng.js';
 import { board, distinctMisses, MISS } from '../fixtures/board.js';
 
@@ -86,6 +86,33 @@ test('headless mixed run — mistakes and solves interleaved', () => {
   assert.equal(state.status, 'won');
   assert.equal(state.mistakes, 2);
   assert.equal(state.solvedSetIds.length, 4);
+});
+
+test('headless run with a mid-game hint — the hinted set is then solved', () => {
+  let state = shuffle(initGame(board), mulberry32(2026));
+
+  state = play(state, ['Seed', 'Tree', 'Spark', 'Fire']).state;
+
+  const hinted = hint(state, mulberry32(13));
+  assert.equal(hinted.outcome.type, 'hint');
+  state = hinted.state;
+
+  const [hintedId] = state.hintedSetIds;
+  assert.notEqual(hintedId, 'set-growth', 'a solved set is never hinted');
+
+  // The hint reveals membership, not order — solving still takes an accepted order.
+  const hintedSet = board.sets.find((set) => set.id === hintedId);
+  state = play(state, [...hintedSet.pairs[0], ...hintedSet.pairs[1]]).state;
+  assert.ok(state.solvedSetIds.includes(hintedId));
+
+  // Spending the hint changed nothing about the rest of the game.
+  for (const set of board.sets) {
+    if (state.solvedSetIds.includes(set.id)) continue;
+    state = play(state, [...set.pairs[0], ...set.pairs[1]]).state;
+  }
+  assert.equal(state.status, 'won');
+  assert.equal(state.mistakes, 0);
+  assert.equal(state.hintsUsed, 1);
 });
 
 test('maxMistakes: Infinity counts mistakes but can never lose — the tutorial rule', () => {

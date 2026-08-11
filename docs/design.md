@@ -1722,6 +1722,90 @@ scout batches' grade-1 counts and his win rate recover without the taste verdict
 falling — or greens come back generic ("slapped on the page") and the line overshot,
 in which case the fix is scaling specificity to tier, not abandoning either rule.
 
+### D-16 — The hint button: one free reveal, worn in tier colour (2026-08-11)
+
+Max's idea, brainstormed and built the same day. One **Hint** pill per game: it marks
+a **random unsolved set** by tinting its four tiles in the set's **tier colour** —
+the same three tokens the solved reveal cards use, applied early. Membership and tier
+are revealed; **order is not** — the hint deliberately funnels the player into the
+assembly challenge, the game's differentiator. It answers GDD §8.3's open question
+("Should the game eventually include a non-penalty hint system?") with a playtest
+bet, the same way "So close!" was decided.
+
+**The decisions, made with Max in brainstorming:**
+
+1. **Free, one per game.** Non-penalty (the GDD's own leaning); beans untouched.
+   `rules.hintsAllowed` (default 1, tutorial 0) is the dial; the engine also refuses
+   to re-hint an already-hinted set, so raising the dial always adds information.
+2. **Pure random** among unsolved sets, via the injected RNG at the controller seam
+   (same contract as shuffle: `hint(state, rand)` throws without a rand). Chosen over
+   "hardest remaining" and weighted draws: simplest to explain, leaks nothing.
+   **Accepted risk:** the hint can land on a set the player already knew.
+   **Reconsider-when:** playtests show hints feeling wasted on easy sets — the
+   selection is one engine function; swap to a weighted draw then.
+3. **Persistent tier-colour tint**, not a transient flash. Max's own upgrade
+   mid-brainstorm: a flash makes the hint a memory test, which punishes exactly the
+   player who needed help. The tint holds until the set is solved, survives shuffles
+   (it is engine state, `hintedSetIds`, rendered fresh each pass), and needs no
+   motion to carry its meaning — reduced-motion players lose only the entrance
+   pulse, never the information.
+
+**Two sanctioned exceptions, recorded rather than slipped in:**
+
+- ***"Tiers are revealed on solve, never shown on the board"*** (GDD §9, CLAUDE.md
+  §7) — the hinted set's tier now shows early. Reasoning: that rule keeps the
+  *untouched* board neutral; a hint is the game deliberately stepping in, and "these
+  four are the tricky ones" is part of the help — a bait warning with some drama in
+  it. The rule stands for every other tile and every hintless game.
+  **Reconsider-when:** playtests read the early tier as spoiler rather than drama —
+  fall back to a neutral hint tint, which keeps the feature and restores the rule.
+- ***Outcomes never name set contents*** (engine.js) — barely bent, in the end: the
+  hint's reveal lives in **state**, and the `hint` outcome carries only its type,
+  like so-close and already-tried. `submit`'s outcomes are exactly as empty as
+  before; the no-leak test stands unchanged.
+
+**Deferred, on the record:** whether a hinted win is marked on the results card.
+No stakes until sharing/streaks exist; decide when they do.
+
+**Ride-along fix:** four pills overflowed a 375px viewport, so the controls compress
+below 430px (smaller gap and padding) instead of wrapping — found and fixed during
+browser verification, before any device saw it.
+
+**Status:** built TDD-first (10-test engine suite + a headless hint playthrough in
+game-flow; suite 1238 green), verified in the preview browser on desktop and mobile
+and in the Review Studio's play surface (which needed only an `onHint` callback —
+the boundary law's dividend). **Playtest gate passed the same day** — Max: "the
+hint works perfectly. i love it. its a stand out addition that connections could
+never have." The tier reveal read as drama, not spoiler; its reconsider-when stays
+dormant.
+
+### D-16 addendum — the cup remembers the coffee (2026-08-11)
+
+The deferred results-card question came due the same day: Max asked for a mark on
+the select list's result cup, brainstormed over inline mockups in the game's own
+palette, and made the call — **with the poles swapped from the first sketch**:
+
+- **White cup** (`--cup-clean`, hairline `--faint-ink` outline — it sits on a
+  milk-coloured row) — played **clean**, no hint. The new everyday cup; results
+  saved before hints existed have no `hintsUsed` field and truthfully read clean.
+- **Brown cup** (`--bean-filled`, the old only colour) — **a hint was used**:
+  the player "needed a coffee." Applies in both poses — steaming (hinted win) and
+  spilled (hinted loss).
+
+**Pose owns won-or-lost; colour owns how it was played.** The cup geometry did not
+change — colour moved entirely into CSS behind an `is-hinted` class on the cup
+slot, driven by `hintsUsed` in the stored result (`results-recorder.js`, additive
+field, `?? 0` for legacy states). The D-10 accessibility move repeats: the visual
+drops the words, the aria sentence gains "A hint was used."
+
+The white puddle keeps near-full opacity plus the outline (at half opacity it
+vanished into the row); the brown puddle keeps its original halved opacity (a
+lighter-than-cup brown puddle read as a shadow). Both recorded in the CSS comments.
+
+**Reconsider-when:** the mostly-white list reads washed-out, or players misread
+brown as the badge of honour rather than the marked case — revisit which pole is
+marked (the class flip is one line).
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
