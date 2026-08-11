@@ -40,6 +40,39 @@ test('date and baitTags are still type-checked when present', () => {
   failsAt(broken((p) => { p.sets[0].baitTags = ['nature', 7]; }), 'sets[0].baitTags');
 });
 
+// The glossary (design.md D-18, 2026-08-11): an optional, editorially authored
+// definition for the board's hardest word, shipped as data because the game is
+// zero-dep and offline — there is no dictionary to call, and a dictionary would
+// leak relationships anyway. Absent on every pre-D-18 board, so absence is valid.
+test('glossary is optional, and an empty glossary is allowed', () => {
+  assert.equal(broken((p) => { delete p.glossary; }).ok, true);
+  assert.equal(broken((p) => { p.glossary = []; }).ok, true);
+});
+
+test('a well-formed glossary entry passes', () => {
+  const result = broken((p) => {
+    p.glossary = [{ word: 'Chisel', definition: 'a bladed hand tool for shaping wood or stone' }];
+  });
+  assert.equal(result.ok, true, messages(result));
+});
+
+test('a glossary word must be one of the sixteen board words', () => {
+  failsAt(
+    broken((p) => { p.glossary = [{ word: 'Cordwainer', definition: 'a shoemaker' }]; }),
+    'glossary[0].word'
+  );
+});
+
+test('a glossary definition must be a non-empty string', () => {
+  failsAt(broken((p) => { p.glossary = [{ word: 'Chisel', definition: '  ' }]; }), 'glossary[0].definition');
+  failsAt(broken((p) => { p.glossary = [{ word: 'Chisel' }]; }), 'glossary[0].definition');
+});
+
+test('a glossary must be an array of objects when present', () => {
+  failsAt(broken((p) => { p.glossary = 'Chisel: a tool'; }), 'glossary');
+  failsAt(broken((p) => { p.glossary = ['Chisel']; }), 'glossary[0]');
+});
+
 test('id and title are required non-empty strings', () => {
   failsAt(broken((p) => { delete p.id; }), 'id');
   failsAt(broken((p) => { p.id = '   '; }), 'id');

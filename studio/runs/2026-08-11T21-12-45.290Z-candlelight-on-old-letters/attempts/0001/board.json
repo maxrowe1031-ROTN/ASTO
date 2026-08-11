@@ -1,0 +1,86 @@
+{
+  "id": "board-writing-candlelight",
+  "title": "Ink, Wax, and What They Can't Do",
+  "sets": [
+    {
+      "id": "set-material-composition",
+      "relationshipLabel": "object and the substance it is made of",
+      "explanation": "A candle is made of wax and an envelope is made of paper — each object names the raw substance that constitutes it.",
+      "pairs": [
+        [
+          "candle",
+          "wax"
+        ],
+        [
+          "envelope",
+          "paper"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "candle-flame-link",
+        "paper-writing-link"
+      ]
+    },
+    {
+      "id": "set-guards-against",
+      "relationshipLabel": "thing that guards against another",
+      "explanation": "A seal guards against tampering just as a blotter guards against a smudge — each is a safeguard against a specific kind of spoiling.",
+      "pairs": [
+        [
+          "seal",
+          "tampering"
+        ],
+        [
+          "blotter",
+          "smudge"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "seal-envelope-link",
+        "blotter-ink-link"
+      ]
+    },
+    {
+      "id": "set-span-states",
+      "relationshipLabel": "earlier and later state of one span",
+      "explanation": "A draft becomes a final and a taper becomes a stub — each pair marks the start and end of the same process, one in writing and one in burning.",
+      "pairs": [
+        [
+          "draft",
+          "final"
+        ],
+        [
+          "taper",
+          "stub"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "taper-candle-link",
+        "draft-writing-link"
+      ]
+    },
+    {
+      "id": "set-impossible-property",
+      "relationshipLabel": "thing and the one property it can never have",
+      "explanation": "A flame can never have weight and smoke can never hold a shape — each names a property permanently and necessarily denied to it.",
+      "pairs": [
+        [
+          "flame",
+          "weight"
+        ],
+        [
+          "smoke",
+          "shape"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "flame-candle-link",
+        "smoke-blotter-link"
+      ]
+    }
+  ]
+}

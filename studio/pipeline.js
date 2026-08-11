@@ -100,6 +100,13 @@ const STAGE_INPUTS = {
     words: deriveWords(boardOf(board)?.sets ?? []),
     maxMistakes: config.maxMistakes ?? 4,
   }),
+  // The glossary author defines the board's hardest word, or declines (D-18).
+  // It gets the full board — to know which relationships must not leak — and
+  // 07's knowledge-gated flags, which are its only candidates.
+  '09-glossary-author': (board) => ({
+    board: boardOf(board),
+    knowledgeGated: board.get('07-test-player')?.knowledgeGated ?? [],
+  }),
   '08-style-guide': (board, { manifest }) => {
     const puzzle = boardOf(board);
     return {

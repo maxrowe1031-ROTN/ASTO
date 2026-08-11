@@ -238,6 +238,7 @@ async function renderRun(runId) {
           : ''
       }
       ${worldCapLine(manifest, attempt)}
+      ${glossLine(attempt)}
     </section>
 
     ${autoRevisionPanel(attempt, detail.decisions, attemptId)}
@@ -306,7 +307,13 @@ async function renderRun(runId) {
   resetPlaythroughFor(runId, attemptId);
   wirePublish(runId);
   wireDecisions(runId, attemptId);
-  wirePlay(attempt.board);
+  // The gloss rides the play surface exactly as it will ride the published
+  // puzzle (D-18): judging the board means judging the Vocabulary moment too.
+  wirePlay(
+    attempt.board && (attempt.reports?.['09-glossary-author']?.glossary?.length ?? 0) > 0
+      ? { ...attempt.board, glossary: attempt.reports['09-glossary-author'].glossary }
+      : attempt.board,
+  );
   showProposal(runId, attemptId);
   schedulePoll(working, runId);
 }
@@ -442,6 +449,23 @@ function worldCapLine(manifest, attempt) {
   } knowledge-gated word${gated.length === 1 ? '' : 's'} against a cap of 1${
     words ? ` — ${words}` : ''
   }${over ? ' — over cap' : ''}</p>`;
+}
+
+/**
+ * The proposed gloss (D-18) — what the game's Vocabulary button will reveal if
+ * this board publishes. Shown where Max decides, because the one editorial
+ * question about a gloss is whether it leaks the set, and only he can hear that.
+ */
+function glossLine(attempt) {
+  const glossary = attempt.reports?.['09-glossary-author']?.glossary ?? [];
+  if (glossary.length === 0) return '';
+  return glossary
+    .map(
+      (entry) =>
+        `<p class="studio-muted">vocabulary gloss (ships with the board): ` +
+        `<strong>${escape(entry.word)}</strong> — ${escape(entry.definition)}</p>`,
+    )
+    .join('');
 }
 
 function unappliedPrompt(unapplied = []) {

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-11T21-04-42.553Z-gloss-shakedown",
+  "createdAt": "2026-08-11T21:04:42.553Z",
+  "theme": "gloss shakedown",
+  "brief": {
+    "count": 14,
+    "stanceQuotas": [
+      "inclusion",
+      "cause",
+      "event",
+      "possession"
+    ],
+    "hardestStanceAsk": [
+      "event",
+      "absence",
+      "inclusion"
+    ],
+    "mock": true,
+    "autoRevise": true
+  },
+  "status": "approved",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}

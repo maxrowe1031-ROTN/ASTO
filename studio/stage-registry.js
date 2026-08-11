@@ -1,8 +1,9 @@
 // Stage registry — the single source of pipeline stage IDs and order.
 //
-// Eight agents (GDD §12.1, in §12.3 order) plus the deterministic integrity
-// gate at 04a. Everything downstream — run directories, revision re-entry,
-// resume — derives from this list. Pure: imports nothing, touches nothing.
+// Nine agents (GDD §12.1's eight in §12.3 order, plus D-18's glossary author)
+// and the deterministic integrity gate at 04a. Everything downstream — run
+// directories, revision re-entry, resume — derives from this list. Pure:
+// imports nothing, touches nothing.
 
 const deepFreeze = (value) => {
   if (value && typeof value === 'object' && !Object.isFrozen(value)) {
@@ -22,6 +23,7 @@ export const STAGES = deepFreeze([
   { id: '06-adversarial-solver', kind: 'agent', agent: 'adversarial-solver' },
   { id: '07-test-player', kind: 'agent', agent: 'test-player' },
   { id: '08-style-guide', kind: 'agent', agent: 'style-guide' },
+  { id: '09-glossary-author', kind: 'agent', agent: 'glossary-author' },
 ]);
 
 // The stages a revision may re-enter at: the ones that AUTHOR the board.

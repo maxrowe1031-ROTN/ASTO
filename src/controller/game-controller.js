@@ -13,6 +13,7 @@ import {
   hint,
   initGame,
   reorderSelected,
+  revealVocab,
   select,
   shuffle,
   submit
@@ -103,6 +104,12 @@ export class GameController {
 
   hintPressed() {
     const { state, outcome } = hint(this.state, this.rand);
+    this.state = state;
+    this.render(outcome);
+  }
+
+  vocabPressed() {
+    const { state, outcome } = revealVocab(this.state);
     this.state = state;
     this.render(outcome);
   }

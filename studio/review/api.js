@@ -190,6 +190,8 @@ export function createApi({
     ['06-adversarial-solver', 'output.json'],
     ['07-test-player', 'output.json'],
     ['08-style-guide', 'output.json'],
+    // The proposed gloss (D-18) — shown beside its set so a leak is catchable.
+    ['09-glossary-author', 'output.json'],
   ];
 
   function readAttempt(runId, attemptId) {
@@ -499,8 +501,26 @@ export function createApi({
       );
     }
 
-    const board = currentBoard(runId);
+    let board = currentBoard(runId);
     if (!board) return conflict(`run ${runId} has no board to publish`);
+
+    // The gloss rides the published puzzle (D-18): board.json is 04's artifact
+    // and predates stage 09, so the merge happens here, at the one door game
+    // content leaves through. Absent or empty → the puzzle ships without a
+    // glossary and the game shows no Vocabulary button, exactly as pre-D-18.
+    try {
+      const gloss = store.readStageArtifact(
+        runId,
+        manifest.currentAttemptId,
+        '09-glossary-author',
+        'output.json',
+      );
+      if (Array.isArray(gloss?.glossary) && gloss.glossary.length > 0) {
+        board = { ...board, glossary: gloss.glossary };
+      }
+    } catch {
+      // No glossary stage on this attempt (pre-D-18 runs) — publish as before.
+    }
 
     // Refused once, then allowed on the retry that carries the acknowledgement.
     // Deliberately not a hard block: the board is often right to publish as-is

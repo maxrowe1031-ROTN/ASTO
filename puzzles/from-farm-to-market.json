@@ -1,0 +1,86 @@
+{
+  "id": "asto-from-farm-to-market",
+  "title": "From Farm to Market",
+  "sets": [
+    {
+      "id": "set-creature-possession",
+      "relationshipLabel": "a creature and the thing that belongs to it",
+      "explanation": "A bee produces its honeycomb and a hen produces its egg — each pair names a creature and the thing that is naturally its own.",
+      "pairs": [
+        [
+          "bee",
+          "honeycomb"
+        ],
+        [
+          "hen",
+          "egg"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "farm",
+        "animals"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "a raw ingredient becoming a new product through a process",
+      "explanation": "Milk is transformed into cheese and cucumber into pickle — each pair is a raw ingredient turned into a new product by a known process.",
+      "pairs": [
+        [
+          "milk",
+          "cheese"
+        ],
+        [
+          "cucumber",
+          "pickle"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "food",
+        "process"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a worker and the tool essential to their trade",
+      "explanation": "A florist relies on shears and a farmer relies on a wheelbarrow — each pair names a worker and the tool their trade depends on.",
+      "pairs": [
+        [
+          "florist",
+          "shears"
+        ],
+        [
+          "farmer",
+          "wheelbarrow"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "farm",
+        "tools"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the opening and closing moments of a working span or journey",
+      "explanation": "Unloading starts a stall's day and packing up ends it, just as being picked starts a crop's journey and being sold ends it — each pair marks a start and finish of the same span.",
+      "pairs": [
+        [
+          "unload",
+          "pack up"
+        ],
+        [
+          "picked",
+          "sold"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "market",
+        "sequence"
+      ]
+    }
+  ]
+}

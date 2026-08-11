@@ -33,10 +33,14 @@ const someInput = {
   'adversarial-solver': { board: { id: 'b', title: 'B', sets: [] }, integrity: { accepted: 16 } },
   'test-player': { words: Array.from({ length: 16 }, (_, i) => `W${i}`), maxMistakes: 4 },
   'style-guide': { items: [{ setId: 's1', relationshipLabel: 'grows into', explanation: 'x' }] },
+  'glossary-author': {
+    board: { id: 'b', title: 'B', sets: [] },
+    knowledgeGated: [{ word: 'W1', note: 'craft vocabulary' }],
+  },
 };
 
 test('every agent stage in the registry has a module', () => {
-  assert.equal(AGENT_IDS.length, 8);
+  assert.equal(AGENT_IDS.length, 9);
   for (const id of AGENT_IDS) {
     assert.ok(AGENTS[id], `no module registered for agent "${id}"`);
   }

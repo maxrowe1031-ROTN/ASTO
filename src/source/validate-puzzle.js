@@ -103,6 +103,31 @@ export function validatePuzzle(puzzle) {
     }
   }
 
+  // Optional glossary (D-18): an editorially authored definition for the board's
+  // hardest word. Data, not a dictionary — the game is offline and zero-dep, and
+  // a gloss must be leak-checked editorially. Absent on every pre-D-18 board.
+  if ('glossary' in puzzle) {
+    if (!Array.isArray(puzzle.glossary)) {
+      fail('glossary', 'Optional, but when present must be an array of { word, definition }.');
+    } else {
+      const onBoard = new Set(words.map((word) => word.toLowerCase()));
+      puzzle.glossary.forEach((entry, i) => {
+        if (!isObject(entry)) {
+          fail(`glossary[${i}]`, 'Each glossary entry must be an object { word, definition }.');
+          return;
+        }
+        if (!isText(entry.word)) {
+          fail(`glossary[${i}].word`, 'Required: a non-empty string naming a board word.');
+        } else if (words.length === 16 && !onBoard.has(entry.word.toLowerCase())) {
+          fail(`glossary[${i}].word`, `"${entry.word}" is not one of the sixteen board words.`);
+        }
+        if (!isText(entry.definition)) {
+          fail(`glossary[${i}].definition`, 'Required: a non-empty definition.');
+        }
+      });
+    }
+  }
+
   return { ok: errors.length === 0, errors };
 }
 

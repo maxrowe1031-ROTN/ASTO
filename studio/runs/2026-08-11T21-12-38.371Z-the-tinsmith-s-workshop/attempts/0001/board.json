@@ -1,0 +1,86 @@
+{
+  "id": "workshop-analogies-01",
+  "title": "In the Workshop",
+  "sets": [
+    {
+      "id": "set-instrument-action-tools",
+      "relationshipLabel": "a tool and the action it exists to perform",
+      "explanation": "Shears exist to trim and a soldering iron exists to join, so each tool pairs with its defining action.",
+      "pairs": [
+        [
+          "shears",
+          "trim"
+        ],
+        [
+          "soldering iron",
+          "join"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "tools",
+        "workshop"
+      ]
+    },
+    {
+      "id": "set-item-location-shop",
+      "relationshipLabel": "a fitted place and the tool kept there",
+      "explanation": "A pegboard holds snips and a workbench holds a vise, each spot fitted for the tool that lives there.",
+      "pairs": [
+        [
+          "pegboard",
+          "snips"
+        ],
+        [
+          "workbench",
+          "vise"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "workshop",
+        "storage"
+      ]
+    },
+    {
+      "id": "set-distinctive-nonpart-workshop",
+      "relationshipLabel": "a thing and the trait it can never have",
+      "explanation": "Tin is prized precisely because it resists rust, just as a mallet is defined by having no blade at all.",
+      "pairs": [
+        [
+          "tin",
+          "rust"
+        ],
+        [
+          "mallet",
+          "blade"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "materials",
+        "tools"
+      ]
+    },
+    {
+      "id": "set-before-after-process",
+      "relationshipLabel": "the start and end states of a process",
+      "explanation": "Kindling ends as ember through burning, and a sheet ends as scrap through cutting: each pair is a before and after.",
+      "pairs": [
+        [
+          "kindling",
+          "ember"
+        ],
+        [
+          "sheet",
+          "scrap"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "materials",
+        "process"
+      ]
+    }
+  ]
+}

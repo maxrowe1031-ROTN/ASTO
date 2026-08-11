@@ -21,6 +21,7 @@
 
 import { GameController } from '../../../src/controller/game-controller.js';
 import { BoardView } from '../../../src/view/board-view.js';
+import { VocabView } from '../../../src/view/vocab-view.js';
 import { ControlsView } from '../../../src/view/controls-view.js';
 import { FrameView } from '../../../src/view/frame-view.js';
 import { HeaderView } from '../../../src/view/header-view.js';
@@ -46,6 +47,7 @@ export function playScaffold() {
       <div class="status" role="status" aria-live="polite" data-play="status"></div>
       <div class="frame" aria-label="Analogy frame" data-play="frame"></div>
       <main class="board" aria-label="Word tiles" data-play="board"></main>
+      <div class="vocab-line" role="note" data-play="vocab" hidden></div>
       <div class="controls" data-play="controls"></div>
       <div class="play-banner" data-play="banner" hidden></div>
       <div class="solved-sets" aria-label="Solved sets" data-play="solved"></div>
@@ -152,6 +154,7 @@ export function startPlay(container, board, { onExit, recorder = null } = {}) {
       onClear: () => controller.clearPressed(),
       onShuffle: () => controller.shufflePressed(),
       onHint: () => controller.hintPressed(),
+      onVocab: () => controller.vocabPressed(),
     }),
     new StatusView(at('status')),
     // Order matters, and for the same reason it does in the game: the
@@ -162,6 +165,7 @@ export function startPlay(container, board, { onExit, recorder = null } = {}) {
       onReorder: (from, to) => controller.reorderRequested(from, to),
     }),
     new BoardView(at('board'), { onTileTap: (term) => controller.tileTapped(term) }),
+    new VocabView(at('vocab')),
     new SolvedSetsView(at('solved')),
     new BannerView(at('banner'), { onPlayAgain: () => controller.restart() }),
     // Last, so it observes the state every visible view has already rendered.
