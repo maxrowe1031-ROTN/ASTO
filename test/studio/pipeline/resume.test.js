@@ -61,7 +61,7 @@ test('resuming re-enters at exactly the interrupted stage and finishes the run',
     assert.equal(result.resumedAt, KILL_AT);
     assert.deepEqual(
       transport.calls.map((call) => call.stageId),
-      [KILL_AT, '06-adversarial-solver', '07-test-player', '08-style-guide'],
+      [KILL_AT, '06-adversarial-solver', '07-test-player', '08-style-guide', '09-glossary-author'],
     );
   } finally {
     cleanup();

@@ -183,6 +183,12 @@ export const DEFAULT_CONFIG = deepFreeze({
     '06-adversarial-solver': 'medium',
     '07-test-player': 'medium',
     '08-style-guide': 'medium',
+    // One short gloss with hard constraints (D-18) — a small writing task, not
+    // a search. Low, like the scout. (The '09-' prefix is shared with the
+    // revision-proposer's key below only because the proposer predates the
+    // stage numbering reaching 09; they are distinct keys and the proposer is
+    // not a pipeline stage.)
+    '09-glossary-author': 'low',
     // Not a pipeline stage: it runs once at review time when Max rejects a
     // board, reading his judgement plus the evaluators' findings. Medium
     // because the thinking it has to do is small — the problem has already
@@ -198,7 +204,7 @@ export const DEFAULT_CONFIG = deepFreeze({
   // The string must change with the map, not just when it feels significant:
   // boards built under two different maps are two populations, and reusing one
   // label would merge them inside the very corpus meant to tell them apart.
-  effortProfile: '2026-08-05-cross-reading',
+  effortProfile: '2026-08-11-glossary',
 
   // Two bounds, because there are two failure classes and they are retried by
   // different owners. `transport` bounds llm.js's own loop (timeouts, 429s,

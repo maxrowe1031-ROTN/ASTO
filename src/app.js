@@ -15,6 +15,7 @@ import { buildShareText, share } from './share.js';
 import { LocalJsonSource } from './source/local-json-source.js';
 import { Storage } from './storage.js';
 import { BoardView } from './view/board-view.js';
+import { VocabView } from './view/vocab-view.js';
 import { ControlsView } from './view/controls-view.js';
 import { EndView } from './view/end-view.js';
 import { FrameView } from './view/frame-view.js';
@@ -172,7 +173,8 @@ async function main() {
       onConfirm: () => controller.confirmPressed(),
       onClear: () => controller.clearPressed(),
       onShuffle: () => controller.shufflePressed(),
-      onHint: () => controller.hintPressed()
+      onHint: () => controller.hintPressed(),
+      onVocab: () => controller.vocabPressed()
     }),
     new StatusView(document.getElementById('status')),
     // The coach speaks in the same breath as the status strip, and BEFORE the two views
@@ -187,6 +189,7 @@ async function main() {
     new BoardView(document.getElementById('board'), {
       onTileTap: (term) => controller.tileTapped(term)
     }),
+    new VocabView(document.getElementById('vocab')),
     new SolvedSetsView(document.getElementById('solved-sets')),
     // Not a view: a reader that saves the result of a finished game. It sits here for the
     // same reason the router does — update(state) is the hook the controller offers, and

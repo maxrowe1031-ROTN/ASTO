@@ -1854,6 +1854,70 @@ examples of its own, not more adjectives. And if batch three's locked-order sets
 draw Max blockers anyway, the revealLocks split is wrong and the allowlist
 re-widens.
 
+### D-18 — The Vocabulary button: one authored definition, shipped as data (2026-08-11)
+
+Max's idea, brainstormed and built the same day: a **Vocabulary** pill that
+reveals the definition of **the hardest word on the board**. Rationale on
+record: obscure vocabulary is the corpus's #1 rejection reason (four of five
+taste rejections across batches two and three), and the game's own creed is
+"the challenge must be the relationship, never the vocabulary." The hint frees
+*grouping*; this frees *meaning*; order and grouping stay the game. It may also
+dissolve the board-wide-cap question — a gated word with a gloss available is
+no longer a wall (the backlog entry cross-references this).
+
+**Decisions made with Max:**
+
+1. **One word,** the hardest, chosen editorially — not a glossary of every
+   gated word. Scarce like the hint; one clean moment.
+2. **Free.** It removes an unfair wall; it does not help solve.
+3. **Persistent once revealed** — the definition sits under the board until
+   its word's set is solved (the hint lesson: transient help is a memory test).
+4. **An authored gloss, never a dictionary.** Zero-dep and offline forbid an
+   API; more importantly a dictionary definition of a trade noun usually
+   states its *function*, which is usually the set's relationship. The gloss
+   is written by the pipeline under leak rules and reviewed by Max.
+
+**Schema v1.0 change (locked decision, Max-initiated 2026-08-11):** optional
+`glossary: [ { word, definition } ]` on the puzzle. Additive and
+backward-compatible — absent on every existing board, and a board without one
+simply shows no button (data-driven, like the tutorial's missing hint).
+Validated in `validate-puzzle.js`: word must be a board word, definition
+non-empty. The array shape future-proofs "all gated words" without another
+schema change; the one-entry limit is editorial, enforced at the authoring
+stage.
+
+**The leak rules (instruction AND check, per D-7):** the gloss says what the
+thing IS, never what it is FOR relative to the board; mechanically, a
+definition may not contain any other board word (whole-word,
+case-insensitive), may only define a word 07 flagged as knowledge-gated, and
+must be empty when nothing was flagged — an open board gets no footnote.
+
+**Where it lives:** engine mutator `revealVocab(state)` (no RNG — the data
+names the word; outcome type-only, reveal is state `vocabRevealed`); the
+`VocabView` footnote under the board; the pill hidden on gloss-less boards;
+controls wrap on narrow screens now that five pills exist (Confirm takes its
+own row at 375px — the primary action alone under the thumb). Studio: new
+stage **09-glossary-author** (tenth stage, effort `low`, profile bumped to
+`2026-08-11-glossary`), gloss shown on the review card AND riding the play
+surface, merged into the published JSON at the publish door.
+
+**Deferred, on the record:** results-card marking for vocab use (the hint's
+deferral, same reasoning); "all gated words" scope; whether the pill's label
+should be shorter ("Define") if five pills feel crowded in playtests.
+
+**Reconsider-when:** glosses keep leaking despite the rules — tighten the
+mechanical check (e.g. ban the set's relationship verbs too); the button goes
+unused across playtests — drop it to backlog; boards start being AUTHORED
+toward gated words because the gloss absolves them — the cap conversation
+reopens, this time board-wide.
+
+**Status:** built TDD-first (validator, engine, agent, publish-merge suites all
+watched red; full suite 1295 green). Claude-verified in the browser on both
+hosts: press → persistent footnote, survives shuffle, retires on solve, spends
+the pill; gloss-less boards show four pills; five-pill wrap clean at 375px; a
+mock run produced a leak-clean gloss on its card and its play surface.
+**Max's playtest on a real glossed board is the outstanding gate.**
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

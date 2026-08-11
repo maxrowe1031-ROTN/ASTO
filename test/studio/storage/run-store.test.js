@@ -257,7 +257,7 @@ test('a fresh attempt resumes at its starting stage; a finished one returns null
     for (const stage of [
       '01-pair-author', '02-theme-grouper', '03-difficulty-rater', '04-board-builder',
       '04a-integrity', '05-analogy-validator', '06-adversarial-solver', '07-test-player',
-      '08-style-guide',
+      '08-style-guide', '09-glossary-author',
     ]) {
       store.writeStageArtifact(runId, '0001', stage, 'output.json', { ok: 1 });
       store.writeStageArtifact(runId, '0001', stage, 'validation.json', { ok: true });

@@ -63,7 +63,7 @@ test('running a revision re-runs from the entry stage forward and nothing before
     assert.equal(result.status, 'complete', result.failure?.message);
     assert.deepEqual(
       transport.calls.map((call) => call.stageId),
-      ['04-board-builder', '05-analogy-validator', '06-adversarial-solver', '07-test-player', '08-style-guide'],
+      ['04-board-builder', '05-analogy-validator', '06-adversarial-solver', '07-test-player', '08-style-guide', '09-glossary-author'],
     );
   } finally {
     cleanup();
@@ -236,7 +236,7 @@ test('the evaluators stay blind — they judge the board, not the request', asyn
 
     // An evaluator that had read the instructions would be marking its own
     // homework: agreeing the change was made is not finding the board good.
-    for (const stageId of ['05-analogy-validator', '06-adversarial-solver', '07-test-player', '08-style-guide']) {
+    for (const stageId of ['05-analogy-validator', '06-adversarial-solver', '07-test-player', '08-style-guide', '09-glossary-author']) {
       const prompt = promptFor(rootDir, runId, childId, stageId);
       assert.doesNotMatch(prompt, /THIS IS A REVISION/, `${stageId} was shown the revision request`);
       assert.doesNotMatch(prompt, /wrap:unwrap/, `${stageId} was shown the editor's notes`);

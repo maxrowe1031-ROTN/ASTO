@@ -223,6 +223,9 @@
   display: flex;
   gap: 10px;
   justify-content: center;
+  /* Five pills since D-18 (Vocabulary joined). Compress first (the narrow query
+     below), and wrap as the last resort rather than ever clipping an edge. */
+  flex-wrap: wrap;
 }
 
 .pill {
@@ -267,6 +270,20 @@
     padding: 10px 13px;
     font-size: 14px;
   }
+}
+
+/* ---------- Vocabulary line (D-18) ---------- */
+
+/* A footnote to the board, not a card: the revealed definition sits quietly under
+   the tiles until its word's set is solved. Oat well, no grain — it is chrome,
+   not content. */
+.vocab-line {
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--oat);
+  border-radius: var(--radius-tile);
+  padding: 8px 14px;
+  text-align: center;
 }
 
 /* ---------- Solved set cards ---------- */

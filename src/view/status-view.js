@@ -11,7 +11,8 @@ const FEEDBACK = {
   'so-close': { text: 'So close! Right four words — check the order.', strong: true },
   miss: { text: 'Not quite.', strong: false },
   'already-tried': { text: 'Already tried that one.', strong: false },
-  hint: { text: 'These four make one analogy — the order is yours to find.', strong: true }
+  hint: { text: 'These four make one analogy — the order is yours to find.', strong: true },
+  vocab: { text: 'A little vocabulary — on the house.', strong: false }
 };
 
 export class StatusView {

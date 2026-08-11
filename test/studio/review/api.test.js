@@ -7,7 +7,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { existsSync, mkdtempSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -57,7 +57,7 @@ const BOARD = {
 };
 
 /** A run parked in awaiting-review with a board — the state Max reviews. */
-function seedReviewable(store, { slug = 'lantern', theme = 'Lantern light' } = {}) {
+function seedReviewable(store, { slug = 'lantern', theme = 'Lantern light', glossary = null } = {}) {
   const { runId } = store.createRun({ slug, theme, brief: { count: 8 } });
   const attemptId = store.createAttempt(runId);
   store.updateStatus(runId, 'running');
@@ -69,6 +69,10 @@ function seedReviewable(store, { slug = 'lantern', theme = 'Lantern light' } = {
     ok: true,
     acceptedCount: 16,
   });
+  // Before completeAttempt on purpose — a completed attempt is immutable.
+  if (glossary) {
+    store.writeStageArtifact(runId, attemptId, '09-glossary-author', 'output.json', { glossary });
+  }
   store.completeAttempt(runId, attemptId, { status: 'complete' });
   store.updateStatus(runId, 'awaiting-review');
   return { runId, attemptId };
@@ -617,6 +621,46 @@ const approve = (api, runId) =>
 // `beach-retry` records that the first beach run truncated — and publishing
 // under it would make the game's permanent content ids remember the Studio's
 // accidents.
+// The gloss rides the published puzzle (D-18): board.json is 04's artifact and
+// predates stage 09, so publish is where the merge happens — and an attempt
+// with no glossary stage (every pre-D-18 run) must publish exactly as before.
+test('a glossary on the attempt rides the published puzzle', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store, {
+      glossary: [{ word: 'Chisel', definition: 'a bladed hand tool for shaping hard material' }],
+    });
+    await approve(api, runId);
+
+    const { status } = await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/publish`,
+      body: {},
+    });
+    assert.equal(status, 200);
+
+    const published = JSON.parse(readFileSync(join(puzzlesDir, 'lantern.json'), 'utf8'));
+    assert.deepEqual(published.glossary, [
+      { word: 'Chisel', definition: 'a bladed hand tool for shaping hard material' },
+    ]);
+  } finally {
+    cleanup();
+  }
+});
+
+test('an attempt without a glossary stage publishes exactly as before', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store);
+    await approve(api, runId);
+    await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    const published = JSON.parse(readFileSync(join(puzzlesDir, 'lantern.json'), 'utf8'));
+    assert.equal('glossary' in published, false);
+  } finally {
+    cleanup();
+  }
+});
+
 test('an approved board is published under its title, not the run slug', async () => {
   const { store, api, puzzlesDir, cleanup } = withPuzzles();
   try {

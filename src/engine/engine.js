@@ -3,7 +3,7 @@
 //
 // State shape:
 //   { puzzle, rules, boardTerms, selectedTerms, solvedSetIds, hintedSetIds, hintsUsed,
-//     mistakes, status }
+//     vocabRevealed, mistakes, status }
 //
 // `boardTerms` holds unsolved tiles only. Solving removes those four words, so grid
 // shrink, shuffle-unsolved-only, and the can't-resubmit-a-solved-set guard all fall out
@@ -45,6 +45,7 @@ export function initGame(puzzle, rules = {}) {
     solvedSetIds: [],
     hintedSetIds: [],
     hintsUsed: 0,
+    vocabRevealed: [],
     failedAttempts: [],
     mistakes: 0,
     status: 'playing'
@@ -127,6 +128,28 @@ export function hint(state, rand) {
       hintsUsed: state.hintsUsed + 1
     }),
     outcome: { type: 'hint' }
+  };
+}
+
+/**
+ * Reveal the definition of the board's glossed word (design.md D-18). Free and
+ * deterministic — the puzzle data names the word, so unlike hint() there is no
+ * RNG seam. Reveals the first glossary entry whose word is still on the board;
+ * the view renders it persistently from `vocabRevealed` (the hint lesson:
+ * transient help is a memory test). No-ops when there is nothing to reveal.
+ */
+export function revealVocab(state) {
+  if (state.status !== 'playing') return { state, outcome: null };
+
+  const entry = (state.puzzle.glossary ?? []).find(
+    (candidate) =>
+      state.boardTerms.includes(candidate.word) && !state.vocabRevealed.includes(candidate.word)
+  );
+  if (!entry) return { state, outcome: null };
+
+  return {
+    state: nextState(state, { vocabRevealed: [...state.vocabRevealed, entry.word] }),
+    outcome: { type: 'vocab' }
   };
 }
 
@@ -235,6 +258,7 @@ function freezeState(state) {
   Object.freeze(state.selectedTerms);
   Object.freeze(state.solvedSetIds);
   Object.freeze(state.hintedSetIds);
+  Object.freeze(state.vocabRevealed);
   Object.freeze(state.failedAttempts);
   return Object.freeze(state);
 }
