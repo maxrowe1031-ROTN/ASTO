@@ -1,0 +1,86 @@
+{
+  "id": "asto-harvest-almanac",
+  "title": "Harvest Almanac",
+  "sets": [
+    {
+      "id": "set-instrument-action",
+      "relationshipLabel": "tool and the action it exists to perform",
+      "explanation": "A sickle exists to reap and a rake exists to gather — each tool is defined by the single motion it was built for.",
+      "pairs": [
+        [
+          "sickle",
+          "reap"
+        ],
+        [
+          "rake",
+          "gather"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "farm tools",
+        "harvest imagery"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "category and its specific named instance",
+      "explanation": "A Harvest Moon is a particular full moon and a Canada goose is a particular migratory bird — each pair moves from the general kind to its named example.",
+      "pairs": [
+        [
+          "full moon",
+          "Harvest Moon"
+        ],
+        [
+          "migratory bird",
+          "Canada goose"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "moon",
+        "autumn"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "the written or spoken form and the outcome it predicts",
+      "explanation": "An almanac forecasts crop yield just as a weather forecast predicts rainfall — each pair is a document paired unmistakably with the outcome it foretells.",
+      "pairs": [
+        [
+          "almanac",
+          "yield"
+        ],
+        [
+          "weather forecast",
+          "rainfall"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "farming documents",
+        "prediction"
+      ]
+    },
+    {
+      "id": "set-distinctive-nonpart",
+      "relationshipLabel": "the one quality this thing can never carry",
+      "explanation": "Moonlight can never carry warmth and a shadow can never carry weight — each pair names the single physical property structurally ruled out by what the thing is.",
+      "pairs": [
+        [
+          "moonlight",
+          "warmth"
+        ],
+        [
+          "shadow",
+          "weight"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "night imagery",
+        "physical absence"
+      ]
+    }
+  ]
+}

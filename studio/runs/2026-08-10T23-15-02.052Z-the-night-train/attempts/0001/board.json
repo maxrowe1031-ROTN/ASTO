@@ -1,0 +1,90 @@
+{
+  "id": "asto-board-railway-01",
+  "title": "All Aboard: A Railway Journey",
+  "sets": [
+    {
+      "id": "set-fuel",
+      "relationshipLabel": "the fuel that lets the device operate",
+      "explanation": "Coal keeps a locomotive running just as oil keeps a lantern lit — each pair names the fuel a device cannot function without.",
+      "pairs": [
+        [
+          "coal",
+          "locomotive"
+        ],
+        [
+          "oil",
+          "lantern"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "fuel",
+        "energy",
+        "device"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "the written form and the thing it describes",
+      "explanation": "A timetable is the written plan of a journey, and a manifest is the written record of cargo — each document exists to describe the thing beside it.",
+      "pairs": [
+        [
+          "timetable",
+          "journey"
+        ],
+        [
+          "manifest",
+          "cargo"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "document",
+        "paperwork",
+        "travel"
+      ]
+    },
+    {
+      "id": "set-span",
+      "relationshipLabel": "the start and end of a span of time",
+      "explanation": "Boarding and disembarking bookend a journey the way dusk and dawn bookend a night — each pair marks a beginning and its matching end.",
+      "pairs": [
+        [
+          "boarding",
+          "disembarking"
+        ],
+        [
+          "dusk",
+          "dawn"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "time",
+        "sequence",
+        "journey"
+      ]
+    },
+    {
+      "id": "set-nonpart",
+      "relationshipLabel": "the one thing this stretch can never hold",
+      "explanation": "Night can never contain sunlight and a tunnel can never contain open sky — each pair names the one thing definitionally excluded from that stretch.",
+      "pairs": [
+        [
+          "night",
+          "sunlight"
+        ],
+        [
+          "tunnel",
+          "sky"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "darkness",
+        "enclosure",
+        "opposite-looking"
+      ]
+    }
+  ]
+}

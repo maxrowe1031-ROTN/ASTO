@@ -1,0 +1,78 @@
+{
+  "id": "asto-board-001",
+  "title": "Small Parts, Big Structures",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "Each worker is defined by the tool central to their trade: a shopkeeper rings up sales on a till, a seamstress stitches with a needle.",
+      "pairs": [
+        [
+          "shopkeeper",
+          "till"
+        ],
+        [
+          "seamstress",
+          "needle"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": []
+    },
+    {
+      "id": "set-attachment",
+      "relationshipLabel": "thing and the point where it fastens",
+      "explanation": "Each item has a fixed point where it fastens onto something else: a strap threads through a loop, a tassel hangs from a handle.",
+      "pairs": [
+        [
+          "strap",
+          "loop"
+        ],
+        [
+          "tassel",
+          "handle"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "handle"
+      ]
+    },
+    {
+      "id": "set-enabling-agent",
+      "relationshipLabel": "small feature that lets the larger thing survive what would otherwise break it",
+      "explanation": "Each is a small feature that lets a larger structure survive stress that would otherwise destroy it: a vent releases pressure from a canopy, a ferrule reinforces where a shaft would split.",
+      "pairs": [
+        [
+          "vent",
+          "canopy"
+        ],
+        [
+          "ferrule",
+          "shaft"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "canopy"
+      ]
+    },
+    {
+      "id": "set-distinctive-nonpart",
+      "relationshipLabel": "the one property this kind of thing can never hold",
+      "explanation": "Each is a diffuse phenomenon that, unlike solid objects, can never have a fixed boundary: a gust has no shape, a drizzle has no outline.",
+      "pairs": [
+        [
+          "gust",
+          "shape"
+        ],
+        [
+          "drizzle",
+          "outline"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": []
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "id": "asto-board-railway-01",
+  "title": "All Aboard: A Railway Journey",
+  "sets": [
+    {
+      "id": "set-fuel",
+      "relationshipLabel": "the device and the fuel it consumes",
+      "explanation": "A locomotive runs on coal just as a lantern runs on oil — each pair names the device first and the fuel it depends on second, in that fixed order.",
+      "pairs": [
+        [
+          "locomotive",
+          "coal"
+        ],
+        [
+          "lantern",
+          "oil"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "fuel",
+        "energy",
+        "device"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "the thing described, followed by the document that describes it",
+      "explanation": "A journey is written up as a timetable and cargo is written up as a manifest — each pair moves from the real thing to the paper that accounts for it.",
+      "pairs": [
+        [
+          "journey",
+          "timetable"
+        ],
+        [
+          "cargo",
+          "manifest"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "document",
+        "paperwork",
+        "travel"
+      ]
+    },
+    {
+      "id": "set-span",
+      "relationshipLabel": "the start and end of a span of time",
+      "explanation": "Boarding and disembarking bookend a journey the way dusk and dawn bookend a night — each pair marks a beginning and its matching end.",
+      "pairs": [
+        [
+          "boarding",
+          "disembarking"
+        ],
+        [
+          "dusk",
+          "dawn"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "time",
+        "sequence",
+        "journey"
+      ]
+    },
+    {
+      "id": "set-nonpart",
+      "relationshipLabel": "the one thing this stretch can never hold",
+      "explanation": "Night can never contain sunlight and a tunnel can never contain open sky — each pair names the one thing definitionally excluded from that stretch.",
+      "pairs": [
+        [
+          "night",
+          "sunlight"
+        ],
+        [
+          "tunnel",
+          "sky"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "darkness",
+        "enclosure",
+        "opposite-looking"
+      ]
+    }
+  ]
+}

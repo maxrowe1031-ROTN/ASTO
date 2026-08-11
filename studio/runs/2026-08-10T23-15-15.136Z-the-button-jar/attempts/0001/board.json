@@ -1,0 +1,84 @@
+{
+  "id": "board-sewing-analogies-01",
+  "title": "Sewing Room Logic",
+  "sets": [
+    {
+      "id": "set-location",
+      "relationshipLabel": "a container and the small thing kept in it",
+      "explanation": "A jar holds a loose button and a spool holds wound thread — each pair names a keeper and the small item it stores.",
+      "pairs": [
+        [
+          "jar",
+          "button"
+        ],
+        [
+          "spool",
+          "thread"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "button-buttonhole-echo",
+        "sewing-domain-overlap"
+      ]
+    },
+    {
+      "id": "set-enabling",
+      "relationshipLabel": "the tool that lets the other tool/thing work",
+      "explanation": "A thimble lets you push a needle safely, just as a buttonhook lets you fasten a boot — the first tool exists to enable the second.",
+      "pairs": [
+        [
+          "thimble",
+          "needle"
+        ],
+        [
+          "buttonhook",
+          "boot"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "needle-thread-echo"
+      ]
+    },
+    {
+      "id": "set-beforeafter",
+      "relationshipLabel": "the earlier and later state of decline",
+      "explanation": "Loose leads to missing and new leads to outgrown — each pair tracks an intact state sliding into a diminished one.",
+      "pairs": [
+        [
+          "loose",
+          "missing"
+        ],
+        [
+          "new",
+          "outgrown"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "decline-domain-shift"
+      ]
+    },
+    {
+      "id": "set-nonpart",
+      "relationshipLabel": "a fastener and the one feature it can never have",
+      "explanation": "A snap never has a buttonhole and a zipper never has a shank — each fastener is defined partly by the closure feature it structurally lacks.",
+      "pairs": [
+        [
+          "snap",
+          "buttonhole"
+        ],
+        [
+          "zipper",
+          "shank"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "button-buttonhole-echo",
+        "fastener-vocabulary"
+      ]
+    }
+  ]
+}

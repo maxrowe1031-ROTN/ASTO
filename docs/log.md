@@ -2,6 +2,56 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-11 — Batch two judged: the lens sweeps, the world carries the obscurity
+
+The 2026-08-10 scout batch (6 boards, 3 lens / 3 world, green door + per-board
+auto-revise live), generated last night, judged by Max today. `puzzles/` ends at
+**43 boards + tutorial, all clean** (`check-board` on all four new).
+
+### Verdicts
+
+- **Approved + published (4):** the harvest moon → `harvest-almanac`, the night
+  train → `all-aboard-a-railway-journey`, the attic at dusk →
+  `light-life-and-the-things-between`, the button jar → `sewing-room-logic`. All
+  four **taste `delightful`**; harvest moon "basically perfect… i hope i see more
+  puzzles like this one."
+- **Rejected (2):** the umbrella shop (`solid`; two structural blockers) and the
+  shoemaker's bench ("too difficult too obscure"; 3 of 4 sets tagged so).
+- **The button jar published from attempt 0001 untouched** — no allowlisted
+  finding, no revision, ~$1.13. First straight-through publish.
+
+### Instruments vs. verdicts (measured before judging; compared after)
+
+- **Obscurity is a world-arm property:** knowledge-gated words/board — lens 0.33,
+  world 3.0. Batch-wide 1.67 (green door working: 2.71 last batch), grade-1
+  candidate pools 14 across 6 runs (vs 4 pre-rule). Win rate still 1/6 —
+  the door recovered, the upper floors are still steep.
+- **A/B round two:** lens 3/3 delightful, world 1/3 — cumulative lens 6/6, world
+  4/7. The machine read lens as structurally WORSE (8 cross-set findings vs 4),
+  so raw finding counts anti-correlate with taste; world's failures were
+  difficulty/obscurity, which cross-set counting can't see.
+- **Persisted-after-revision flags predicted Max's blockers on the umbrella shop
+  2-for-2** (his mist/drizzle note restates 06's cross-reading independently);
+  but the harvest moon PUBLISHED over a persisted cross-reading@high — the
+  differentiator in his notes is "not always true," not the flag itself.
+- **`order-guessed` is two signals:** the attic's flagged set was his best moment
+  ("that oooooh nice feeling" at the photo reveal); the umbrella's was a blocker.
+  The separator: whether the explanation locks the order at reveal.
+- The shoemaker's `changedSetIds: []` verified benign: a label/explanation-only
+  revision; the pairs-based join is behaving as designed.
+
+### Decided with Max (design docs updated with the levers, next session builds them)
+
+Three levers for batch three, one per axis: **scout naming variety** (6/6 titles
+were "the …" — D-15's trigger fired twice), **07 qualifies order-guesses with
+`revealLocks`** so earned mystery stops feeding the revision loop (D-14 allowlist
+narrowed, approved), and **a world-arm vocabulary cap** (≤1 knowledge-gated word,
+instruction + visible measurement, chosen over shifting the lens/world mix).
+
+- **Next:** build the three levers on `work/batch3-tuning` (this session,
+  in progress); then batch three with all levers live — Max judges against this
+  batch's baselines. B2 hand-editing remains deferred.
+
 ## 2026-08-11 — The hint button, and the cup that remembers the coffee
 
 The first post-ship game feature: Max's idea at breakfast, brainstormed, built

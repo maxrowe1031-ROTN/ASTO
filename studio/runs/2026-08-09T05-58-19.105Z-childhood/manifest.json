@@ -28,7 +28,7 @@
     "mock": false,
     "autoRevise": true
   },
-  "status": "approved",
+  "status": "archived",
   "currentAttemptId": "0004",
   "attemptCount": 4,
   "revisionCount": 3

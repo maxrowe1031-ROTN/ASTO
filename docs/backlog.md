@@ -105,6 +105,26 @@
 - **The evocativeness verdict has no answer key yet.** It is shown, never enforced, and nothing
   measures whether it agrees with Max's `not-evocative` tag. At ~6 judged boards, compare — it
   is the same graduation question the cross-reading check has.
+- **A title collision has no route (2026-08-10).** The childhood run's approved board was
+  titled "School Days" — the same title as the board already published from the school run,
+  so its derived slug 409s `occupied` and the review page has no way to retitle or re-slug.
+  Max archived the run (the published board was the stronger one), but this is the third
+  face of the same seam: D-6 chose title-derived slugs, D-10's manifest note records that a
+  rename reads as delete-then-add, and now a duplicate title is unpublishable by
+  construction. If it recurs, the small fix is a retitle-at-publish field on the review
+  page — which would also be B2 hand-editing's first real bite (HR-2).
+- **The Subject Scout's tone rut fired on batch two (2026-08-10).** D-15's reconsider-when
+  names "samey in their own poetic register"; batch one went 6-of-7 subjects starting
+  "the …", and batch two went **6 of 6** (harvest moon, night train, umbrella shop, attic
+  at dusk, button jar, shoemaker's bench) — two of them time-of-day flavored. Left alone
+  mid-batch deliberately (one variable at a time — the green door was the batch's
+  question); the named fix is recalibrating the banding prompt against the pool's
+  curation. Raise with Max at the next batch.
+- **Archiving a run has no endpoint or button.** `approved → archived` exists in the
+  status machine and `updateStatus` enforces it, but no API route or UI exposes it — the
+  childhood archive went through a hand-written script against `run-store`. Fine at n=1;
+  if archiving becomes routine (e.g. clearing the awaiting-review backlog), it should be
+  a button beside approve/reject.
 - **Un-publishing has no route.** Removing a published board is `git revert` plus deleting the
   file — deliberate (reversibility for generated artifacts is version control, not
   application-level undo), but if boards start being pulled often, the Studio should say so

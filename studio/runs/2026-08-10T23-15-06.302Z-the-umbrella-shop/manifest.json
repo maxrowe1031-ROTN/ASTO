@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-10T23-15-06.302Z-the-umbrella-shop",
+  "createdAt": "2026-08-10T23:15:06.302Z",
+  "theme": "the umbrella shop",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "plan",
+      "enabling-agent",
+      "distinctive-nonpart"
+    ],
+    "avoidShapes": [
+      "sequence",
+      "directional"
+    ],
+    "stanceQuotas": [
+      "cause",
+      "inclusion",
+      "possession",
+      "time"
+    ],
+    "hardestStanceAsk": [
+      "absence",
+      "event",
+      "inclusion"
+    ],
+    "hardestStanceLean": "time",
+    "mock": false,
+    "autoRevise": true,
+    "subjectSource": "scout",
+    "subjectStyle": "world"
+  },
+  "status": "rejected",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}

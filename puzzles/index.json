@@ -190,6 +190,26 @@
       "slug": "the-tailor-s-bench",
       "id": "asto-the-tailor-s-bench",
       "title": "The Tailor's Bench"
+    },
+    {
+      "slug": "harvest-almanac",
+      "id": "asto-harvest-almanac",
+      "title": "Harvest Almanac"
+    },
+    {
+      "slug": "all-aboard-a-railway-journey",
+      "id": "asto-all-aboard-a-railway-journey",
+      "title": "All Aboard: A Railway Journey"
+    },
+    {
+      "slug": "light-life-and-the-things-between",
+      "id": "asto-light-life-and-the-things-between",
+      "title": "Light, Life, and the Things Between"
+    },
+    {
+      "slug": "sewing-room-logic",
+      "id": "asto-sewing-room-logic",
+      "title": "Sewing Room Logic"
     }
   ]
 }

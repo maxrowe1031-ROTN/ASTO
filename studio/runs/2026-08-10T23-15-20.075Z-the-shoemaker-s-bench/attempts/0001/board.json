@@ -1,0 +1,87 @@
+{
+  "id": "board-shoemaking-01",
+  "title": "The Shoemaker's Bench",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "a thing and the part it structurally must have",
+      "explanation": "A shoe cannot be a shoe without a sole, just as a boot needs its heel — each pair names an item and the part it cannot do without.",
+      "pairs": [
+        [
+          "shoe",
+          "sole"
+        ],
+        [
+          "boot",
+          "heel"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "footwear",
+        "anatomy"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "the cutting template and the piece made from it",
+      "explanation": "A pattern is cut to become the upper, and a template is cut to become the insole — each pair links a guide to the piece it produces.",
+      "pairs": [
+        [
+          "pattern",
+          "upper"
+        ],
+        [
+          "template",
+          "insole"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "shoe parts",
+        "materials"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a tradesman and the tool of the trade",
+      "explanation": "A cobbler reaches for an awl and a cordwainer reaches for lasting pliers — each pair joins a maker to the tool that defines the craft.",
+      "pairs": [
+        [
+          "cobbler",
+          "awl"
+        ],
+        [
+          "cordwainer",
+          "lasting pliers"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "craft terms",
+        "tools"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the first and last stage of one process",
+      "explanation": "Cutting starts the shoe's making and polishing finishes it, just as opening starts a span and closing ends it — both pairs span a beginning and an end.",
+      "pairs": [
+        [
+          "cutting",
+          "polishing"
+        ],
+        [
+          "opening",
+          "closing"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "process",
+        "manufacturing"
+      ]
+    }
+  ],
+  "sets_meta_note": ""
+}

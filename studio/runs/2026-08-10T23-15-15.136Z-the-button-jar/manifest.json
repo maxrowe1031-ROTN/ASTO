@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-10T23-15-15.136Z-the-button-jar",
+  "createdAt": "2026-08-10T23:15:15.136Z",
+  "theme": "the button jar",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "plan",
+      "enabling-agent",
+      "distinctive-nonpart"
+    ],
+    "avoidShapes": [
+      "sequence",
+      "directional"
+    ],
+    "stanceQuotas": [
+      "cause",
+      "inclusion",
+      "possession",
+      "time"
+    ],
+    "hardestStanceAsk": [
+      "absence",
+      "event",
+      "inclusion"
+    ],
+    "hardestStanceLean": "time",
+    "mock": false,
+    "autoRevise": true,
+    "subjectSource": "scout",
+    "subjectStyle": "world"
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "Light, Life, and the Things Between",
+  "sets": [
+    {
+      "id": "set-enabling",
+      "relationshipLabel": "the fuel that powers the device (fuel, then device)",
+      "explanation": "Gas fuels a lantern and a battery fuels a flashlight — each pair names, in fuel-first order, the power source that lets the light-tool work.",
+      "pairs": [
+        [
+          "gas",
+          "lantern"
+        ],
+        [
+          "battery",
+          "flashlight"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "fuel",
+        "device"
+      ]
+    },
+    {
+      "id": "set-instrumentaction",
+      "relationshipLabel": "the tool, then the single action it exists to perform",
+      "explanation": "A candle exists to illuminate and a broom exists to sweep — each tool is named first, followed by the one action it's built for.",
+      "pairs": [
+        [
+          "candle",
+          "illuminate"
+        ],
+        [
+          "broom",
+          "sweep"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "tool",
+        "purpose"
+      ]
+    },
+    {
+      "id": "set-creature",
+      "relationshipLabel": "the creature, then its own dwelling",
+      "explanation": "A bat's home is a roost and a mouse's home is a nest — each creature comes first, matched to the shelter that belongs to it.",
+      "pairs": [
+        [
+          "bat",
+          "roost"
+        ],
+        [
+          "mouse",
+          "nest"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "animal",
+        "habitat"
+      ]
+    },
+    {
+      "id": "set-beforeafter",
+      "relationshipLabel": "start and end of a thing's active or clear span",
+      "explanation": "A flame goes from lit to extinguished and a photo goes from taken to faded — both pairs trace a thing's arc from its vivid start to its quiet end.",
+      "pairs": [
+        [
+          "lit",
+          "extinguished"
+        ],
+        [
+          "taken",
+          "faded"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "span",
+        "decline"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "Light, Life, and the Things Between",
+  "sets": [
+    {
+      "id": "set-enabling",
+      "relationshipLabel": "power source that enables the tool to shine/give light",
+      "explanation": "Oil fuels a lantern and a battery fuels a flashlight — each pair names the thing that makes the light-tool work.",
+      "pairs": [
+        [
+          "oil",
+          "lantern"
+        ],
+        [
+          "battery",
+          "flashlight"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "fuel",
+        "device"
+      ]
+    },
+    {
+      "id": "set-instrumentaction",
+      "relationshipLabel": "tool and the action it exists to perform",
+      "explanation": "A lamp exists to illuminate and a broom exists to sweep — each tool is defined by the single action it's built for.",
+      "pairs": [
+        [
+          "lamp",
+          "illuminate"
+        ],
+        [
+          "broom",
+          "sweep"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "tool",
+        "purpose"
+      ]
+    },
+    {
+      "id": "set-creature",
+      "relationshipLabel": "creature and the dwelling that belongs to it",
+      "explanation": "A bat's home is a roost and a mouse's home is a nest — each creature is matched to its own kind of shelter.",
+      "pairs": [
+        [
+          "bat",
+          "roost"
+        ],
+        [
+          "mouse",
+          "nest"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "animal",
+        "habitat"
+      ]
+    },
+    {
+      "id": "set-beforeafter",
+      "relationshipLabel": "start and end of a thing's active or clear span",
+      "explanation": "A flame goes from lit to extinguished and a photo goes from taken to faded — both pairs trace a thing's arc from its vivid start to its quiet end.",
+      "pairs": [
+        [
+          "lit",
+          "extinguished"
+        ],
+        [
+          "taken",
+          "faded"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "span",
+        "decline"
+      ]
+    }
+  ]
+}

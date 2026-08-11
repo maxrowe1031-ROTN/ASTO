@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-10T23-15-10.844Z-the-attic-at-dusk",
+  "createdAt": "2026-08-10T23:15:10.845Z",
+  "theme": "the attic at dusk",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "plan",
+      "enabling-agent",
+      "distinctive-nonpart"
+    ],
+    "avoidShapes": [
+      "sequence",
+      "directional"
+    ],
+    "stanceQuotas": [
+      "cause",
+      "inclusion",
+      "possession",
+      "time"
+    ],
+    "hardestStanceAsk": [
+      "absence",
+      "event",
+      "inclusion"
+    ],
+    "hardestStanceLean": "time",
+    "mock": false,
+    "autoRevise": true,
+    "subjectSource": "scout",
+    "subjectStyle": "lens"
+  },
+  "status": "approved",
+  "currentAttemptId": "0002",
+  "attemptCount": 2,
+  "revisionCount": 1
+}
