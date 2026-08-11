@@ -138,3 +138,16 @@ with a playtest bet, like "So close!" was.
 
 Work branch: `work/hint-button`, merged to `main` by `/wrapup` only when the
 gate passes.
+
+---
+
+## Addendum (2026-08-11, same day): the results cup marks a hinted board
+
+The deferred results-card question was resolved the same day (design.md D-16
+addendum): the select list's result cup gained a colour axis. **White cup with a
+faint-ink outline = played clean (the new default, including all pre-hint
+results); brown cup = a hint was used**, in both the steaming and spilled poses.
+Pose owns won/lost; colour owns how. `hintsUsed` rides the stored result via
+ResultsRecorder (additive, legacy-safe); the aria sentence gains "A hint was
+used." Decided over inline palette mockups; Max swapped the poles from the first
+sketch deliberately.

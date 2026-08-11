@@ -579,11 +579,21 @@
   flex-shrink: 0;
 }
 
-/* One cup, one colour, whichever way up it is — the standing and fallen cups are the same
-   object, so nothing about the fill says which outcome you are looking at. The pose does. */
+/* The pose says how the board ENDED; the colour says how it was PLAYED (D-16 addendum).
+   White is the everyday cup — a clean, unhinted board — and needs the hairline outline
+   because it sits on the milk-coloured row. Brown, the old default, now marks a board
+   where the player took the hint: they needed a coffee. */
 .cup-rim,
 .cup-body {
+  fill: var(--cup-clean);
+  stroke: var(--faint-ink);
+  stroke-width: 0.9;
+}
+
+.is-hinted .cup-rim,
+.is-hinted .cup-body {
   fill: var(--bean-filled);
+  stroke: none;
 }
 
 .cup-steam {
@@ -593,12 +603,21 @@
   stroke-linecap: round;
 }
 
-/* The puddle is the same brown, dropped in opacity so it reads as spread liquid rather
-   than a second solid object. A puddle LIGHTER than the cup read as a shadow instead of a
-   spill, which is why it is not simply taupe. Never red: the game does not scold you for
-   losing, it just shows you the answers. */
+/* Two puddles, two problems. The white puddle keeps near-full opacity plus the outline —
+   dropped to half it vanishes into the row. The brown puddle keeps the original halved
+   opacity so it reads as spread liquid rather than a second solid object; a puddle
+   LIGHTER than a brown cup read as a shadow, which is why it is not simply taupe. Never
+   red: the game does not scold you for losing, it just shows you the answers. */
 .cup-spill {
+  fill: var(--cup-clean);
+  stroke: var(--faint-ink);
+  stroke-width: 0.7;
+  opacity: 0.9;
+}
+
+.is-hinted .cup-spill {
   fill: var(--bean-filled);
+  stroke: none;
   opacity: 0.5;
 }
 

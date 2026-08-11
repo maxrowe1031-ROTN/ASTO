@@ -16,6 +16,7 @@ const state = (status, over = {}) => ({
   status,
   mistakes: 0,
   solvedSetIds: [],
+  hintsUsed: 0,
   ...over
 });
 
@@ -29,8 +30,32 @@ test('a win is recorded with its beans and its solved count', () => {
   recorder.update(state('won', { mistakes: 2, solvedSetIds: ['a', 'b', 'c', 'd'] }));
 
   assert.deepEqual(storage.calls, [
-    { slug: 'first-light', result: { status: 'won', mistakes: 2, solvedCount: 4 } }
+    { slug: 'first-light', result: { status: 'won', mistakes: 2, solvedCount: 4, hintsUsed: 0 } }
   ]);
+});
+
+// The select list's cup colour rides on this: white for a clean board, brown when the
+// player took the hint (design.md D-16 addendum).
+test('a hinted game records how many hints it spent', () => {
+  const storage = fakeStorage();
+  const recorder = new ResultsRecorder(storage, on('first-light'));
+
+  recorder.update(state('won', { solvedSetIds: ['a', 'b', 'c', 'd'], hintsUsed: 1 }));
+
+  assert.equal(storage.calls[0].result.hintsUsed, 1);
+});
+
+// Results saved before hints existed have no field at all; the recorder itself must
+// also cope with a state that lacks one (an old saved game replayed mid-migration).
+test('a state without hintsUsed records zero, not undefined', () => {
+  const storage = fakeStorage();
+  const recorder = new ResultsRecorder(storage, on('first-light'));
+
+  const legacy = state('won', { solvedSetIds: ['a', 'b', 'c', 'd'] });
+  delete legacy.hintsUsed;
+  recorder.update(legacy);
+
+  assert.equal(storage.calls[0].result.hintsUsed, 0);
 });
 
 test('a loss is recorded too, carrying how far the player got', () => {
@@ -39,7 +64,12 @@ test('a loss is recorded too, carrying how far the player got', () => {
 
   recorder.update(state('lost', { mistakes: 4, solvedSetIds: ['a', 'b'] }));
 
-  assert.deepEqual(storage.calls[0].result, { status: 'lost', mistakes: 4, solvedCount: 2 });
+  assert.deepEqual(storage.calls[0].result, {
+    status: 'lost',
+    mistakes: 4,
+    solvedCount: 2,
+    hintsUsed: 0
+  });
 });
 
 test('a live game records nothing', () => {

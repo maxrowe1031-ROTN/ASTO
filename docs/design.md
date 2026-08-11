@@ -1774,7 +1774,37 @@ browser verification, before any device saw it.
 **Status:** built TDD-first (10-test engine suite + a headless hint playthrough in
 game-flow; suite 1238 green), verified in the preview browser on desktop and mobile
 and in the Review Studio's play surface (which needed only an `onHint` callback —
-the boundary law's dividend). **Max's playtest is the outstanding gate.**
+the boundary law's dividend). **Playtest gate passed the same day** — Max: "the
+hint works perfectly. i love it. its a stand out addition that connections could
+never have." The tier reveal read as drama, not spoiler; its reconsider-when stays
+dormant.
+
+### D-16 addendum — the cup remembers the coffee (2026-08-11)
+
+The deferred results-card question came due the same day: Max asked for a mark on
+the select list's result cup, brainstormed over inline mockups in the game's own
+palette, and made the call — **with the poles swapped from the first sketch**:
+
+- **White cup** (`--cup-clean`, hairline `--faint-ink` outline — it sits on a
+  milk-coloured row) — played **clean**, no hint. The new everyday cup; results
+  saved before hints existed have no `hintsUsed` field and truthfully read clean.
+- **Brown cup** (`--bean-filled`, the old only colour) — **a hint was used**:
+  the player "needed a coffee." Applies in both poses — steaming (hinted win) and
+  spilled (hinted loss).
+
+**Pose owns won-or-lost; colour owns how it was played.** The cup geometry did not
+change — colour moved entirely into CSS behind an `is-hinted` class on the cup
+slot, driven by `hintsUsed` in the stored result (`results-recorder.js`, additive
+field, `?? 0` for legacy states). The D-10 accessibility move repeats: the visual
+drops the words, the aria sentence gains "A hint was used."
+
+The white puddle keeps near-full opacity plus the outline (at half opacity it
+vanished into the row); the brown puddle keeps its original halved opacity (a
+lighter-than-cup brown puddle read as a shadow). Both recorded in the CSS comments.
+
+**Reconsider-when:** the mostly-white list reads washed-out, or players misread
+brown as the badge of honour rather than the marked case — revisit which pole is
+marked (the class flip is one line).
 
 ## House-rule exceptions
 
