@@ -40,10 +40,15 @@ const answered = () =>
     valid: false,
   }));
 
+// One reveal verdict per set — the D-14 amendment's checklist (2026-08-11).
+const revealAnswered = () =>
+  BOARD.sets.map(({ id }) => ({ setId: id, locks: false }));
+
 const output = (overrides = {}) => ({
   noneFound: true,
   findings: [],
   crossReadings: answered(),
+  revealReadings: revealAnswered(),
   ...overrides,
 });
 
@@ -118,6 +123,38 @@ test('a reading may be answered valid — that is the finding, not an error', ()
 test('without the board it validates shape only, and does not pretend otherwise', () => {
   assert.equal(solver.validateOutput(output()).ok, true);
   assert.equal(solver.validateOutput(output({ crossReadings: [] })).ok, true);
+});
+
+// The reveal readings (D-14 amendment, 2026-08-11). 07's order-guess is two
+// signals — earned mystery and coin-flip — and only this agent sees the
+// explanations that separate them. One answer per set, every set, so the
+// detector can trust an absent entry to mean "legacy report", never "skipped".
+test('the prompt asks, per set, whether the reveal locks the order', () => {
+  const prompt = solver.buildPrompt({ board: BOARD }, {});
+  assert.match(prompt, /revealReadings/);
+  assert.match(prompt, /reveal.*settle|settle.*reveal/i);
+});
+
+test('a reveal answer that skips a set is refused, and the message names it', () => {
+  const short = output({ revealReadings: [{ setId: 'set-a', locks: false }] });
+  const result = validate(short);
+  assert.equal(result.ok, false);
+  assert.match(JSON.stringify(result.errors), /set-b/);
+});
+
+test('a reveal answer for a set not on the board is refused', () => {
+  const invented = output({
+    revealReadings: [...revealAnswered(), { setId: 'set-z', locks: false }],
+  });
+  assert.equal(validate(invented).ok, false);
+});
+
+test('locks: true must say what the reveal settles', () => {
+  const bare = revealAnswered();
+  bare[0] = { setId: 'set-a', locks: true };
+  const result = validate(output({ revealReadings: bare }));
+  assert.equal(result.ok, false);
+  assert.match(JSON.stringify(result.errors), /says nothing|note/i);
 });
 
 test('the enumerated readings reach the prompt as a checklist', () => {

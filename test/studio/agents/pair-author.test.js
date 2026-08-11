@@ -131,6 +131,27 @@ test('the prompt requires a way in as well as a way up', () => {
   assert.match(prompt, /never reaches the easiest one/);
 });
 
+// The world-arm vocabulary cap (design.md D-17, 2026-08-11). Batch two measured
+// where obscurity lives: world-style subjects carried 3.0 knowledge-gated words
+// per board against the lens arm's 0.33 — a place full of objects invites the
+// trade's nouns. The cap rides only the world brief; lens and themed runs are
+// untouched, so the A/B keeps one variable.
+test('a world-style brief carries the vocabulary cap', () => {
+  const prompt = pairAuthor.buildPrompt(
+    { brief: { count: 14, subjectStyle: 'world' }, theme: 'the shoemaker\'s bench' },
+    {},
+  );
+  assert.match(prompt, /AT MOST ONE word.*only by knowing the subject/i);
+  assert.match(prompt, /hardest group/i);
+});
+
+test('lens and unstyled briefs carry no vocabulary cap', () => {
+  for (const brief of [{ count: 14, subjectStyle: 'lens' }, { count: 14 }]) {
+    const prompt = pairAuthor.buildPrompt({ brief, theme: 'first light' }, {});
+    assert.doesNotMatch(prompt, /AT MOST ONE word/i);
+  }
+});
+
 test('a free-text shape is still rejected by the schema', () => {
   const result = pairAuthor.validateOutput({
     pairs: [...A_TREE.slice(0, 13), pair('x', 'y', 'something invented')],

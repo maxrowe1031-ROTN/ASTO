@@ -94,6 +94,24 @@ const SCHEMA = {
         },
       },
     },
+    // One per SET, every set (D-14 amendment, 2026-08-11): once the reveal shows
+    // the label and explanation, does it settle which way round the words go?
+    // This is the question that splits 07's order-guesses into earned mystery
+    // (locks: true — the attic's photo reveal) and a genuine coin flip (locks:
+    // false — the umbrella's blocker). Distinct from `orderReadings`, which asks
+    // what a player can infer BEFORE solving, and runs only on 04a-flagged sets.
+    revealReadings: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['setId', 'locks'],
+        properties: {
+          setId: { type: 'string', minLength: 1 },
+          locks: { type: 'boolean' },
+          note: { type: 'string' },
+        },
+      },
+    },
     // `note` is required only where it carries information — on a reading that
     // HOLDS. Eight paragraphs explaining why eight non-analogies are not
     // analogies is output spent on nothing, and output is the budget that ran
@@ -217,6 +235,15 @@ export function buildPrompt(input = {}, context) {
             'Judge what a player can see. You are told the intended order because it is the only way to show you the words; that you can see which order was chosen is not evidence a player could have inferred it.',
           ]
         : []),
+      '',
+      // The reveal readings (design.md D-14 amendment, 2026-08-11). A player who
+      // guessed an order and then reads a reveal that could only be that way
+      // round got drama; one who reads a reveal that works either way got
+      // cheated. Only this agent sees the explanations, so only it can say which.
+      'FINALLY, for EVERY set on the board, answer the reveal question in "revealReadings": when the set is solved (or lost), the player is shown its relationship label and explanation. Does that reveal settle which way round the words go — could the explanation only be written in the order the author chose?',
+      '  - "locks": true — the reveal settles it: read against the explanation, the chosen order is the only one that works, so a player who had to guess still gets a clean "of course" at the reveal. Say what settles it in the "note".',
+      '  - "locks": false — the explanation reads as well with a half flipped; a player marked wrong for the other order stays cheated even after the reveal. No note needed.',
+      'This is not the pre-solve question above: a set can be a genuine coin flip on the board and still lock at the reveal. Answer it for every set, including ones no checklist flagged.',
     ].join('\n'),
     data: [
       asJsonBlock('Board', board),
@@ -246,6 +273,7 @@ export function buildPrompt(input = {}, context) {
       'Rate each finding low, medium or high by how likely a real player is to be misled.',
       '"crossReadings" must contain one entry for EVERY line of the checklist and nothing else. "id" is that line\'s id exactly as written; "leftRelation" and "rightRelation" are short phrases naming each half\'s relation and are required on every line; "valid" is a boolean; "note" is one sentence required only when "valid" is true.',
       '"noneFound" describes "findings" only — a cross-reading answer is not a finding.',
+      'And return "revealReadings": [ { "setId", "locks", "note" } ] — one entry for EVERY set on the board, with "setId" exactly as written. "note" is one sentence required only when "locks" is true.',
       JSON_ONLY,
     ].join(' '),
   });
@@ -371,10 +399,54 @@ const everyOrderAnswered = (output, board, integrity) => {
   return errors;
 };
 
+/**
+ * Every set got a reveal verdict, exactly once, and nothing was invented.
+ *
+ * Completeness matters here for the detector's sake: `detectFindings` reads an
+ * ABSENT entry as "legacy report, fire as before" — so a skippable question
+ * would silently re-widen the allowlist this checklist exists to narrow.
+ */
+const everyRevealAnswered = (output, board) => {
+  if (!board) return []; // called without input — shape only
+  const asked = new Set(board.sets.map((set) => set.id));
+  const given = output.revealReadings ?? [];
+  const answered = new Set(given.map((entry) => entry.setId));
+
+  const errors = [];
+  const missing = [...asked].filter((setId) => !answered.has(setId));
+  if (missing.length > 0) {
+    errors.push({
+      path: 'revealReadings',
+      message: `${missing.length} set(s) got no reveal verdict: ${missing.join(', ')}`,
+    });
+  }
+  for (const entry of given.filter((e) => !asked.has(e.setId))) {
+    errors.push({
+      path: 'revealReadings',
+      message: `"${entry.setId}" is not a set on this board — answer the sets given, do not add your own`,
+    });
+  }
+  if (answered.size !== given.length) {
+    errors.push({ path: 'revealReadings', message: 'a set was answered more than once' });
+  }
+  // `locks: true` is the answer that keeps a guess OUT of the revision loop, so
+  // it carries the reasoning — the mirror of `inferable: true` above.
+  for (const entry of given) {
+    if (entry.locks && !entry.note?.trim()) {
+      errors.push({
+        path: 'revealReadings',
+        message: `${entry.setId} is marked as locking but says nothing — name what the reveal settles`,
+      });
+    }
+  }
+  return errors;
+};
+
 export function validateOutput(output, { input = null } = {}) {
   return validateAgainst(output, SCHEMA, [
     noneFoundAgreesWithFindings,
     (value) => everyReadingAnswered(value, input?.board ?? null),
     (value) => everyOrderAnswered(value, input?.board ?? null, input?.integrity ?? null),
+    (value) => everyRevealAnswered(value, input?.board ?? null),
   ]);
 }

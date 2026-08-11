@@ -53,6 +53,7 @@ export function buildPrompt(input = {}, context) {
     varyHardestFrom = null,
     hardestStanceAsk = [],
     hardestStanceLean = null,
+    subjectStyle = null,
   } = brief;
   // Leads the task, because a revision changes what the whole rest of the
   // instruction means: "author N pairs" reads as "author a fresh pool" unless
@@ -176,6 +177,17 @@ export function buildPrompt(input = {}, context) {
       // to 4 across comparable batches, knowledge-gated words doubled, and Max
       // lost every playthrough. The delight must not cost the door in.
       'And the same range requirement points the other way: at least one of your matched groups must be OPEN to a general player on sight — four words anyone knows, plainly arranged. The subject\'s evocative, specialist vocabulary belongs in the harder groups; it never reaches the easiest one. The easiest set is the door into the board, and a board with no door is a wall.',
+      // The world-arm vocabulary cap (design.md D-17, 2026-08-11). Measured, not
+      // guessed: world-style subjects carried 3.0 knowledge-gated words per
+      // board against the lens arm's 0.33 across batch two, and both of Max's
+      // rejections that day were world boards — one for exactly this. A world
+      // subject is a place full of things, and the trade's own nouns are the
+      // reflex reach. Rides only the world brief so the A/B keeps one variable.
+      // D-7's lesson applies — an instruction is a request — so 07's
+      // knowledgeGated report is the measurement and batch three is the test.
+      subjectStyle === 'world'
+        ? 'This subject is a WORLD — a domain with its own trade vocabulary — so one cap applies: use AT MOST ONE word on the whole board that a player could place only by knowing the subject. That one word, if you spend it, belongs in the hardest group. Everything else must be a word a curious outsider already knows; the subject should be evoked by which ordinary words you choose and how they sit together, not by its jargon. "Cordwainer" is a wall; "bootlace" is a door.'
+        : '',
       // This line used to read "Prefer familiar words", full stop — which a
       // model reasonably hears as "prefer common words", and common is exactly
       // the generic middle the instruction above is trying to leave. Familiar

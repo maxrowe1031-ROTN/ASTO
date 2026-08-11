@@ -237,6 +237,7 @@ async function renderRun(runId) {
           ? `<p class="failure">[${escape(attempt.failure.category)}] ${escape(attempt.failure.message)}</p>`
           : ''
       }
+      ${worldCapLine(manifest, attempt)}
     </section>
 
     ${autoRevisionPanel(attempt, detail.decisions, attemptId)}
@@ -423,6 +424,26 @@ function publishPanel(runId, manifest, decisions, board) {
 const slugOfRun = (runId) => runId.slice(runId.indexOf('Z-') + 2);
 
 /** What the publish confirm actually says: every change, named. */
+/**
+ * The world-arm vocabulary cap, made visible (design.md D-17, 2026-08-11).
+ *
+ * The cap is an instruction to 01, and D-7's lesson is that an instruction is a
+ * request — so the measurement rides the page Max judges from: 07's
+ * knowledgeGated count against the cap of one, shown only on world-style runs
+ * (the arm the cap applies to; lens and themed runs have no cap to report).
+ */
+function worldCapLine(manifest, attempt) {
+  if (manifest.brief?.subjectStyle !== 'world') return '';
+  const gated = attempt.reports?.['07-test-player']?.knowledgeGated ?? [];
+  const words = gated.map((entry) => `"${escape(entry.word)}"`).join(', ');
+  const over = gated.length > 1;
+  return `<p class="studio-muted${over ? ' cap-breach' : ''}">world-arm vocabulary cap: ${
+    gated.length
+  } knowledge-gated word${gated.length === 1 ? '' : 's'} against a cap of 1${
+    words ? ` — ${words}` : ''
+  }${over ? ' — over cap' : ''}</p>`;
+}
+
 function unappliedPrompt(unapplied = []) {
   const lines = unapplied.map((edit) => {
     const where = edit.setId ? ` on ${edit.setId}` : '';

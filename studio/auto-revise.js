@@ -129,9 +129,19 @@ export function detectFindings({ board, reports = {} } = {}) {
   // 07 guessed the order. Blind by construction — it names words, never sets —
   // so the mapping happens here; four words spanning sets are not one set's
   // defect and are left to Max.
+  //
+  // D-14 amendment (2026-08-11): a guess is two signals wearing one tag. When
+  // 06's reveal reading says the explanation LOCKS the guessed order, the guess
+  // is earned mystery — the attic's best moment, not the umbrella's blocker —
+  // and stays out of the revision loop. Absent or unlocked readings fire as
+  // before, so every pre-amendment report replays unchanged.
+  const revealLocked = new Set(
+    (solver?.revealReadings ?? []).filter((entry) => entry.locks === true).map((entry) => entry.setId),
+  );
   for (const guessed of reports[PLAYER_STAGE]?.orderGuessed ?? []) {
     const owners = ownersOf(guessed.words);
     if (owners.length !== 1) continue;
+    if (revealLocked.has(owners[0])) continue;
     findings.push({
       source: PLAYER_STAGE,
       kind: 'order-guessed',

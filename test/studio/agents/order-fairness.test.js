@@ -65,6 +65,8 @@ const output = (overrides = {}) => ({
   findings: [],
   crossReadings: crossAnswers(),
   orderReadings: [{ setId: 'set-coordinates', inferable: false }],
+  // One reveal verdict per set since the D-14 amendment (2026-08-11).
+  revealReadings: BOARD.sets.map(({ id }) => ({ setId: id, locks: false })),
   ...overrides,
 });
 
