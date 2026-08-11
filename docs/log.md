@@ -2,6 +2,56 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-11 — Batch four: the vocab button earns its keep, and goes always-on
+
+The first batch generated with the glossary stage live (on `work/vocab-button`),
+judged by Max the same evening. **5 approved (4 delightful, 1 solid), 1
+rejected** — and the D-18 gate passed in his own words.
+
+### Verdicts
+
+- **Approved:** the beekeeper's hive (delightful, WON — his own drama-vs-defect
+  read on a borderline order: "a little order ambiguous but i think its fine in
+  this case"); closing the carnival (delightful, WON at 1 mistake — the gate
+  quote: "the hints and the vocab are fun beyond just making the puzzle easier…
+  adds some very light complexity so its not quite so featureless"); the
+  tinsmith's workshop (solid, with set edits wanted and a difficulty hand-edit
+  3→2 recorded — B2's appetite is growing); candlelight on old letters
+  (delightful); sunday morning market (delightful, "on the easier side").
+- **Rejected:** the pawnshop window — "honestly i just don't like this board…
+  last time loupe went with jeweler, this time loupe went with pawnbroker."
+  (His earlier revise-request never ran a revision; no wasted spend.)
+- **None of the five approvals is published yet** — held open with the batch-3
+  stragglers (low tide, market stalls' contradictory ledger).
+
+### The two directives from his notes
+
+1. **Every board gets a vocab word** — built the same evening (D-18 addendum):
+   candlelight stumped him on "taper", unflagged by any agent, and half the
+   batch had no button. The glossary author now returns exactly one entry
+   always; when 07 flags nothing it picks the hardest word itself. Suite
+   **1301 green**. (His stumble also shows 07's flags under-detect.)
+2. **Cross-board repetition is now a three-time signal** (smell-of-rain's
+   "seen this before", tinsmith's "kindling:ember, mallet was just in the last
+   puzzle… we don't want to be retreading territory too soon", pawnshop's
+   loupe déjà vu). The backlog's similarity item upgrades to a lever candidate
+   for the next tuning pass: recently-used distinctive words/pairs as an
+   avoid-list in 01's brief, the way subjects already never reuse.
+
+### Gloss quality, first real outing
+
+Three flagged boards got glosses (pollen basket, loupe, roustabout) — all
+passed the mechanical leak check; Max called loupe's "good" while separately
+faulting the SET that used it (not-always-true), which is exactly the
+division of labor the review card wants.
+
+- **Next:** publish the approved backlog with Max (5 from this batch + low
+  tide; market stalls needs his true verdict — the ledger recorded reject
+  beside approve-flavored feedback, UI guard backlogged); then the next tuning
+  pass — territory variety, revision guardrails, and now word-repetition
+  avoidance — before batch five. B2 hand-editing: the tinsmith
+  difficulty-edit is its second real bite.
+
 ## 2026-08-11 — Batch three judged: the levers scored, and the rut moved
 
 The first batch with D-17's three levers live, judged by Max the same evening.

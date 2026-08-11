@@ -41,7 +41,13 @@ test('the prompt carries the leak rules and the gated candidates', () => {
   assert.match(prompt, /never|not/i);
   assert.match(prompt, /shank/);
   assert.match(prompt, /buttonhook/);
-  assert.match(prompt, /at most one/i);
+  assert.match(prompt, /exactly one/i);
+});
+
+test('with nothing flagged, the prompt asks the author to pick the hardest word itself', () => {
+  const prompt = author.buildPrompt({ board: BOARD, knowledgeGated: [] }, {});
+  assert.match(prompt, /pick.*hardest|hardest.*pick/i);
+  assert.match(prompt, /every board/i);
 });
 
 test('one well-formed entry for a gated word validates', () => {
@@ -51,8 +57,13 @@ test('one well-formed entry for a gated word validates', () => {
   assert.equal(result.ok, true, JSON.stringify(result.errors));
 });
 
-test('an empty glossary is a real answer — the open-board case', () => {
-  assert.equal(validate({ glossary: [] }).ok, true);
+// Reversed 2026-08-11 (D-18 addendum): Max's candlelight playtest — "taper"
+// stumped him and no agent had flagged it. His direction: EVERY board gets a
+// vocab word, flagged or not. An empty glossary is now the refused answer.
+test('an empty glossary is refused — every board gets a vocab word', () => {
+  const result = validate({ glossary: [] });
+  assert.equal(result.ok, false);
+  assert.match(JSON.stringify(result.errors), /every board/i);
 });
 
 test('more than one entry is refused — one word for now, editorially', () => {
@@ -87,9 +98,19 @@ test('the leak check matches whole words, not substrings', () => {
   assert.equal(result.ok, true, JSON.stringify(result.errors));
 });
 
-test('when nothing was gated, the glossary must be empty', () => {
+// When 07 flagged nothing, the author picks the board's hardest word itself —
+// any board word is a legal pick (the candlelight case: taper, unflagged).
+test('when nothing was gated, any board word may be glossed', () => {
   const open = author.validateOutput(
-    { glossary: [{ word: 'shank', definition: 'a small loop' }] },
+    { glossary: [{ word: 'thimble', definition: 'a small protective cap worn while sewing' }] },
+    { input: { board: BOARD, knowledgeGated: [] } },
+  );
+  assert.equal(open.ok, true, JSON.stringify(open.errors));
+});
+
+test('a word not on the board is refused even when nothing was gated', () => {
+  const open = author.validateOutput(
+    { glossary: [{ word: 'cordwainer', definition: 'a shoemaker' }] },
     { input: { board: BOARD, knowledgeGated: [] } },
   );
   assert.equal(open.ok, false);

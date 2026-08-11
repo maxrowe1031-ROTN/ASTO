@@ -1,0 +1,86 @@
+{
+  "id": "board-asto-001",
+  "title": "Pawn Shop Logic",
+  "sets": [
+    {
+      "id": "set-item-location-shop",
+      "relationshipLabel": "the place in the shop and the item kept there",
+      "explanation": "A watch belongs in the display case just as a wrench belongs in the tool bin — each item has its designated spot.",
+      "pairs": [
+        [
+          "display case",
+          "watch"
+        ],
+        [
+          "tool bin",
+          "wrench"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "shop setting",
+        "container-object"
+      ]
+    },
+    {
+      "id": "set-agent-instrument-trade",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "A pawnbroker inspects with a loupe just as a jeweler weighs with a scale — each trade has its defining tool.",
+      "pairs": [
+        [
+          "pawnbroker",
+          "loupe"
+        ],
+        [
+          "jeweler",
+          "scale"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "shop setting",
+        "worker-tool"
+      ]
+    },
+    {
+      "id": "set-before-after-cycle",
+      "relationshipLabel": "the two ends of a repeating cycle",
+      "explanation": "A pawned item is eventually redeemed just as a shop that opens each day eventually closes — both name the two ends of a cycle that repeats.",
+      "pairs": [
+        [
+          "pawn",
+          "redeem"
+        ],
+        [
+          "open",
+          "close"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "shop setting",
+        "time pair"
+      ]
+    },
+    {
+      "id": "set-defective-ownership",
+      "relationshipLabel": "a partial, deferred form and the full faculty it falls short of",
+      "explanation": "Layaway is a stand-in for real ownership just as an IOU is a stand-in for real payment — each names a promise that hasn't yet become the thing itself.",
+      "pairs": [
+        [
+          "layaway",
+          "ownership"
+        ],
+        [
+          "IOU",
+          "payment"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "shop setting",
+        "financial term"
+      ]
+    }
+  ]
+}

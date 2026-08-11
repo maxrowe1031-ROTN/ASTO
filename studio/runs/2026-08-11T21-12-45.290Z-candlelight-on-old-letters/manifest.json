@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-11T21-12-45.290Z-candlelight-on-old-letters",
+  "createdAt": "2026-08-11T21:12:45.290Z",
+  "theme": "candlelight on old letters",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "representation",
+      "class-individual",
+      "prevention"
+    ],
+    "avoidShapes": [
+      "sign-significant",
+      "object-component"
+    ],
+    "stanceQuotas": [
+      "inclusion",
+      "cause",
+      "event",
+      "possession"
+    ],
+    "hardestStanceAsk": [
+      "event",
+      "absence",
+      "inclusion"
+    ],
+    "mock": false,
+    "autoRevise": true,
+    "subjectSource": "scout",
+    "subjectStyle": "lens"
+  },
+  "status": "approved",
+  "currentAttemptId": "0001",
+  "attemptCount": 1,
+  "revisionCount": 0
+}

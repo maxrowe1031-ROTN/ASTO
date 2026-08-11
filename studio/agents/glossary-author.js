@@ -10,8 +10,11 @@
 // board word.
 //
 // Candidates come from 07's knowledgeGated report — the agent whose job is
-// naming the words a general player cannot place. No gated words, no glossary:
-// an open board needs no footnote (the greenhouse case, 2026-08-11).
+// naming the words a general player cannot place. When 07 flagged nothing, the
+// author picks the board's hardest word ITSELF: the original design declined on
+// open boards, and Max's candlelight playtest reversed it the same day —
+// "taper" stumped him, no agent had flagged it, and his direction was "there
+// should be a vocab button on each puzzle" (D-18 addendum, 2026-08-11).
 
 import { JSON_ONLY, asJsonBlock, composePrompt, parseJson, validateAgainst } from './agent-kit.js';
 
@@ -52,7 +55,9 @@ export function buildPrompt(input = {}, context) {
       'write that definition, or decline when no word needs one.',
     context,
     task: [
-      'From the flagged words below, pick THE hardest — the one a curious outsider is least able to place — and write its definition. Return at most one entry; an empty glossary is a real answer and the right one when the flags are weak.',
+      knowledgeGated.length > 0
+        ? 'From the flagged words below, pick THE hardest — the one a curious outsider is least able to place — and write its definition. Return exactly one entry.'
+        : 'Nothing was flagged, but every board gets a vocab word: pick the board\'s hardest word yourself — the one a curious outsider is least able to place, however ordinary the rest — and write its definition. Return exactly one entry.',
       'The definition says what the thing IS — a plain noun-phrase gloss, as a friend would say it.',
       'It must NEVER state what the word is FOR in relation to the board: no naming the action it enables, the thing it belongs to, or the word it pairs with. The relationship is the puzzle; a definition that restates it solves a set from the footnote.',
       'Never use any other board word inside the definition — not even casually. That is checked mechanically.',
@@ -65,10 +70,10 @@ export function buildPrompt(input = {}, context) {
         ? `Words 07 flagged as knowledge-gated (word — what a player would need to know):\n${knowledgeGated
             .map((entry) => `  - ${entry.word} — ${entry.note}`)
             .join('\n')}`
-        : 'No words were flagged as knowledge-gated. The board is open; return an empty glossary.',
+        : 'No words were flagged as knowledge-gated — choose from the sixteen board words directly.',
     ].join('\n\n'),
     outputRules: [
-      'Return { "glossary": [ { "word", "definition" } ] } with AT MOST ONE entry, or { "glossary": [] }.',
+      'Return { "glossary": [ { "word", "definition" } ] } with EXACTLY ONE entry.',
       JSON_ONLY,
     ].join(' '),
   });
@@ -80,27 +85,44 @@ export function parse(text) {
 
 const wordsOf = (board) => (board?.sets ?? []).flatMap((set) => (set.pairs ?? []).flat());
 
-/** At most one entry — the button defines one word (D-18's chosen scope). */
-const atMostOne = (output) =>
-  output.glossary.length > 1
-    ? [{ path: 'glossary', message: `at most one entry — received ${output.glossary.length}` }]
-    : [];
+/**
+ * Exactly one entry — the button defines one word (D-18's chosen scope), and
+ * since the addendum EVERY board carries one: Max's candlelight playtest found
+ * the hardest word unflagged, and his direction was a vocab button on each
+ * puzzle. Zero entries is the refused answer now.
+ */
+const exactlyOne = (output, hasInput) => {
+  if (output.glossary.length > 1) {
+    return [{ path: 'glossary', message: `exactly one entry — received ${output.glossary.length}` }];
+  }
+  if (hasInput && output.glossary.length === 0) {
+    return [{ path: 'glossary', message: 'every board gets a vocab word — pick the hardest and define it' }];
+  }
+  return [];
+};
 
 /**
- * The gloss may only define a word 07 flagged, and when nothing was flagged the
- * glossary must be empty — an open board gets no footnote.
+ * When 07 flagged words, the gloss must define one of THEM — the flags are the
+ * evidence of where the wall is. When it flagged nothing, the author's own pick
+ * stands, but it must still be a board word.
  */
-const onlyGatedWords = (output, knowledgeGated) => {
+const onlyGatedWords = (output, knowledgeGated, board) => {
   if (!knowledgeGated) return []; // called without input — shape only
   const gated = new Set(knowledgeGated.map((entry) => entry.word.toLowerCase()));
+  if (gated.size === 0) {
+    const onBoard = new Set(wordsOf(board).map((word) => word.toLowerCase()));
+    return output.glossary
+      .filter((entry) => !onBoard.has(entry.word?.toLowerCase()))
+      .map((entry) => ({
+        path: 'glossary',
+        message: `"${entry.word}" is not one of the sixteen board words`,
+      }));
+  }
   return output.glossary
     .filter((entry) => !gated.has(entry.word.toLowerCase()))
     .map((entry) => ({
       path: 'glossary',
-      message:
-        gated.size === 0
-          ? `nothing was flagged as knowledge-gated — return an empty glossary, not "${entry.word}"`
-          : `"${entry.word}" was not flagged as knowledge-gated — define a flagged word or none`,
+      message: `"${entry.word}" was not flagged as knowledge-gated — define a flagged word`,
     }));
 };
 
@@ -129,8 +151,8 @@ const noBoardWordLeaks = (output, board) => {
 
 export function validateOutput(output, { input = null } = {}) {
   return validateAgainst(output, SCHEMA, [
-    atMostOne,
-    (value) => onlyGatedWords(value, input?.knowledgeGated ?? null),
+    (value) => exactlyOne(value, input !== null),
+    (value) => onlyGatedWords(value, input?.knowledgeGated ?? null, input?.board ?? null),
     (value) => noBoardWordLeaks(value, input?.board ?? null),
   ]);
 }

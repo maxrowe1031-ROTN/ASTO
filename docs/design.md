@@ -1916,7 +1916,23 @@ watched red; full suite 1295 green). Claude-verified in the browser on both
 hosts: press → persistent footnote, survives shuffle, retires on solve, spends
 the pill; gloss-less boards show four pills; five-pill wrap clean at 375px; a
 mock run produced a leak-clean gloss on its card and its play surface.
-**Max's playtest on a real glossed board is the outstanding gate.**
+**Gate PASSED 2026-08-11, batch four:** Max, on closing the carnival — "the
+hints and the vocab are fun beyond just making the puzzle easier, it adds some
+very light complexity to the game so its not quite so featureless."
+
+**D-18 addendum — every board gets a vocab word (Max, 2026-08-11, same day).**
+The original decline path (no flags → no gloss) lasted one batch: candlelight
+on old letters stumped Max on "taper", a word no agent had flagged, and half
+the batch had no button at all. His direction: *"There should be a vocab button
+on each puzzle. Even if the agents don't flag a specific word, they need to
+pick a word for each puzzle that can be used."* The glossary author now returns
+EXACTLY one entry always — 07's flags are its candidates when present; its own
+judgment of the hardest word otherwise (any board word, leak rules unchanged).
+Suite 1301 green. Also noted from the same playtest: 07's flags under-detect
+(taper), so the always-on author is also a second detector reading.
+**Reconsider-when unchanged**, plus: glosses on genuinely open boards read as
+noise ("why is this defined?") → revisit the decline path with a threshold
+rather than removing the button.
 
 ## House-rule exceptions
 

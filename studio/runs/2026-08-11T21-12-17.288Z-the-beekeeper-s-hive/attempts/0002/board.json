@@ -1,0 +1,86 @@
+{
+  "id": "board-bees-and-seasons",
+  "title": "Hives, Trees, and the Turning Year",
+  "sets": [
+    {
+      "id": "set-plant-kind",
+      "relationshipLabel": "a category of plant and a particular kind of it",
+      "explanation": "A flower and a tree are each broad categories, and clover and willow are specific members of those categories.",
+      "pairs": [
+        [
+          "flower",
+          "clover"
+        ],
+        [
+          "tree",
+          "willow"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "plant",
+        "nature"
+      ]
+    },
+    {
+      "id": "set-worked-tool",
+      "relationshipLabel": "a thing worked in beekeeping and the tool built to work it",
+      "explanation": "A comb is worked by an extractor and a hive is worked by a smoker — each tool exists specifically to act on that object.",
+      "pairs": [
+        [
+          "comb",
+          "extractor"
+        ],
+        [
+          "hive",
+          "smoker"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "beekeeping",
+        "hive"
+      ]
+    },
+    {
+      "id": "set-bee-lack",
+      "relationshipLabel": "a bee and the one thing it can never have",
+      "explanation": "A drone bee has no stinger and a queen bee has no pollen basket — each lacks the one feature that defines a different caste's role.",
+      "pairs": [
+        [
+          "drone",
+          "stinger"
+        ],
+        [
+          "queen",
+          "pollen basket"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "bee anatomy",
+        "queen"
+      ]
+    },
+    {
+      "id": "set-time-span",
+      "relationshipLabel": "two moments facing each other across a span",
+      "explanation": "Dawn and dusk bookend a day, while spring and autumn bookend a year — each pair marks true opposite poles of a natural cycle.",
+      "pairs": [
+        [
+          "dawn",
+          "dusk"
+        ],
+        [
+          "spring",
+          "autumn"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "seasons",
+        "time of day"
+      ]
+    }
+  ]
+}

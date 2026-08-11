@@ -19,7 +19,7 @@
     "mock": true,
     "autoRevise": true
   },
-  "status": "awaiting-review",
+  "status": "approved",
   "currentAttemptId": "0002",
   "attemptCount": 2,
   "revisionCount": 1

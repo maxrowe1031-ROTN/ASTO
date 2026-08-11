@@ -1,0 +1,92 @@
+{
+  "id": "asto-carnival-nights",
+  "title": "Carnival Nights",
+  "sets": [
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "category and a kind of it",
+      "explanation": "Cotton candy is a kind of snack and a roller coaster is a kind of ride — each pair names a category and one example inside it.",
+      "pairs": [
+        [
+          "snack",
+          "cotton candy"
+        ],
+        [
+          "ride",
+          "roller coaster"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "carnival vocabulary",
+        "obvious category words"
+      ]
+    },
+    {
+      "id": "set-defective",
+      "relationshipLabel": "a faltering form falling short of the full version",
+      "explanation": "A sputter is a hum that never fully catches, and a flicker is a glow that never fully steadies — each first word is the failed attempt at the second.",
+      "pairs": [
+        [
+          "sputter",
+          "hum"
+        ],
+        [
+          "flicker",
+          "glow"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "sensory verbs",
+        "light and sound imagery"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "the rule or danger that forces a stop before the thing can happen",
+      "explanation": "A curfew cuts off an encore and a washout cuts off a parade — each first word is the reason the second word never gets to happen, and the two causes differ sharply in kind so they can't be swapped.",
+      "pairs": [
+        [
+          "curfew",
+          "encore"
+        ],
+        [
+          "washout",
+          "parade"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "show endings",
+        "rule vs weather causes"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A roustabout swings a mallet and a rigger turns a wrench — each worker is defined by the tool that does their job.",
+      "pairs": [
+        [
+          "roustabout",
+          "mallet"
+        ],
+        [
+          "rigger",
+          "wrench"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "job titles",
+        "tool nouns"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "word": "roustabout",
+      "definition": "a laborer who does general physical work, often setting up or tearing down at a traveling show"
+    }
+  ]
+}
