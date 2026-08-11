@@ -171,7 +171,8 @@ makes the Studio double as proof the architecture is clean.
   same words in a *different* order is a new claim and charges normally.
 - Lose on the **4th** mistake. The loss screen reveals unsolved answers *with
   explanations*.
-- Tiers are **revealed on solve**, never shown on the board.
+- Tiers are **revealed on solve**, never shown on the board — with one sanctioned
+  exception: the hint tints its set's tiles in their tier colour early (D-16).
 
 ## 8. Sessions and verification
 
