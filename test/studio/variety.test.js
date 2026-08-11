@@ -167,6 +167,58 @@ test('the brief asks for what is underused and steers away from what is not', ()
   }
 });
 
+// Word-repetition avoidance (D-19, 2026-08-11). Max's three-time signal:
+// "kindling:ember, mallet was just in the last puzzle… theres a lot of words
+// out there. we don't want to be retreading territory too soon." The index
+// gathers the words of the most recently PUBLISHED boards; the brief hands
+// them to 01 as a soft avoid-list. Published boards only — a rejected board's
+// words never reached a player, and mock runs are already excluded.
+test('the index gathers the words of recently published boards, newest first', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    const early = seedRun(store, { slug: 'early', shapes: ['conversion', 'agent-instrument'] });
+    const late = seedRun(store, { slug: 'late', shapes: ['conversion', 'agent-instrument'] });
+    seedRun(store, { slug: 'never-published', shapes: ['conversion', 'agent-instrument'] });
+    store.appendDecision(early, { type: 'publish', attemptId: '0001', at: '2026-08-10T00:00:00Z' });
+    store.appendDecision(late, { type: 'publish', attemptId: '0001', at: '2026-08-11T00:00:00Z' });
+
+    const index = buildRelationshipIndex({ store });
+    assert.ok(index.recentPublishedWords.includes('Seed'), 'published words missing');
+    // Two published boards share the same fixture words — the list stays deduped.
+    assert.equal(
+      index.recentPublishedWords.filter((word) => word === 'Seed').length,
+      1,
+      'words repeat in the avoid list',
+    );
+  } finally {
+    cleanup();
+  }
+});
+
+test('an unpublished run contributes no words to the avoid list', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    seedRun(store, { slug: 'only-approved', shapes: ['conversion', 'agent-instrument'] });
+    const index = buildRelationshipIndex({ store });
+    assert.deepEqual(index.recentPublishedWords, []);
+  } finally {
+    cleanup();
+  }
+});
+
+test('the brief carries the avoid-words, on themed runs too', () => {
+  const { store, cleanup } = makeStore();
+  try {
+    const runId = seedRun(store, { slug: 'pub', shapes: ['conversion', 'agent-instrument'] });
+    store.appendDecision(runId, { type: 'publish', attemptId: '0001', at: '2026-08-11T00:00:00Z' });
+    const index = buildRelationshipIndex({ store });
+    assert.ok(buildVarietyBrief({ index, count: 8 }).avoidWords.includes('Seed'));
+    assert.ok(buildThemedBrief({ index, count: 8 }).avoidWords.includes('Seed'));
+  } finally {
+    cleanup();
+  }
+});
+
 test('the requested shapes spread across families rather than triple-dipping one', () => {
   const { store, cleanup } = makeStore();
   try {

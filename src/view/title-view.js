@@ -15,8 +15,8 @@ export class TitleView {
         <h1 class="title-wordmark">ASTO</h1>
         <p class="title-tagline">Connections, but with analogies.</p>
         <div class="controls title-actions">
-          <button class="pill primary" data-action="play">Play</button>
           <button class="pill" data-action="tutorial">How to play</button>
+          <button class="pill primary" data-action="play">Play</button>
         </div>
       </div>`;
 

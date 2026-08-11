@@ -52,6 +52,16 @@ const BANDING = [
     '("mending nets"), prepositional turns ("after the rain") are all welcome. "The <thing>" is ' +
     'allowed but must not be the reflex — if the most recent subjects on the used list already ' +
     'start with "the", choose a different shape this time.',
+  // The deeper rut, named by the editor on batch four (D-17 amendment,
+  // 2026-08-11): shapes varied, but every subject was a cozy commonplace place.
+  // His words: "we haven't seen anything like a tropical island, or mars, or
+  // egypt... or harry potter, or the yankees. a large variety and mix is key."
+  'Cozy everyday places are this game\'s HOME REGISTER, not its only one. Periodically reach ' +
+    'elsewhere: far places ("a tropical island", "the pyramids", "mars"), history and myth, ' +
+    'fiction and fandom, sports and pop culture, proper-noun subjects a curious person knows. ' +
+    'These still obey the taste guidance above — concrete, recognisable, warm — they just widen ' +
+    'the map. If the most recent subjects on the used list all sit in one register, go somewhere ' +
+    'genuinely different this time.',
 ];
 
 const STYLE_ASKS = {

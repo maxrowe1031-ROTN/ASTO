@@ -128,10 +128,10 @@
 - **Word reuse inside a set reads as a flaw** — "anchor / weigh anchor… using anchor twice
   doesn't feel as good" (low tide, 2026-08-11). Adjacent to 04a's self-matching check but
   not covered: a shared stem across a set's words. Candidate 04a lexical addition.
-- **Cross-board subject similarity is unmeasured** — "we've already seen a puzzle really
-  similar" (smell of rain, 2026-08-11: weather-adjacent like weather-watch and
-  harvest-almanac). Shape variety is steered; content/domain similarity isn't. Candidate:
-  compare a new board's words/domains against the published corpus at scout or review time.
+- ~~**Cross-board subject similarity is unmeasured**~~ **Word-level half closed
+  2026-08-11** — D-19: the five newest published boards' words ride every brief as a soft
+  avoid-list. The SUBJECT/domain-similarity half (weather-adjacent boards feeling alike)
+  remains open; revisit if batch five still feels familiar despite fresh words.
 - **Board-wide vocabulary cap — offered 2026-08-11, deferred by Max.** Batch three's both
   obscurity rejects were uncapped lens boards (~2.3 gated words/board vs world's 0.0 under
   the cap). Deferred pending the Vocabulary button (D-18), which may make some gated

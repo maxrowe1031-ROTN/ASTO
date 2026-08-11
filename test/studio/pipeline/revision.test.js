@@ -9,7 +9,17 @@ import { join } from 'node:path';
 
 import { runPipeline, requestRevision } from '../../../studio/pipeline.js';
 import { DEFAULT_CONFIG } from '../../../studio/pipeline-config.js';
-import { makeStore, mockTransport, seedRun, fastTime, hashTree } from './helpers.js';
+import {
+  makeStore,
+  mockTransport,
+  seedRun,
+  fastTime,
+  hashTree,
+  fixturesWith,
+  fixtureBoard,
+  boardReply,
+  solverReply,
+} from './helpers.js';
 
 const FROM = '04-board-builder';
 
@@ -242,6 +252,76 @@ test('the evaluators stay blind — they judge the board, not the request', asyn
       assert.doesNotMatch(prompt, /wrap:unwrap/, `${stageId} was shown the editor's notes`);
     }
   } finally {
+    cleanup();
+  }
+});
+
+// The unity gate on revisions (D-17 second amendment, 2026-08-11). The
+// mending-nets revision imported "kickoff" onto a boat board; 08 flagged it and
+// the flag was advisory, so the breach reached Max and cost the board. A word a
+// REVISION introduces that lands in 08's unity outliers now fails the attempt —
+// first drafts stay advisory-only, since Max sees those fresh.
+test('a revision that introduces a unity outlier fails, and names the word', async () => {
+  const { store, runId, cleanup } = await completedRun();
+  let dropFixtures = () => {};
+  try {
+    // The revised board swaps one parent word for an off-theme import.
+    const revised = structuredClone(fixtureBoard());
+    const set = revised.sets.find((s) => s.pairs.flat().includes('Harvest'));
+    set.pairs = set.pairs.map((pair) => pair.map((w) => (w === 'Harvest' ? 'kickoff' : w)));
+
+    const eight = JSON.parse(
+      readFileSync(join('studio', 'fixtures', 'responses', '08-style-guide.json'), 'utf8'),
+    );
+    const eightOut = JSON.parse(eight.text);
+    eightOut.unity = {
+      verdict: 'weak',
+      reasoning: 'kickoff reads as imported from another world.',
+      outliers: [{ word: 'kickoff', note: 'american football on a rustic-morning board' }],
+    };
+
+    const { dir, cleanup: drop } = fixturesWith({
+      '04-board-builder': boardReply(revised),
+      '06-adversarial-solver': solverReply(revised),
+      '08-style-guide': { text: JSON.stringify(eightOut) },
+    });
+    dropFixtures = drop;
+
+    requestRevision(store, runId, { fromStage: FROM, notes: 'fix the black set' });
+    const result = await runPipeline({ runId, store, transport: mockTransport(dir), ...fastTime() });
+
+    assert.equal(result.status, 'failed');
+    assert.match(result.failure.message, /kickoff/);
+    assert.match(result.failure.message, /unity|world|imported/i);
+  } finally {
+    dropFixtures();
+    cleanup();
+  }
+});
+
+// The same outlier on a FIRST draft stays advisory — Max judges fresh boards
+// himself, and 08's opinion is one click away on the card, not a gate.
+test('a first draft with a unity outlier still completes', async () => {
+  const { store, rootDir, cleanup } = makeStore();
+  let dropFixtures = () => {};
+  try {
+    const eight = JSON.parse(
+      readFileSync(join('studio', 'fixtures', 'responses', '08-style-guide.json'), 'utf8'),
+    );
+    const eightOut = JSON.parse(eight.text);
+    eightOut.unity = {
+      verdict: 'weak',
+      reasoning: 'x',
+      outliers: [{ word: 'Seed', note: 'test — an outlier on a fresh board' }],
+    };
+    const { dir, cleanup: drop } = fixturesWith({ '08-style-guide': { text: JSON.stringify(eightOut) } });
+    dropFixtures = drop;
+
+    const runId = seedRun(store);
+    const result = await runPipeline({ runId, store, transport: mockTransport(dir), ...fastTime() });
+    assert.equal(result.status, 'complete', result.failure?.message);
+  } finally {
+    dropFixtures();
     cleanup();
   }
 });

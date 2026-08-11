@@ -69,6 +69,44 @@ test('a set cannot be both fixed and protected', () => {
   assert.match(result.errors[0].message, /both/);
 });
 
+// The scope guard (D-17 second amendment, 2026-08-11). Pre-review, the
+// allowlisted findings are the WHOLE mandate — and the smell-of-rain
+// auto-revision proved the old validator's gap by rewriting seven sets from a
+// two-finding mandate, coming back more obscure than it left. A pre-review
+// proposal may now fix only the sets its findings name.
+test('pre-review, a fix outside the findings mandate is refused', () => {
+  const result = proposer.validateOutput(
+    output({
+      fixes: [
+        { ...output().fixes[0], setId: 'set-role-marker' },
+        { setId: 'set-mission-bookends', problem: 'x', source: 'evaluator', candidates: ['y'] },
+      ],
+      doNotChange: ['set-specialist-tool', 'set-category-instrument'],
+    }),
+    { board: BOARD, preReview: { findings: [{ setIds: ['set-role-marker'] }] } },
+  );
+  assert.equal(result.ok, false);
+  assert.match(JSON.stringify(result.errors), /mandate/i);
+});
+
+test('pre-review, fixes on exactly the finding-named sets validate', () => {
+  const result = proposer.validateOutput(
+    output({ doNotChange: BOARD.sets.map((s) => s.id).filter((id) => id !== 'set-role-marker') }),
+    { board: BOARD, preReview: { findings: [{ setIds: ['set-role-marker'] }] } },
+  );
+  assert.equal(result.ok, true, JSON.stringify(result.errors));
+});
+
+// The legacy call shape — `preReview: true`, no findings attached — keeps the
+// completeness rule but cannot scope-check; it must not start refusing.
+test('preReview as a bare boolean still validates as before', () => {
+  const result = proposer.validateOutput(
+    output({ doNotChange: BOARD.sets.map((s) => s.id).filter((id) => id !== 'set-role-marker') }),
+    { board: BOARD, preReview: true },
+  );
+  assert.equal(result.ok, true, JSON.stringify(result.errors));
+});
+
 test('fromStage must be a stage a revision can actually re-enter at', () => {
   // 05 onwards only re-evaluates the same board; the gate is deterministic.
   assert.equal(check(output({ fromStage: '06-adversarial-solver' })).ok, false);

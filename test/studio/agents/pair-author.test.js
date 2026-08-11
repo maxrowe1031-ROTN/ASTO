@@ -152,6 +152,24 @@ test('lens and unstyled briefs carry no vocabulary cap', () => {
   }
 });
 
+// The word-repetition avoid list (D-19, 2026-08-11): "kindling:ember, mallet
+// was just in the last puzzle… we don't want to be retreading territory too
+// soon." A soft steer — the words of recently published boards, by name.
+test('recently published words reach the prompt as a soft avoid-list', () => {
+  const prompt = pairAuthor.buildPrompt(
+    { brief: { count: 14, avoidWords: ['mallet', 'kindling', 'ember'] }, theme: 'the forge' },
+    {},
+  );
+  assert.match(prompt, /appeared on recently published boards/i);
+  assert.match(prompt, /mallet/);
+  assert.match(prompt, /kindling/);
+});
+
+test('no avoid-words, no avoid-list line', () => {
+  const prompt = pairAuthor.buildPrompt({ brief: { count: 14 }, theme: 'the forge' }, {});
+  assert.doesNotMatch(prompt, /recently published boards/i);
+});
+
 test('a free-text shape is still rejected by the schema', () => {
   const result = pairAuthor.validateOutput({
     pairs: [...A_TREE.slice(0, 13), pair('x', 'y', 'something invented')],

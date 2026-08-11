@@ -54,6 +54,7 @@ export function buildPrompt(input = {}, context) {
     hardestStanceAsk = [],
     hardestStanceLean = null,
     subjectStyle = null,
+    avoidWords = [],
   } = brief;
   // Leads the task, because a revision changes what the whole rest of the
   // instruction means: "author N pairs" reads as "author a fresh pool" unless
@@ -106,6 +107,14 @@ export function buildPrompt(input = {}, context) {
         : '',
       avoidShapes.length > 0
         ? `Avoid these shapes — recent boards have leaned on them: ${avoidShapes.join(', ')}.`
+        : '',
+      // The word-repetition avoid list (design.md D-19, 2026-08-11). A soft
+      // steer, not a check: the editor caught the same words returning within
+      // days — "kindling:ember, mallet was just in the last puzzle... theres a
+      // lot of words out there. we don't want to be retreading territory too
+      // soon." Published boards only; a rejected board's words never shipped.
+      avoidWords.length > 0
+        ? `These words appeared on recently published boards — do not reuse them, or close pairings built on them, unless the subject truly demands it: ${avoidWords.join(', ')}.`
         : '',
       // Set only when the last three boards all reached their hardest set the
       // same way (design.md D-8). A nudge, not a quota: Max's rule is that
