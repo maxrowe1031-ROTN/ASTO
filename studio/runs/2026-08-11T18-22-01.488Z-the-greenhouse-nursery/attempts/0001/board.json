@@ -1,0 +1,86 @@
+{
+  "id": "board-plant-life-analogies",
+  "title": "Roots and Reasons",
+  "sets": [
+    {
+      "id": "set-plant-taxonomy",
+      "relationshipLabel": "A category and a kind of plant within it",
+      "explanation": "A tulip is a kind of flower, just as basil is a kind of herb — each pair names a broad category and one familiar member of it.",
+      "pairs": [
+        [
+          "flower",
+          "tulip"
+        ],
+        [
+          "herb",
+          "basil"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "plant-vocabulary",
+        "category-example"
+      ]
+    },
+    {
+      "id": "set-gardening-tools",
+      "relationshipLabel": "Same kind of gardening item, smaller then larger",
+      "explanation": "A planter is simply a bigger pot and a spade a bigger trowel, so each pair is the same tool scaled up.",
+      "pairs": [
+        [
+          "pot",
+          "planter"
+        ],
+        [
+          "trowel",
+          "spade"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "tool-pairs",
+        "size-scaling"
+      ]
+    },
+    {
+      "id": "set-plant-parts",
+      "relationshipLabel": "A plant part and a feature it bears",
+      "explanation": "A stem carries a bud and a leaf carries a vein — each pair names a plant structure and the feature that grows on it.",
+      "pairs": [
+        [
+          "stem",
+          "bud"
+        ],
+        [
+          "leaf",
+          "vein"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "plant-anatomy",
+        "possession-near-miss"
+      ]
+    },
+    {
+      "id": "set-transformation",
+      "relationshipLabel": "One thing becomes another through a natural process",
+      "explanation": "A blossom ripens into fruit and a caterpillar transforms into a butterfly, each pair tracing a single natural process from start to finish.",
+      "pairs": [
+        [
+          "blossom",
+          "fruit"
+        ],
+        [
+          "caterpillar",
+          "butterfly"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "metamorphosis",
+        "growth-vs-change"
+      ]
+    }
+  ]
+}

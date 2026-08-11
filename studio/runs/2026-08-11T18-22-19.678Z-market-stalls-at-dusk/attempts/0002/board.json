@@ -1,0 +1,86 @@
+{
+  "id": "board-market-life",
+  "title": "Market Life",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "thing and the feature it simply has",
+      "explanation": "Each object pairs with a physical part it inherently possesses, no exceptions needed.",
+      "pairs": [
+        [
+          "till",
+          "drawer"
+        ],
+        [
+          "folding table",
+          "legs"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "furniture",
+        "market-stall"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "written record and the thing it tallies",
+      "explanation": "Each written record exists specifically to track the transaction named beside it.",
+      "pairs": [
+        [
+          "ledger",
+          "sales"
+        ],
+        [
+          "receipt",
+          "purchase"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "paperwork",
+        "transaction"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "moment and the activity that belongs to it",
+      "explanation": "Each stretch of the market day is named alongside the activity that defines it, from dusk's rush to the final markdown at closing.",
+      "pairs": [
+        [
+          "dusk",
+          "evening rush"
+        ],
+        [
+          "closing hour",
+          "final markdown"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "timing",
+        "market-day"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "leftover stock turned into new product",
+      "explanation": "Each leftover stock item is deliberately repurposed into a new product made directly from it, no spoilage required.",
+      "pairs": [
+        [
+          "unsold bread",
+          "breadcrumbs"
+        ],
+        [
+          "bruised fruit",
+          "jam"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "produce",
+        "repurposing"
+      ]
+    }
+  ]
+}

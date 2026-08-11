@@ -1,0 +1,86 @@
+{
+  "id": "board-cordage-and-craft",
+  "title": "Rigging, Raw Stock, and Opening Moves",
+  "sets": [
+    {
+      "id": "set-coordinates",
+      "relationshipLabel": "two counterparts of the same kind, paired together in either order",
+      "explanation": "A float and sinker, or port and starboard, are matched counterparts that only make sense as a pair — neither word leads, so either order is correct.",
+      "pairs": [
+        [
+          "float",
+          "sinker"
+        ],
+        [
+          "port",
+          "starboard"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "maritime",
+        "counterparts"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "raw fiber worked into cordage",
+      "explanation": "Hemp and flax are raw fibers spun into rope and twine, the cordage each is worked into.",
+      "pairs": [
+        [
+          "hemp",
+          "rope"
+        ],
+        [
+          "flax",
+          "twine"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "material",
+        "fiber"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "the drawn or cut template and the built thing it produces",
+      "explanation": "A pattern is cut into a sail just as a blueprint is built into a hull — the template made into the object.",
+      "pairs": [
+        [
+          "pattern",
+          "sail"
+        ],
+        [
+          "blueprint",
+          "hull"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "boatbuilding",
+        "template"
+      ]
+    },
+    {
+      "id": "set-sequence",
+      "relationshipLabel": "stage that opens the larger span",
+      "explanation": "A patch opens a season the way a launch opens a voyage — the first stage of a longer stretch.",
+      "pairs": [
+        [
+          "patch",
+          "season"
+        ],
+        [
+          "launch",
+          "voyage"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "beginning",
+        "span"
+      ]
+    }
+  ]
+}

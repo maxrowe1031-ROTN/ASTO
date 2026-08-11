@@ -1,0 +1,80 @@
+{
+  "id": "board-hearth-and-chimney",
+  "title": "Hearth & Chimney",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "a structure and a feature it simply has",
+      "explanation": "A house has a chimney and a fireplace has a mantel — each pair is a whole paired with a part it ordinarily includes.",
+      "pairs": [
+        [
+          "house",
+          "chimney"
+        ],
+        [
+          "fireplace",
+          "mantel"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "chimney overlaps thematically with the sign set's smoking chimney"
+      ]
+    },
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "a category and a specific kind within it",
+      "explanation": "Peat is a kind of fuel and a twig is a kind of kindling, so each pair sets a broad category beside one specific member of it.",
+      "pairs": [
+        [
+          "fuel",
+          "peat"
+        ],
+        [
+          "kindling",
+          "twig"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": []
+    },
+    {
+      "id": "set-directional",
+      "relationshipLabel": "base and top of one rising structure, in construction order",
+      "explanation": "A firebox rises to a chimney cap and a keel rises to a masthead — each pair runs low-to-high in the order the structure is actually built.",
+      "pairs": [
+        [
+          "firebox",
+          "chimney cap"
+        ],
+        [
+          "keel",
+          "masthead"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "firebox and chimney cap echo the plain house/chimney whole-part set"
+      ]
+    },
+    {
+      "id": "set-sign-significant",
+      "relationshipLabel": "a visible sign and the fact or danger it announces",
+      "explanation": "A smoking chimney signals a house is occupied and black smoke signals a creosote fire — each visible sign necessarily points to the fact it announces.",
+      "pairs": [
+        [
+          "smoking chimney",
+          "occupied house"
+        ],
+        [
+          "black smoke",
+          "creosote fire"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "smoking chimney and occupied house echo the plain whole-part set's house and chimney"
+      ]
+    }
+  ]
+}

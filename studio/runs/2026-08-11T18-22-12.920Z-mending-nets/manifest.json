@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "2026-08-11T18-22-12.920Z-mending-nets",
+  "createdAt": "2026-08-11T18:22:12.920Z",
+  "theme": "mending nets",
+  "brief": {
+    "count": 14,
+    "relationshipShapes": [
+      "representation",
+      "coordinates",
+      "taxonomic"
+    ],
+    "avoidShapes": [
+      "before-after",
+      "agent-instrument"
+    ],
+    "stanceQuotas": [
+      "cause",
+      "inclusion",
+      "possession",
+      "time"
+    ],
+    "hardestStanceAsk": [
+      "event",
+      "cause",
+      "reference"
+    ],
+    "hardestStanceLean": "absence",
+    "mock": false,
+    "autoRevise": true,
+    "subjectSource": "scout",
+    "subjectStyle": "world"
+  },
+  "status": "rejected",
+  "currentAttemptId": "0003",
+  "attemptCount": 3,
+  "revisionCount": 2
+}

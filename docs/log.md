@@ -2,6 +2,66 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-11 — Batch three judged: the levers scored, and the rut moved
+
+The first batch with D-17's three levers live, judged by Max the same evening.
+`puzzles/` ends at **44 boards + tutorial, all clean** (roots-and-reasons
+published; suite 1255 green).
+
+### Verdicts
+
+- **Approved:** low tide at dawn (delightful — "pretty much perfect and the
+  hint really made it much more approachable"; **approved but not yet
+  published**), the greenhouse nursery (delightful → published as
+  `roots-and-reasons`).
+- **Rejected:** smoke from chimneys and smell of rain on dust (both lens, both
+  "too hard, too obscure" — peat, keel, masthead, creosote; mesocyclone);
+  mending nets (taste delightful, revise accepted, then the revision imported
+  "kickoff" onto a boat board — rejected on the breach).
+- **Contradictory ledger on market stalls at dusk:** the feedback record says
+  approve-board · delightful ("This one was solid"), the decision records
+  REJECT, same moment. Root cause found in the review UI: the form's
+  board-verdict radio and the decision buttons are independent and unguarded —
+  a mismatch writes both. **Max's actual intent unknown; flagged to him;**
+  board unpublished either way. Guard goes to the backlog.
+- Playthroughs: **two wins** (low tide, mending nets' revision) — up from one
+  in six. First field report on the hint, in Max's own words, on board one.
+
+### The levers, scored against batch two
+
+- **World cap: validated blind.** Both world boards ran ZERO knowledge-gated
+  words (batch-two world: 3.0/board); Max independently noted the greenhouse
+  had "no truly obscure words" and wondered what the generator flagged —
+  nothing. But the obscurity moved arms: uncapped lens boards drifted
+  technical (~2.3 gated/board from 0.33) and both obscurity rejections were
+  lens. Board-wide cap offered; **Max deferred it** — revisit with the
+  Vocabulary button (D-18) live, which may dissolve it.
+- **Naming variety: worked at the surface** (1/6 "the …", was 6/6) — and Max
+  named the deeper rut: every subject is a cozy commonplace place. His ask:
+  territory range — mars, egypt, tropical islands, fiction (harry potter),
+  proper-noun reality (the yankees). "A large variety and mix is key."
+- **Reveal readings: working, one nuanced miss.** Only one auto-revision this
+  batch was order-guess-driven (its set genuinely doesn't lock). Max's
+  order-ambiguity flag on market stalls' before-after set hit a set 06 marked
+  "locks" — but his own alternate reading is a cross-PAIR regrouping, the
+  cross-reading axis, which had fired, persisted, and spent its
+  once-per-lineage examination. The miss belongs to the persistence bound,
+  not the lock split. Watching, not reverting.
+
+### New signals from Max's notes
+
+Revision quality is the weakest link (kickoff breach; a 7-set rewrite that got
+MORE obscure) → revision guardrails approved for build. Word-reuse inside a
+set ("anchor / weigh anchor… doesn't feel as good"). Cross-board similarity
+("we've already seen a puzzle really similar"). A point-system grading idea,
+his aside. All to backlog except the guardrails.
+
+- **Next:** Unit 2 — the **Vocabulary button** (D-18: one editorially authored
+  gloss for the hardest word, free, persistent once revealed; schema gains
+  optional `glossary`; new glossary-author stage). Then Unit 3 — territory
+  variety + revision guardrails for batch four. Open with Max: market stalls'
+  true verdict, and low tide's publish.
+
 ## 2026-08-11 — Batch two judged: the lens sweeps, the world carries the obscurity
 
 The 2026-08-10 scout batch (6 boards, 3 lens / 3 world, green door + per-board

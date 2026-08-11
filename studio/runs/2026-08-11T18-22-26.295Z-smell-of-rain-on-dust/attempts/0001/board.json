@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-weather-01",
+  "title": "Weather & Water Relationships",
+  "sets": [
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the ground's state before rain, and after",
+      "explanation": "Cracked earth becomes mud and dust becomes a puddle once rain falls — each pair captures the same before/after arc.",
+      "pairs": [
+        [
+          "Cracked earth",
+          "Mud"
+        ],
+        [
+          "Dust",
+          "Puddle"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "ground-state",
+        "rain-result"
+      ]
+    },
+    {
+      "id": "set-dimensional-similarity",
+      "relationshipLabel": "the same water phenomenon at a light/small scale, then a heavy/large scale",
+      "explanation": "Drizzle scales up to downpour just as a trickle scales up to a flood — same phenomenon, different intensity.",
+      "pairs": [
+        [
+          "Drizzle",
+          "Downpour"
+        ],
+        [
+          "Trickle",
+          "Flood"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "intensity",
+        "water-scale"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "storm system and its characteristic named feature",
+      "explanation": "A thunderhead's flat top is its anvil, just as a hurricane's calm center is its eye — each storm system carries a signature named part.",
+      "pairs": [
+        [
+          "Thunderhead",
+          "Anvil"
+        ],
+        [
+          "Hurricane",
+          "Eye"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "storm-anatomy",
+        "named-feature"
+      ]
+    },
+    {
+      "id": "set-cause-effect",
+      "relationshipLabel": "a natural process that produces a distinctive smell",
+      "explanation": "Streptomyces bacteria release geosmin just as lightning generates ozone — each is a natural process whose necessary byproduct is a recognizable smell.",
+      "pairs": [
+        [
+          "Streptomyces",
+          "Geosmin"
+        ],
+        [
+          "Lightning",
+          "Ozone"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "smell",
+        "natural-process"
+      ]
+    }
+  ]
+}

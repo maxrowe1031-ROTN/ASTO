@@ -116,6 +116,26 @@
 - ~~**The Subject Scout's tone rut fired on batch two (2026-08-10).**~~ **Closed
   2026-08-11** — D-17 lever 1: the scout's banding now requires varied grammatical
   shapes, keyed off the used list's recent tail. Batch three measures it.
+- **The decide buttons and the form's board-verdict radio can contradict (2026-08-11).**
+  Market stalls at dusk recorded approve-board·delightful feedback AND a reject decision in
+  one click — `wireDecisions` only downgrades `revise-board` to a save; approve-radio +
+  reject-button (or the reverse) writes both sides with no guard. Fix: align or confirm on
+  mismatch. Until then the decision ledger can misstate Max's intent.
+- **A point-system grade for boards** — Max's aside on low tide ("if we were grading this on
+  a point system, and maybe we should"): per-set deductions (e.g. word reuse) summing to a
+  board score on the feedback form. Unapproved idea; would also give the instruments a
+  numeric target.
+- **Word reuse inside a set reads as a flaw** — "anchor / weigh anchor… using anchor twice
+  doesn't feel as good" (low tide, 2026-08-11). Adjacent to 04a's self-matching check but
+  not covered: a shared stem across a set's words. Candidate 04a lexical addition.
+- **Cross-board subject similarity is unmeasured** — "we've already seen a puzzle really
+  similar" (smell of rain, 2026-08-11: weather-adjacent like weather-watch and
+  harvest-almanac). Shape variety is steered; content/domain similarity isn't. Candidate:
+  compare a new board's words/domains against the published corpus at scout or review time.
+- **Board-wide vocabulary cap — offered 2026-08-11, deferred by Max.** Batch three's both
+  obscurity rejects were uncapped lens boards (~2.3 gated words/board vs world's 0.0 under
+  the cap). Deferred pending the Vocabulary button (D-18), which may make some gated
+  vocabulary a feature instead of a defect. Revisit after a glossed batch.
 - **Archiving a run has no endpoint or button.** `approved → archived` exists in the
   status machine and `updateStatus` enforces it, but no API route or UI exposes it — the
   childhood archive went through a hand-written script against `run-store`. Fine at n=1;

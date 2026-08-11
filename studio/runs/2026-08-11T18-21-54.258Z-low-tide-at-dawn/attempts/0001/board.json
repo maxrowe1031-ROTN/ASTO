@@ -1,0 +1,86 @@
+{
+  "id": "shoreline-analogies-01",
+  "title": "By the Shore",
+  "sets": [
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "broad category and a specific kind within it",
+      "explanation": "Bird and shellfish are broad categories, while gull and mussel are the specific kinds that live inside them.",
+      "pairs": [
+        [
+          "bird",
+          "gull"
+        ],
+        [
+          "shellfish",
+          "mussel"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "category",
+        "animal"
+      ]
+    },
+    {
+      "id": "set-item-location",
+      "relationshipLabel": "a place and the creature typically found there",
+      "explanation": "A tide pool and a mudflat are shoreline habitats, each reliably home to the creature named beside it.",
+      "pairs": [
+        [
+          "tide pool",
+          "anemone"
+        ],
+        [
+          "mudflat",
+          "lugworm"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "coastal",
+        "habitat"
+      ]
+    },
+    {
+      "id": "set-reverse",
+      "relationshipLabel": "a boat action and its opposite",
+      "explanation": "Moor undoes cast off, and beach undoes launch — each pair names opposite things done to a boat.",
+      "pairs": [
+        [
+          "moor",
+          "cast off"
+        ],
+        [
+          "beach",
+          "launch"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "boat",
+        "coastal"
+      ]
+    },
+    {
+      "id": "set-cause-effect",
+      "relationshipLabel": "an event that necessarily produces its physical trace",
+      "explanation": "A storm always leaves a wrack line behind, just as wind always raises a ripple on the water.",
+      "pairs": [
+        [
+          "storm",
+          "wrack line"
+        ],
+        [
+          "wind",
+          "ripple"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "weather",
+        "coastal"
+      ]
+    }
+  ]
+}

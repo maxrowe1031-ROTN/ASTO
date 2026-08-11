@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-weather-01",
+  "title": "Weather & Water Relationships",
+  "sets": [
+    {
+      "id": "set-coordinates",
+      "relationshipLabel": "two counterparts of the same kind, named together",
+      "explanation": "Rain and shine, wet and dry — each pair names a familiar pair of opposites that travel together as a set phrase.",
+      "pairs": [
+        [
+          "Rain",
+          "Shine"
+        ],
+        [
+          "Wet",
+          "Dry"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "idiom-pair",
+        "opposites"
+      ]
+    },
+    {
+      "id": "set-time-activity",
+      "relationshipLabel": "a stretch of time and the weather-scent it produces",
+      "explanation": "A dry season kicks up dust just as monsoon rain releases petrichor — each stretch of time carries its own signature smell.",
+      "pairs": [
+        [
+          "Dry season",
+          "Dust"
+        ],
+        [
+          "Monsoon",
+          "Petrichor"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "scent",
+        "season"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "storm system and its characteristic named feature",
+      "explanation": "A cumulonimbus cloud's flat top is its anvil, just as a supercell's rotating core is its mesocyclone — each storm system carries a signature named part.",
+      "pairs": [
+        [
+          "Cumulonimbus",
+          "Anvil"
+        ],
+        [
+          "Supercell",
+          "Mesocyclone"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "storm-anatomy",
+        "named-feature"
+      ]
+    },
+    {
+      "id": "set-sign-significant",
+      "relationshipLabel": "a warning sign and the weather event it foretells",
+      "explanation": "A barometric drop precedes a downpour and a green sky precedes hail — each is a sign that points toward, without guaranteeing, the event it warns of.",
+      "pairs": [
+        [
+          "Barometric drop",
+          "Downpour"
+        ],
+        [
+          "Green sky",
+          "Hail"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "omen",
+        "forecast"
+      ]
+    }
+  ]
+}
