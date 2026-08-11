@@ -48,9 +48,27 @@ were "the …" — D-15's trigger fired twice), **07 qualifies order-guesses wit
 narrowed, approved), and **a world-arm vocabulary cap** (≤1 knowledge-gated word,
 instruction + visible measurement, chosen over shifting the lens/world mix).
 
-- **Next:** build the three levers on `work/batch3-tuning` (this session,
-  in progress); then batch three with all levers live — Max judges against this
-  batch's baselines. B2 hand-editing remains deferred.
+### The three levers, built the same day (`work/batch3-tuning`, merged)
+
+All three TDD-first, **suite 1254 green**, D-17 records them with their
+reconsider-whens:
+
+- **Scout naming variety** — the banding prompt requires varied grammatical
+  shapes, keyed off the used list's recent tail; prompt pinned by test.
+- **Reveal readings** — 06 answers per set whether the reveal locks the order
+  (validator makes it checklist-complete); `detectFindings` fires
+  `order-guessed` only when it doesn't. Legacy reports replay unchanged
+  (pinned by test). One deviation from the approved plan, recorded in D-17: the
+  judge is 06, not 07 — 07's blindness is test-enforced, and 06 already holds
+  the explanations. Review card shows every guess with its lock verdict.
+- **World-arm vocabulary cap** — world briefs instruct 01: at most one
+  knowledge-gated word, hardest group only. Review card shows count-vs-cap on
+  world runs (verified in the browser: the button jar page reads "3 … against a
+  cap of 1 — over cap"; the harvest moon, lens, shows no line; console clean).
+
+- **Next:** batch three — six fresh scout subjects with all three levers live;
+  Max judges against batch two's baselines (world gated-words 3.0, title shapes
+  6/6 "the …", lens 6/6 delightful). B2 hand-editing remains deferred.
 
 ## 2026-08-11 — The hint button, and the cup that remembers the coffee
 

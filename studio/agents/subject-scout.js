@@ -46,6 +46,12 @@ const BANDING = [
   'Hard-science subjects are welcome only as a rare minority — they tend to make boards feel clinical.',
   'Whimsy is prized: clocks, mirrors, shadows, fairy tales are the register this game calls its own.',
   'The subject seeds a 16-word puzzle board, so it must be rich in concrete, recognisable THINGS — a subject with no nouns in it cannot become a board.',
+  // Batch two came back "the harvest moon, the night train, the umbrella shop…" —
+  // six for six on one shape (D-15 amendment, 2026-08-11). The reflex is the rut.
+  'Vary the grammatical shape of the subject: bare noun phrases ("harvest supper"), gerunds ' +
+    '("mending nets"), prepositional turns ("after the rain") are all welcome. "The <thing>" is ' +
+    'allowed but must not be the reflex — if the most recent subjects on the used list already ' +
+    'start with "the", choose a different shape this time.',
 ];
 
 const STYLE_ASKS = {

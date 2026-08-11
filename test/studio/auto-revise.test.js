@@ -103,6 +103,47 @@ test("07's orderGuessed fires only when the words map to exactly one set", () =>
   assert.deepEqual(findings[0].setIds, ['set-b']);
 });
 
+// D-14 amendment (2026-08-11): 07's order-guess is two signals wearing one tag.
+// The attic's guessed set was the batch's best reveal; the umbrella's was a
+// blocker. 06 now answers, per set, whether the reveal LOCKS the order — and a
+// locked guess is earned mystery, not a defect, so it stays out of the loop.
+test('an order-guess on a set whose reveal locks the order does not fire', () => {
+  const reports = {
+    '06-adversarial-solver': {
+      revealReadings: [{ setId: 'set-b', locks: true, note: 'the explanation runs one way' }],
+    },
+    '07-test-player': {
+      orderGuessed: [{ words: ['Nest', 'Bird', 'Den', 'Bear'], note: 'coin flip until the reveal' }],
+    },
+  };
+  assert.deepEqual(detectFindings({ board: BOARD, reports }), []);
+});
+
+test('an order-guess still fires when the reveal does not lock the order', () => {
+  const reports = {
+    '06-adversarial-solver': {
+      revealReadings: [{ setId: 'set-b', locks: false }],
+    },
+    '07-test-player': {
+      orderGuessed: [{ words: ['Nest', 'Bird', 'Den', 'Bear'], note: 'coin flip' }],
+    },
+  };
+  const findings = detectFindings({ board: BOARD, reports });
+  assert.equal(findings.length, 1);
+  assert.equal(findings[0].kind, 'order-guessed');
+});
+
+// The pin on legacy behavior: a report from before revealReadings existed
+// (every run up to 2026-08-11) must keep firing exactly as it always did.
+test('an order-guess with no reveal reading at all fires as before', () => {
+  const reports = {
+    '07-test-player': {
+      orderGuessed: [{ words: ['Nest', 'Bird', 'Den', 'Bear'], note: 'coin flip' }],
+    },
+  };
+  assert.equal(detectFindings({ board: BOARD, reports }).length, 1);
+});
+
 test('what is OFF the allowlist never fires: knowledgeGated, 05, 08, taste', () => {
   // Everything here is a real defect by some other instrument's lights, and
   // none of it is Max's allowlist. An empty answer IS the assertion.

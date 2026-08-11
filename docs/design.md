@@ -1806,6 +1806,54 @@ lighter-than-cup brown puddle read as a shadow). Both recorded in the CSS commen
 brown as the badge of honour rather than the marked case — revisit which pole is
 marked (the class flip is one line).
 
+### D-17 — Batch two's readout, and the three levers for batch three (2026-08-11)
+
+Max judged the first fresh-scout batch (D-15's arms, D-14's per-board bound, the
+green door — all live): **4 published, 2 rejected; lens 3/3 delightful, world
+1/3** (cumulative: lens 6/6, world 4/7). The full comparison lives in the
+2026-08-11 batch log entry; what it licensed:
+
+- **Obscurity is a world-arm property, measured:** knowledge-gated words per
+  board — lens 0.33, world 3.0. A world subject is a place full of objects and
+  invites the trade's nouns; a lens builds from common words in fresh relations.
+- **Raw structural counts anti-correlate with taste** (lens drew 8 cross-set
+  findings to world's 4 and swept on delight); **persistence-after-a-fix-attempt
+  plus "not always true" is the blocker signature** (umbrella: predicted 2-for-2).
+- **07's order-guess is two signals:** the attic's guessed set was the batch's
+  best reveal; the umbrella's was a blocker. The separator is whether the
+  explanation locks the order at reveal.
+
+**The three levers, one per axis, Max-approved 2026-08-11 — all built the same
+day; batch three is their gate:**
+
+1. **Scout naming variety** (D-15 amendment): 6/6 batch-two subjects were titled
+   "the …" — the tone-rut reconsider-when, fired twice. The scout's banding now
+   requires varied grammatical shapes, keyed off the used list's recent tail.
+2. **Reveal readings** (D-14 amendment — the allowlist narrowed): 06 now answers,
+   per set, whether the reveal locks the written order (`revealReadings`,
+   checklist-complete by validator, like its other two). `detectFindings` emits
+   `order-guessed` only when the reveal does NOT lock it — earned mystery stays
+   out of the revision loop; an absent reading (every pre-amendment report)
+   fires exactly as before. The review card shows all guesses with the lock
+   verdict, so the split stays auditable. Implementation note: the plan named
+   07 as the judge, but 07 is blind by construction (test-enforced); the reveal
+   question moved to 06, which already holds the explanations — same intent,
+   lawful seam.
+3. **World-arm vocabulary cap** (chosen by Max over shifting the lens/world mix,
+   because it tests whether world subjects can delight WITHOUT the trade nouns):
+   world-style briefs instruct 01 — at most ONE knowledge-gated word per board,
+   spent only in the hardest group ("'Cordwainer' is a wall; 'bootlace' is a
+   door"). Honest about D-7 (an instruction is a request): 07's `knowledgeGated`
+   count is the measurement and the review card shows count-vs-cap on world
+   runs, bolded when over. Lens and themed briefs untouched — one variable.
+
+**Reconsider-when:** world boards still land >1 gated word after a batch —
+escalate the cap to a check; world delight collapses under the cap — reopen the
+arm-mix question; the scout still leans one title shape — the variety ask needs
+examples of its own, not more adjectives. And if batch three's locked-order sets
+draw Max blockers anyway, the revealLocks split is wrong and the allowlist
+re-widens.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

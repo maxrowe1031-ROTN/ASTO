@@ -125,11 +125,25 @@ export function machineNotesBySet(attempt) {
     });
   }
   // 07 names words, never sets — mapped here like everything else it reports.
+  // 06's reveal verdict rides along (D-14 amendment): a guess whose reveal
+  // locks the order is earned mystery and stays out of the auto-revise loop,
+  // but Max still sees it here, with the reason, so the split stays auditable.
   for (const guessed of attempt.reports['07-test-player']?.orderGuessed ?? []) {
     const owners = new Set((guessed.words ?? []).map((word) => setIdsByWord.get(word)));
     if (owners.size !== 1) continue;
     const [setId] = [...owners];
-    add(setId, { source: 'test player guessed the order', level: 'medium', text: guessed.note });
+    const reveal = (solver?.revealReadings ?? []).find((entry) => entry.setId === setId);
+    const verdict =
+      reveal?.locks === true
+        ? ` The reveal settles it — ${reveal.note} Earned mystery; kept out of the auto-revise loop.`
+        : reveal?.locks === false
+          ? ' The reveal does not settle it either.'
+          : '';
+    add(setId, {
+      source: 'test player guessed the order',
+      level: 'medium',
+      text: `${guessed.note}${verdict}`,
+    });
   }
 
   // Self-matching pairs (design.md D-12). Computed deterministically by 04a,

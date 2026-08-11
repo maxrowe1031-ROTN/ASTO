@@ -490,3 +490,9 @@ textarea { width: 100%; resize: vertical; }
   margin-bottom: 6px;
 }
 .chip-verdict { font-weight: 700; }
+
+/* The world-arm cap line when it is over cap (design.md D-17) — a nudge, not a
+   gate: the same muted voice, weighted, never red. */
+.cap-breach {
+  font-weight: 700;
+}

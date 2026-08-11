@@ -108,11 +108,18 @@ export function solverReply(board, { valid = () => false, shapes = null, inferab
       ...(inferable(setId) ? { note: 'Test fixture.' } : {}),
     }));
 
+  // One reveal verdict per set since the D-14 amendment (2026-08-11) — the
+  // validator refuses an answer that skips a set, exactly like the other two
+  // checklists. locks: false is the neutral fixture answer: it keeps every
+  // pipeline test's finding behavior exactly as it was before the amendment.
+  const revealReadings = board.sets.map((set) => ({ setId: set.id, locks: false }));
+
   return {
     text: JSON.stringify({
       noneFound: true,
       findings: [],
       crossReadings,
+      revealReadings,
       ...(orderReadings.length > 0 ? { orderReadings } : {}),
     }),
   };

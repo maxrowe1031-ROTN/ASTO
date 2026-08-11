@@ -113,13 +113,9 @@
   rename reads as delete-then-add, and now a duplicate title is unpublishable by
   construction. If it recurs, the small fix is a retitle-at-publish field on the review
   page — which would also be B2 hand-editing's first real bite (HR-2).
-- **The Subject Scout's tone rut fired on batch two (2026-08-10).** D-15's reconsider-when
-  names "samey in their own poetic register"; batch one went 6-of-7 subjects starting
-  "the …", and batch two went **6 of 6** (harvest moon, night train, umbrella shop, attic
-  at dusk, button jar, shoemaker's bench) — two of them time-of-day flavored. Left alone
-  mid-batch deliberately (one variable at a time — the green door was the batch's
-  question); the named fix is recalibrating the banding prompt against the pool's
-  curation. Raise with Max at the next batch.
+- ~~**The Subject Scout's tone rut fired on batch two (2026-08-10).**~~ **Closed
+  2026-08-11** — D-17 lever 1: the scout's banding now requires varied grammatical
+  shapes, keyed off the used list's recent tail. Batch three measures it.
 - **Archiving a run has no endpoint or button.** `approved → archived` exists in the
   status machine and `updateStatus` enforces it, but no API route or UI exposes it — the
   childhood archive went through a hand-written script against `run-store`. Fine at n=1;
