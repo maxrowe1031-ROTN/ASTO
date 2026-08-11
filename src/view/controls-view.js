@@ -5,11 +5,12 @@
 
 export class ControlsView {
   constructor(root, { onConfirm, onClear, onShuffle, onHint, onVocab }) {
-    // Vocabulary · Hint · Shuffle · Clear · Confirm — least committal to most, ending on
+    // Vocab · Hint · Shuffle · Clear · Confirm — least committal to most, ending on
     // the primary action under the right thumb. The two assists lead: they change what
-    // you KNOW, the middle two change what you SEE, Confirm commits.
+    // you KNOW, the middle two change what you SEE, Confirm commits. ("Vocab" not
+    // "Vocabulary" — Max's call, 2026-08-11, for the tighter phone row.)
     root.innerHTML = `
-      <button class="pill" data-action="vocab">Vocabulary</button>
+      <button class="pill" data-action="vocab">Vocab</button>
       <button class="pill" data-action="hint">Hint</button>
       <button class="pill" data-action="shuffle">Shuffle</button>
       <button class="pill" data-action="clear">Clear</button>

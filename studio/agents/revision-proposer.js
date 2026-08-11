@@ -225,10 +225,33 @@ const everySetIsFixedOrProtected = (output, board) => {
       ];
 };
 
+// Pre-review only, when the caller attached the findings (D-17 second
+// amendment, 2026-08-11): the allowlisted findings are the WHOLE mandate, so a
+// fix on a set they never named is scope creep, however good the idea. The
+// smell-of-rain auto-revision rewrote seven sets from a two-finding mandate and
+// came back more obscure — this is the check that ends that. A legacy
+// `preReview: true` (no findings attached) keeps the completeness rule but
+// cannot scope-check.
+const fixesStayInsideTheMandate = (output, findings) => {
+  const named = new Set((findings ?? []).flatMap((finding) => finding.setIds ?? []));
+  if (named.size === 0) return [];
+  return output.fixes
+    .filter((fix) => !named.has(fix.setId))
+    .map((fix) => ({
+      path: 'fixes',
+      message: `"${fix.setId}" is outside the mandate — the allowlisted findings name only ${[...named].join(', ')}; unnamed sets go in "doNotChange"`,
+    }));
+};
+
 export function validateOutput(output, { board = null, preReview = false } = {}) {
   return validateAgainst(output, SCHEMA, [
     (value) => setsExistOnTheBoard(value, board),
     noSetIsBothFixedAndProtected,
-    ...(preReview ? [(value) => everySetIsFixedOrProtected(value, board)] : []),
+    ...(preReview
+      ? [
+          (value) => everySetIsFixedOrProtected(value, board),
+          (value) => fixesStayInsideTheMandate(value, preReview.findings ?? null),
+        ]
+      : []),
   ]);
 }

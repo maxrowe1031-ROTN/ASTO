@@ -182,7 +182,9 @@ export async function proposeRevision({
       lastReply = text;
       const parsed = agent.parse(text);
       const validation = parsed.ok
-        ? agent.validateOutput(parsed.value, { board: input.board, preReview: Boolean(preReview) })
+        // The findings travel into validation so the mandate is enforceable,
+        // not just requested (D-17 second amendment).
+        ? agent.validateOutput(parsed.value, { board: input.board, preReview: preReview ?? false })
         : parsed.failure;
 
       if (parsed.ok && validation.ok) {

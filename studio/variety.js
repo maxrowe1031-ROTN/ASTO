@@ -40,6 +40,9 @@ const PUZZLES_DIR = fileURLToPath(new URL('../puzzles/', import.meta.url));
 
 const REQUEST_COUNT = 3;
 const AVOID_COUNT = 2;
+// How many of the newest published boards feed the word-repetition avoid list
+// (D-19). "Too soon", not "ever again": five boards is roughly a week of play.
+const RECENT_PUBLISHED_BOARDS = 5;
 const QUOTA_STANCES = 4;
 
 /** The words of a set, lower-cased, for joining a board back to its pairs. */
@@ -111,6 +114,7 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
   // ("a mock-derived board is never mistaken for real editorial signal"); this
   // is the second place that has to honour it. One had been sitting in the
   // corpus since 2026-08-03, marked approved.
+  const publishedBoards = [];
   for (const runId of store?.listRuns() ?? []) {
     if (isMockRun(store, runId)) continue;
     for (const { board, shapeByWord, grades } of attemptsOf(store, runId)) {
@@ -121,6 +125,24 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
       for (const set of board.sets ?? []) record(shapeOf(set));
       recordHardest(board, shapeOf, grades);
     }
+    // Publish events, for the word-repetition avoid list (D-19): the words of
+    // a PUBLISHED board reached a player, so a soon-repeated one reads as
+    // retreading. Rejected boards never shipped; their words stay free.
+    collectPublishedWords(store, runId, publishedBoards);
+  }
+
+  // Newest publishes first, bounded — the complaint is "too soon", not "ever
+  // again", so only the freshest boards' words go on the avoid list.
+  const recentPublishedWords = [];
+  const seenWords = new Set();
+  publishedBoards.sort((a, b) => (a.at < b.at ? 1 : -1));
+  for (const { words } of publishedBoards.slice(0, RECENT_PUBLISHED_BOARDS)) {
+    for (const word of words) {
+      const key = word.toLowerCase();
+      if (seenWords.has(key)) continue;
+      seenWords.add(key);
+      recentPublishedWords.push(word);
+    }
   }
 
   return {
@@ -129,6 +151,7 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
     stanceCounts,
     recent,
     unknown,
+    recentPublishedWords,
     shapes: SHAPES,
     // How the HARDEST set of each board earned its difficulty, newest last
     // (design.md D-8). Not a count of shapes — a count of the two ways a board
@@ -176,6 +199,27 @@ export function buildRelationshipIndex({ store, puzzlesDir = PUZZLES_DIR } = {})
     }
     if (!shape) return; // unjoinable — guessing here would be worse than silence
     hardestSources.push(isNameable(shape) ? 'vocabulary' : 'arrangement');
+  }
+}
+
+/** The words of each publish event's board, with its timestamp. Degrades quiet. */
+function collectPublishedWords(store, runId, out) {
+  let decisions;
+  try {
+    decisions = store.readDecisions(runId);
+  } catch {
+    return;
+  }
+  for (const decision of decisions) {
+    if (decision.type !== 'publish') continue;
+    try {
+      const board = store.readAttemptArtifact(runId, decision.attemptId, 'board.json');
+      // Original casing, for the prompt — wordsOf lowercases for joining.
+      const words = (board.sets ?? []).flatMap((set) => (set.pairs ?? []).flat());
+      if (words.length > 0) out.push({ at: decision.at ?? '', words });
+    } catch {
+      // The attempt's board is unreadable — the avoid list just gets less data.
+    }
   }
 }
 
@@ -301,6 +345,9 @@ export function buildVarietyBrief({ index, count = 8 } = {}) {
     count,
     relationshipShapes,
     avoidShapes,
+    // The word-repetition avoid list (D-19): a soft steer, not a check — the
+    // review card is where a repeat that slips through gets caught.
+    avoidWords: index?.recentPublishedWords ?? [],
     stanceQuotas: buildStanceQuotas({ index }),
     ...leanAgainstRecentDifficulty(index),
     ...askForHardestSlot(index),

@@ -230,6 +230,14 @@ export async function runPipeline({
       budget.check();
       if (stage.kind === 'gate') await runIntegrityGate(ctx);
       else await runAgentStage(ctx, stage);
+      // The unity gate on revisions (D-17 second amendment, 2026-08-11): a
+      // word a revision INTRODUCED that 08 names as a unity outlier fails the
+      // attempt. On a fresh board unity stays advisory — Max judges those
+      // himself — but a revision was asked to repair a board, and importing
+      // "kickoff" onto a boat board (mending nets) is not a repair.
+      if (stage.id === '08-style-guide' && ctx.revision?.parentBoard) {
+        enforceRevisionUnity(ctx);
+      }
       store.recordStageStatus(runId, attemptId, stage.id, { status: 'complete' });
       persistProgress();
     }
@@ -371,6 +379,41 @@ function revisionOf(store, runId, attempt) {
   const notes = revision.notes ?? '';
   if (!notes.trim() && !parentBoard) return null;
   return { notes, fromStage: revision.fromStage ?? null, scope: revision.scope ?? null, parentBoard };
+}
+
+/**
+ * Fail a revision attempt whose NEW words break the theme's world.
+ *
+ * Deterministic join of two things the attempt already holds: the words the
+ * revision introduced (current board minus parent board, case-insensitive) and
+ * 08's unity outliers. A word in both is an import the revision was never
+ * asked to make. Throws the same terminal failure shape as the integrity gate,
+ * so the review card names it loudly and Max can re-request.
+ */
+function enforceRevisionUnity(ctx) {
+  const board = boardOf(ctx.blackboard);
+  const parent = ctx.revision?.parentBoard;
+  if (!board || !parent) return;
+
+  const parentWords = new Set(deriveWords(parent.sets ?? []).map((word) => word.toLowerCase()));
+  const introduced = new Set(
+    deriveWords(board.sets ?? [])
+      .map((word) => word.toLowerCase())
+      .filter((word) => !parentWords.has(word)),
+  );
+  if (introduced.size === 0) return;
+
+  const outliers = ctx.blackboard.get('08-style-guide')?.unity?.outliers ?? [];
+  const breaches = outliers.filter((outlier) => introduced.has(outlier.word?.toLowerCase()));
+  if (breaches.length === 0) return;
+
+  throw new StudioFailure(
+    TERMINAL_CONTENT,
+    `the revision introduced word(s) outside the theme's world: ${breaches
+      .map((breach) => `"${breach.word}" (${breach.note ?? 'unity outlier'})`)
+      .join('; ')}`,
+    { stageId: '08-style-guide', breaches },
+  );
 }
 
 function runUsageBefore(store, runId, attemptId) {

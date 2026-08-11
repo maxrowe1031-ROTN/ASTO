@@ -2,6 +2,43 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-11 — The batch-five tuning pass: three levers and two small asks
+
+All on `work/batch5-tuning`, TDD-first, **suite 1314 green**; the studio levers'
+taste gate is batch five, explicitly deferred (D-17 second amendment + D-19).
+
+### The two game asks (Max)
+
+- Title screen leads with "How to play", Play keeps the ink fill —
+  browser-verified, order flipped.
+- The Vocabulary pill reads **"Vocab"** — at 375px the first four pills now
+  share a row, Confirm keeps its own.
+
+### The three studio levers
+
+1. **Territory variety** (scout): the wider map named — far places,
+   history/myth, fiction/fandom, sports/pop culture, proper nouns — with cozy
+   everyday kept as the home register, keyed off the used list like the shape
+   rule.
+2. **Revision guardrails:** the proposer scope check (pre-review fixes ⊆ the
+   findings' sets — the smell-of-rain 7-from-2 hole, closed by validator with
+   findings now traveling into validation) and the unity gate (a word a
+   revision INTRODUCES that lands in 08's outliers fails the attempt through
+   the terminal path — the kickoff hole; fresh boards stay advisory). Pipeline
+   tests pin both directions: the breach fails and names the word; a fresh
+   board with an outlier still completes.
+3. **D-19, word-repetition avoidance:** the five newest PUBLISHED boards'
+   words ride every brief as `avoidWords`, rendered to 01 as a soft steer.
+   Verified live on a mock run: 79 words, led by exactly the newest corpus
+   (bee, honeycomb, milk, cheese). A steer not a check, deliberately —
+   escalation path recorded.
+
+- **Next:** batch five with everything live — territory spread, revision
+  outcomes, word recurrence, and gloss quality measured against batch four.
+  Still waiting on Max: the tinsmith (edits wanted) and low tide publishes,
+  and market stalls' true verdict. B2 hand-editing keeps growing an appetite
+  (the tinsmith difficulty edit).
+
 ## 2026-08-11 — Batch four: the vocab button earns its keep, and goes always-on
 
 The first batch generated with the glossary stage live (on `work/vocab-button`),

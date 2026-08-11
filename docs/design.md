@@ -1934,6 +1934,57 @@ Suite 1301 green. Also noted from the same playtest: 07's flags under-detect
 noise ("why is this defined?") → revisit the decline path with a threshold
 rather than removing the button.
 
+### D-17 second amendment — territory variety, and the revision guardrails (2026-08-11)
+
+The batch-five tuning pass, from Max's batch-3/4 readouts:
+
+1. **Territory variety** (the scout's second rut): grammar variety worked and
+   the subjects stayed cozy-commonplace. The banding now names the wider map —
+   far places, history/myth, fiction/fandom, sports/pop-culture, proper nouns
+   (his exemplars: a tropical island, mars, egypt, harry potter, the yankees)
+   — with cozy-everyday kept as the HOME register, keyed off the used list's
+   recent register like the shape rule. **Reconsider-when:** the register
+   distribution stays cozy after a batch (the ask needs exemplar rotation), or
+   the far territories read off-brand to Max (narrow the map, keep the ask).
+2. **Proposer scope check** (the smell-of-rain hole): pre-review, a proposal
+   may fix ONLY the sets its allowlisted findings name — enforced by
+   validator, with the findings now traveling into validation. Legacy boolean
+   callers keep completeness-only. **Reconsider-when:** a legitimate fix
+   genuinely requires touching an unnamed set (e.g. a cross-set bait fix) —
+   the proposer should say so loudly in `doNotChange` notes and the guard
+   grows an explicit escape, never a silent widening.
+3. **Unity gate on revisions** (the kickoff hole): a word a revision
+   INTRODUCES that lands in 08's unity outliers fails the attempt through the
+   terminal-failure path the integrity gate already uses — loud on the card,
+   Max can re-request. Fresh boards stay advisory-only. Noted honestly: the
+   board-builder's revision prompt still carries no theme-evocation text; the
+   gate is the check that covers that gap (D-7: a check outranks an
+   instruction). **Reconsider-when:** 08 flags a legitimately theme-widening
+   word and kills a good revision — the gate should then require TWO signals
+   (outlier + Max's blocker overlap) before failing.
+
+Also from Max the same day, in the game: the title screen leads with "How to
+play" before the ink-filled Play, and the Vocabulary pill reads **"Vocab"**.
+
+### D-19 — Recently published words are an avoid-list (2026-08-11)
+
+Max's three-time repetition signal ("kindling:ember, mallet was just in the
+last puzzle… theres a lot of words out there. we don't want to be retreading
+territory too soon"; the loupe déjà vu; smell-of-rain's "seen this before").
+`buildRelationshipIndex` now gathers the words of the **five most recently
+PUBLISHED boards** (publish events joined to their attempt boards; rejected
+boards' words stay free, mock runs already excluded) and every brief — themed
+and surprise-me — carries them as `avoidWords`, rendered to 01 as a soft
+steer: do not reuse them or close pairings built on them unless the subject
+truly demands it.
+
+**A steer, not a check, on purpose (D-7 acknowledged):** the review card is
+where a slipped repeat gets caught, and Max is the measure. **Reconsider-when:**
+batch five still repeats recent words — escalate to a deterministic check at
+04a (introduced words ∩ avoid list); or the 80-word block measurably degrades
+01's pools (shortfall reports rise) — trim to distinctive words only (drop the
+most common English words from the list) rather than dropping the lever.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
