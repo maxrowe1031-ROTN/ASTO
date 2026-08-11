@@ -197,6 +197,20 @@
   transform: translateY(1px); /* 1px press, per Appendix E */
 }
 
+/* A hinted set wears its solved-card colours early — the same three tokens the reveal
+   cards use, so the tint IS the reveal colouring (sanctioned tier reveal, 2026-08-11). */
+.tile.hinted[data-tier='green']  { --card-main: var(--tier-green-main);  --card-tint: var(--tier-green-tint);  --card-deep: var(--tier-green-deep); }
+.tile.hinted[data-tier='yellow'] { --card-main: var(--tier-yellow-main); --card-tint: var(--tier-yellow-tint); --card-deep: var(--tier-yellow-deep); }
+.tile.hinted[data-tier='red']    { --card-main: var(--tier-red-main);    --card-tint: var(--tier-red-tint);    --card-deep: var(--tier-red-deep); }
+.tile.hinted[data-tier='black']  { --card-main: var(--tier-black-main);  --card-tint: var(--tier-black-tint);  --card-deep: var(--tier-black-deep); }
+
+.tile.hinted {
+  background: var(--card-tint);
+  border-color: var(--card-main);
+  color: var(--card-deep);
+}
+
+/* Selection stays the louder voice: ink fill wins over the hint tint. */
 .tile.selected {
   background: var(--ink);
   border-color: var(--ink);
@@ -240,6 +254,19 @@
 .pill:disabled {
   opacity: 0.35;
   cursor: default;
+}
+
+/* Four pills (Hint joined the row, 2026-08-11) need a gentler footprint on phones —
+   compress before wrapping, so the row stays one thumb-height tall. */
+@media (max-width: 430px) {
+  .controls {
+    gap: 6px;
+  }
+
+  .pill {
+    padding: 10px 13px;
+    font-size: 14px;
+  }
 }
 
 /* ---------- Solved set cards ---------- */

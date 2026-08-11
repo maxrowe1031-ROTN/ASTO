@@ -10,6 +10,7 @@
 import {
   clearSelection,
   deselect,
+  hint,
   initGame,
   reorderSelected,
   select,
@@ -98,6 +99,12 @@ export class GameController {
   shufflePressed() {
     this.state = shuffle(this.state, this.rand);
     this.render();
+  }
+
+  hintPressed() {
+    const { state, outcome } = hint(this.state, this.rand);
+    this.state = state;
+    this.render(outcome);
   }
 
   // --- output ---

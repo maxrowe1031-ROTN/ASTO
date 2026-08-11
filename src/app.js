@@ -171,7 +171,8 @@ async function main() {
     new ControlsView(document.getElementById('controls'), {
       onConfirm: () => controller.confirmPressed(),
       onClear: () => controller.clearPressed(),
-      onShuffle: () => controller.shufflePressed()
+      onShuffle: () => controller.shufflePressed(),
+      onHint: () => controller.hintPressed()
     }),
     new StatusView(document.getElementById('status')),
     // The coach speaks in the same breath as the status strip, and BEFORE the two views

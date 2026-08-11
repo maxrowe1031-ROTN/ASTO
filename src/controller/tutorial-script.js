@@ -37,7 +37,10 @@
  */
 export const TUTORIAL_RULES = Object.freeze({
   maxMistakes: Infinity,
-  clearSelectionOnFail: false
+  clearSelectionOnFail: false,
+  // The tutorial scripts its own nudges (GDD §5.2); a free-form hint mid-script would
+  // fight the choreography, so the pill never appears here.
+  hintsAllowed: 0
 });
 
 const REASSURANCE = 'Nothing lost — the warm-up costs no beans.';

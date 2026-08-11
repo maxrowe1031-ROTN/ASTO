@@ -4,7 +4,10 @@
 // remove existing nodes, never recreate them — FLIP needs the same DOM node before and
 // after, which is exactly why Phase 2 built it this way.
 
-import { fadeOut, flip, shake } from './motion.js';
+// Importing a pure derivation is the same move SolvedSetsView makes: difficultyToTier
+// decides no rules, it just names the colour a difficulty maps to.
+import { difficultyToTier } from '../engine/tiers.js';
+import { fadeOut, flip, pulse, shake } from './motion.js';
 
 const SHAKES = new Set(['miss', 'so-close', 'already-tried']);
 
@@ -48,12 +51,40 @@ export class BoardView {
 
     const selected = new Set(state.selectedTerms);
     const over = state.status !== 'playing';
+
+    // A hinted set's tiles carry its tier colour until solved — the sanctioned early
+    // tier reveal (2026-08-11). Derived from state every pass, so the tint survives
+    // shuffles and re-renders without any bookkeeping here.
+    const tierByTerm = new Map();
+    for (const set of state.puzzle.sets) {
+      if (!state.hintedSetIds.includes(set.id)) continue;
+      if (state.solvedSetIds.includes(set.id)) continue;
+      for (const term of set.pairs.flat()) tierByTerm.set(term, difficultyToTier(set.difficulty));
+    }
+
     for (const [term, tile] of this.tiles) {
       tile.classList.toggle('selected', selected.has(term));
       tile.setAttribute('aria-pressed', String(selected.has(term)));
       tile.disabled = over;
+
+      const tier = tierByTerm.get(term);
+      tile.classList.toggle('hinted', tier !== undefined);
+      if (tier !== undefined) {
+        tile.dataset.tier = tier;
+      } else {
+        delete tile.dataset.tier;
+      }
     }
     this.wereSelected = [...state.selectedTerms];
+
+    // The tint entrance: one gentle pulse on the newly revealed four (the latest hinted
+    // set only — earlier hints keep still). The colour itself is stylesheet state, so
+    // under reduced motion the reveal still lands — just still.
+    if (outcome?.type === 'hint') {
+      const newest = state.puzzle.sets.find((set) => set.id === state.hintedSetIds.at(-1));
+      const revealed = (newest?.pairs.flat() ?? []).map((term) => this.tiles.get(term));
+      await pulse(revealed.filter(Boolean));
+    }
   }
 
   createTile(term) {

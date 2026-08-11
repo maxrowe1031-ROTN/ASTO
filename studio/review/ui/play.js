@@ -151,6 +151,7 @@ export function startPlay(container, board, { onExit, recorder = null } = {}) {
       onConfirm: () => controller.confirmPressed(),
       onClear: () => controller.clearPressed(),
       onShuffle: () => controller.shufflePressed(),
+      onHint: () => controller.hintPressed(),
     }),
     new StatusView(at('status')),
     // Order matters, and for the same reason it does in the game: the

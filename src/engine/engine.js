@@ -2,7 +2,8 @@
 // It imports only its own siblings, and it is the only place game rules are decided.
 //
 // State shape:
-//   { puzzle, rules, boardTerms, selectedTerms, solvedSetIds, mistakes, status }
+//   { puzzle, rules, boardTerms, selectedTerms, solvedSetIds, hintedSetIds, hintsUsed,
+//     mistakes, status }
 //
 // `boardTerms` holds unsolved tiles only. Solving removes those four words, so grid
 // shrink, shuffle-unsolved-only, and the can't-resubmit-a-solved-set guard all fall out
@@ -27,7 +28,8 @@ export const MAX_MISTAKES = 4;
 export const DEFAULT_RULES = Object.freeze({
   maxMistakes: MAX_MISTAKES,
   soCloseCostsMistake: true,
-  clearSelectionOnFail: true
+  clearSelectionOnFail: true,
+  hintsAllowed: 1
 });
 
 /**
@@ -41,6 +43,8 @@ export function initGame(puzzle, rules = {}) {
     boardTerms: deriveWords(puzzle?.sets),
     selectedTerms: [],
     solvedSetIds: [],
+    hintedSetIds: [],
+    hintsUsed: 0,
     failedAttempts: [],
     mistakes: 0,
     status: 'playing'
@@ -93,6 +97,37 @@ export function shuffle(state, rand) {
   }
   if (state.status !== 'playing') return state;
   return nextState(state, { boardTerms: fisherYates(state.boardTerms, rand) });
+}
+
+/**
+ * Spend a hint: mark one random unsolved, not-yet-hinted set as hinted. The reveal is
+ * state (`hintedSetIds`) — views tint those tiles in the set's tier colour, a sanctioned
+ * exception (2026-08-11) to "tiers are never shown on the board". The outcome carries
+ * only its type; the outcome-payload no-leak rule stays intact.
+ *
+ * Free by design (GDD §8.3's non-penalty hypothesis) and bounded by `rules.hintsAllowed`.
+ * Returns `{ state, outcome: null }` unchanged when no hint can be given.
+ */
+export function hint(state, rand) {
+  if (typeof rand !== 'function') {
+    throw new TypeError('hint requires an injected rand() function');
+  }
+  if (state.status !== 'playing') return { state, outcome: null };
+  if (state.hintsUsed >= state.rules.hintsAllowed) return { state, outcome: null };
+
+  const candidates = state.puzzle.sets.filter(
+    (set) => !state.solvedSetIds.includes(set.id) && !state.hintedSetIds.includes(set.id)
+  );
+  if (candidates.length === 0) return { state, outcome: null };
+
+  const picked = candidates[Math.floor(rand() * candidates.length)];
+  return {
+    state: nextState(state, {
+      hintedSetIds: [...state.hintedSetIds, picked.id],
+      hintsUsed: state.hintsUsed + 1
+    }),
+    outcome: { type: 'hint' }
+  };
 }
 
 /**
@@ -199,6 +234,7 @@ function freezeState(state) {
   Object.freeze(state.boardTerms);
   Object.freeze(state.selectedTerms);
   Object.freeze(state.solvedSetIds);
+  Object.freeze(state.hintedSetIds);
   Object.freeze(state.failedAttempts);
   return Object.freeze(state);
 }

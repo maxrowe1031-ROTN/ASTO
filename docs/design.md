@@ -1722,6 +1722,60 @@ scout batches' grade-1 counts and his win rate recover without the taste verdict
 falling — or greens come back generic ("slapped on the page") and the line overshot,
 in which case the fix is scaling specificity to tier, not abandoning either rule.
 
+### D-16 — The hint button: one free reveal, worn in tier colour (2026-08-11)
+
+Max's idea, brainstormed and built the same day. One **Hint** pill per game: it marks
+a **random unsolved set** by tinting its four tiles in the set's **tier colour** —
+the same three tokens the solved reveal cards use, applied early. Membership and tier
+are revealed; **order is not** — the hint deliberately funnels the player into the
+assembly challenge, the game's differentiator. It answers GDD §8.3's open question
+("Should the game eventually include a non-penalty hint system?") with a playtest
+bet, the same way "So close!" was decided.
+
+**The decisions, made with Max in brainstorming:**
+
+1. **Free, one per game.** Non-penalty (the GDD's own leaning); beans untouched.
+   `rules.hintsAllowed` (default 1, tutorial 0) is the dial; the engine also refuses
+   to re-hint an already-hinted set, so raising the dial always adds information.
+2. **Pure random** among unsolved sets, via the injected RNG at the controller seam
+   (same contract as shuffle: `hint(state, rand)` throws without a rand). Chosen over
+   "hardest remaining" and weighted draws: simplest to explain, leaks nothing.
+   **Accepted risk:** the hint can land on a set the player already knew.
+   **Reconsider-when:** playtests show hints feeling wasted on easy sets — the
+   selection is one engine function; swap to a weighted draw then.
+3. **Persistent tier-colour tint**, not a transient flash. Max's own upgrade
+   mid-brainstorm: a flash makes the hint a memory test, which punishes exactly the
+   player who needed help. The tint holds until the set is solved, survives shuffles
+   (it is engine state, `hintedSetIds`, rendered fresh each pass), and needs no
+   motion to carry its meaning — reduced-motion players lose only the entrance
+   pulse, never the information.
+
+**Two sanctioned exceptions, recorded rather than slipped in:**
+
+- ***"Tiers are revealed on solve, never shown on the board"*** (GDD §9, CLAUDE.md
+  §7) — the hinted set's tier now shows early. Reasoning: that rule keeps the
+  *untouched* board neutral; a hint is the game deliberately stepping in, and "these
+  four are the tricky ones" is part of the help — a bait warning with some drama in
+  it. The rule stands for every other tile and every hintless game.
+  **Reconsider-when:** playtests read the early tier as spoiler rather than drama —
+  fall back to a neutral hint tint, which keeps the feature and restores the rule.
+- ***Outcomes never name set contents*** (engine.js) — barely bent, in the end: the
+  hint's reveal lives in **state**, and the `hint` outcome carries only its type,
+  like so-close and already-tried. `submit`'s outcomes are exactly as empty as
+  before; the no-leak test stands unchanged.
+
+**Deferred, on the record:** whether a hinted win is marked on the results card.
+No stakes until sharing/streaks exist; decide when they do.
+
+**Ride-along fix:** four pills overflowed a 375px viewport, so the controls compress
+below 430px (smaller gap and padding) instead of wrapping — found and fixed during
+browser verification, before any device saw it.
+
+**Status:** built TDD-first (10-test engine suite + a headless hint playthrough in
+game-flow; suite 1238 green), verified in the preview browser on desktop and mobile
+and in the Review Studio's play surface (which needed only an `onHint` callback —
+the boundary law's dividend). **Max's playtest is the outstanding gate.**
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
