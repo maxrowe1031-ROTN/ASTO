@@ -11,7 +11,8 @@
     "check-deploy": "node tools/check-deploy.js",
     "manifest": "node tools/build-manifest.js",
     "studio": "node studio/run.js",
-    "studio:review": "node studio/review/server.js"
+    "studio:review": "node studio/review/server.js",
+    "ratings": "node tools/ratings-report.js"
   },
   "engines": {
     "node": ">=22"

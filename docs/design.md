@@ -2109,6 +2109,22 @@ found paused with player taps lost — then the reading half grows a liveness ch
 (`npm run ratings` or `check-deploy` pinging the REST endpoint), or the project earns
 a keep-alive.
 
+**D-21 amendment — the reading half, built (2026-08-13, same day).** Max pasted the
+service key into `.env` and the loop closed in the same session.
+`studio/player-ratings.js` is the Studio's **second network seam beside `llm.js`**
+(recorded the way `puzzle-store` is a second write seam beside `run-store`: different
+law, own module) — it owns the only fetch that reads player data, service key from
+`SUPABASE_SERVICE_KEY`, pure aggregation underneath: the append log deduped to each
+player's LAST answer per (board, question), then per-board averages, counts, distinct
+players, win rate, and comments. Three surfaces read it: **`npm run ratings`**
+(`tools/ratings-report.js`, the evaluator-report pattern — table sorted by delight,
+fairness under 2.5 flagged, comments under their boards, `--json`), **`GET
+/api/player-ratings`** in the Review Studio's api (reader injected by server.js; the
+key stays server-side, the browser sees only aggregated boards), and the **Player
+ratings panel** on the review index page — filled after paint so a slow Supabase read
+costs the panel, never the run list. First real signal arrived while building: a
+stranger's board rating and comment landed within hours of the survey going live.
+
 **Deliberately not built:** ratings feeding variety steering or the rubric corpus.
 Player data *informs* Max in the Studio; whether it ever *drives* generation is a
 separate decision with its own D-number when the data exists to argue from.

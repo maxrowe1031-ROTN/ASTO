@@ -89,6 +89,10 @@ export function createApi({
   // store is: a test publishes into a throwaway directory, never into the
   // game's real content.
   puzzles = createPuzzleStore(),
+  // The player-ratings reader (D-21) — injected like the puzzle store, and for the
+  // same reason: api.js touches neither network nor env. server.js wires the real
+  // reader; the service key stays inside it and is never part of any response.
+  playerRatings = null,
   // Is this server running the code that is on disk?
   //
   // A node process holds the modules it started with, so a fix merged after
@@ -665,8 +669,16 @@ export function createApi({
 
   // --- dispatch ---
 
+  const readPlayerRatings = async () => {
+    if (playerRatings === null) {
+      return { status: 503, body: { error: 'player ratings are not wired on this server' } };
+    }
+    return ok({ boards: await playerRatings.fetchBoards() });
+  };
+
   const ROUTES = [
     ['GET', /^\/api\/config$/, () => readConfig()],
+    ['GET', /^\/api\/player-ratings$/, () => readPlayerRatings()],
     ['GET', /^\/api\/runs$/, () => listRuns()],
     ['POST', /^\/api\/runs$/, (_m, { body }) => createRun(body)],
     ['GET', /^\/api\/runs\/([^/]+)$/, (m) => readRun(m[1])],

@@ -23,6 +23,7 @@ import { fileURLToPath } from 'node:url';
 
 import { createApi } from './api.js';
 import { createRunner, defaultTransport } from './runner.js';
+import { createRatingsReader } from '../player-ratings.js';
 import { createRunStore } from '../storage/run-store.js';
 import { loadEnv } from '../env.js';
 import { loadRules } from '../corpus/rules.js';
@@ -232,7 +233,14 @@ export async function createReviewServer({
     makeTransport,
     loadContext: loadContext ?? (() => ({ rules: loadRules().map((rule) => rule.text) })),
   });
-  const api = createApi({ store: runStore, runner, codeState: makeCodeState() });
+  const api = createApi({
+    store: runStore,
+    runner,
+    codeState: makeCodeState(),
+    // The reader holds the service key server-side; the browser only ever sees
+    // aggregated boards (or the error message, which names a variable, never a value).
+    playerRatings: createRatingsReader(),
+  });
 
   const server = createServer(async (req, res) => {
     const pathname = (req.url ?? '/').split('?')[0];
