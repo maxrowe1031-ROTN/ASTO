@@ -17,6 +17,10 @@ export class EndView {
       <h1 class="end-title"></h1>
       <p class="end-score"></p>
       <div class="end-sets"></div>
+      <!-- The survey mount (D-21): below all the set reveals, above the actions — Max's
+           placement call. This view only provides the slot; whether a survey lives in it
+           is decided in app.js, and the SurveyView renders it. -->
+      <div class="survey" hidden></div>
       <div class="controls end-actions">
         <button class="pill" data-action="share">Share</button>
         <button class="pill" data-action="play-again">Play again</button>
@@ -33,6 +37,8 @@ export class EndView {
     this.setsEl = root.querySelector('.end-sets');
     this.feedbackEl = root.querySelector('.share-feedback');
     this.nextEl = root.querySelector('[data-action="next-puzzle"]');
+    /** Handed to app.js, which mounts the SurveyView here (or leaves it hidden). */
+    this.surveyMount = root.querySelector('.survey');
     this.renderedFor = null;
 
     root.querySelector('[data-action="share"]').addEventListener('click', onShare);

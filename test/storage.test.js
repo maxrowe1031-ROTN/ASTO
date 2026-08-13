@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { RESULTS_KEY, Storage, TUTORIAL_SEEN_KEY } from '../src/storage.js';
+import { RATED_BOARDS_KEY, RESULTS_KEY, Storage, TUTORIAL_SEEN_KEY } from '../src/storage.js';
 
 /** A stand-in for localStorage: same three methods, no browser. */
 function fakeStore(initial = {}) {
@@ -184,4 +184,47 @@ test('no store at all behaves like a store that forgets every result', () => {
   const storage = new Storage({ store: null });
   assert.doesNotThrow(() => storage.recordResult('first-light', won()));
   assert.deepEqual(storage.allResults(), {});
+});
+
+// --- rated boards: the survey asks each board once per device ---
+
+test('a fresh board has not been rated', () => {
+  assert.equal(new Storage({ store: fakeStore() }).hasRated('first-light'), false);
+});
+
+test('marking a board rated is remembered, per board', () => {
+  const storage = new Storage({ store: fakeStore() });
+  storage.markRated('first-light');
+  assert.equal(storage.hasRated('first-light'), true);
+  assert.equal(storage.hasRated('low-tide'), false);
+});
+
+test('rated boards accumulate rather than replace', () => {
+  const storage = new Storage({ store: fakeStore() });
+  storage.markRated('first-light');
+  storage.markRated('low-tide');
+  assert.equal(storage.hasRated('first-light'), true);
+  assert.equal(storage.hasRated('low-tide'), true);
+});
+
+test('a corrupt rated-boards blob degrades to nothing rated instead of throwing', () => {
+  for (const raw of ['{ not json', '{}', 'null', '"a string"', '42']) {
+    const storage = new Storage({ store: fakeStore({ [RATED_BOARDS_KEY]: raw }) });
+    assert.equal(storage.hasRated('first-light'), false, raw);
+    assert.doesNotThrow(() => storage.markRated('first-light'), raw);
+    assert.equal(storage.hasRated('first-light'), true, raw);
+  }
+});
+
+test('clear() forgets rated boards along with everything else', () => {
+  const storage = new Storage({ store: fakeStore() });
+  storage.markRated('first-light');
+  storage.clear();
+  assert.equal(storage.hasRated('first-light'), false);
+});
+
+test('a hostile store never rates and never throws', () => {
+  const storage = new Storage({ store: hostileStore() });
+  assert.doesNotThrow(() => storage.markRated('first-light'));
+  assert.equal(storage.hasRated('first-light'), false);
 });

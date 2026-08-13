@@ -10,6 +10,7 @@
 // so nothing is torn down and rebuilt between the tutorial and the real puzzle.
 
 import { ResultsRecorder } from './results-recorder.js';
+import { Ratings } from './ratings.js';
 import { GameController } from './controller/game-controller.js';
 import { TUTORIAL_RULES } from './controller/tutorial-script.js';
 import { buildShareText, share } from './share.js';
@@ -24,6 +25,7 @@ import { HeaderView } from './view/header-view.js';
 import { nextUnfinished, SelectView } from './view/select-view.js';
 import { SolvedSetsView } from './view/solved-sets-view.js';
 import { StatusView } from './view/status-view.js';
+import { SurveyView } from './view/survey-view.js';
 import { TitleView } from './view/title-view.js';
 import { TutorialOverlay } from './view/tutorial-overlay.js';
 
@@ -172,6 +174,51 @@ async function main() {
     onBackToPuzzles: () => (manifest.length > 0 ? showSelect() : router.show('title'))
   });
 
+  // --- the end-screen survey (D-21) ---
+  //
+  // `asking` is the board the on-screen survey speaks for, captured when the end screen
+  // appears — not read from currentSlug at tap time, so a survey can never file a tap
+  // under a different board than the one it asked about. Null means "not asking":
+  // tutorial runs, already-rated boards, and every moment outside an end screen.
+  const ratings = new Ratings();
+  let asking = null;
+
+  const surveyView = new SurveyView(endView.surveyMount, {
+    onRate: (question, value) => {
+      if (asking === null) return;
+      ratings.sendRating({ slug: asking.slug, question, value, won: asking.won, mistakes: asking.mistakes });
+      storage.markRated(asking.slug);
+    },
+    onComment: (note) => {
+      if (asking === null) return;
+      ratings.sendComment({ slug: asking.slug, note, won: asking.won });
+      storage.markRated(asking.slug);
+    }
+  });
+
+  // Not a view, same as ResultsRecorder: a reader deciding whether the end screen asks.
+  // The first tap marks the board rated, but the survey stays up for the rest of the
+  // screen — partial answers are data, and the other rows should still be answerable.
+  // Only the NEXT visit finds hasRated true and stays quiet.
+  const surveyHost = {
+    update(state) {
+      if (state.status === 'playing') {
+        asking = null;
+        surveyView.hide();
+        return;
+      }
+      if (this.shownFor === state) return; // same finished game repainting — leave it be
+      this.shownFor = state;
+      if (currentSlug !== null && !storage.hasRated(currentSlug)) {
+        asking = { slug: currentSlug, won: state.status === 'won', mistakes: state.mistakes };
+        surveyView.reset();
+      } else {
+        asking = null;
+        surveyView.hide();
+      }
+    }
+  };
+
   // Order matters: the controller awaits each view in turn, so the solve beat plays out
   // frame → board → card, and the screen only swaps once the motion has finished.
   const views = [
@@ -208,6 +255,9 @@ async function main() {
     // The router runs BEFORE the end view so the end screen is already on-screen when its
     // cards settle in — animating a hidden section just throws the motion away.
     router,
+    // After the recorder (a finished board is already saved) and before the end view's
+    // cards paint, the host decides whether this end screen carries the survey.
+    surveyHost,
     endView
   ];
 
