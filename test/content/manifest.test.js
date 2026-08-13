@@ -19,7 +19,9 @@ const PUZZLES = join(import.meta.dirname, '..', '..', 'puzzles');
 const MANIFEST = join(PUZZLES, 'index.json');
 
 // Reached through "How to play", never the puzzle list.
-const UNLISTED = new Set(['tutorial']);
+// Mirrors puzzle-store.js: the retired tutorial slug, and First Light — which IS the
+// tutorial since the D-20 addendum and is met in "How to play", never in the list.
+const UNLISTED = new Set(['tutorial', 'first-light']);
 
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 

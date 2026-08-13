@@ -150,7 +150,6 @@ async function main() {
 
   const coach = new TutorialOverlay(document.getElementById('tutorial-coach'), {
     onSkip: leaveTutorial,
-    onContinue: leaveTutorial,
     // Reaching the last coach-mark is what "seen" means — not merely opening the board.
     // Recorded here so a player who wanders off mid-screen isn't taught twice.
     onCoached: () => storage.markTutorialSeen()

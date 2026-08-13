@@ -2036,6 +2036,31 @@ their first "real" board is one they already know the answers to, in which case 
 tutorial should move to a board OUTSIDE the daily rotation again, authored to the
 coach-marks rather than inherited by them.
 
+**D-20 second addendum — the coach loses its pill, gains two lessons; Warm Up leads
+the list (Max, 2026-08-13, after playing the shared build).** Three calls in one pass:
+
+1. **The Continue pill is gone.** It sat one row above Confirm and read as part of the
+   game. The tutorial now plays out to the end — winning all four sets hands over to the
+   normal end screen ("Next puzzle" already skips First Light) — and "Skip tutorial"
+   stays visible on every step as the one early exit, a text link so it can never be
+   mistaken for a game control. The script's exit-offer flag became a plain `coached`
+   boolean: it still turns true at the first solved set, stays true, and still marks
+   `tutorialSeen`; it just no longer summons a button.
+2. **Hint and Vocab are coached.** `TUTORIAL_RULES.hintsAllowed` went 0 → 1 (the old 0
+   predates both pills; a button the player cannot press cannot be taught). Two
+   outcome-reactive steps narrate the pills at the moment of use — the engine's `hint` /
+   `vocab` outcomes already reached the overlay, unused until now.
+3. **Warm Up returns as puzzle #1, First Light leaves the list.** The old tutorial board
+   republished under its own name (`warm-up`, id `asto-warm-up`, gloss kept) and
+   hand-ordered to slot 1; `first-light` joined `UNLISTED` — it ships (tutorial, deep
+   links) but is never offered as a listed puzzle, closing the addendum's known trade
+   (nobody is handed a board the tutorial already taught them). Its shipped labels
+   returned to the variety library under the new id; the pinned count went back to 8.
+
+**Reconsider-when:** a player skips the tutorial early and never meets the Hint/Vocab
+coaching — if the pills draw confusion from tutorial-skippers, the coach copy belongs
+in the main game's first use, not just the tutorial's.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

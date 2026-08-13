@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "puzzles": [
     {
-      "slug": "first-light",
-      "id": "asto-first-light",
-      "title": "First Light"
+      "slug": "warm-up",
+      "id": "asto-warm-up",
+      "title": "Warm Up"
     },
     {
       "slug": "bedside-manor",
