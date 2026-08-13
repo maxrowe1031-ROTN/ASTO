@@ -2,6 +2,36 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — D-21 amendment: the reading half — the ratings come home
+
+Same day as the collecting half. Max pasted `SUPABASE_SERVICE_KEY` into `.env`
+(verified present by name only) and the loop closed on
+`work/player-ratings-reader`, TDD throughout. **Suite 1376 green** (+21).
+
+- **`studio/player-ratings.js`** — the Studio's second network seam beside
+  `llm.js` (12 tests): pure `aggregate()` dedupes the append log to each
+  player's last answer per (board, question); rows without a client id stay
+  separate anonymous voices; per-board averages, counts, players, win rate,
+  comments newest-first. The reader pages both tables with the service key;
+  a missing key names the variable and nothing else; a refusal surfaces as
+  an error, never an empty report.
+- **`npm run ratings`** (`tools/ratings-report.js`, 6 tests on the pure
+  renderer): table sorted by delight, fairness averaging under 2.5 flagged,
+  comments under their boards, `--json` for machines.
+- **Review Studio**: `GET /api/player-ratings` (3 api tests — reader
+  injected, 503 when unwired, errors as messages) and a Player ratings panel
+  on the index page, filled after paint so a slow read never blocks the run
+  list. The key stays server-side; the browser sees only aggregated boards.
+- **Verified live:** `npm run ratings` and the Studio panel both render the
+  real tables — including the first stranger's signal, a bedside-manor
+  rating with the comment "loved the theme of this one" that arrived within
+  hours of the survey shipping. Panel text confirmed in the preview browser;
+  `curl /api/player-ratings` returns the aggregation.
+- **Next:** Max reads the survey and the report in situ (his acceptance) —
+  then D-21 is fully closed. Unchanged otherwise: share the URL, watch
+  bounce (D-20's trigger), batch five when he wants it, B2 hand-editing's
+  growing appetite.
+
 ## 2026-08-13 — D-21: player ratings, the collecting half — live survey, Supabase
 
 The approved player-ratings plan's steps 1–4, on `work/player-ratings`, TDD

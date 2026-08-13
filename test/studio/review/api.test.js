@@ -1170,3 +1170,48 @@ test('publish still refuses fields it does not know', async () => {
     cleanup();
   }
 });
+
+// --- player ratings (D-21) ---
+
+test('GET /api/player-ratings hands back the reader’s boards', async () => {
+  const boards = [{ slug: 'warm-up', players: 1 }];
+  const { api, cleanup } = setup({}, { playerRatings: { fetchBoards: async () => boards } });
+  try {
+    const { status, body } = await api.handle({ method: 'GET', path: '/api/player-ratings' });
+    assert.equal(status, 200);
+    assert.deepEqual(body, { boards });
+  } finally {
+    cleanup();
+  }
+});
+
+test('a reader failure surfaces as its message, never a crash', async () => {
+  const { api, cleanup } = setup(
+    {},
+    {
+      playerRatings: {
+        fetchBoards: async () => {
+          throw new Error('SUPABASE_SERVICE_KEY is not set — add it to .env');
+        },
+      },
+    },
+  );
+  try {
+    const { status, body } = await api.handle({ method: 'GET', path: '/api/player-ratings' });
+    assert.equal(status, 500);
+    assert.match(body.error, /SUPABASE_SERVICE_KEY/);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a server built without a reader says so instead of pretending an empty table', async () => {
+  const { api, cleanup } = setup();
+  try {
+    const { status, body } = await api.handle({ method: 'GET', path: '/api/player-ratings' });
+    assert.equal(status, 503);
+    assert.match(body.error, /player ratings/i);
+  } finally {
+    cleanup();
+  }
+});

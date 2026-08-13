@@ -120,7 +120,16 @@ async function renderList() {
           )
           .join('')}
       </ul>
+    </section>
+
+    <section class="panel" id="player-ratings-panel">
+      <h2>Player ratings</h2>
+      <p class="studio-muted">Reading…</p>
     </section>`;
+
+  // Filled AFTER the page paints: the numbers live in Supabase, and a slow or failed
+  // read must cost this panel only, never the run list.
+  fillPlayerRatings();
 
   document.getElementById('new-run').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -141,6 +150,73 @@ async function renderList() {
       notify(error.message);
     }
   });
+}
+
+// --- player ratings (D-21) ---
+
+/** The survey's readings, aggregated server-side; the service key never reaches here. */
+async function fillPlayerRatings() {
+  const panel = document.getElementById('player-ratings-panel');
+  if (!panel) return;
+  const heading = (extra = '') => `<h2>Player ratings${extra}</h2>`;
+  try {
+    const { boards } = await api('/player-ratings');
+    if (!panel.isConnected) return; // navigated away while we were reading
+    if (boards.length === 0) {
+      panel.innerHTML = `${heading()}<p class="studio-muted">No player ratings yet — the survey is live, the table is empty.</p>`;
+      return;
+    }
+    const sorted = [...boards].sort(
+      (a, b) => (b.ratings.delight.average ?? -1) - (a.ratings.delight.average ?? -1),
+    );
+    const avg = (reading) => (reading.average === null ? '–' : reading.average.toFixed(1));
+    const pct = (rate) => (rate === null ? '–' : `${Math.round(rate * 100)}%`);
+    const unfair = (b) => b.ratings.fairness.average !== null && b.ratings.fairness.average < 2.5;
+    const chatty = sorted.filter((b) => b.comments.length > 0);
+    panel.innerHTML = `
+      ${heading(' <span class="studio-muted">(1–4, each player’s latest answer, best delight first)</span>')}
+      <table class="ratings-table">
+        <thead><tr><th>board</th><th>players</th><th>win</th><th>difficulty</th><th>delight</th><th>fairness</th></tr></thead>
+        <tbody>
+          ${sorted
+            .map(
+              (b) => `
+          <tr>
+            <td>${escape(b.slug)}</td>
+            <td>${b.players}</td>
+            <td>${pct(b.winRate)}</td>
+            <td>${avg(b.ratings.difficulty)}</td>
+            <td>${avg(b.ratings.delight)}</td>
+            <td>${unfair(b) ? `<strong>${avg(b.ratings.fairness)} ⚑</strong>` : avg(b.ratings.fairness)}</td>
+          </tr>`,
+            )
+            .join('')}
+        </tbody>
+      </table>
+      ${
+        chatty.length === 0
+          ? ''
+          : `<h4>Comments</h4>
+      <ul class="ratings-comments">
+        ${chatty
+          .map(
+            (b) => `
+        <li><strong>${escape(b.slug)}</strong>
+          <ul>${b.comments
+            .map(
+              (c) =>
+                `<li><span class="studio-muted">[${c.won === true ? 'won' : c.won === false ? 'lost' : '—'}]</span> ${escape(c.note)}</li>`,
+            )
+            .join('')}</ul>
+        </li>`,
+          )
+          .join('')}
+      </ul>`
+      }`;
+  } catch (error) {
+    if (!panel.isConnected) return;
+    panel.innerHTML = `${heading()}<p class="studio-muted">${escape(error.message)}</p>`;
+  }
 }
 
 // --- one run ---
