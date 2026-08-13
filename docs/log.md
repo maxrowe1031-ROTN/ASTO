@@ -2,6 +2,29 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — Sharing polish: the deploy check and the favicon
+
+Max is ready to share the game; the live URL is the locked target
+(GitHub Pages, serving `main`). Two pre-sharing gaps closed on
+`work/sharing-polish`; **suite 1334 green** (6 new, TDD-first).
+
+- **Vercel considered and declined:** distribution is a locked decision, the
+  site is zero-dep static with no build, and Pages is already live — a second
+  hosting service would add an account and change nothing.
+- **`tools/check-deploy.js` (`npm run check-deploy`):** closes the 2026-08-05
+  backlog gap (Pages failed five builds and silently served stale for a day).
+  Legacy Pages serves the repo verbatim, so the check is byte-equality between
+  four representative live files (page shell, manifest, code, tokens) and the
+  local tree — no auth, no build API. Pure core (`compareDeploy`) with
+  injected readers, tested; cache-busted fetches. **Proved itself on first
+  run:** flagged `index.html` stale (the favicon change was still unpushed)
+  while the other three matched, then went all-green after the push.
+- **The favicon 404 is gone:** the process deck's inline data-URI icon, one
+  line in `index.html`. Browser-verified — `link[rel=icon]` present and the
+  page load makes no favicon request at all.
+- **Next:** hand out the URL. Open, Max's call: a custom domain (cost
+  conversation). The three levers still await their batch-five taste gate.
+
 ## 2026-08-13 — Batch five run and rolled back; the Vocab button reaches all 48 boards
 
 Two arcs, on `work/vocab-backfill` (merged); **suite 1328 green**, 48/48 boards
