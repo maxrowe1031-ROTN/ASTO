@@ -80,5 +80,11 @@
         "fastener-vocabulary"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "buttonhook",
+      "definition": "An old-fashioned little tool with a hooked end, used long ago for pulling small fasteners through tight openings on clothing."
+    }
   ]
 }

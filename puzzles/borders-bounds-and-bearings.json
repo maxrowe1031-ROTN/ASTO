@@ -82,5 +82,11 @@
         "action"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "carousel",
+      "definition": "A loop-shaped conveyor belt that goes around in a circle."
+    }
   ]
 }

@@ -86,5 +86,11 @@
         "backstage-geography"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "grid",
+      "definition": "The framework of beams high above a stage ceiling, used to hang lights and scenery from up top."
+    }
   ]
 }

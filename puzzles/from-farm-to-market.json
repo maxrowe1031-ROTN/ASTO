@@ -82,5 +82,11 @@
         "sequence"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "honeycomb",
+      "definition": "A waxy structure made of small six-sided cells, often golden in color."
+    }
   ]
 }

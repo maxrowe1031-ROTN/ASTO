@@ -83,5 +83,11 @@
         "component"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "theodolite",
+      "definition": "A precision instrument on a tripod with a small telescope, used for measuring angles between points."
+    }
   ]
 }

@@ -1934,6 +1934,20 @@ Suite 1301 green. Also noted from the same playtest: 07's flags under-detect
 noise ("why is this defined?") → revisit the decline path with a threshold
 rather than removing the button.
 
+**D-18 backfill — the addendum reaches the back catalog (Max, 2026-08-13).**
+Only 2 of 48 published boards carried a glossary, stage 09 postdating the rest.
+`studio/glossary-backfill.js` + `tools/backfill-glossary.js` retrofit them
+through existing seams only: the D-6 publish events join each board to its run,
+07's `knowledgeGated` flags feed the same glossary-author agent (its leak
+validators binding), and every write goes through `puzzle-store.publish`. The
+review split was Max's: 24 boards with flagged words auto-applied (the flag is
+evidence); 22 author's-own-pick boards queued to a review file he edits, with
+`--apply` re-validating every edited entry. He approved the file unchanged.
+Scope his call too: **every board, tutorial included** — 48/48 now carry
+exactly one entry. Known limit, recorded in the backlog: the mechanical leak
+check cannot see a definition that PARAPHRASES the set's relationship
+(buttonhook), so the semantic half still rests with Max.
+
 ### D-17 second amendment — territory variety, and the revision guardrails (2026-08-11)
 
 The batch-five tuning pass, from Max's batch-3/4 readouts:

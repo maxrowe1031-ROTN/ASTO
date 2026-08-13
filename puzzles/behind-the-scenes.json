@@ -79,5 +79,11 @@
         "production status"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "completion bond",
+      "definition": "A financial guarantee that pays back backers if money runs out before a job is finished."
+    }
   ]
 }

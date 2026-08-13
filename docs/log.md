@@ -2,6 +2,57 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — Batch five run and rolled back; the Vocab button reaches all 48 boards
+
+Two arcs, on `work/vocab-backfill` (merged); **suite 1328 green**, 48/48 boards
+`check-board` clean.
+
+### Batch five: generated, part-judged, destroyed at Max's direction
+
+- Six surprise-me runs with the three levers live (published as low tide's
+  session too: `low-tide-at-dawn` went out as board 48 under its own slug after
+  its title "By the Shore" collided with the beach-retry board). The batch died
+  once mid-flight on a credit wall — the failure record named the reason in one
+  sentence (the 2026-08-09 error-body fix, third payoff) — and resumed cleanly.
+- Readout before judging: D-19 zero repeats against a 79-word avoid list;
+  territory wider (2 far-place / 1 whimsy / 1 rural-historical / 2 cozy) but
+  none of Max's exemplar registers; glosses 6/6; instruments flat vs batch four.
+  **One guardrail breach observed:** a revision re-entering at 01 re-authored a
+  set its findings never named (the scope check binds the proposal, not the
+  builder) — the observation survives below in the backlog; the runs do not.
+- Max judged four (desert caravan "This one is perfect" → published;
+  puppeteer's caravan approved → published; train station revise; village
+  reject) — **then rejected the batch as a whole and chose "destroy it all"**
+  over parking. Everything — six runs, three published boards including
+  low tide, his feedback — was folded into one commit and deleted with the
+  branch. **Recovery: dangling commit `7f01599`, reflog only (~90 days).**
+  `main` was never touched; `puzzles/` back to 47 + tutorial; suite 1314 at
+  the rollback point. The three levers remain in the code, **unjudged again**.
+
+### The glossary backfill (D-18 extended to the back catalog)
+
+- Only 2 of 48 boards carried a glossary — stage 09 postdates most publishes.
+  Built `studio/glossary-backfill.js` + `tools/backfill-glossary.js`
+  (TDD-first, 14 new tests): joins each published board to its run via the
+  D-6 publish events, reads 07's `knowledgeGated` flags, authors through the
+  same glossary-author agent (leak validators binding), writes through
+  `puzzle-store.publish` — no new seams.
+- Max's chosen split: 24 boards with flagged words auto-applied; 22 author's-
+  own-pick boards queued to a review file he edits, `--apply` re-validating
+  every edited entry (an edit can leak too). He approved the file unchanged;
+  22/22 applied, 0 refused. Scope his call: **every board, tutorial included.**
+- **Verified:** suite 1328 green · all 48 boards clean · browser evidence:
+  Vocab pill + reveal on sewing-room-logic (pill spends itself), review-bucket
+  board pill-less until `--apply`, and a fresh profile still boots into the
+  tutorial with coach-marks intact and the pill present at 375px.
+- **Gate: passed** — automated + Claude-verifiable above, Max acceptance via
+  the review file and the apply direction.
+- **Next:** batch five is un-run again — the three levers (territory, revision
+  guardrails, D-19) still await their taste gate whenever Max wants a fresh
+  batch. The six destroyed subjects are drawable again (D-15 reads run
+  manifests, which are gone). Backlog: the revision scope-check gap at 01, the
+  tinsmith 08 validator disagreement, gloss semantic near-leaks.
+
 ## 2026-08-11 — The batch-five tuning pass: three levers and two small asks
 
 All on `work/batch5-tuning`, TDD-first, **suite 1314 green**; the studio levers'
