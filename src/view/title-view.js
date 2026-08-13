@@ -13,7 +13,7 @@ export class TitleView {
     root.innerHTML = `
       <div class="title-block">
         <h1 class="title-wordmark">ASTO</h1>
-        <p class="title-tagline">Connections, but with analogies.</p>
+        <p class="title-tagline">This is to that.</p>
         <div class="controls title-actions">
           <button class="pill" data-action="tutorial">How to play</button>
           <button class="pill primary" data-action="play">Play</button>
