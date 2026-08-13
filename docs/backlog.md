@@ -116,6 +116,28 @@
 - ~~**The Subject Scout's tone rut fired on batch two (2026-08-10).**~~ **Closed
   2026-08-11** — D-17 lever 1: the scout's banding now requires varied grammatical
   shapes, keyed off the used list's recent tail. Batch three measures it.
+- **The revision scope check binds the proposal, not the builder (2026-08-13).** Batch
+  five (destroyed, but the observation stands): a D-14 auto-revision whose findings named
+  only `set-directional` re-entered at 01 and also re-authored `set-time-activity`, which
+  had been clean — and introduced two holding cross-readings into it. The D-17 guardrail
+  validates the proposer's brief; nothing constrains which sets the re-run pipeline
+  actually changes. If it recurs, the fix is comparing changed sets against the findings
+  at the 04a gate, not more prompt.
+- **Stage 08 can deadlock a revision on `compliant` (2026-08-13, the tinsmith).** Its
+  revision attempt failed terminally with "compliant must be false to match an edit list
+  of 1" three rounds running — the model kept claiming compliance while listing an edit.
+  An agent/validator disagreement that burned the attempt; the run sits in `failed`.
+- **Gloss semantic near-leaks pass the mechanical check (2026-08-13).** sewing-room-logic's
+  auto-applied gloss defines buttonhook as "a tool… for pulling small fasteners through
+  tight openings" — no board word appears, but it paraphrases the set's relationship,
+  the exact risk glossary-author.js's own header names. The mechanical check cannot see
+  paraphrase; only Max can. Watch whether glossed sets get solved from the footnote.
+- **The six destroyed batch-five subjects are drawable again (2026-08-13).** D-15's
+  used-theme list reads run manifests, and the rollback deleted them — the scout can
+  redraw the spice bazaar, the ice cream parlor, the puppeteer's caravan, the train
+  station platform, the desert caravan at nightfall, waking a sleeping village. If a
+  redraw bothers Max, the fix is a burnt-list the subject chain consults beside the
+  used list.
 - **The decide buttons and the form's board-verdict radio can contradict (2026-08-11).**
   Market stalls at dusk recorded approve-board·delightful feedback AND a reject decision in
   one click — `wireDecisions` only downgrades `revise-board` to a save; approve-radio +
