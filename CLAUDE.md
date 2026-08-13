@@ -28,7 +28,11 @@ the retired Python crew stay in `../maigd-course-handbook`.
 4. **`docs/brief.md`** — product intent · **`docs/backlog.md`** — the parking lot ·
    **`docs/recovery.md`** — rollback playbook · **`docs/decisions/`** — open questions.
 
-- **Distribution target:** web · GitHub Pages · free.
+- **Distribution:** web · GitHub Pages · **live at https://www.playasto.com** since
+  2026-08-13 (custom domain on Porkbun, ~$11/yr — the project's only recurring cost,
+  approved by Max; hosting and the certificate stay free). The old
+  `maxrowe1031-rotn.github.io/ASTO` URL 301s to it. Verify a push actually deployed with
+  `npm run check-deploy`.
 - **Status:** LOCALLY SHIPPED — **Phases 1–5 complete**, tagged `v0.1.0-local` on
   2026-08-07 when Max's playtest passed the Phase 5 gate. Working locally for its intended
   purpose counts as **shipped** (see `docs/brief.md` for what that means here); publishing
