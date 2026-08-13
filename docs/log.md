@@ -21,9 +21,15 @@ at Max's direction · low tide published.
 
 - **Still open for Max:** the tutorial's new Hint/Vocab coach copy (his read
   is the acceptance); the three studio levers still await a fresh batch five.
-- **Next:** share the URL and watch how strangers land (D-20's bounce
-  trigger). Batch five when Max wants it. B2 hand-editing keeps its growing
-  appetite.
+- **Next:** **execute the player-ratings plan** — approved by Max at session
+  close and stashed, unbuilt, at
+  `docs/superpowers/specs/2026-08-13-player-ratings-plan.md` (end-screen
+  survey: Difficulty/Delight/Fairness 1–4 + a comment box → Supabase free
+  tier, insert-only → `npm run ratings` report + a Review Studio section).
+  Every decision is recorded in the file; nothing has been created, including
+  the Supabase project. After that: share the URL and watch how strangers
+  land (D-20's bounce trigger), batch five when Max wants it, and B2
+  hand-editing's growing appetite.
 
 ## 2026-08-13 — Tutorial polish: no Continue pill, Hint+Vocab coached, Warm Up leads
 
