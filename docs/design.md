@@ -2061,6 +2061,58 @@ the list (Max, 2026-08-13, after playing the shared build).** Three calls in one
 coaching — if the pills draw confusion from tutorial-skippers, the coach copy belongs
 in the main game's first use, not just the tutorial's.
 
+### D-21 — Player ratings: the end-screen survey, and the first hosted service (2026-08-13)
+
+**Max's ask, on sharing day:** strangers are about to play and their reactions are
+invisible — a small end-of-puzzle survey, three questions rated 1–4 to match the tier
+scale, so real-player data accumulates per board. Full plan approved at the 2026-08-13
+session close (`docs/superpowers/specs/2026-08-13-player-ratings-plan.md`); built in
+two halves — **this decision covers the collecting half**, live in the game. The
+reading half (Studio report + Review Studio section) is the next session's unit.
+
+**The service adoption, discussed and approved:** Supabase **free tier** — project
+`ASTO` (`icfwpjcrjhwfkzkkncyc`, us-west-1; the spec said us-west-2, which the creation
+tooling no longer offers). $0/month, confirmed at creation; the playasto.com domain
+(~$11/yr) remains the project's only paid cost. HR-1's letter holds: no npm package, no
+build step — the game talks to Supabase with one plain `fetch`.
+
+**The data model: an append-only tap log.** One row per tap in `ratings`
+(slug/question/value/won/mistakes/client_id) and one per note in `comments`; changing
+an answer **appends** another row, and analysis takes the last per (client, slug,
+question) — the same append-only ethos as the Studio's ledgers. RLS is the lock: the
+anon role can only **insert**, into value-checked columns; there are deliberately no
+select/update/delete policies, so the key shipped in the page can read nothing back
+(verified: `select` with it returns empty while rows exist). The **service key** — the
+one that reads — is a real secret, destined for `.env` as `SUPABASE_SERVICE_KEY` next
+session; it appears nowhere in this repo and is never sent to a browser.
+
+**The boundary law applied:** the engine knows nothing — ratings are not game state.
+`src/ratings.js` is the game's one **outbound** network seam (LocalJsonSource fetches
+board JSON from our own origin; this is the only module that talks to a third party —
+the game-side mirror of `llm.js` owning the Studio's only fetch). It owns the committed
+URL + publishable key (safe by design — RLS above), payload building, fire-and-forget
+POSTs (`keepalive: true`, **every failure swallowed** — a survey that can break the end
+screen is worse than no survey), and the anonymous `clientId` (random UUID,
+localStorage, session-stable even when storage is hostile). `survey-view.js` is a
+read-only view — three dot rows plus a comment line, intents out, no sends. A small
+host in `app.js` decides whether an end screen asks: board finished, slug non-null
+(the tutorial never asks), not already in `ratedBoards` (storage; asks once per device,
+first tap counts). Placement is Max's call at warmup: **below all the set reveals,
+above the action pills** — it must never read as a gate to "Next puzzle".
+
+**Accepted risks, stated:** an open anon insert can be spammed — the check constraints
+bound the values, the free tier bounds the cost, and the fix if it happens is a
+truncate plus rate limiting, not worth pre-building. And a free-tier project **pauses
+after ~7 days without API activity**; a paused project drops ratings silently, because
+fire-and-forget swallows exactly this failure. **Reconsider-when:** the project is
+found paused with player taps lost — then the reading half grows a liveness check
+(`npm run ratings` or `check-deploy` pinging the REST endpoint), or the project earns
+a keep-alive.
+
+**Deliberately not built:** ratings feeding variety steering or the rubric corpus.
+Player data *informs* Max in the Studio; whether it ever *drives* generation is a
+separate decision with its own D-number when the data exists to argue from.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

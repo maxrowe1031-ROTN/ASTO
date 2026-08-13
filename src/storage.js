@@ -13,6 +13,7 @@
 
 export const TUTORIAL_SEEN_KEY = 'asto.tutorialSeen';
 export const RESULTS_KEY = 'asto.results';
+export const RATED_BOARDS_KEY = 'asto.ratedBoards';
 
 const SEEN = 'true';
 
@@ -72,10 +73,39 @@ export class Storage {
     this.write(RESULTS_KEY, JSON.stringify({ ...this.allResults(), [slug]: result }));
   }
 
+  // --- rated boards, for the end-screen survey (D-21) ---
+  //
+  // A JSON array of slugs, not an object: there is nothing to store per board beyond
+  // membership. Same degrade rule as the results blob — a wrong-shape read means
+  // "nothing rated", which at worst asks a returning player one extra time.
+
+  /** Has this device already answered the survey for this board? */
+  hasRated(slug) {
+    return this.ratedBoards().includes(slug);
+  }
+
+  /** One answer is enough — the board never asks this device again. */
+  markRated(slug) {
+    if (this.hasRated(slug)) return;
+    this.write(RATED_BOARDS_KEY, JSON.stringify([...this.ratedBoards(), slug]));
+  }
+
+  ratedBoards() {
+    const raw = this.read(RATED_BOARDS_KEY);
+    if (raw === null) return [];
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
   /** Forget everything ASTO stores — how a fresh-profile run is set up by hand. */
   clear() {
     this.remove(TUTORIAL_SEEN_KEY);
     this.remove(RESULTS_KEY);
+    this.remove(RATED_BOARDS_KEY);
   }
 
   // --- the guarded primitives; nothing above this line touches the store directly ---

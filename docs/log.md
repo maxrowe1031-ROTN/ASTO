@@ -2,6 +2,47 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — D-21: player ratings, the collecting half — live survey, Supabase
+
+The approved player-ratings plan's steps 1–4, on `work/player-ratings`, TDD
+where pure. Max's scoping call at warmup: **collect first, read back next
+session**; his placement call: the survey sits on the end screen **below all
+the set reveals**, above the pills. **Suite 1355 green** (+17).
+
+- **Supabase project `ASTO`** (`icfwpjcrjhwfkzkkncyc`, us-west-1, $0/mo —
+  confirmed at creation; us-west-2 no longer offered, the one deviation from
+  the spec). Migration applied: `ratings` + `comments`, append-only, RLS with
+  **insert-only anon policies** — the committed publishable key can write two
+  bounded tables and read nothing (proven: `select` with it returns empty
+  while rows exist). The service key was never fetched; it's next session's
+  `.env` paste, by Max's hand.
+- **`src/ratings.js`** — the game's one outbound network seam (11 tests):
+  fire-and-forget POSTs, `keepalive`, every failure swallowed; lazy UUID
+  `clientId` that stays session-stable even on a hostile store; null slug
+  (the tutorial) sends nothing; comments trimmed and clamped to 280.
+- **`src/storage.js`** — `ratedBoards` behind the same guarded primitives
+  (6 tests): each board asks once per device; corrupt blob degrades to
+  "nothing rated"; `clear()` forgets it.
+- **`survey-view.js`** — read-only: three 1–4 dot rows + "Anything else?"
+  line, intents out, zero network; ink-fill selection, standard motion, no
+  new vocabulary. End view provides the mount; a host in `app.js` decides
+  whether an end screen asks and captures the board at show time, so a tap
+  can never file under the wrong slug.
+- **Browser-verified, fresh profile** (pane hidden this session, so taps were
+  driven through the real buttons via DOM click — same listeners, same
+  controller path): win → survey below the cards (screenshots in session) ·
+  three taps + one changed answer + a comment → **4 rating rows and 1 comment
+  row in the database, the change appended not updated** · a fetch forced to
+  throw left the end screen fully working and no row behind · replaying the
+  rated board → no survey · the tutorial's end screen → no survey, ratedBoards
+  untouched.
+- **Next:** **session B — the reading half**: Max pastes `SUPABASE_SERVICE_KEY`
+  into `.env`, then `studio/player-ratings.js` (last-write-wins aggregation,
+  injected fetch), `tools/ratings-report.js` (`npm run ratings`), and the
+  Review Studio "Player ratings" section — the stashed plan's steps 5–6. Max
+  still owes the survey copy its in-situ read (his acceptance). Then: share
+  the URL, watch bounce, batch five when he wants it.
+
 ## 2026-08-13 — Wrapup: ASTO is publicly shipped
 
 Session close. Everything below this entry from today merged and deploy-
