@@ -345,13 +345,15 @@
   resume, `POST /api/runs/:id/feedback`); fold them into the spec or drop them at B2.
 - `run.js` and the Studio can drive the same run concurrently; the lock protects the
   files but the UX is confusing. Documented as "one driver at a time" — consider enforcing.
-- The game's `index.html` declares no favicon, so every page load 404s `/favicon.ico`.
-  The process deck now carries an inline data-URI icon; the game could use the same
-  one-liner (no new asset, no request).
-- Nothing verifies that a push actually deployed. Pages can fail its build while the
-  previous version keeps serving, so a broken deploy is invisible from the outside
-  (2026-08-05: five failed builds, most of a day stale). `.nojekyll` fixed the cause;
-  the *detection* gap remains. A post-push build-status check would close it.
+- ~~The game's `index.html` declares no favicon, so every page load 404s `/favicon.ico`.~~
+  **Done 2026-08-13** — the deck's inline data-URI icon, one line in `index.html`;
+  browser-verified no favicon request at all.
+- ~~Nothing verifies that a push actually deployed.~~ **Done 2026-08-13** —
+  `npm run check-deploy` byte-compares four representative live files against the
+  local tree (legacy Pages serves the repo verbatim, so equality IS the check).
+  It caught a real stale file on its first run. The original entry: Pages can fail
+  its build while the previous version keeps serving (2026-08-05: five failed
+  builds, most of a day stale); `.nojekyll` fixed the cause, this closes detection.
 - ~~**01 is REPRODUCING its own prompt example, and one is already published.**~~ **Closed
   2026-08-08 — see design.md D-12 addendum.** The example is corpus data now
   (`studio/corpus/examples.js`), demoted to pair-level to match the 36 vocabulary examples
