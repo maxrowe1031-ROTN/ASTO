@@ -20,7 +20,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
-const DEFAULT_BASE = 'https://maxrowe1031-rotn.github.io/ASTO';
+const DEFAULT_BASE = 'https://www.playasto.com';
 
 // One file per layer that changes for different reasons: the page shell, the
 // content manifest, game code, and design tokens. A deploy that serves all

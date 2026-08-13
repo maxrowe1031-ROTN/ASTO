@@ -2,6 +2,28 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — The custom domain: www.playasto.com
+
+The game has a real address. Max bought `playasto.com` at Porkbun; DNS is
+four apex `A` records at GitHub's IPs plus a `www` CNAME, with Porkbun's
+parking ALIAS/wildcard-CNAME and its URL forward removed (they would have
+fought the A records, and an active forward can re-create them).
+
+- **Repo side:** custom domain set on Pages (GitHub committed `CNAME` itself,
+  `6139526`), Let's Encrypt certificate approved, **HTTPS enforced**.
+  `tools/check-deploy.js` now defaults to the new domain.
+- **Verified:** `https://www.playasto.com` 200 · bare domain 301 → www ·
+  http 301 → https on both · **the old github.io/ASTO URL 301s to the new
+  domain**, so links already shared keep working · 47 boards live · cert
+  issued by Let's Encrypt, valid to 2026-11-11 · `check-deploy` all-green
+  against the new base · played through in the browser on the live domain
+  (title → list → board).
+- **Recorded for the audience:** localStorage is per-origin, so any progress
+  saved on the github.io URL does not follow to the new domain. Landing the
+  domain BEFORE sharing widely is what makes that a non-issue.
+- **Next:** the URL is ready to hand out. Unchanged otherwise — the three
+  levers still await a fresh batch five.
+
 ## 2026-08-13 — D-20 addendum: the tutorial teaches on First Light; Warm Up retired
 
 Max's follow-up to D-20, same day. The tutorial now runs on `first-light.json`
