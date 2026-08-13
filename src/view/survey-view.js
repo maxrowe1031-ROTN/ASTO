@@ -35,7 +35,7 @@ export class SurveyView {
       <div class="survey-comment">
         <input class="survey-input" type="text" maxlength="280"
                placeholder="Anything else?" aria-label="Anything else?">
-        <button class="text-action" data-action="send-comment">Send</button>
+        <button class="pill" data-action="send-comment">Send</button>
       </div>
       <p class="survey-feedback" role="status" aria-live="polite"></p>`;
 

@@ -413,14 +413,15 @@
   color: var(--soft-ink);
 }
 
+/* Label above, dots below, spread edge to edge — a side-by-side row left a dead gulf
+   between the word and the numbers (Max, 2026-08-13). */
 .survey-row {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .survey-label {
-  flex: 1;
   font-size: 14px;
   font-weight: 700;
   color: var(--ink);
@@ -428,7 +429,7 @@
 
 .survey-dots {
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
 }
 
 .survey-dot {
