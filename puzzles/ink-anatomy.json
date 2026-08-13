@@ -80,5 +80,11 @@
         "progression-not-anatomy"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "coil machine",
+      "definition": "A buzzing tool with electromagnetic coils that snap a needle bar up and down, the older-style build many old-school shops still swear by."
+    }
   ]
 }

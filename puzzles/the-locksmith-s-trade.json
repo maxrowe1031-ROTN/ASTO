@@ -82,5 +82,11 @@
         "lock"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "warded lock",
+      "definition": "An old style opening mechanism worked by a notched metal piece that must slip past internal obstacles shaped just so."
+    }
   ]
 }

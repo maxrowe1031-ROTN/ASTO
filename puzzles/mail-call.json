@@ -79,5 +79,11 @@
         "dispatch-echo"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "frank",
+      "definition": "A special printed or stamped mark found on a piece of mail."
+    }
   ]
 }

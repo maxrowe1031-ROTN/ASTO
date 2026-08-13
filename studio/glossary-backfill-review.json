@@ -1,0 +1,137 @@
+{
+  "entries": [
+    {
+      "slug": "all-aboard-a-railway-journey",
+      "word": "manifest",
+      "definition": "A list of items or goods, written out in detail.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "bedside-manor",
+      "word": "phlebotomist",
+      "definition": "someone trained to draw blood from people, usually for tests or donations",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "borders-bounds-and-bearings",
+      "word": "carousel",
+      "definition": "A loop-shaped conveyor belt that goes around in a circle.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "by-the-shore",
+      "word": "mollusk",
+      "definition": "a soft-bodied small creature, often with a hard outer covering, usually found near water",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "festival-grounds",
+      "word": "rig",
+      "definition": "a set of equipment put together and hung up for a specific job, often with wires and frames",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "first-light",
+      "word": "Chisel",
+      "definition": "A sharp-edged hand tool used for cutting or shaping hard materials like wood or stone.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "for-the-birds",
+      "word": "cygnet",
+      "definition": "A fluffy young water bird, pale gray or white, still too small to fly on its own.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "from-farm-to-market",
+      "word": "honeycomb",
+      "definition": "A waxy structure made of small six-sided cells, often golden in color.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "gotham-connections",
+      "word": "Scarecrow toxin",
+      "definition": "A fictional chemical compound from comic lore, sprayed or released to affect a person's mind.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "ink-wax-and-what-they-can-t-do",
+      "word": "blotter",
+      "definition": "a soft absorbent pad used to soak up wet ink",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "kitchen-relations",
+      "word": "toe-kick",
+      "definition": "A short recessed strip of trim near the floor, set back so you can stand close without stubbing your toes.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "light-life-and-the-things-between",
+      "word": "roost",
+      "definition": "a perch or spot where a flying creature settles to rest",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "money-matters",
+      "word": "ticker tape",
+      "definition": "a thin paper strip once printed with scrolling rows of numbers and letters",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "on-stage-and-behind-it",
+      "word": "reed",
+      "definition": "A thin strip of material, often cane, that flexes to make sound in some wind instruments.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "river-systems",
+      "word": "alluvium",
+      "definition": "loose soil, sand, and silt left behind by moving water",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "roots-and-reasons",
+      "word": "trowel",
+      "definition": "A small hand tool with a scoop-shaped blade, used for digging in tight spaces",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "school-days",
+      "word": "homeroom",
+      "definition": "A classroom group students report to at the start of the day for attendance and announcements.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "the-library-shelf",
+      "word": "awl",
+      "definition": "a small pointed hand tool used for piercing holes in tough materials like leather or thick paper",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "through-the-looking-glass",
+      "word": "convex mirror",
+      "definition": "A mirror that curves outward like the outside of a ball, bulging toward you in the middle.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "trees-tools-and-time",
+      "word": "felling",
+      "definition": "the act of cutting something down so it falls to the ground",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "tutorial",
+      "word": "Dune",
+      "definition": "A mound or hill of loose sand piled up in a rounded shape.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    },
+    {
+      "slug": "voyages-warnings-and-watery-wisdom",
+      "word": "float plan",
+      "definition": "A written note left with someone describing where you're headed and when you'll be back.",
+      "note": "author's own pick — edit or delete, then run --apply"
+    }
+  ],
+  "failures": []
+}
