@@ -2,6 +2,31 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — Tutorial polish: no Continue pill, Hint+Vocab coached, Warm Up leads
+
+Max's three calls after playing the shared build (D-20 second addendum), on
+`work/tutorial-polish`, TDD-first. **Suite 1338 green.**
+
+- **Continue pill removed** from the coach card (it read as a game control
+  beside Confirm). The tutorial plays out to the end; "Skip tutorial" is
+  visible on every step. The script's `action: 'continue'` flag became a
+  `coached` boolean — same trigger (first solved set), same `tutorialSeen`
+  marking, no button.
+- **Hint enabled in the tutorial** (`hintsAllowed` 0 → 1) with two new
+  outcome-reactive coach steps narrating the Hint and Vocab pills at the
+  moment of use. Copy drafts are mine — **Max's read is the acceptance**.
+- **Warm Up republished as `warm-up`** (id `asto-warm-up`, gloss kept),
+  hand-ordered to list slot 1; **`first-light` unlisted** — it ships as the
+  tutorial and via deep link only. Variety labels restored under the new id
+  (pinned count back to 8). List stays 47.
+- **Browser-verified, fresh profile:** no Continue anywhere · Skip visible
+  including after a solve · Hint tap → 4 tinted tiles + hint copy · Vocab tap
+  → "Chisel" + vocab copy · full win → end screen → "Next puzzle" lands on
+  **Warm Up** · list starts Warm Up / no First Light · `?puzzle=first-light`
+  still plays.
+- **Next:** Max reads the new coach copy in situ; then unchanged — share the
+  URL, watch bounce, batch five when ready.
+
 ## 2026-08-13 — New tagline: "This is to that."
 
 Max's copy change. The home page tagline replaces "Connections, but with

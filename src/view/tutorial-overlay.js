@@ -1,5 +1,5 @@
 // The first-run coach card. READ-ONLY — it renders whatever tutorial-script.js derives
-// and emits skip/continue intents. It decides nothing: the copy, the sequence, and when
+// and emits the skip intent. It decides nothing: the copy, the sequence, and when
 // the coaching is finished all live in the pure script, which is why they are testable.
 //
 // Importing a pure derivation is the same move SolvedSetsView makes with difficultyToTier
@@ -18,24 +18,25 @@ import { tutorialStep } from '../controller/tutorial-script.js';
 import { settleIn } from './motion.js';
 
 export class TutorialOverlay {
-  constructor(root, { onSkip, onContinue, onCoached }) {
+  // No Continue pill, deliberately (D-20 second addendum): a pill in the coach card sat
+  // one row above Confirm and read as part of the game. The tutorial plays out to the
+  // end — the end screen is the way out — and "Skip tutorial" is the one early exit, a
+  // text link so it can never be mistaken for a game control.
+  constructor(root, { onSkip, onCoached }) {
     root.innerHTML = `
       <p class="coach-body"></p>
       <p class="coach-note" hidden></p>
       <div class="coach-actions">
         <button class="text-action coach-action" data-action="skip">Skip tutorial</button>
-        <button class="pill primary coach-action" data-action="continue">Continue</button>
       </div>`;
 
     this.root = root;
     this.bodyEl = root.querySelector('.coach-body');
     this.noteEl = root.querySelector('.coach-note');
     this.skipEl = root.querySelector('[data-action="skip"]');
-    this.continueEl = root.querySelector('[data-action="continue"]');
     this.onCoached = onCoached;
 
     this.skipEl.addEventListener('click', onSkip);
-    this.continueEl.addEventListener('click', onContinue);
 
     this.active = false;
     this.shownId = null;
@@ -68,15 +69,9 @@ export class TutorialOverlay {
       return;
     }
 
-    const isContinue = step.action === 'continue';
-    this.continueEl.hidden = !isContinue;
-    // Skip and Continue lead to the same place, so offering both would be two buttons for
-    // one decision.
-    this.skipEl.hidden = isContinue;
-
     // Fires once: the player has been through the whole of the coaching, so the tutorial
     // counts as seen even if they wander off without pressing anything.
-    if (isContinue && !this.coachedFired) {
+    if (step.coached && !this.coachedFired) {
       this.coachedFired = true;
       this.onCoached?.();
     }

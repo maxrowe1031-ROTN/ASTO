@@ -365,6 +365,10 @@ test('the tutorial runs no-lose and keeps the wrong answer on screen', () => {
   assert.equal(TUTORIAL_RULES.clearSelectionOnFail, false);
 });
 
+test('the tutorial offers the hint, same allowance as the real game', () => {
+  assert.equal(TUTORIAL_RULES.hintsAllowed, 1);
+});
+
 test('a wrong answer stays in the frame, so the diagnosis can be checked against it', () => {
   const terms = ['Seed', 'Tree', 'Spark', 'Brush'];
   const { state } = attempt(terms);
@@ -413,15 +417,15 @@ test('solving outranks any diagnosis still on screen', () => {
 
 // ---------- the hand-off ----------
 
-test('solving the first set ends the coaching and offers the way out', () => {
+test('solving the first set marks the coaching as complete', () => {
   const solve = ['Seed', 'Tree', 'Spark', 'Fire'];
   const { outcome, step } = attempt(solve);
   assert.equal(outcome.type, 'solved');
   assert.equal(step.id, 'done');
-  assert.equal(step.action, 'continue');
+  assert.equal(step.coached, true);
 });
 
-test('the way out stays on offer for good once a set is solved', () => {
+test('coached stays true for good once a set is solved', () => {
   const { state } = attempt(['Seed', 'Tree', 'Spark', 'Fire']);
 
   // MISS holds Seed, which leaves the board with set-growth — a solve shrinks the board.
@@ -431,7 +435,7 @@ test('the way out stays on offer for good once a set is solved', () => {
     tutorialStep(pick(state, 'Brush', 'Painter', 'Nest', 'Dough')),
     attempt(['Brush', 'Nest', 'Den', 'Dough'], state).step
   ];
-  for (const step of laterMoves) assert.equal(step.action, 'continue', step.id);
+  for (const step of laterMoves) assert.equal(step.coached, true, step.id);
 });
 
 // The bug this replaces: solving a set used to short-circuit every branch below it, so
@@ -458,15 +462,43 @@ test('a second solve is celebrated again rather than silently ignored', () => {
   assert.equal(second.step.id, 'done');
 });
 
-test('before anything is solved, no step offers a way out', () => {
+test('before anything is solved, the coaching is not complete', () => {
   const narrating = [
     tutorialStep(fresh()),
     tutorialStep(pick(fresh(), 'Seed')),
     tutorialStep(pick(fresh(), 'Seed', 'Tree', 'Spark', 'Fire')),
     attempt(MISS).step
   ];
-  for (const step of narrating) assert.equal(step.action, null, step.id);
-  assert.equal(attempt(['Seed', 'Tree', 'Spark', 'Fire']).step.action, 'continue');
+  for (const step of narrating) assert.equal(step.coached, false, step.id);
+  assert.equal(attempt(['Seed', 'Tree', 'Spark', 'Fire']).step.coached, true);
+});
+
+// ---------- the two help buttons, coached when used ----------
+
+test('spending the hint draws an explanation of what the tint means', () => {
+  const step = tutorialStep(fresh(), { type: 'hint' });
+  assert.equal(step.id, 'hint');
+  assert.match(step.body, /tint/i);
+  // Membership is revealed, order is not — the copy must keep that line.
+  assert.match(step.body, /order/i);
+  assert.equal(step.coached, false);
+});
+
+test('revealing the vocab word draws an explanation that it stays on screen', () => {
+  const glossed = initGame(
+    { ...board, glossary: [{ word: 'Chisel', definition: 'a carving blade' }] },
+    TUTORIAL_RULES
+  );
+  const step = tutorialStep(glossed, { type: 'vocab' });
+  assert.equal(step.id, 'vocab');
+  assert.match(step.body, /stays/i);
+});
+
+test('a hint after a solved set still carries coached', () => {
+  const { state } = attempt(['Seed', 'Tree', 'Spark', 'Fire']);
+  const step = tutorialStep(state, { type: 'hint' });
+  assert.equal(step.id, 'hint');
+  assert.equal(step.coached, true);
 });
 
 test('the coach goes quiet once the game is over — the end screen owns that moment', () => {

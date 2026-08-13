@@ -38,9 +38,10 @@
 export const TUTORIAL_RULES = Object.freeze({
   maxMistakes: Infinity,
   clearSelectionOnFail: false,
-  // The tutorial scripts its own nudges (GDD §5.2); a free-form hint mid-script would
-  // fight the choreography, so the pill never appears here.
-  hintsAllowed: 0
+  // Same allowance as the real game, on purpose: the tutorial is where the Hint and
+  // Vocab pills get introduced, and a button the player cannot press cannot be taught
+  // (D-20 second addendum — this was 0 until Max asked for the pills to be coached).
+  hintsAllowed: 1
 });
 
 const REASSURANCE = 'Nothing lost — the warm-up costs no beans.';
@@ -48,46 +49,49 @@ const REASSURANCE = 'Nothing lost — the warm-up costs no beans.';
 const STEPS = Object.freeze({
   relationship: {
     id: 'relationship',
-    body: "Four tiles, one analogy. You're hunting a relationship that repeats — not a category of similar words.",
-    action: null
+    body: "Four tiles, one analogy. You're hunting a relationship that repeats — not a category of similar words."
   },
   // One line per tap. The coach has to say something new every time the frame changes —
   // a panel that holds still while the player is acting reads as broken, not as calm.
   'pair-hunt': {
     id: 'pair-hunt',
-    body: 'One word down. Now find the one it pairs with — the word it has the clearest relationship to.',
-    action: null
+    body: 'One word down. Now find the one it pairs with — the word it has the clearest relationship to.'
   },
   notation: {
     id: 'notation',
-    body: "That's your first pair. The next two have to relate the same way: A is to B as C is to D. That's what :: means.",
-    action: null
+    body: "That's your first pair. The next two have to relate the same way: A is to B as C is to D. That's what :: means."
   },
   'one-more': {
     id: 'one-more',
-    body: 'One more. The fourth word should finish the second pair the way the second word finished the first.',
-    action: null
+    body: 'One more. The fourth word should finish the second pair the way the second word finished the first.'
   },
   order: {
     id: 'order',
-    body: 'Order matters. Drag a word to move it, then press Confirm when the analogy reads right.',
-    action: null
+    body: 'Order matters. Drag a word to move it, then press Confirm when the analogy reads right.'
   },
 
   'keep-going': {
     id: 'keep-going',
-    body: 'Pick four more tiles. What matters is the relationship that repeats, not what the words have in common.',
-    action: null
+    body: 'Pick four more tiles. What matters is the relationship that repeats, not what the words have in common.'
   },
   done: {
     id: 'done',
-    body: "That's it — a relationship, in order. Ready for the real puzzles?",
-    action: null
+    body: "That's it — a relationship, in order. Finish the board and the real puzzles are next."
   },
   'solved-idle': {
     id: 'solved-idle',
-    body: "That's one down. Take another if you fancy it, or head for the real puzzles.",
-    action: null
+    body: 'Keep going — the board plays out to the end. Or skip ahead to the real puzzles any time.'
+  },
+
+  // The two help pills, explained at the moment they are used — a button teaches best
+  // right after it has done something visible (D-20 second addendum).
+  hint: {
+    id: 'hint',
+    body: 'Those four tinted tiles are one whole set, and the tint shows how tricky it is. Who belongs together is revealed — the order is still yours to find.'
+  },
+  vocab: {
+    id: 'vocab',
+    body: "That's the trickiest word on the board, defined. It stays on screen, so read it whenever you like."
   }
 });
 
@@ -163,25 +167,30 @@ const MISS_SHAPES = Object.freeze({
  *
  * @param {object} state     engine state (tutorial board, running TUTORIAL_RULES)
  * @param {object} [outcome] the outcome of the submission that produced this render
- * @returns {{id: string, body: string, note?: string, action: 'continue'|null}|null}
+ * @returns {{id: string, body: string, note?: string, coached: boolean}|null}
  */
 export function tutorialStep(state, outcome) {
   // Won or lost: the end screen owns the moment, and two panels talking at once is noise.
   if (state.status !== 'playing') return null;
 
-  const step = coaching(state, outcome);
-
-  // One solved set means all three ideas have been demonstrated, so the way out goes on
-  // offer and STAYS on offer. Only the button is sticky, though — the words are not. A
-  // player who keeps playing instead of pressing Continue must still be coached, and an
-  // earlier version returned the hand-off message here and went deaf to everything after
-  // it: submit a wrong answer and the box sat there congratulating you.
-  return state.solvedSetIds.length > 0 ? { ...step, action: 'continue' } : step;
+  // One solved set means all three ideas have been demonstrated: `coached` turns true
+  // and STAYS true, which is what marks the tutorial as seen. It used to put a Continue
+  // pill on offer too; that pill sat one row above Confirm and read as part of the game,
+  // so it is gone (D-20 second addendum) — the tutorial simply plays out to the end, and
+  // "Skip tutorial" is the standing early exit. Only the flag is sticky, though — the
+  // words are not. A player who keeps going must still be coached, and an earlier
+  // version returned the hand-off message here and went deaf to everything after it.
+  return { ...coaching(state, outcome), coached: state.solvedSetIds.length > 0 };
 }
 
 /** What the coach has to say about the board as it stands. */
 function coaching(state, outcome) {
   if (outcome?.type === 'solved') return STEPS.done;
+
+  // The help pills, narrated at the moment of use. Neither competes with the branches
+  // below: a hint or vocab press is never also a submission or a tile pick.
+  if (outcome?.type === 'hint') return STEPS.hint;
+  if (outcome?.type === 'vocab') return STEPS.vocab;
 
   // A repeat carries no new information about the board, so its rung is driven by how
   // much has gone wrong overall rather than by the shape of the guess.
@@ -248,7 +257,7 @@ function diagnose(state, terms) {
 function nudge(id, rung) {
   const ladder = NUDGES[id] ?? NUDGES['nudge-generic'];
   const index = Math.min(Math.max(rung, 0), ladder.length - 1);
-  return { id, body: ladder[index], action: null };
+  return { id, body: ladder[index] };
 }
 
 /** Has this exact order already been tried and charged? */

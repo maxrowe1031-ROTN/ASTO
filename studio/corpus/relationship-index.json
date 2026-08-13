@@ -484,6 +484,12 @@
       "set-tools": "agent-instrument",
       "set-homes": "item-location",
       "set-material": "object-stuff"
+    },
+    "asto-warm-up": {
+      "set-growth": "conversion",
+      "set-degree": "dimensional-similarity",
+      "set-resolution": "cause-effect",
+      "set-erosion": "cause-effect"
     }
   }
 }

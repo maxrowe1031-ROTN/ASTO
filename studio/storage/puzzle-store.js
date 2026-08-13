@@ -58,7 +58,11 @@ const MANIFEST_VERSION = 1;
 // On disk but never in the list: the tutorial is reached through "How to play"
 // on the title screen, and offering it as a puzzle would hand a returning
 // player a board they cannot lose.
-const UNLISTED = new Set(['tutorial']);
+// Boards that ship but do not appear in the select list. `tutorial` is the retired
+// Warm Up board's old slug, kept as a guard against any stale file; `first-light` IS
+// the tutorial since the D-20 addendum — met in "How to play", not offered again as a
+// listed puzzle (its deep link still works).
+const UNLISTED = new Set(['tutorial', 'first-light']);
 
 /**
  * A publish refused on purpose, with a machine-readable reason so callers can
