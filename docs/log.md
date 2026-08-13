@@ -2,6 +2,22 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — D-20 addendum: the tutorial teaches on First Light; Warm Up retired
+
+Max's follow-up to D-20, same day. The tutorial now runs on `first-light.json`
+— its green set IS the analogy the coach-marks teach — and `tutorial.json` is
+deleted. Handoffs adjusted so the player is never offered the board they just
+played: Skip/Continue → the puzzle list; end-screen "Next puzzle" after a
+tutorial run skips First Light. Warm Up's four sets left the variety library's
+`shippedLabels` (it counts what ships; pinned test updated 8 → 4 with the
+reasoning). **Suite 1333 green** (tutorial.json's glob tests retired with it);
+manifest regenerated unchanged (47, tutorial was never listed).
+
+- **Browser-verified, fresh profile:** boot → title · How to play → First
+  Light with coach-marks (screenshot in session) · Skip → puzzle list, not a
+  replay · `tutorialSeen` marked.
+- **Next:** unchanged from D-20 — hand out the URL, watch for bounce.
+
 ## 2026-08-13 — D-20: the front door — forced first-run tutorial retired
 
 Max's call before sharing: a visitor lands on the **title screen**, not the

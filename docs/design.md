@@ -2019,6 +2019,23 @@ than rewritten. The accepted risk, stated when he chose: a first-timer who skips
 visitors visibly bounce off their first board (or feedback says the rules were opaque)
 — the softer fix is a first-visit nudge on the title screen, not a return to forcing.
 
+**D-20 addendum — the tutorial teaches on First Light; Warm Up retired (2026-08-13,
+same day).** Max's direction: replace the bespoke Warm Up board with First Light. It
+fits by construction — the coach-marks were written around Seed : Tree :: Spark : Fire,
+which IS First Light's green set, and `tutorial-script.js` never names words, only the
+shapes of mistakes. One constant re-points the tutorial at `first-light.json`;
+`tutorial.json` is deleted, not kept as dead content. Two handoffs changed with it so
+the player is never offered the board they just played: Skip/Continue now lands on the
+puzzle list (deep links still win), and the end screen's "Next puzzle" treats a
+tutorial run as First Light having just been played. The tutorial still records no
+result — a no-lose run is not a win. Ripple, handled honestly: the variety library
+counts what ships, so Warm Up's four hand-labelled sets left `shippedLabels` and the
+pinned count dropped 8 → 4 (test updated with the reasoning in place).
+**Reconsider-when:** D-20's own trigger, plus — players who did the tutorial complain
+their first "real" board is one they already know the answers to, in which case the
+tutorial should move to a board OUTSIDE the daily rotation again, authored to the
+coach-marks rather than inherited by them.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
