@@ -1999,6 +1999,26 @@ batch five still repeats recent words — escalate to a deterministic check at
 01's pools (shortfall reports rise) — trim to distinctive words only (drop the
 most common English words from the list) rather than dropping the lever.
 
+### D-20 — The front door: the forced first-run tutorial retired (2026-08-13)
+
+**Max's direction, on the eve of sharing the URL:** *"when I open it, it goes straight
+to the tutorial. It would be better if it directed the user to the homepage first."*
+And on the follow-up — a brand-new visitor's first "Play" goes **straight to the puzzle
+list**; the tutorial is fully opt-in via "How to play".
+
+**What changed:** one boot rule in `app.js` (the `hasSeenTutorial` check is gone from
+routing; everyone lands on the title screen, and a `?puzzle=` deep link goes straight to
+its board even on a first visit). Everything else stands: "How to play" runs the
+tutorial any time, its completion still marks `tutorialSeen` (bookkeeping, no longer
+routing), and its handoff still honours a deep link.
+
+**This retires GDD §5.2's forced first run** — the GDD is Max's spec and this is his
+amendment; the committed GDD (v0.13) now diverges on that point and is flagged rather
+than rewritten. The accepted risk, stated when he chose: a first-timer who skips
+"How to play" meets ordered answers and so-close cold. **Reconsider-when:** shared-link
+visitors visibly bounce off their first board (or feedback says the rules were opaque)
+— the softer fix is a first-visit nudge on the title screen, not a return to forcing.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
