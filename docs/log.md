@@ -2,6 +2,23 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — New tagline: "This is to that."
+
+Max's copy change. The home page tagline replaces "Connections, but with
+analogies." — the old line explained the game by reference to another game;
+the new one just states the mechanic.
+
+- `title-view.js` tagline · `index.html` tab title · `package.json`
+  description. The tab title keeps a four-word hint at Max's direction —
+  "ASTO — This is to that. A word puzzle." — because that string is the link
+  preview when the URL is shared, and a stranger meeting it cold needs to
+  know it is a word puzzle before deciding to tap.
+- Docs and the process deck keep the old line; they are historical record.
+- **Verified:** browser — home page reads the new tagline, tab title carries
+  the hint version. Suite 1333 green.
+- **Next:** unchanged — the URL is ready to share; the three levers still
+  await a fresh batch five.
+
 ## 2026-08-13 — The custom domain: www.playasto.com
 
 The game has a real address. Max bought `playasto.com` at Porkbun; DNS is

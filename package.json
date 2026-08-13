@@ -2,7 +2,7 @@
   "name": "asto",
   "version": "0.1.0",
   "private": true,
-  "description": "ASTO — Connections, but with analogies. A cozy, mobile-first browser word puzzle.",
+  "description": "ASTO — This is to that. A cozy, mobile-first browser word puzzle.",
   "type": "module",
   "scripts": {
     "test": "node --test \"test/**/*.test.js\"",
