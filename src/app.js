@@ -28,9 +28,12 @@ import { TitleView } from './view/title-view.js';
 import { TutorialOverlay } from './view/tutorial-overlay.js';
 
 const MANIFEST_PATH = 'puzzles/index.json';
-const TUTORIAL_SLUG = 'tutorial';
-const TUTORIAL_PATH = `puzzles/${TUTORIAL_SLUG}.json`;
 const DEFAULT_PUZZLE = 'first-light';
+// The tutorial teaches on a real board, not a bespoke one (D-20 addendum, Max's call:
+// the old Warm Up board is retired). First Light is the natural teacher — its green set
+// is the very analogy the coach-marks were written around (Seed : Tree :: Spark : Fire),
+// and the script itself never names words, only shapes.
+const TUTORIAL_PATH = `puzzles/${DEFAULT_PUZZLE}.json`;
 
 // The slug is matched against the same pattern the publisher and the manifest validator
 // enforce, so a crafted query string cannot reach outside puzzles/.
@@ -120,7 +123,11 @@ async function main() {
 
   const leaveTutorial = () => {
     storage.markTutorialSeen();
-    return play(deepLink ?? DEFAULT_PUZZLE);
+    // The tutorial IS First Light now, so handing off to DEFAULT_PUZZLE would replay
+    // the board the player just left. A deep link still wins; everyone else gets the
+    // list (or the board itself when the manifest failed to load — better than a wall).
+    if (deepLink) return play(deepLink);
+    return manifest.length > 0 ? showSelect() : play(DEFAULT_PUZZLE);
   };
 
   /** Show the list, always freshly painted — a result may have landed since last time. */
@@ -157,7 +164,9 @@ async function main() {
     // Read at TAP time, not render time: the result of the board just finished is already
     // saved by then, so a board won a moment ago is correctly skipped.
     onNextPuzzle: () => {
-      const next = nextUnfinished(manifest, storage.allResults(), currentSlug);
+      // A null currentSlug means the tutorial — which plays First Light's board without
+      // recording a result, so "next" must still skip it or it would be offered back.
+      const next = nextUnfinished(manifest, storage.allResults(), currentSlug ?? DEFAULT_PUZZLE);
       if (next) play(next.slug);
       else showSelect();
     },

@@ -95,7 +95,10 @@ test('the shipped boards are already counted — the library does not start empt
   try {
     const index = buildRelationshipIndex({ store });
     const used = Object.values(index.counts).reduce((a, b) => a + b, 0);
-    assert.ok(used >= 8, `only ${used} shipped sets counted`);
+    // First Light's four sets. Warm Up used to make this eight — its board was
+    // retired when the tutorial moved onto First Light (D-20 addendum, 2026-08-13),
+    // and the library counts what ships, not what once did.
+    assert.ok(used >= 4, `only ${used} shipped sets counted`);
     assert.ok(index.counts['agent-instrument'] >= 1, 'First Light\'s tool set is not counted');
     // The hand labels roll up to families and stances too.
     assert.ok((index.familyCounts[7] ?? 0) >= 1, 'family counts not derived');
