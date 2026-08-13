@@ -2,6 +2,23 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — D-20: the front door — forced first-run tutorial retired
+
+Max's call before sharing: a visitor lands on the **title screen**, not the
+tutorial; first "Play" goes **straight to the puzzle list**; the tutorial is
+opt-in via "How to play". One boot rule removed from `app.js` (D-20 recorded;
+GDD §5.2 now diverges, flagged not rewritten). Deep links go straight to their
+board even on a first visit; tutorial completion still marks `tutorialSeen`.
+
+- **Verified in the browser, fresh profile each time:** boot → title screen ·
+  Play → puzzle list · Back → title · How to play → Warm Up with coach-marks ·
+  fresh profile + `?puzzle=first-light` → straight onto that board, no coach.
+  Suite 1334 green (routing has no automated tests by design — UI phases are
+  browser-verified).
+- **Next:** hand out the URL; watch whether tutorial-skippers bounce (D-20's
+  reconsider-when). Custom domain still open. The three levers still await a
+  fresh batch five.
+
 ## 2026-08-13 — Sharing polish: the deploy check and the favicon
 
 Max is ready to share the game; the live URL is the locked target

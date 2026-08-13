@@ -1,10 +1,11 @@
 // Bootstrap: decide where a player lands, load boards through the source seam, build the
 // views once, and drive them all with a single controller.
 //
-// Routing (Phase 5):
-//   first launch     → the tutorial board, forced (GDD §5.2)
+// Routing (amended 2026-08-13, Max's call before sharing — see design.md D-20;
+// GDD §5.2's forced first-run tutorial is retired):
 //   ?puzzle=<slug>   → straight into that board, however the player arrived
-//   any later run    → the title screen → Play (the puzzle list) or How to play
+//   everything else  → the title screen → Play (the puzzle list) or How to play
+// The tutorial is opt-in via "How to play", first visit or fiftieth.
 // Boards are swapped on ONE controller and ONE set of views via controller.loadPuzzle,
 // so nothing is torn down and rebuilt between the tutorial and the real puzzle.
 
@@ -44,9 +45,9 @@ function requestedSlug() {
 }
 
 async function main() {
-  // Read before anything can rewrite the URL — the tutorial clears `?puzzle=` while it is
-  // up, and a first-time player who followed a link to a specific board should still be
-  // handed that board when the tutorial lets go of them.
+  // Read before anything can rewrite the URL. The tutorial clears `?puzzle=` while it is
+  // up (a player can still choose it from the title screen), so if they entered through a
+  // deep link, the tutorial's handoff should return them to the board they came for.
   const deepLink = requestedSlug();
 
   const source = new LocalJsonSource();
@@ -202,10 +203,11 @@ async function main() {
     endView
   ];
 
-  // GDD §5.2: the first launch is the tutorial, and a deep link does not buy a way past
-  // it — it decides what the tutorial hands off to instead.
-  if (!storage.hasSeenTutorial()) await startGame(null, TUTORIAL_RULES, true);
-  else if (deepLink) await startGame(deepLink, {}, false);
+  // D-20: everyone lands on the title screen; the tutorial is opt-in through "How to
+  // play". (GDD §5.2's forced first run retired at Max's direction, 2026-08-13 — the
+  // title screen already names both doors, and a shared link should open on the front
+  // door, not a lesson.) A deep link still goes straight to its board.
+  if (deepLink) await startGame(deepLink, {}, false);
   else router.show('title');
 }
 
