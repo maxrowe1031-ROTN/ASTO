@@ -82,5 +82,11 @@
         "stock-exchange-red-herring"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "ticker tape",
+      "definition": "a thin paper strip once printed with scrolling rows of numbers and letters"
+    }
   ]
 }

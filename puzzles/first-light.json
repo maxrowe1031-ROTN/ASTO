@@ -7,33 +7,84 @@
       "id": "set-growth",
       "relationshipLabel": "Small origin becomes larger result",
       "explanation": "A seed grows into a tree the way a spark grows into a fire.",
-      "pairs": [["Seed", "Tree"], ["Spark", "Fire"]],
+      "pairs": [
+        [
+          "Seed",
+          "Tree"
+        ],
+        [
+          "Spark",
+          "Fire"
+        ]
+      ],
       "difficulty": 1,
-      "baitTags": ["nature"]
+      "baitTags": [
+        "nature"
+      ]
     },
     {
       "id": "set-tools",
       "relationshipLabel": "Tool used by profession",
       "explanation": "A brush is what a painter works with, the way a chisel is what a sculptor works with.",
-      "pairs": [["Brush", "Painter"], ["Chisel", "Sculptor"]],
+      "pairs": [
+        [
+          "Brush",
+          "Painter"
+        ],
+        [
+          "Chisel",
+          "Sculptor"
+        ]
+      ],
       "difficulty": 2,
-      "baitTags": ["craft"]
+      "baitTags": [
+        "craft"
+      ]
     },
     {
       "id": "set-homes",
       "relationshipLabel": "Home of animal",
       "explanation": "A nest is where a bird lives, the way a den is where a bear lives.",
-      "pairs": [["Nest", "Bird"], ["Den", "Bear"]],
+      "pairs": [
+        [
+          "Nest",
+          "Bird"
+        ],
+        [
+          "Den",
+          "Bear"
+        ]
+      ],
       "difficulty": 3,
-      "baitTags": ["nature", "animal"]
+      "baitTags": [
+        "nature",
+        "animal"
+      ]
     },
     {
       "id": "set-material",
       "relationshipLabel": "Material transformed into finished object",
       "explanation": "Dough is baked into bread the way clay is fired into pottery.",
-      "pairs": [["Dough", "Bread"], ["Clay", "Pottery"]],
+      "pairs": [
+        [
+          "Dough",
+          "Bread"
+        ],
+        [
+          "Clay",
+          "Pottery"
+        ]
+      ],
       "difficulty": 4,
-      "baitTags": ["craft"]
+      "baitTags": [
+        "craft"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "word": "Chisel",
+      "definition": "A sharp-edged hand tool used for cutting or shaping hard materials like wood or stone."
     }
   ]
 }

@@ -82,5 +82,11 @@
         "smoke-blotter-link"
       ]
     }
+  ],
+  "glossary": [
+    {
+      "word": "blotter",
+      "definition": "a soft absorbent pad used to soak up wet ink"
+    }
   ]
 }
