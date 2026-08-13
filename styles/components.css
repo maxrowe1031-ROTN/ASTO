@@ -413,15 +413,18 @@
   color: var(--soft-ink);
 }
 
-/* Label above, dots below, spread edge to edge — a side-by-side row left a dead gulf
-   between the word and the numbers (Max, 2026-08-13). */
+/* Label beside its choices, one row per question. The label's width is FIXED so the
+   four pills line up as columns across all three rows; the pills flex to swallow the
+   remaining width — Max's call (2026-08-13) after two layouts: side-by-side, but no
+   dead gulf between the word and the numbers. */
 .survey-row {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 10px;
 }
 
 .survey-label {
+  flex: 0 0 84px;
   font-size: 14px;
   font-weight: 700;
   color: var(--ink);
@@ -429,13 +432,14 @@
 
 .survey-dots {
   display: flex;
-  justify-content: space-between;
+  flex: 1;
+  gap: 6px;
 }
 
 .survey-dot {
-  width: var(--tap-target);
-  height: var(--tap-target);
-  border-radius: 50%;
+  flex: 1;
+  min-height: var(--tap-target);
+  border-radius: var(--radius-pill);
   border: 1.5px solid var(--ink);
   background: transparent;
   color: var(--ink);
