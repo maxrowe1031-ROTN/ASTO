@@ -2,6 +2,29 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — Wrapup: ASTO is publicly shipped
+
+Session close. Everything below this entry from today merged and deploy-
+verified as it landed; this wrapup ran the full gate once more — **suite 1338
+green, 48 boards clean, `check-deploy` green against www.playasto.com** — and
+fixed the one drift it found: `CLAUDE.md` still called publishing to Pages "a
+separate, later milestone" while the game had been live on a bought domain for
+hours. **Status is now PUBLICLY SHIPPED**, and the domain (~$11/yr) is
+recorded as the project's one approved recurring cost. Tagged
+**`v0.2.0-public`** — the public-web counterpart of `v0.1.0-local`.
+
+The day, in one line each, newest first below: tutorial polish (D-20 second
+addendum) · tagline "This is to that." · www.playasto.com · Warm Up→First
+Light tutorial swap (D-20 addendum) · title-screen front door (D-20) · deploy
+check + favicon · Vocab backfill to all boards · batch five run and destroyed
+at Max's direction · low tide published.
+
+- **Still open for Max:** the tutorial's new Hint/Vocab coach copy (his read
+  is the acceptance); the three studio levers still await a fresh batch five.
+- **Next:** share the URL and watch how strangers land (D-20's bounce
+  trigger). Batch five when Max wants it. B2 hand-editing keeps its growing
+  appetite.
+
 ## 2026-08-13 — Tutorial polish: no Continue pill, Hint+Vocab coached, Warm Up leads
 
 Max's three calls after playing the shared build (D-20 second addendum), on

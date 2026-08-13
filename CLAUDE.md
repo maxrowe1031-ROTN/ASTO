@@ -33,13 +33,13 @@ the retired Python crew stay in `../maigd-course-handbook`.
   approved by Max; hosting and the certificate stay free). The old
   `maxrowe1031-rotn.github.io/ASTO` URL 301s to it. Verify a push actually deployed with
   `npm run check-deploy`.
-- **Status:** LOCALLY SHIPPED — **Phases 1–5 complete**, tagged `v0.1.0-local` on
-  2026-08-07 when Max's playtest passed the Phase 5 gate. Working locally for its intended
-  purpose counts as **shipped** (see `docs/brief.md` for what that means here); publishing
-  to GitHub Pages is a separate, later milestone. The **Studio** remains in flight — the
-  pipeline is still being tuned, and HR-2's hand-editing (B2) is still deferred.
+- **Status:** PUBLICLY SHIPPED — **Phases 1–5 complete**, tagged `v0.1.0-local` on
+  2026-08-07 when Max's playtest passed the Phase 5 gate, and **live on the public web at
+  www.playasto.com since 2026-08-13**, when Max declared it ready to share. The **Studio**
+  remains in flight — the pipeline is still being tuned, and HR-2's hand-editing (B2) is
+  still deferred.
 - No paid hosting, services, or recurring costs are ever adopted without explicit
-  discussion with Max.
+  discussion with Max (the playasto.com domain, ~$11/yr, is the one approved exception).
 
 ## 2. Working with Max
 
