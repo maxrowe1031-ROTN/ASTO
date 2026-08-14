@@ -1400,3 +1400,152 @@ test('readAttempt exposes the edited board beside the generated one', async () =
     cleanup();
   }
 });
+
+// --- publish meets hand-editing (D-22) ---
+
+test('publish ships the hand-edited board through the full gate, and says so on the record', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    await postEdits(api, runId, attemptId, editedBoard({
+      title: 'Lantern Light',
+      sets: { 'set-c': { relationshipLabel: 'shelters' } },
+    }));
+    await approve(api, runId);
+
+    const { status, body } = await api.handle({
+      method: 'POST', path: `/api/runs/${runId}/publish`, body: {},
+    });
+    assert.equal(status, 200);
+    assert.equal(body.published.filename, 'lantern-light.json');
+
+    const published = JSON.parse(readFileSync(join(puzzlesDir, 'lantern-light.json'), 'utf8'));
+    assert.equal(published.title, 'Lantern Light');
+    assert.equal(published.sets.find((s) => s.id === 'set-c').relationshipLabel, 'shelters');
+    assert.equal(published.id, 'asto-lantern-light');
+    assert.equal('handEdited' in published, false); // no provenance in game content
+
+    const decision = store.readDecisions(runId).find((d) => d.type === 'publish');
+    assert.equal(decision.handEdited, true);
+    assert.ok(decision.editedAt);
+  } finally {
+    cleanup();
+  }
+});
+
+test('an unedited publish records no hand-edit marker', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store);
+    await approve(api, runId);
+    await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    const decision = store.readDecisions(runId).find((d) => d.type === 'publish');
+    assert.equal('handEdited' in decision, false);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a gloss entry orphaned by an edit is dropped from the published file and recorded', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store, {
+      glossary: [{ word: 'Chisel', definition: 'A carving tool.' }],
+    });
+    await postEdits(api, runId, attemptId, editedBoard({
+      sets: { 'set-b': { pairs: [['Brush', 'Painter'], ['Awl', 'Cobbler']] } },
+    }));
+    await approve(api, runId);
+
+    const { status } = await api.handle({
+      method: 'POST', path: `/api/runs/${runId}/publish`, body: {},
+    });
+    assert.equal(status, 200);
+
+    const published = JSON.parse(readFileSync(join(puzzlesDir, 'lantern.json'), 'utf8'));
+    assert.equal('glossary' in published, false);
+    const decision = store.readDecisions(runId).find((d) => d.type === 'publish');
+    assert.deepEqual(decision.droppedGloss, [{ word: 'Chisel', definition: 'A carving tool.' }]);
+  } finally {
+    cleanup();
+  }
+});
+
+test('an edit that answers a recorded change unblocks publish; an unanswered one still refuses', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    // Two recorded asks: move set-a to difficulty 2, and fix set-d.
+    store.appendFeedback(runId, feedbackEvent({
+      id: 'fb-diff', attemptId, action: 'change-difficulty',
+      scope: { type: 'set', setId: 'set-a' }, tags: [],
+      before: { difficulty: 1 }, after: { difficulty: 2 },
+    }));
+    store.appendFeedback(runId, feedbackEvent({
+      id: 'fb-edit', attemptId, action: 'set-needs-edit',
+      scope: { type: 'set', setId: 'set-d' }, tags: [],
+    }));
+    // The edit answers ONLY the difficulty ask (a swap moves both sets, but
+    // set-b's move is incidental — what matters is set-a actually changed).
+    await postEdits(api, runId, attemptId, editedBoard({
+      sets: { 'set-a': { difficulty: 2 }, 'set-b': { difficulty: 1 } },
+    }));
+    await approve(api, runId);
+
+    const refused = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    assert.equal(refused.status, 409);
+    assert.equal(refused.body.reason, 'unapplied-edits');
+    assert.deepEqual(refused.body.unapplied.map((u) => u.setId), ['set-d']);
+
+    // Answer set-d too — now publish flows with no acknowledgement.
+    await postEdits(api, runId, attemptId, editedBoard({
+      sets: {
+        'set-a': { difficulty: 2 }, 'set-b': { difficulty: 1 },
+        'set-d': { explanation: 'Reworked by hand.' },
+      },
+    }));
+    const allowed = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    assert.equal(allowed.status, 200);
+  } finally {
+    cleanup();
+  }
+});
+
+test('hand-edit events themselves never count as unapplied asks', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    await postEdits(api, runId, attemptId, editedBoard({ title: 'Renamed' }));
+    await approve(api, runId);
+    const { status } = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    assert.equal(status, 200);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a revision after an edit publishes the revision\'s board — stale edits never leak', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    await postEdits(api, runId, attemptId, editedBoard({ title: 'Stale Edit' }));
+
+    // A revision arrives: new attempt, its own board.
+    store.updateStatus(runId, 'revision-requested');
+    store.updateStatus(runId, 'revising');
+    const secondId = store.createAttempt(runId, { parentAttemptId: attemptId });
+    const revisedBoard = structuredClone(BOARD);
+    revisedBoard.title = 'Revised Title';
+    store.writeAttemptArtifact(runId, secondId, 'board.json', revisedBoard);
+    store.writeStageArtifact(runId, secondId, '04a-integrity', 'integrity.json', { ok: true, acceptedCount: 16 });
+    store.completeAttempt(runId, secondId, { status: 'complete' });
+    store.updateStatus(runId, 'awaiting-review');
+    await approve(api, runId);
+
+    const { status, body } = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    assert.equal(status, 200);
+    assert.equal(body.published.title, 'Revised Title');
+  } finally {
+    cleanup();
+  }
+});

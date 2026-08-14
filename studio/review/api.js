@@ -531,6 +531,33 @@ export function createApi({
   }
 
   /**
+   * Which recorded asks did the hand-edit NOT answer? (D-22)
+   *
+   * A change-difficulty ask is answered when that set's difficulty actually
+   * moved — wherever Max moved it: he is the editor, and the gate's job is
+   * publishing-without-knowing, not enforcing the recorded destination. A
+   * set-needs-edit / set-replace / revise-set ask is answered by any change
+   * to that set's content. No edit → everything stays unapplied, as before.
+   */
+  function stillUnapplied(asks, generated, edited) {
+    if (!edited || !generated) return asks;
+    const changes = diffBoards(generated, edited);
+    const changedSets = new Set(
+      changes.filter((c) => c.scope.type === 'set').map((c) => c.scope.setId),
+    );
+    const difficultyMoved = new Set(
+      changes
+        .filter((c) => c.scope.type === 'set' && c.before.difficulty !== undefined)
+        .map((c) => c.scope.setId),
+    );
+    return asks.filter((ask) =>
+      ask.action === 'change-difficulty'
+        ? !difficultyMoved.has(ask.setId)
+        : !changedSets.has(ask.setId),
+    );
+  }
+
+  /**
    * B2 hand-editing (D-22): save Max's fix-in-place edit of the current board.
    *
    * The attempt stays immutable — the edit is a run-level artifact keyed by
@@ -641,39 +668,46 @@ export function createApi({
       );
     }
 
-    let board = currentBoard(runId);
+    // B2 (D-22): a saved hand-edit for the CURRENT attempt is what ships —
+    // keyed by attempt id, so an edit of attempt 0001 can never ride out on
+    // revision 0002. The generated board stays in the attempt directory.
+    const editedEnvelope = store.hasRunArtifact(runId, editedBoardFile(manifest.currentAttemptId))
+      ? store.readRunArtifact(runId, editedBoardFile(manifest.currentAttemptId))
+      : null;
+    const generated = currentBoard(runId);
+    let board = editedEnvelope ? editedEnvelope.board : generated;
     if (!board) return conflict(`run ${runId} has no board to publish`);
 
     // The gloss rides the published puzzle (D-18): board.json is 04's artifact
     // and predates stage 09, so the merge happens here, at the one door game
     // content leaves through. Absent or empty → the puzzle ships without a
-    // glossary and the game shows no Vocabulary button, exactly as pre-D-18.
-    try {
-      const gloss = store.readStageArtifact(
-        runId,
-        manifest.currentAttemptId,
-        '09-glossary-author',
-        'output.json',
-      );
-      if (Array.isArray(gloss?.glossary) && gloss.glossary.length > 0) {
-        board = { ...board, glossary: gloss.glossary };
-      }
-    } catch {
-      // No glossary stage on this attempt (pre-D-18 runs) — publish as before.
-    }
+    // glossary, exactly as pre-D-18. An entry whose word was edited off the
+    // board is DROPPED — validate-puzzle would rightly refuse it — and the
+    // drop goes on the publish record below.
+    const { board: withGloss, dropped: droppedGloss } = mergeGlossary(
+      board,
+      glossaryOf(runId, manifest.currentAttemptId),
+    );
+    board = withGloss;
 
     // Refused once, then allowed on the retry that carries the acknowledgement.
     // Deliberately not a hard block: the board is often right to publish as-is
     // and Max is the editor. What it refuses is publishing WITHOUT KNOWING.
+    // Since B2, an ask his edit actually ANSWERED no longer counts: the gate
+    // shrinks by edits, not by acknowledgements.
     if (!body.acknowledgeUnapplied) {
-      const unapplied = unappliedEdits(runId, manifest.currentAttemptId);
+      const unapplied = stillUnapplied(
+        unappliedEdits(runId, manifest.currentAttemptId),
+        generated,
+        editedEnvelope?.board ?? null,
+      );
       if (unapplied.length > 0) {
         return {
           status: 409,
           body: {
             error:
-              `publishing ships the board exactly as generated, and ${unapplied.length} recorded ` +
-              `change${unapplied.length === 1 ? '' : 's'} would not be applied`,
+              `publishing would ship the board with ${unapplied.length} recorded ` +
+              `change${unapplied.length === 1 ? '' : 's'} not applied`,
             reason: 'unapplied-edits',
             unapplied,
           },
@@ -717,6 +751,10 @@ export function createApi({
       publishedAs: published.filename,
       publishedId: published.id,
       republished: replace,
+      // Provenance lives HERE, never in the puzzle file (schema v1.0 is
+      // locked): this is the record that what shipped carried Max's hand.
+      ...(editedEnvelope ? { handEdited: true, editedAt: editedEnvelope.at } : {}),
+      ...(droppedGloss.length > 0 ? { droppedGloss } : {}),
       at: clock(),
     });
 
