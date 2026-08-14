@@ -521,3 +521,71 @@ textarea { width: 100%; resize: vertical; }
   margin: 2px 0 8px;
   padding-left: 16px;
 }
+
+/* ---------- Hand editor (D-22) ---------- */
+
+.edit-board {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.edit-board label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--soft-ink, #7a6b57);
+}
+
+.edit-board input,
+.edit-board textarea,
+.edit-board select {
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink, #40342a);
+  background: var(--milk, #faf5e9);
+  border: 1.5px solid var(--taupe, #d8ccb3);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.edit-set {
+  border: 1.5px solid var(--taupe, #d8ccb3);
+  border-radius: 12px;
+  padding: 10px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-set legend {
+  font-size: 13px;
+  font-weight: 800;
+  padding: 0 6px;
+}
+
+.edit-words {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.edit-errors {
+  margin: 0;
+  padding-left: 18px;
+  color: #8f4227;
+  font-size: 13px;
+}
+
+.edited-badge {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--soft-ink, #7a6b57);
+  border: 1px dashed var(--faint-ink, #a5977f);
+  border-radius: 999px;
+  padding: 2px 10px;
+}

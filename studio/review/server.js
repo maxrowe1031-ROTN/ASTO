@@ -72,6 +72,10 @@ const MOUNTS = [
   ['/src/engine/', join(REPO, 'src', 'engine')],
   ['/src/view/', join(REPO, 'src', 'view')],
   ['/src/controller/', join(REPO, 'src', 'controller'), new Set(['game-controller.js'])],
+  // B2 (D-22): the editor validates as Max types with the game's OWN validator
+  // — browser convenience; the server re-runs it as the authority. File-by-file
+  // because local-json-source.js (the game's fetch seam) has no business here.
+  ['/src/source/', join(REPO, 'src', 'source'), new Set(['validate-puzzle.js'])],
   // Last, and allowlisted file by file: the prefixes above are more specific
   // and match first, and `studio/` holds llm.js and env.js, which must stay
   // unreachable. The registry is here because the review page's revision
@@ -85,7 +89,9 @@ const MOUNTS = [
   [
     '/studio/',
     join(REPO, 'studio'),
-    new Set(['stage-registry.js', 'slug.js', 'review/brief-text.js']),
+    // `gloss.js` joined for D-22: the gloss the editor previews after a word
+    // leaves the board and the gloss publish ships must be one derivation.
+    new Set(['stage-registry.js', 'slug.js', 'review/brief-text.js', 'gloss.js']),
   ],
 ];
 

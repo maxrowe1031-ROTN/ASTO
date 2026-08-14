@@ -17,6 +17,9 @@ import { slugify } from '../../slug.js';
 // The same rendering the auto-revise loop sends, not a second copy of it: the
 // brief Max previews has to be the brief a revision actually receives.
 import { briefText } from '../brief-text.js';
+// The same gloss filtering publish runs (D-22): the play surface and the
+// published puzzle must carry one derivation of "which definitions ride".
+import { mergeGlossary } from '../../gloss.js';
 
 const view = document.getElementById('view');
 const POLL_MS = 2500;
@@ -224,6 +227,13 @@ async function fillPlayerRatings() {
 const TIER_NAMES = { 1: 'green', 2: 'yellow', 3: 'red', 4: 'black' };
 const tierName = (difficulty) => TIER_NAMES[difficulty] ?? `difficulty ${difficulty}`;
 
+/** A hand-edit's before/after rendered small: one field's value, abbreviated. */
+function editValue(side) {
+  const value = Object.values(side ?? {})[0];
+  const text = typeof value === 'string' ? value : JSON.stringify(value);
+  return text === undefined ? '?' : text.length > 60 ? `${text.slice(0, 57)}…` : text;
+}
+
 /**
  * Past feedback, read back as sentences rather than as the raw JSON this used
  * to dump. A change-difficulty event in particular is unreadable as an object
@@ -241,9 +251,12 @@ function feedbackList(events) {
           ? `plays like <strong>${escape(tierName(event.after?.difficulty))}</strong> — was ${escape(
               tierName(event.before?.difficulty),
             )}`
-          : `<strong>${escape(event.action)}</strong>${
-              (event.tags ?? []).length > 0 ? ` · ${escape(event.tags.join(', '))}` : ''
-            }`;
+          : event.action === 'hand-edit'
+            ? `edited <strong>${escape(Object.keys(event.after ?? {})[0] ?? 'a field')}</strong>: ` +
+              `${escape(editValue(event.before))} → ${escape(editValue(event.after))}`
+            : `<strong>${escape(event.action)}</strong>${
+                (event.tags ?? []).length > 0 ? ` · ${escape(event.tags.join(', '))}` : ''
+              }`;
       const note = event.note ? `<div class="fb-log-note">${escape(event.note)}</div>` : '';
       return `<li><span class="studio-muted">${where}</span> ${body}${note}</li>`;
     })
@@ -291,6 +304,13 @@ async function renderRun(runId) {
 
   const attempt = await api(`/runs/${encodeURIComponent(runId)}/attempts/${attemptId}`);
   const decidable = manifest.status === 'awaiting-review';
+  // D-22: what Max sees, judges, plays, and publishes is his last saved edit
+  // when one exists. The generated board stays in `attempt.board`, untouched —
+  // the badge below is the difference made visible, never silently swapped.
+  const effectiveBoard = attempt.editedBoard?.board ?? attempt.board;
+  const editable =
+    Boolean(attempt.board) &&
+    (manifest.status === 'awaiting-review' || manifest.status === 'approved');
 
   view.innerHTML = `
     <section class="panel">
@@ -319,17 +339,23 @@ async function renderRun(runId) {
 
     ${autoRevisionPanel(attempt, detail.decisions, attemptId)}
 
-    ${publishPanel(runId, manifest, detail.decisions, attempt.board)}
+    ${publishPanel(runId, manifest, detail.decisions, effectiveBoard, attempt.editedBoard)}
 
     ${
       attempt.board
         ? `<section class="panel board-panel" id="board-panel">
              <div class="play-bar">
                <button class="pill" data-act="play">Play this board</button>
+               ${editable ? '<button class="pill" data-act="edit">Edit this board</button>' : ''}
                <span class="studio-muted">judge it by playing it</span>
+               ${
+                 attempt.editedBoard
+                   ? `<span class="edited-badge">hand-edited ${escape(attempt.editedBoard.at)}</span>`
+                   : ''
+               }
              </div>
              <div id="board-preview">${boardHtml(
-               attempt.board,
+               effectiveBoard,
                attempt.reports['04-board-builder']?.promotions ?? [],
                {
                  // Set id → declared shape, from the grouper — the card
@@ -348,6 +374,11 @@ async function renderRun(runId) {
 
     <section class="panel" id="proposal-panel" hidden></section>
 
+    ${
+      attempt.editedBoard
+        ? `<p class="studio-muted">Machine verdicts below were rendered on the <strong>generated</strong> board, before the hand-edit.</p>`
+        : ''
+    }
     ${reportPanel('Difficulty rater', attempt.reports['03-difficulty-rater'])}
     ${reportPanel('Integrity gate', attempt.reports['04a-integrity'])}
     ${reportPanel('Analogy validator', attempt.reports['05-analogy-validator'])}
@@ -359,7 +390,7 @@ async function renderRun(runId) {
       attempt.board
         ? `<section class="panel" id="feedback">
              <h2>Your read</h2>
-             ${feedbackControls(attempt.board)}
+             ${feedbackControls(effectiveBoard)}
              <div class="decisions">
                <button class="pill" data-act="save" ${decidable ? '' : 'disabled'}>Save feedback</button>
                <button class="pill primary" data-act="approve" ${decidable ? '' : 'disabled'}>Approve</button>
@@ -384,12 +415,14 @@ async function renderRun(runId) {
   wirePublish(runId);
   wireDecisions(runId, attemptId);
   // The gloss rides the play surface exactly as it will ride the published
-  // puzzle (D-18): judging the board means judging the Vocabulary moment too.
+  // puzzle (D-18), filtered by the same derivation publish uses (D-22): a
+  // definition whose word was edited away is dropped here too.
   wirePlay(
-    attempt.board && (attempt.reports?.['09-glossary-author']?.glossary?.length ?? 0) > 0
-      ? { ...attempt.board, glossary: attempt.reports['09-glossary-author'].glossary }
-      : attempt.board,
+    effectiveBoard
+      ? mergeGlossary(effectiveBoard, attempt.reports?.['09-glossary-author']?.glossary).board
+      : effectiveBoard,
   );
+  if (editable) wireEdit(runId, attemptId, effectiveBoard, attempt.board);
   showProposal(runId, attemptId);
   schedulePoll(working, runId);
 }
@@ -471,16 +504,26 @@ function autoRevisionPanel(attempt, decisions, attemptId) {
  * The published state is read from the run's own decisions rather than
  * remembered here — same rule as the rest of this page.
  */
-function publishPanel(runId, manifest, decisions, board) {
+function publishPanel(runId, manifest, decisions, board, editedBoard = null) {
   if (manifest.status !== 'approved') return '';
 
   const published = (decisions ?? []).filter((event) => event.type === 'publish').at(-1);
+  // The slug previews from the EFFECTIVE title — a retitle-at-publish is
+  // exactly B2's first bite, and the destination shown must be the
+  // destination (same slugify the server runs).
   const slug =
     published?.publishedAs?.replace(/\.json$/, '') ?? slugify(board?.title) ?? slugOfRun(runId);
 
   return `
     <section class="panel" id="publish">
       <h2>Publish</h2>
+      ${
+        editedBoard
+          ? `<p class="studio-muted">Publishing the <strong>hand-edited</strong> board (saved ${escape(
+              editedBoard.at,
+            )}) — the generated board stays in the run record.</p>`
+          : ''
+      }
       ${
         published
           ? `<p>Published as <code>puzzles/${escape(published.publishedAs)}</code>
@@ -552,8 +595,8 @@ function unappliedPrompt(unapplied = []) {
     return `· ${edit.action}${where}${change}`;
   });
   return [
-    'Publishing ships the board exactly as the pipeline generated it.',
-    '',
+    // Since B2, asks answered by a hand-edit are already filtered out
+    // server-side: whatever reaches this prompt is genuinely un-addressed.
     `You recorded ${unapplied.length} change${unapplied.length === 1 ? '' : 's'} that will NOT be applied:`,
     ...lines,
     '',
@@ -616,6 +659,58 @@ function wirePublish(runId) {
  * played is past both. Navigating away replaces the whole view, which takes
  * the game with it.
  */
+/**
+ * The hand-editor (D-22), swapped into the board panel exactly as Play is.
+ * Loaded on demand; the server re-validates every save and owns the record.
+ */
+function wireEdit(runId, attemptId, board, generated) {
+  const panel = document.getElementById('board-panel');
+  if (!panel) return;
+
+  panel.addEventListener('click', async (event) => {
+    if (event.target.dataset?.act !== 'edit') return;
+    const { wireEditor } = await import('./edit.js');
+    const preview = document.getElementById('board-preview');
+    const bar = panel.querySelector('.play-bar');
+    preview.hidden = true;
+    bar.hidden = true;
+    const host = document.createElement('div');
+    panel.append(host);
+
+    const close = () => {
+      host.remove();
+      bar.hidden = false;
+      preview.hidden = false;
+    };
+
+    wireEditor(host, {
+      board,
+      generated,
+      onClose: close,
+      onSave: async (edited) => {
+        try {
+          const result = await api(`/runs/${encodeURIComponent(runId)}/edits`, {
+            method: 'POST',
+            body: JSON.stringify({ attemptId, board: edited }),
+          });
+          notify(
+            `Saved — ${result.changed} field${result.changed === 1 ? '' : 's'} recorded` +
+              (result.glossWarning
+                ? `. Note: ${result.glossWarning.length} vocabulary gloss entr${
+                    result.glossWarning.length === 1 ? 'y' : 'ies'
+                  } no longer match a board word and will not ship.`
+                : ''),
+            'ok',
+          );
+          route(); // re-render from the server's answer, like every other write
+        } catch (error) {
+          notify(error.message);
+        }
+      },
+    });
+  });
+}
+
 function wirePlay(board) {
   const panel = document.getElementById('board-panel');
   if (!panel || !board) return;

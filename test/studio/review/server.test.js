@@ -194,3 +194,19 @@ test('a full round trip: create a run over HTTP and watch it finish', async () =
     assert.equal(store.readAttemptArtifact(runId, '0001', 'board.json').title, 'First Light');
   });
 });
+
+// B2 (D-22): the editor validates live with the game's OWN validator, and the
+// gloss the page previews must be the gloss publish ships — one derivation.
+test('serves the validator and gloss modules the editor needs, and nothing else from source/', async () => {
+  await withServer(async ({ url }) => {
+    for (const path of ['/src/source/validate-puzzle.js', '/studio/gloss.js']) {
+      const response = await fetch(`${url}${path}`);
+      assert.equal(response.status, 200, path);
+      assert.match(response.headers.get('content-type'), /javascript/);
+    }
+    for (const path of ['/src/source/local-json-source.js', '/studio/edits.js', '/studio/llm.js']) {
+      const response = await fetch(`${url}${path}`);
+      assert.ok(response.status === 404 || response.status === 403, `${path} → ${response.status}`);
+    }
+  });
+});
