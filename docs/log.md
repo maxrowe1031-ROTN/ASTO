@@ -2,6 +2,36 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — Wrapup: the loop closes both ways — players rate, Max edits
+
+Session close. Three units shipped today, each merged and logged below as it
+landed; this wrapup re-ran the full gate once more — **suite 1420 green, 48
+boards clean, `check-deploy` green against www.playasto.com** — and found the
+tree clean, `main` in sync, no drift.
+
+The day in one line each, newest first: **D-22** B2 fix-in-place hand editor,
+HR-2 fully discharged · survey layout polish twice at Max's direction (pills
+won) · **D-21 reading half** — `npm run ratings` + the Review Studio's Player
+ratings panel · **D-21 collecting half** — the end-screen survey live on the
+public site, Supabase free tier adopted ($0, the domain stays the only paid
+cost).
+
+- **Verified in session:** survey taps landing as database rows (append,
+  never update) including one from the live site; the ratings report and
+  Studio panel rendering real data — including the first stranger's rating
+  and comment, which arrived within hours; the editor exercised end to end
+  on a mock run with the server refusing an invalid save and writing nothing.
+- **Accepted by Max in session:** the survey (look and layout, after two
+  rounds), the tutorial coach copy, URL sharing confirmed working.
+- **Still open for Max:** driving the D-22 editor himself (form feel, the
+  swap interaction, copy — his acceptance); batch five when he wants it.
+- **Next:** Max test-drives the editor in the Review Studio. Then the
+  standing watches: player ratings accumulating per board (`npm run
+  ratings`), D-20's bounce trigger as the URL spreads, batch five on his
+  word. The Supabase free-tier pause risk (D-21) stays on the record — if
+  the project is found paused with taps lost, the reader grows a liveness
+  check.
+
 ## 2026-08-13 — D-22: B2 hand-editing — the fix-in-place editor, HR-2 discharged
 
 Max's call after D-21 closed; scope chosen at planning: **fix-in-place**
