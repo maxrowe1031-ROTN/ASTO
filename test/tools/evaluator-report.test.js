@@ -12,6 +12,7 @@ import assert from 'node:assert/strict';
 import {
   boardVerdict,
   chainOutcome,
+  excludeHandEdited,
   chainTally,
   formVersionOf,
   notesReached,
@@ -434,4 +435,56 @@ test('a reported weak unity still makes 08 unhappy, and a strong one does not re
 
   const nonCompliant = scoreStyle({ compliant: false, unity: { verdict: 'strong' } }, 'good');
   assert.equal(nonCompliant.machineHappy, false);
+});
+
+// --- boundary 6: hand-edited sets leave the machine-vs-Max join (D-22) ----
+//
+// The machine's verdicts were rendered on the GENERATED board; judgements Max
+// gives after editing a set are about a board the machine never saw. Joining
+// them would grade the evaluators against work they were not shown.
+
+test('a hand-edited set leaves the join, and its judgements go with it', () => {
+  const events = [
+    setEvent('set-a', { action: 'reject-set', formVersion: 5 }),
+    setEvent('set-b', { action: 'set-publishable', formVersion: 5 }),
+    setEvent('set-a', {
+      action: 'hand-edit',
+      formVersion: 5,
+      before: { relationshipLabel: 'x' },
+      after: { relationshipLabel: 'y' },
+    }),
+  ];
+  const { joinable, editedSetIds, boardEdited } = excludeHandEdited(events);
+  assert.deepEqual([...editedSetIds], ['set-a']);
+  assert.equal(boardEdited, true);
+  assert.equal(joinable.some((e) => e.scope?.setId === 'set-a'), false);
+  // set-b's verdict is untouched by its neighbour's edit.
+  assert.equal(setVerdicts(joinable).get('set-b').verdict, 'good');
+  assert.equal(setVerdicts(joinable).has('set-a'), false);
+});
+
+test('a board-scoped hand-edit (a retitle) marks the attempt without evicting any set', () => {
+  const events = [
+    setEvent('set-a', { action: 'set-publishable', formVersion: 5 }),
+    {
+      scope: { type: 'board' },
+      action: 'hand-edit',
+      formVersion: 5,
+      tags: [],
+      before: { title: 'Old' },
+      after: { title: 'New' },
+    },
+  ];
+  const { joinable, editedSetIds, boardEdited } = excludeHandEdited(events);
+  assert.equal(editedSetIds.size, 0);
+  assert.equal(boardEdited, true);
+  assert.equal(setVerdicts(joinable).get('set-a').verdict, 'good');
+});
+
+test('no hand-edits: everything joins, nothing is marked', () => {
+  const events = [setEvent('set-a', { action: 'reject-set', formVersion: 5 })];
+  const { joinable, editedSetIds, boardEdited } = excludeHandEdited(events);
+  assert.equal(joinable.length, 1);
+  assert.equal(editedSetIds.size, 0);
+  assert.equal(boardEdited, false);
 });

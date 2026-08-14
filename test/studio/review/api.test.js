@@ -1215,3 +1215,337 @@ test('a server built without a reader says so instead of pretending an empty tab
     cleanup();
   }
 });
+
+// --- hand-editing (D-22): POST /api/runs/:runId/edits ---
+
+const editedBoard = (patches = {}) => {
+  const board = structuredClone(BOARD);
+  if (patches.title) board.title = patches.title;
+  for (const [setId, patch] of Object.entries(patches.sets ?? {})) {
+    Object.assign(board.sets.find((s) => s.id === setId), patch);
+  }
+  return board;
+};
+
+const postEdits = (api, runId, attemptId, board) =>
+  api.handle({ method: 'POST', path: `/api/runs/${runId}/edits`, body: { attemptId, board } });
+
+test('a saved edit writes the run artifact and one event per changed field', async () => {
+  const { api, store, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    const board = editedBoard({
+      title: 'Lantern Light',
+      sets: { 'set-c': { relationshipLabel: 'homes' } },
+    });
+    const { status, body } = await postEdits(api, runId, attemptId, board);
+    assert.equal(status, 200);
+    assert.equal(body.changed, 2);
+
+    const artifact = store.readRunArtifact(runId, `edited-board-${attemptId}.json`);
+    assert.equal(artifact.attemptId, attemptId);
+    assert.equal(artifact.board.title, 'Lantern Light');
+
+    const events = store.readFeedback(runId).filter((e) => e.action === 'hand-edit');
+    assert.equal(events.length, 2);
+    assert.ok(events.every((e) => e.source === 'review-studio-edit'));
+    const titleEvent = events.find((e) => e.scope.type === 'board');
+    assert.deepEqual(titleEvent.before, { title: 'Lantern' });
+    assert.deepEqual(titleEvent.after, { title: 'Lantern Light' });
+  } finally {
+    cleanup();
+  }
+});
+
+test('an invalid edited board is refused and NOTHING is written', async () => {
+  const { api, store, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    const board = editedBoard({ sets: { 'set-a': { relationshipLabel: '' } } });
+    const { status, body } = await postEdits(api, runId, attemptId, board);
+    assert.equal(status, 400);
+    assert.equal(body.reason, 'invalid');
+    assert.ok(Array.isArray(body.errors));
+    assert.equal(store.hasRunArtifact(runId, `edited-board-${attemptId}.json`), false);
+    assert.equal(store.readFeedback(runId).length, 0);
+  } finally {
+    cleanup();
+  }
+});
+
+test('an edit that breaks board integrity is refused as integrity, not schema', async () => {
+  const { api, store, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    // "Tree" already lives in set-a — a duplicate word across sets.
+    const board = editedBoard({ sets: { 'set-d': { pairs: [['Dough', 'Bread'], ['Clay', 'Tree']] } } });
+    const { status, body } = await postEdits(api, runId, attemptId, board);
+    assert.equal(status, 400);
+    assert.equal(body.reason, 'invalid');
+    assert.equal(store.hasRunArtifact(runId, `edited-board-${attemptId}.json`), false);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a no-op edit answers 200 and writes nothing', async () => {
+  const { api, store, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    const { status, body } = await postEdits(api, runId, attemptId, editedBoard());
+    assert.equal(status, 200);
+    assert.equal(body.changed, 0);
+    assert.equal(store.hasRunArtifact(runId, `edited-board-${attemptId}.json`), false);
+    assert.equal(store.readFeedback(runId).length, 0);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a second save diffs against the first, not against the generated board', async () => {
+  const { api, store, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    await postEdits(api, runId, attemptId, editedBoard({ title: 'First Retitle' }));
+    const { body } = await postEdits(api, runId, attemptId, editedBoard({ title: 'Second Retitle' }));
+    assert.equal(body.changed, 1);
+    const titleEvents = store
+      .readFeedback(runId)
+      .filter((e) => e.action === 'hand-edit' && e.scope.type === 'board');
+    assert.equal(titleEvents.length, 2);
+    assert.deepEqual(titleEvents[1].before, { title: 'First Retitle' });
+  } finally {
+    cleanup();
+  }
+});
+
+test('a stale attemptId is a conflict telling the tab to reload', async () => {
+  const { api, store, cleanup } = setup();
+  try {
+    const { runId } = seedReviewable(store);
+    const { status, body } = await postEdits(api, runId, '0009', editedBoard({ title: 'X' }));
+    assert.equal(status, 409);
+    assert.match(body.error, /reload/i);
+  } finally {
+    cleanup();
+  }
+});
+
+test('editing is for awaiting-review and approved runs only', async () => {
+  const { api, store, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    store.appendDecision(runId, { type: 'reject', attemptId });
+    store.updateStatus(runId, 'rejected');
+    const { status } = await postEdits(api, runId, attemptId, editedBoard({ title: 'X' }));
+    assert.equal(status, 409);
+
+    const second = seedReviewable(store, { slug: 'lantern-two' });
+    store.updateStatus(second.runId, 'approved');
+    const approved = await postEdits(api, second.runId, second.attemptId, editedBoard({ title: 'Approved Retitle' }));
+    assert.equal(approved.status, 200);
+  } finally {
+    cleanup();
+  }
+});
+
+test('the edits body is sealed: unknown fields, missing board, changed id all refuse', async () => {
+  const { api, store, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    const path = `/api/runs/${runId}/edits`;
+    assert.equal(
+      (await api.handle({ method: 'POST', path, body: { attemptId, board: editedBoard(), extra: 1 } })).status,
+      400,
+    );
+    assert.equal((await api.handle({ method: 'POST', path, body: { attemptId } })).status, 400);
+    const renamed = editedBoard();
+    renamed.id = 'asto-something-else';
+    assert.equal((await postEdits(api, runId, attemptId, renamed)).status, 400);
+    const reshaped = editedBoard();
+    reshaped.sets = reshaped.sets.slice(0, 3);
+    assert.equal((await postEdits(api, runId, attemptId, reshaped)).status, 400);
+  } finally {
+    cleanup();
+  }
+});
+
+test('editing away a glossed word warns at save time', async () => {
+  const { api, store, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store, {
+      glossary: [{ word: 'Chisel', definition: 'A carving tool.' }],
+    });
+    const board = editedBoard({ sets: { 'set-b': { pairs: [['Brush', 'Painter'], ['Awl', 'Cobbler']] } } });
+    const { status, body } = await postEdits(api, runId, attemptId, board);
+    assert.equal(status, 200);
+    assert.deepEqual(body.glossWarning, [{ word: 'Chisel', definition: 'A carving tool.' }]);
+  } finally {
+    cleanup();
+  }
+});
+
+test('readAttempt exposes the edited board beside the generated one', async () => {
+  const { api, store, cleanup } = setup();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    const before = await api.handle({ method: 'GET', path: `/api/runs/${runId}/attempts/${attemptId}` });
+    assert.equal('editedBoard' in before.body, false);
+
+    await postEdits(api, runId, attemptId, editedBoard({ title: 'Edited' }));
+    const after = await api.handle({ method: 'GET', path: `/api/runs/${runId}/attempts/${attemptId}` });
+    assert.equal(after.body.editedBoard.board.title, 'Edited');
+    assert.equal(after.body.board.title, 'Lantern');
+  } finally {
+    cleanup();
+  }
+});
+
+// --- publish meets hand-editing (D-22) ---
+
+test('publish ships the hand-edited board through the full gate, and says so on the record', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    await postEdits(api, runId, attemptId, editedBoard({
+      title: 'Lantern Light',
+      sets: { 'set-c': { relationshipLabel: 'shelters' } },
+    }));
+    await approve(api, runId);
+
+    const { status, body } = await api.handle({
+      method: 'POST', path: `/api/runs/${runId}/publish`, body: {},
+    });
+    assert.equal(status, 200);
+    assert.equal(body.published.filename, 'lantern-light.json');
+
+    const published = JSON.parse(readFileSync(join(puzzlesDir, 'lantern-light.json'), 'utf8'));
+    assert.equal(published.title, 'Lantern Light');
+    assert.equal(published.sets.find((s) => s.id === 'set-c').relationshipLabel, 'shelters');
+    assert.equal(published.id, 'asto-lantern-light');
+    assert.equal('handEdited' in published, false); // no provenance in game content
+
+    const decision = store.readDecisions(runId).find((d) => d.type === 'publish');
+    assert.equal(decision.handEdited, true);
+    assert.ok(decision.editedAt);
+  } finally {
+    cleanup();
+  }
+});
+
+test('an unedited publish records no hand-edit marker', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store);
+    await approve(api, runId);
+    await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    const decision = store.readDecisions(runId).find((d) => d.type === 'publish');
+    assert.equal('handEdited' in decision, false);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a gloss entry orphaned by an edit is dropped from the published file and recorded', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store, {
+      glossary: [{ word: 'Chisel', definition: 'A carving tool.' }],
+    });
+    await postEdits(api, runId, attemptId, editedBoard({
+      sets: { 'set-b': { pairs: [['Brush', 'Painter'], ['Awl', 'Cobbler']] } },
+    }));
+    await approve(api, runId);
+
+    const { status } = await api.handle({
+      method: 'POST', path: `/api/runs/${runId}/publish`, body: {},
+    });
+    assert.equal(status, 200);
+
+    const published = JSON.parse(readFileSync(join(puzzlesDir, 'lantern.json'), 'utf8'));
+    assert.equal('glossary' in published, false);
+    const decision = store.readDecisions(runId).find((d) => d.type === 'publish');
+    assert.deepEqual(decision.droppedGloss, [{ word: 'Chisel', definition: 'A carving tool.' }]);
+  } finally {
+    cleanup();
+  }
+});
+
+test('an edit that answers a recorded change unblocks publish; an unanswered one still refuses', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    // Two recorded asks: move set-a to difficulty 2, and fix set-d.
+    store.appendFeedback(runId, feedbackEvent({
+      id: 'fb-diff', attemptId, action: 'change-difficulty',
+      scope: { type: 'set', setId: 'set-a' }, tags: [],
+      before: { difficulty: 1 }, after: { difficulty: 2 },
+    }));
+    store.appendFeedback(runId, feedbackEvent({
+      id: 'fb-edit', attemptId, action: 'set-needs-edit',
+      scope: { type: 'set', setId: 'set-d' }, tags: [],
+    }));
+    // The edit answers ONLY the difficulty ask (a swap moves both sets, but
+    // set-b's move is incidental — what matters is set-a actually changed).
+    await postEdits(api, runId, attemptId, editedBoard({
+      sets: { 'set-a': { difficulty: 2 }, 'set-b': { difficulty: 1 } },
+    }));
+    await approve(api, runId);
+
+    const refused = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    assert.equal(refused.status, 409);
+    assert.equal(refused.body.reason, 'unapplied-edits');
+    assert.deepEqual(refused.body.unapplied.map((u) => u.setId), ['set-d']);
+
+    // Answer set-d too — now publish flows with no acknowledgement.
+    await postEdits(api, runId, attemptId, editedBoard({
+      sets: {
+        'set-a': { difficulty: 2 }, 'set-b': { difficulty: 1 },
+        'set-d': { explanation: 'Reworked by hand.' },
+      },
+    }));
+    const allowed = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    assert.equal(allowed.status, 200);
+  } finally {
+    cleanup();
+  }
+});
+
+test('hand-edit events themselves never count as unapplied asks', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    await postEdits(api, runId, attemptId, editedBoard({ title: 'Renamed' }));
+    await approve(api, runId);
+    const { status } = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    assert.equal(status, 200);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a revision after an edit publishes the revision\'s board — stale edits never leak', async () => {
+  const { store, api, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    await postEdits(api, runId, attemptId, editedBoard({ title: 'Stale Edit' }));
+
+    // A revision arrives: new attempt, its own board.
+    store.updateStatus(runId, 'revision-requested');
+    store.updateStatus(runId, 'revising');
+    const secondId = store.createAttempt(runId, { parentAttemptId: attemptId });
+    const revisedBoard = structuredClone(BOARD);
+    revisedBoard.title = 'Revised Title';
+    store.writeAttemptArtifact(runId, secondId, 'board.json', revisedBoard);
+    store.writeStageArtifact(runId, secondId, '04a-integrity', 'integrity.json', { ok: true, acceptedCount: 16 });
+    store.completeAttempt(runId, secondId, { status: 'complete' });
+    store.updateStatus(runId, 'awaiting-review');
+    await approve(api, runId);
+
+    const { status, body } = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    assert.equal(status, 200);
+    assert.equal(body.published.title, 'Revised Title');
+  } finally {
+    cleanup();
+  }
+});

@@ -2,6 +2,57 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-13 — D-22: B2 hand-editing — the fix-in-place editor, HR-2 discharged
+
+Max's call after D-21 closed; scope chosen at planning: **fix-in-place**
+(title, labels, explanations, words, difficulty swaps — no word-moves, no
+from-scratch). On `work/hand-editing`, TDD throughout. **Suite 1420 green**
+(+44 across six commits).
+
+- **Schema:** `hand-edit` joined `FEEDBACK_ACTIONS` — the one action with
+  REQUIRED before/after — and **formVersion moved 4 → 5** (schemas.js and the
+  form in one commit): from v5 an unapplied recorded change is a choice.
+- **`studio/edits.js` + `studio/gloss.js`** (pure): diffBoards joins sets by
+  id and throws on reshape; one entry per changed field, pairs one ordered
+  field, a swap two honest entries; mergeGlossary drops and reports orphaned
+  definitions with one derivation shared by save-warning, play, and publish.
+- **`POST /api/runs/:runId/edits`** — the 2026-08-02 spec's route, real:
+  sealed body, stale-attempt 409, validator + 43,680-tuple sweep BEFORE any
+  write, edited board as run artifact `edited-board-<attemptId>.json` (the
+  attempt stays immutable; A→B→C retained), events per field, each save
+  diffing against the previous save. `readAttempt` exposes the envelope.
+- **Publish** prefers the current attempt's edit through the full gate;
+  decision event carries `handEdited`/`editedAt`/`droppedGloss` — provenance
+  on the record, never in the puzzle file. **The unapplied-edits gate
+  narrows:** answered asks pass, unanswered still 409 (D-12's trigger
+  resolved the right way). A stale edit can never ride out on a revision
+  (pinned by test).
+- **UI:** `edit.js` splits like feedback.js — editorHtml/collectBoard
+  node-tested (7 tests incl. swap resolution), wireEditor browser glue with
+  debounced live `validatePuzzle` and the sweep on Save only; review.js
+  drives preview/feedback/play/publish off the effective board with a
+  hand-edited badge, machine-verdict caveat, readable log lines, and the
+  publish panel slugging from the edited title — the backlog's
+  title-collision scar closed as predicted.
+- **Evaluator report boundary 6:** judgements on hand-edited sets leave the
+  machine join; edited attempts drop the 08 comparison; both counted out
+  loud. Live report runs clean over the 102-run corpus.
+- **Browser-verified on a mock run** (`d22-editor-shakedown`, mock so the
+  corpus stays clean; taps driven through the real buttons via DOM click —
+  the pane was hidden this session): editor opens prefilled · duplicate word
+  → Save disabled with the validator's message · retitle + label + swap →
+  "Saved — 4 fields recorded", badge, caveat, red tier on the swapped set ·
+  second save recorded exactly 1 field (diff against previous save) · Play
+  ran the real controller on the edited board ("Awl" on the tiles, "Brush"
+  gone) · hand-crafted invalid POST → 400, artifact byte-identical, exactly
+  5 legitimate events on record.
+- **Not done in-browser:** a real publish of an edited board — publish-path
+  proof lives in the api tests; no junk enters `puzzles/`.
+- **Next:** Max drives the editor himself — form feel, the swap interaction,
+  the copy are his acceptance; if refusing invalid saves ever blocks him,
+  drafts become a recorded follow-up. Then the standing items: watch
+  player ratings accumulate, batch five when he wants it.
+
 ## 2026-08-13 — D-21 amendment: the reading half — the ratings come home
 
 Same day as the collecting half. Max pasted `SUPABASE_SERVICE_KEY` into `.env`

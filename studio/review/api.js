@@ -29,6 +29,13 @@ import { MIN_PAIR_COUNT, DEFAULT_PAIR_COUNT, MAX_PAIR_COUNT } from '../pipeline-
 import { pickFreshSubject } from '../subject.js';
 import { proposalFailureFile, proposalFile, proposeRevision, wantsProposal } from './proposer.js';
 import { autoRevisionFile } from '../auto-revise.js';
+// B2 hand-editing (D-22): the pure derivations live in edits.js; the game's
+// own validator and integrity sweep gate every save, exactly as they gate
+// every publish — an invalid board is refused before anything is written.
+import { diffBoards, editedBoardFile, handEditEvents } from '../edits.js';
+import { mergeGlossary } from '../gloss.js';
+import { validatePuzzle } from '../../src/source/validate-puzzle.js';
+import { checkBoard } from '../../src/engine/board-integrity.js';
 import { defaultTransport } from './runner.js';
 import { createPuzzleStore, PublishRefused } from '../storage/puzzle-store.js';
 import { slugify } from '../slug.js';
@@ -119,6 +126,25 @@ export function createApi({
   };
 
   const setIdsOf = (board) => new Set((board?.sets ?? []).map((set) => set.id));
+
+  /** The board an edit diffs against and a publish ships: Max's last save when
+   * one exists for this attempt, the generated board otherwise. */
+  const effectiveBoard = (runId, attemptId) => {
+    if (store.hasRunArtifact(runId, editedBoardFile(attemptId))) {
+      return store.readRunArtifact(runId, editedBoardFile(attemptId)).board;
+    }
+    return currentBoard(runId);
+  };
+
+  /** Stage 09's glossary for an attempt, or null — shared by save and publish. */
+  const glossaryOf = (runId, attemptId) => {
+    try {
+      const gloss = store.readStageArtifact(runId, attemptId, '09-glossary-author', 'output.json');
+      return Array.isArray(gloss?.glossary) && gloss.glossary.length > 0 ? gloss.glossary : null;
+    } catch {
+      return null; // pre-D-18 runs have no glossary stage
+    }
+  };
 
   // --- reads ---
 
@@ -227,6 +253,17 @@ export function createApi({
       }
     })();
 
+    // Max's saved edit (D-22), a run artifact like the auto-revision record:
+    // the generated `board` stays untouched beside it, so the page can badge
+    // the difference instead of silently swapping history.
+    const editedBoard = (() => {
+      try {
+        return store.readRunArtifact(runId, editedBoardFile(attemptId));
+      } catch {
+        return undefined;
+      }
+    })();
+
     return ok({
       attempt: store.readAttempt(runId, attemptId),
       board: optional('board.json'),
@@ -236,6 +273,7 @@ export function createApi({
       blackboard: optional('blackboard.json'),
       reports,
       ...(autoRevision === undefined ? {} : { autoRevision }),
+      ...(editedBoard === undefined ? {} : { editedBoard }),
     });
   }
 
@@ -492,6 +530,131 @@ export function createApi({
       }));
   }
 
+  /**
+   * Which recorded asks did the hand-edit NOT answer? (D-22)
+   *
+   * A change-difficulty ask is answered when that set's difficulty actually
+   * moved — wherever Max moved it: he is the editor, and the gate's job is
+   * publishing-without-knowing, not enforcing the recorded destination. A
+   * set-needs-edit / set-replace / revise-set ask is answered by any change
+   * to that set's content. No edit → everything stays unapplied, as before.
+   */
+  function stillUnapplied(asks, generated, edited) {
+    if (!edited || !generated) return asks;
+    const changes = diffBoards(generated, edited);
+    const changedSets = new Set(
+      changes.filter((c) => c.scope.type === 'set').map((c) => c.scope.setId),
+    );
+    const difficultyMoved = new Set(
+      changes
+        .filter((c) => c.scope.type === 'set' && c.before.difficulty !== undefined)
+        .map((c) => c.scope.setId),
+    );
+    return asks.filter((ask) =>
+      ask.action === 'change-difficulty'
+        ? !difficultyMoved.has(ask.setId)
+        : !changedSets.has(ask.setId),
+    );
+  }
+
+  /**
+   * B2 hand-editing (D-22): save Max's fix-in-place edit of the current board.
+   *
+   * The attempt stays immutable — the edit is a run-level artifact keyed by
+   * attempt, beside the Revision Proposer's briefs. Each save diffs against
+   * the PREVIOUS effective board (the last save, or the generated board for
+   * the first), so the feedback chain composes B→C1→C2 with honest befores,
+   * and every changed field lands in feedback.jsonl as a hand-edit event —
+   * the machine value and the human value, per field.
+   */
+  function saveEdits(runId, body) {
+    if (!isPlainObject(body)) return bad('body must be an object');
+    for (const key of Object.keys(body)) {
+      if (key !== 'attemptId' && key !== 'board') return bad(`unknown field: ${key}`);
+    }
+    const { attemptId, board } = body;
+    if (typeof attemptId !== 'string' || !ATTEMPT_ID.test(attemptId)) {
+      return bad('attemptId must be a four-digit attempt id');
+    }
+    if (!isPlainObject(board)) return bad('board must be an object');
+
+    const manifest = store.readManifest(runId);
+    if (attemptId !== manifest.currentAttemptId) {
+      return conflict(
+        `attempt ${attemptId} is not the current attempt — reload to edit what is on screen`,
+      );
+    }
+    if (manifest.status !== 'awaiting-review' && manifest.status !== 'approved') {
+      return conflict(
+        `only a run awaiting review or approved can be edited — run ${runId} is ${manifest.status}`,
+      );
+    }
+
+    const previous = effectiveBoard(runId, attemptId);
+    if (!previous) return conflict(`run ${runId} has no board to edit`);
+    if (board.id !== previous.id) {
+      return bad('the editor never changes a board id — publish derives the id from the slug');
+    }
+
+    // Fix-in-place scope: same sets or it is not an edit.
+    let diff;
+    try {
+      diff = diffBoards(previous, board);
+    } catch (error) {
+      return bad(error.message);
+    }
+    if (diff.length === 0) return ok({ changed: 0 });
+
+    // The full gate BEFORE any write, exactly the publish order: the game's
+    // schema first, then the engine sweep. Refused saves write nothing.
+    const validity = validatePuzzle(board);
+    if (!validity.ok) {
+      return {
+        status: 400,
+        body: {
+          error: "the edited board fails the game's validator",
+          reason: 'invalid',
+          errors: validity.errors,
+        },
+      };
+    }
+    const integrity = checkBoard(board);
+    if (!integrity.ok) {
+      return {
+        status: 400,
+        body: {
+          error: 'the edited board fails the integrity sweep',
+          reason: 'integrity',
+          duplicateWords: integrity.duplicateWords,
+          collisions: integrity.collisions,
+        },
+      };
+    }
+
+    store.writeRunArtifact(runId, editedBoardFile(attemptId), {
+      attemptId,
+      at: clock(),
+      board,
+    });
+    const stamp = clock();
+    const events = handEditEvents(diff, {
+      attemptId,
+      ids: (n) => `edit-${attemptId}-${stamp}-${n}`,
+    });
+    for (const event of events) store.appendFeedback(runId, event);
+
+    // Advisory, not a refusal: the definition's word left the board, and Max
+    // should learn that now rather than from the publish record.
+    const dropped = mergeGlossary(board, glossaryOf(runId, attemptId)).dropped;
+
+    return ok({
+      changed: diff.length,
+      board,
+      integrity: { acceptedCount: integrity.acceptedCount, expectedAccepted: integrity.expectedAccepted },
+      ...(dropped.length > 0 ? { glossWarning: dropped } : {}),
+    });
+  }
+
   function publishRun(runId, body) {
     if (!isPlainObject(body)) return bad('body must be an object');
     for (const key of Object.keys(body)) {
@@ -505,39 +668,46 @@ export function createApi({
       );
     }
 
-    let board = currentBoard(runId);
+    // B2 (D-22): a saved hand-edit for the CURRENT attempt is what ships —
+    // keyed by attempt id, so an edit of attempt 0001 can never ride out on
+    // revision 0002. The generated board stays in the attempt directory.
+    const editedEnvelope = store.hasRunArtifact(runId, editedBoardFile(manifest.currentAttemptId))
+      ? store.readRunArtifact(runId, editedBoardFile(manifest.currentAttemptId))
+      : null;
+    const generated = currentBoard(runId);
+    let board = editedEnvelope ? editedEnvelope.board : generated;
     if (!board) return conflict(`run ${runId} has no board to publish`);
 
     // The gloss rides the published puzzle (D-18): board.json is 04's artifact
     // and predates stage 09, so the merge happens here, at the one door game
     // content leaves through. Absent or empty → the puzzle ships without a
-    // glossary and the game shows no Vocabulary button, exactly as pre-D-18.
-    try {
-      const gloss = store.readStageArtifact(
-        runId,
-        manifest.currentAttemptId,
-        '09-glossary-author',
-        'output.json',
-      );
-      if (Array.isArray(gloss?.glossary) && gloss.glossary.length > 0) {
-        board = { ...board, glossary: gloss.glossary };
-      }
-    } catch {
-      // No glossary stage on this attempt (pre-D-18 runs) — publish as before.
-    }
+    // glossary, exactly as pre-D-18. An entry whose word was edited off the
+    // board is DROPPED — validate-puzzle would rightly refuse it — and the
+    // drop goes on the publish record below.
+    const { board: withGloss, dropped: droppedGloss } = mergeGlossary(
+      board,
+      glossaryOf(runId, manifest.currentAttemptId),
+    );
+    board = withGloss;
 
     // Refused once, then allowed on the retry that carries the acknowledgement.
     // Deliberately not a hard block: the board is often right to publish as-is
     // and Max is the editor. What it refuses is publishing WITHOUT KNOWING.
+    // Since B2, an ask his edit actually ANSWERED no longer counts: the gate
+    // shrinks by edits, not by acknowledgements.
     if (!body.acknowledgeUnapplied) {
-      const unapplied = unappliedEdits(runId, manifest.currentAttemptId);
+      const unapplied = stillUnapplied(
+        unappliedEdits(runId, manifest.currentAttemptId),
+        generated,
+        editedEnvelope?.board ?? null,
+      );
       if (unapplied.length > 0) {
         return {
           status: 409,
           body: {
             error:
-              `publishing ships the board exactly as generated, and ${unapplied.length} recorded ` +
-              `change${unapplied.length === 1 ? '' : 's'} would not be applied`,
+              `publishing would ship the board with ${unapplied.length} recorded ` +
+              `change${unapplied.length === 1 ? '' : 's'} not applied`,
             reason: 'unapplied-edits',
             unapplied,
           },
@@ -581,6 +751,10 @@ export function createApi({
       publishedAs: published.filename,
       publishedId: published.id,
       republished: replace,
+      // Provenance lives HERE, never in the puzzle file (schema v1.0 is
+      // locked): this is the record that what shipped carried Max's hand.
+      ...(editedEnvelope ? { handEdited: true, editedAt: editedEnvelope.at } : {}),
+      ...(droppedGloss.length > 0 ? { droppedGloss } : {}),
       at: clock(),
     });
 
@@ -684,6 +858,7 @@ export function createApi({
     ['GET', /^\/api\/runs\/([^/]+)$/, (m) => readRun(m[1])],
     ['POST', /^\/api\/runs\/([^/]+)$/, (m, { body }) => resumeRun(m[1], body)],
     ['GET', /^\/api\/runs\/([^/]+)\/attempts\/([^/]+)$/, (m) => readAttempt(m[1], m[2])],
+    ['POST', /^\/api\/runs\/([^/]+)\/edits$/, (m, { body }) => saveEdits(m[1], body)],
     ['POST', /^\/api\/runs\/([^/]+)\/revisions$/, (m, { body }) => requestRevision(m[1], body)],
     ['POST', /^\/api\/runs\/([^/]+)\/feedback$/, (m, { body }) => appendFeedback(m[1], body)],
     ['GET', /^\/api\/runs\/([^/]+)\/proposal$/, (m) => readProposal(m[1])],

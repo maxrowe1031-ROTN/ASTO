@@ -105,7 +105,10 @@
 - **The evocativeness verdict has no answer key yet.** It is shown, never enforced, and nothing
   measures whether it agrees with Max's `not-evocative` tag. At ~6 judged boards, compare — it
   is the same graduation question the cross-reading check has.
-- **A title collision has no route (2026-08-10).** The childhood run's approved board was
+- ~~**A title collision has no route (2026-08-10).**~~ **Closed 2026-08-13 by D-22:** the
+  hand editor edits the board title, and the publish panel slugs from the edited title —
+  retitle-at-publish was B2's first bite, exactly as predicted below. The childhood run's
+  approved board was
   titled "School Days" — the same title as the board already published from the school run,
   so its derived slug 409s `occupied` and the review page has no way to retitle or re-slug.
   Max archived the run (the published board was the stronger one), but this is the third

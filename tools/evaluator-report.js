@@ -544,6 +544,33 @@ export function collectChains(store) {
   return chains;
 }
 
+/**
+ * Boundary 6 (D-22): hand-edited work leaves the machine-vs-Max join.
+ *
+ * The evaluators' verdicts were rendered on the GENERATED board. Once Max
+ * edits a set, his judgements are about a board the machine never saw, so
+ * joining them would grade the evaluators against work they were not shown.
+ * Every event on an edited set is excluded (the machine's verdict there
+ * compares against nothing), and ANY hand-edit marks the attempt so the
+ * board-level 08 comparison is dropped too. The exclusions are counted, never
+ * silent — same law as boundaries 1–5.
+ */
+export function excludeHandEdited(events) {
+  const editedSetIds = new Set(
+    events
+      .filter((event) => event.action === 'hand-edit' && event.scope?.type === 'set')
+      .map((event) => event.scope.setId),
+  );
+  const boardEdited = events.some((event) => event.action === 'hand-edit');
+  return {
+    joinable: events.filter(
+      (event) => !(event.scope?.type === 'set' && editedSetIds.has(event.scope.setId)),
+    ),
+    editedSetIds,
+    boardEdited,
+  };
+}
+
 export function collect(store) {
   const records = [];
   const skipped = { mock: 0, noBoard: 0, noFeedback: 0, unjudgedAttempt: 0 };
@@ -589,8 +616,12 @@ export function collect(store) {
         continue;
       }
 
-      const verdicts = setVerdicts(scoped);
-      const boardSaid = boardVerdict(scoped);
+      // Boundary 6 (D-22): judgements on hand-edited sets leave the join, and
+      // an edited attempt's board-level 08 comparison is dropped — the machine
+      // judged the generated board, Max judged his edit.
+      const { joinable, editedSetIds, boardEdited } = excludeHandEdited(scoped);
+      const verdicts = setVerdicts(joinable);
+      const boardSaid = boardVerdict(joinable);
 
       records.push({
         runId,
@@ -600,10 +631,13 @@ export function collect(store) {
         events: scoped,
         verdicts,
         boardVerdict: boardSaid,
+        handEdited: { sets: [...editedSetIds], board: boardEdited },
         validator: scoreValidator(read(store, runId, attemptId, VALIDATOR, 'output.json'), verdicts),
         solver: scoreSolver(read(store, runId, attemptId, SOLVER, 'output.json'), board, verdicts),
         player: scorePlayer(read(store, runId, attemptId, PLAYER, 'output.json'), board, verdicts),
-        style: scoreStyle(read(store, runId, attemptId, STYLE, 'output.json'), boardSaid),
+        style: boardEdited
+          ? null
+          : scoreStyle(read(store, runId, attemptId, STYLE, 'output.json'), boardSaid),
       });
     }
   }
@@ -637,10 +671,14 @@ export function summarize({ records, skipped }) {
   const player = { reportable: 0, fired: 0, gatedWords: 0, gatedOnRejectedSet: 0, trials: 0, solvedTrials: 0 };
   const style = { compared: 0, agree: 0, machineHappyHumanNot: 0, humanHappyMachineNot: 0 };
   const populations = { trustedSets: 0, version1Sets: 0, unclassifiedSets: 0 };
+  const handEdited = { sets: 0, attempts: 0 };
   const allEvents = [];
 
   for (const record of records) {
     allEvents.push(...record.events);
+    // Boundary 6: counted out loud, never silently dropped.
+    handEdited.sets += record.handEdited?.sets.length ?? 0;
+    if (record.handEdited?.board) handEdited.attempts += 1;
     for (const key of Object.keys(validator)) validator[key] += record.validator[key];
 
     solver.findings += record.solver.findings;
@@ -679,6 +717,7 @@ export function summarize({ records, skipped }) {
     runs: new Set(records.map((record) => record.runId)).size,
     skipped,
     populations,
+    handEdited,
     validator,
     solver,
     player,
@@ -697,6 +736,12 @@ function print(summary) {
 
   console.log(`\nASTO Studio — evaluator report`);
   console.log(`${summary.attempts} judged attempt(s) across ${summary.runs} run(s).`);
+  if (summary.handEdited.attempts > 0) {
+    console.log(
+      `hand-edited (out of the machine join): ${summary.handEdited.sets} set(s) ` +
+        `on ${summary.handEdited.attempts} attempt(s) — see D-22`,
+    );
+  }
   console.log(
     `skipped: ${summary.skipped.mock} mock run(s) · ${summary.skipped.noFeedback} unjudged run(s) ` +
       `· ${summary.skipped.unjudgedAttempt} unjudged attempt(s) · ${summary.skipped.noBoard} with no board`,

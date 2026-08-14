@@ -431,7 +431,10 @@ export function collectFeedback(root, { attemptId, defaultAction = 'revise-set',
 // 4 (2026-08-09): the taste instrument — board-level flat/solid/delightful
 // verdict and the two taste tags. schemas.js FEEDBACK_FORM_VERSION documents
 // the population boundary.
-export const FORM_VERSION = 4;
+//
+// 5 (2026-08-13): B2 hand-editing exists. Events from this form now share the
+// corpus with `hand-edit` records, and an unapplied change is a choice.
+export const FORM_VERSION = 5;
 
 const setVerdictIn = (block) =>
   block.querySelector('input[data-role=verdict]:checked')?.value ?? null;
