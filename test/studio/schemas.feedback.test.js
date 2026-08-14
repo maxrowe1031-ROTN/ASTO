@@ -40,10 +40,12 @@ test('a well-formed event validates', () => {
   assert.deepEqual(validateFeedbackEvent(good()), { ok: true, errors: [] });
 });
 
-test('the action vocabulary is the spec\'s ten plus the 2026-08-05 instrument', () => {
-  // APPEND ONLY. The last five arrived with formVersion 2: three set-scoped
-  // verdicts that are chosen per set rather than inherited from the board
-  // button, plus the playthrough record and the proposer's verdict.
+test('the action vocabulary is the spec\'s ten plus the 2026-08-05 instrument plus hand-edit', () => {
+  // APPEND ONLY. Five arrived with formVersion 2: three set-scoped verdicts
+  // that are chosen per set rather than inherited from the board button, plus
+  // the playthrough record and the proposer's verdict. `hand-edit` arrived
+  // with formVersion 5 (B2, 2026-08-13): the editor's record of a field Max
+  // changed by hand.
   assert.deepEqual(
     [...FEEDBACK_ACTIONS].sort(),
     [
@@ -53,6 +55,7 @@ test('the action vocabulary is the spec\'s ten plus the 2026-08-05 instrument', 
       'change-difficulty',
       'change-explanation',
       'change-label',
+      'hand-edit',
       'playthrough',
       'proposal-verdict',
       'reject-board',
@@ -65,8 +68,49 @@ test('the action vocabulary is the spec\'s ten plus the 2026-08-05 instrument', 
     ],
   );
   for (const action of FEEDBACK_ACTIONS) {
-    assert.equal(validateFeedbackEvent(good({ action })).ok, true, action);
+    const event = good({ action });
+    // hand-edit is the one action with required fields beyond the common set.
+    if (action === 'hand-edit') Object.assign(event, { before: { x: 1 }, after: { x: 2 } });
+    assert.equal(validateFeedbackEvent(event).ok, true, action);
   }
+});
+
+// --- the hand-edit record (formVersion 5, B2) ---
+
+test('a hand-edit event carries the machine value and the human value, or it is refused', () => {
+  // The Brain's rule made schema: an edit recorded without before/after is
+  // contamination — analysis could never separate Max's hand from the
+  // pipeline's output. Both sides required, both plain objects.
+  const edit = (overrides) =>
+    good({
+      action: 'hand-edit',
+      scope: { type: 'set', setId: 'set-homes' },
+      tags: [],
+      before: { relationshipLabel: 'old' },
+      after: { relationshipLabel: 'new' },
+      source: 'review-studio-edit',
+      ...overrides,
+    });
+  assert.equal(validateFeedbackEvent(edit({})).ok, true);
+  assert.deepEqual(errorPaths(edit({ before: undefined })), ['before']);
+  assert.deepEqual(errorPaths(edit({ after: undefined })), ['after']);
+  assert.deepEqual(
+    errorPaths(edit({ before: undefined, after: undefined })).sort(),
+    ['after', 'before'],
+  );
+});
+
+test('a board-scoped hand-edit validates too — the title is board-level', () => {
+  const event = good({
+    action: 'hand-edit',
+    scope: { type: 'board' },
+    tags: [],
+    before: { title: 'School Days' },
+    after: { title: 'Chalk and Chapters' },
+    source: 'review-studio-edit',
+  });
+  delete event.note;
+  assert.equal(validateFeedbackEvent(event).ok, true);
 });
 
 test('the spec\'s thirteen quick tags, plus seven from the corpus, are all accepted', () => {
@@ -275,8 +319,10 @@ test('the form version moved with the instrument', () => {
   // Version 3: rubric compilation can tell the two populations apart — the
   // ABSENCE of `valid-but-unfair` means something different before and after
   // the retirement. Version 4 (2026-08-09): the taste instrument — before it,
-  // an absent taste verdict means the question was never asked.
-  assert.equal(FEEDBACK_FORM_VERSION, 4);
+  // an absent taste verdict means the question was never asked. Version 5
+  // (2026-08-13): the hand editor exists — before it, an unapplied recorded
+  // change meant no tool; after, it means Max chose not to edit.
+  assert.equal(FEEDBACK_FORM_VERSION, 5);
 });
 
 // --- the taste instrument (formVersion 4) ---

@@ -119,6 +119,12 @@ export const FEEDBACK_ACTIONS = Object.freeze([
   'set-replace',
   'playthrough',
   'proposal-verdict',
+  // B2 (formVersion 5, 2026-08-13): a field Max changed by hand in the editor.
+  // The one action with REQUIRED before/after — an edit recorded without the
+  // machine value and the human value is contamination, not signal: analysis
+  // could never separate his hand from the pipeline's output, and "any
+  // correction made by hand twice belongs in the agent" needs both sides.
+  'hand-edit',
 ]);
 
 // The instrument that produced an event. Stamped for the same reason
@@ -141,7 +147,13 @@ export const FEEDBACK_ACTIONS = Object.freeze([
 // his own delight vocabulary) and two taste tags. Before version 4, an absent
 // taste verdict means the question was never asked; after, it means he
 // declined to answer it. Design.md D-14 records what this data is FOR.
-export const FEEDBACK_FORM_VERSION = 4;
+//
+// Version 5 (2026-08-13): B2 hand-editing. The `hand-edit` action arrives, and
+// with it a population boundary the rubric must respect: before version 5 an
+// unapplied recorded change (change-difficulty, set-needs-edit) means no tool
+// existed to apply it; from version 5 on it means Max had the editor and chose
+// not to. Design.md D-22.
+export const FEEDBACK_FORM_VERSION = 5;
 
 // The board-level taste verdict (formVersion 4), orthogonal to publishability
 // on purpose: the corpus's recurring pattern is "publishable, not exciting" —
@@ -316,6 +328,11 @@ export function validateFeedbackEvent(event) {
   for (const side of ['before', 'after']) {
     if (event[side] !== undefined && !isPlainObject(event[side])) {
       fail(side, 'must be an object when present');
+    }
+    // hand-edit is the one action where both sides are REQUIRED: without the
+    // machine value and the human value the edit is unusable as signal.
+    if (event.action === 'hand-edit' && event[side] === undefined) {
+      fail(side, 'a hand-edit must record both the value it replaced and the value written');
     }
   }
 
