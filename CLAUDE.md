@@ -36,8 +36,8 @@ the retired Python crew stay in `../maigd-course-handbook`.
 - **Status:** PUBLICLY SHIPPED — **Phases 1–5 complete**, tagged `v0.1.0-local` on
   2026-08-07 when Max's playtest passed the Phase 5 gate, and **live on the public web at
   www.playasto.com since 2026-08-13**, when Max declared it ready to share. The **Studio**
-  remains in flight — the pipeline is still being tuned, and HR-2's hand-editing (B2) is
-  still deferred.
+  remains in flight — the pipeline is still being tuned. HR-2 is fully discharged: B2
+  hand-editing shipped 2026-08-13 (D-22).
 - No paid hosting, services, or recurring costs are ever adopted without explicit
   discussion with Max (the playasto.com domain, ~$11/yr, is the one approved exception).
   One free hosted service is adopted: **Supabase free tier** ($0, D-21) holds the
@@ -160,10 +160,11 @@ makes the Studio double as proof the architecture is clean.
   `npm run studio:review` — where Max starts runs, plays the candidate board, records
   structured feedback, and **publishes an approved board into `puzzles/`** (D-6). Writing
   game content goes through `storage/puzzle-store.js`, the only module allowed into
-  `puzzles/`, exactly as run artifacts go through `run-store.js`. **Hand-editing (B2) is
-  the only part of HR-2 still deferred.** The other verification surfaces remain `npm
-  test`, `tools/check-board.js`, and the game in the preview browser — a published board
-  is playable at `?puzzle=<slug>`.
+  `puzzles/`, exactly as run artifacts go through `run-store.js`. **Hand-editing (B2,
+  D-22) is live:** Max fixes a board in place — title, labels, explanations, words,
+  difficulty swaps — every save validated server-side and recorded as before/after
+  signal. The other verification surfaces remain `npm test`, `tools/check-board.js`, and
+  the game in the preview browser — a published board is playable at `?puzzle=<slug>`.
 
 ## 7. Game rules that are easy to get wrong
 

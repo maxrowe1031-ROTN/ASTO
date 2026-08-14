@@ -1222,7 +1222,9 @@ noticed. `publishRun` now 409s with `reason: 'unapplied-edits'` unless the body 
 `acknowledgeUnapplied`, and the page confirms with every change named. Only the **current**
 attempt counts — a request answered by a revision is not outstanding. It refuses publishing
 *without knowing*, never publishing itself; Max is the editor. **Reconsider-when:** if he
-starts acknowledging routinely, B2 has become due and should leave HR-2.
+starts acknowledging routinely, B2 has become due and should leave HR-2. **Resolved
+2026-08-13 by D-22:** B2 exists, and the gate now treats an ask the hand-edit actually
+answered as applied — it shrank by edits, exactly the direction the trigger hoped for.
 
 **Found while verifying, and fixed: a crash that had never once been seen.** Stage 06 answers
 the cross-reading checklist **by id** — `{ id: "set-seasons#1", valid, note }` — and the
@@ -2129,6 +2131,59 @@ stranger's board rating and comment landed within hours of the survey going live
 Player data *informs* Max in the Studio; whether it ever *drives* generation is a
 separate decision with its own D-number when the data exists to argue from.
 
+### D-22 — B2 hand-editing: the fix-in-place editor (2026-08-13)
+
+**Max's call, after D-21 closed:** build B2. The appetite was on the record —
+D-12's unapplied-edits gate existed only because editing didn't, the backlog's
+title-collision scar named retitle-at-publish as B2's first bite, and the spec
+had already designed the seam (`POST /api/runs/:runId/edits`, specced
+2026-08-02, unbuilt until today). Scope chosen at planning: **fix-in-place** —
+title, per-set relationship label, explanation, the four words, and difficulty
+swaps. Moving words between sets, adding/removing sets, and build-from-scratch
+authoring are deliberately out, each a future unit (from-scratch needs draft
+saves of invalid boards; fix-in-place refuses invalid saves outright because a
+small edit has no invalid-but-worth-keeping state).
+
+**The artifact model.** A completed attempt is immutable, so the edited board
+is a **run-level artifact** `edited-board-<attemptId>.json` beside the
+Revision Proposer's briefs — last-save-wins, keyed by attempt so a revision
+can never inherit a stale edit. The editorial path A (original) → B (revision)
+→ C (edit) is fully retained: the generated `board.json` never changes, and
+every save appends one **`hand-edit` feedback event per changed field**, with
+required `before`/`after` (the machine value and the human value — the Brain's
+rule made schema: an edit recorded without both sides is contamination, and
+"any correction made by hand twice belongs in the agent"). Each save diffs
+against the *previous effective* board, so the chain B→C1→C2 reads honestly.
+**formVersion 4 → 5**: from v5 on, an unapplied recorded change means Max had
+the editor and chose not to use it.
+
+**The authority chain.** The browser form validates live with the game's own
+`validatePuzzle` (served read-only to the page) — convenience, not authority.
+The server re-runs `validatePuzzle` **and** the 43,680-tuple `checkBoard`
+sweep on every save and writes nothing on failure. Publish prefers the current
+attempt's edited artifact, still passes the whole gate in `puzzle-store`, and
+stamps `handEdited`/`editedAt` on the **publish decision event** — provenance
+on the record, never in the puzzle file (the schema v1.0 ban stands).
+
+**Ripples, handled in the same unit:** the **unapplied-edits gate narrows
+instead of dying** — an ask the edit actually answered (that set's difficulty
+moved; that set's content changed) no longer 409s, an unanswered one still
+does, so D-12's reconsider-when resolves in the right direction: the gate
+shrinks by edits, not acknowledgements. **Stage-09 glossary entries whose word
+is edited away are dropped by one shared derivation** (`gloss.js`, used by
+save-warning, play, and publish) rather than exploding as a schema error at
+the end, and the drop is recorded on the publish decision. **The evaluator
+report gains boundary 6:** judgements on hand-edited sets leave the
+machine-vs-Max join (the evaluators judged the generated board; Max judged his
+edit), an edited attempt's 08 comparison is dropped, and both exclusions are
+counted out loud — shipped in the same unit so the first edited run cannot
+poison the join.
+
+**Reconsider-when:** Max reaches for word-moves between sets or wants to
+author a board cold (each becomes its own unit, and from-scratch brings draft
+saves with it); or refusing invalid saves blocks a real workflow twice, in
+which case drafts get designed deliberately rather than slipped in.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
@@ -2201,7 +2256,9 @@ than the spec's implementation order lists it so the trigger does not fire. It h
 pipeline logic and shells out to nothing. R1 has since superseded it as the primary
 surface; the CLI remains for scripted and headless runs.
 
-**Status: discharged, except hand-editing.** R1 delivers what this rule actually asks for
+**Status: fully discharged (2026-08-13, D-22).** Hand-editing — the last outstanding
+piece — shipped as the fix-in-place editor; this rule now holds with no exceptions.
+R1 delivers what this rule actually asks for
 — Max can see what the pipeline is doing and change things through the project's real
 public seams (`runPipeline`, `requestRevision`, `run-store`), which is also what proves
 those seams are clean.
