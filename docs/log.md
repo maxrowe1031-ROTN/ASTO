@@ -2,6 +2,46 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-16 — Assignment 7: stage 08 documented, and the re-run that keeps it honest
+
+MAIGD Assignment #7 (Style Guide Agent, due Thu 8/20). Max's scoping calls at
+warmup: the deliverable is ASTO's **real stage 08** documented — not a
+course-only twin — with a **live before/after** and a **small real tool on
+main**. On `work/assignment-7-style-guide`, TDD. **Suite 1432 green** (+12).
+
+- **`tools/run-evaluator.js`** — re-run any evaluator stage (05–08) against any
+  archived attempt's board. Input built through the pipeline's own
+  `STAGE_INPUTS` builders (now exported from `pipeline.js` — one copy, zero
+  drift); generative stages refused with the reason; **strictly read-only on
+  `studio/runs/`** (a re-run is commentary, not history — pinned by a
+  file-tree-identical test); a validation failure is reported, never retried.
+  12 tests in `test/tools/run-evaluator.test.js`.
+- **The before/after** (one live call, ~$0.03, approved): today's 08 against
+  the 2026-08-05 Grateful Dead board — same model (`claude-sonnet-5`), same
+  effort (`medium`), **the only variable is the agent**. Before: `unity:
+  strong`, no evocativeness field (pre-D-7). After: the agent asks the question
+  the old one structurally could not — and answers `evocativeness: strong`,
+  **still disagreeing with Max's "absolute snooze"**, even praising "Steal Your
+  Face logo", the exact word his note wanted sharpened to "Stealie". Reported
+  as-is in `tools/reports/style-guide-rerun-grateful-dead-2026-08-16.{txt,json}`
+  — the measured 58% showing up live, and a fresh maintenance signal on the
+  record. Corpus-wide, the D-7 axis has returned `generic` 14 times across 160
+  archived 08 outputs, **all 14 with concrete replacement suggestions**.
+- **Submission packaged:** `asto-assignment7-submission.zip` committed in the
+  handbook (`projects/asto/`) — SUBMISSION.md (rubric mapping, the maintenance
+  loop lived twice, the honest 58%), the agent, the tool + tests, the board,
+  Max's feedback.jsonl, and both halves of the before/after.
+- **Verified:** `npm test` 1432/0 · `check-board` 48 clean · `check-deploy`
+  green · `git status studio/runs/` empty after the live re-run — the
+  read-only rule held against the real corpus, not just the test fixture.
+- **Phase status:** Phases 1–5 remain complete and shipped; this unit is
+  coursework riding on the shipped pipeline, no game-facing change.
+- **Next:** Max reads SUBMISSION.md and uploads the zip (his acceptance — the
+  assignment is not submitted until he submits it; due Thu 8/20). The re-run's
+  live disagreement is 08's next edit signal if he wants it acted on. Standing:
+  his D-22 editor test-drive, `npm run ratings` watch, batch five on his word,
+  and the decided-but-unbuilt AI-disclosure Credits page.
+
 ## 2026-08-13 — Wrapup: the loop closes both ways — players rate, Max edits
 
 Session close. Three units shipped today, each merged and logged below as it
