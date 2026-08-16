@@ -1,0 +1,30 @@
+{
+  "note": "tools/run-evaluator.js re-run of today's 08-style-guide against the archived 2026-08-05 Grateful Dead board (attempt 0001). Same data as the .txt beside this file, machine-readable. The BEFORE is studio/runs/2026-08-05T20-45-13.241Z-grateful-dead/attempts/0001/stages/08-style-guide/output.json — same model (claude-sonnet-5), same effort (medium); the only variable is the agent.",
+  "ok": true,
+  "runId": "2026-08-05T20-45-13.241Z-grateful-dead",
+  "attemptId": "0001",
+  "stageId": "08-style-guide",
+  "output": {
+    "edits": [],
+    "compliant": true,
+    "unity": {
+      "verdict": "strong",
+      "reasoning": "Every word sits naturally in the world of a working band's gear, timeline, and iconography — nothing feels borrowed from outside the Grateful Dead's own vocabulary.",
+      "outliers": []
+    },
+    "evocativeness": {
+      "verdict": "strong",
+      "reasoning": "The board leans on band-specific lore rather than generic music trivia — Wall of Sound, Steal Your Face logo, and American Beauty are exactly the details a fan would want to see, not just 'song' and 'album' filler.",
+      "generic": []
+    },
+    "contentConcerns": []
+  },
+  "validation": { "ok": true },
+  "record": {
+    "model": "claude-sonnet-5",
+    "effort": "medium",
+    "inputTokens": 2415,
+    "outputTokens": 2369,
+    "durationMs": 27999
+  }
+}
