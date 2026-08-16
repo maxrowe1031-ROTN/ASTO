@@ -55,7 +55,11 @@ const GATE_STAGE = '04a-integrity';
 // front of them, and an evaluator that had read the editor's instructions
 // would be marking its own homework — agreeing that the asked-for change was
 // made is not the same as finding the board good. See design.md D-11.
-const STAGE_INPUTS = {
+//
+// Exported (2026-08-16) so tools/run-evaluator.js re-runs an evaluator against
+// an archived board through the SAME builders — a second copy of "what does 08
+// get asked" is exactly the drift this map exists to prevent.
+export const STAGE_INPUTS = {
   '01-pair-author': (board, { manifest, revision }) => ({
     brief: manifest.brief,
     theme: manifest.theme,
