@@ -2,6 +2,83 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-16 — The site says how the puzzles are made, and the deck says when
+
+The decided-but-unbuilt AI-disclosure page (backlog, 2026-08-14) built, then Max
+turned the same session onto the process deck. Four commits on
+`work/about-page`. **Suite 1440 green** (+8). **`main` deliberately untouched:
+Max's read of the deck copy is the open gate item, and pushing `main` deploys to
+the public site.**
+
+- **`about.html`** — a standalone page on the game's own stylesheets (same
+  origin, so no token copy). Linked from **both doors**: the title screen and
+  the **end screen**, because a shared `?puzzle=` link goes straight to a board
+  and never passes the homepage, so the homepage alone would miss exactly the
+  strangers the disclosure is for. Added to `check-deploy`'s file list, whose
+  failure mode on a bad deploy is a silent 404.
+- **Max wrote the copy in session.** Tagline "A word game by Max Rowe"; inspired
+  by Connections; the analogy written as `A is to B as C is to D (A:B::C:D)`;
+  the agents work "based on parameters set by Max to make a game that is
+  challenging, delightful, and fair"; every published puzzle played by him
+  before release, and he "sincerely hopes you will enjoy".
+- **One correction to his ask:** he asked for one link on the grounds the deck
+  includes the GDD. It does not, in any of its fifteen slides, and
+  `docs/asto-gdd.html` is a separate file already served at 200. Both are linked.
+- **The wordmark is the way home** on both standalone pages, the convention
+  `header-view.js` and `select-view.js` already use. The About link moved under
+  the title screen's pills at his direction.
+- **No em dashes**, Max's call: they read as machine-written. Swept from the
+  whole of `about.html` and the whole deck, escaped `&mdash;` included, pinned by
+  two tests. **Deliberately scoped:** 126 em-dashed fields across 37 published
+  boards, and the five tutorial coach strings he accepted 2026-08-13, are
+  untouched and reported to him. Those are shipped content, his call.
+- **The deck restructured into six acts, 15 slides to 23** (his call over a
+  numbers-only refresh). Nothing cut: 6 unchanged, 4 lightly revised, 5
+  rewritten, 8 new. Acts ride the existing `.kicker`, so no new component and no
+  dead screens in a scroll deck. New: order fairness (D-9), the two steering
+  failures (D-12 addendum + D-13, ending on "FINALLY!"), the auto-revise
+  graduation (D-14), the ship (D-20), what shipping changed (D-16/18/22), the
+  stranger's rating (D-21), the cost reversal, and the run-evaluator before/after.
+- **Two claims had changed direction, not magnitude, and both are now on the
+  deck:** a run costs **~$1.38** against the celebrated $0.21 (6.6×, $108.17
+  across 129 real-API runs), spent back deliberately on stage 09, auto-revise,
+  richer prompts and the Sonnet upgrade, with the reclaim lap named as owed; and
+  **the rubric still does not exist at 109 judged boards** against a plan that
+  said thirty. The rubric admission is the sixth stat tile, same component and
+  size as the wins.
+- **The diagram**, without a redraw: stage 09 took the slot the HUMAN gate held,
+  the human moved to a new third row beside auto-revise and the corpus, and a
+  third line kind (red dashed, the deck's existing defect colour) draws the
+  repair loop back to 01–04. `viewBox` unchanged; row 2's five boxes and four
+  arrows never moved. The two off-pipeline agents sit in the top band, the
+  revision proposer untethered on purpose.
+- **Screenshots retaken from the live game**, which had drifted furthest: the
+  board now carries Hint and Vocab, the win screen shows four tiers revealed,
+  the review form is at `formVersion` 5. Three new (About page, vocabulary line,
+  rating survey). Assets 4 → 7.
+- **Verified:** `npm test` 1440/0 · `check-board` 48 clean · all 23 slides walked
+  at 1280 and 375 with no kicker wrapping, no page overflow, the diagram
+  scrolling inside its own box, all 7 images loading · About page's four links
+  all 200 · green `.win` confirmed absent from the cost-reversal growth row.
+- **Two claims I could not verify and therefore did not assert:** the deck's old
+  "six decisions taken against the recommendation" (no structured override record
+  exists to count, so the lede now leads with 22 decisions and 426 decision
+  events, which are countable), and the spend total, re-derived and will drift.
+- **Phase status:** Phases 1–5 remain complete and shipped. No game-rule or
+  engine change; the game's own screens are untouched apart from the two links.
+- **Gate:** automated and Claude-verifiable **passed**; **Max acceptance OPEN** —
+  he has read the deck once and said it needs more edits. `main` is untouched and
+  nothing is deployed.
+- **Next:** Max's edits to the deck, then the About copy if he wants it changed;
+  only then merge to `main`, push, and `npm run check-deploy`. **Note the deck
+  will go stale again the same way** and nothing measures that (backlog: a test
+  comparing the deck's claimed counts against the real ones). Also his call on
+  publishing the $108.17 total spend, which the deck has never disclosed before.
+  Standing: the Assignment 7 zip upload (due Thu 8/20), his D-22 editor
+  test-drive, `npm run ratings` watch, batch five on his word, and the two
+  overdue triggers the deck now names out loud — the rubric at 109 judged boards
+  and the slim-down lap.
+
 ## 2026-08-16 — Assignment 7: stage 08 documented, and the re-run that keeps it honest
 
 MAIGD Assignment #7 (Style Guide Agent, due Thu 8/20). Max's scoping calls at

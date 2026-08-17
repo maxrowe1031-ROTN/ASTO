@@ -430,7 +430,14 @@
   The stamp guard now pins August 16, 2026. **What remains:** the deck will go stale again
   the same way, and nothing measures that. The cheap guard, if it recurs, is a test that
   compares the deck's claimed test/board counts against the real ones.
-- **Nothing on the shipped site says the puzzles are AI-generated (2026-08-14).** Raised in a
+- ~~**Nothing on the shipped site says the puzzles are AI-generated (2026-08-14).**~~ **Built
+  2026-08-16 — see design.md D-23.** The About page ships with Max's own copy, linked from
+  both the title screen and the end screen (the homepage alone would have missed every
+  visitor arriving on a shared `?puzzle=` link). The deck and the GDD are linked as the two
+  separate files they are. **What remains:** the page asserts that every published puzzle
+  was played before release and no test enforces it — D-23 records the trigger. The original
+  entry:
+  Raised in a
   Development Brain session while pulling `intent-over-output` against ASTO; **Max decided the
   shape the same session and deferred the build to a working session here.** The site has been
   public since 2026-08-13 and carries no disclosure anywhere — `index.html` is 58 lines with no
