@@ -12,6 +12,10 @@
      system fallback in the stack below, so this page degrades gracefully offline. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Google Fonts serves UA-specific font URLs, so the stylesheet is the earliest
+     stable thing to preload; display=swap rides the URL. -->
+<link rel="preload" as="style"
+      href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Nunito:ital,wght@0,600;0,700;0,800;1,600&display=swap">
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Nunito:ital,wght@0,600;0,700;0,800;1,600&display=swap">
 
@@ -48,7 +52,11 @@ body{
 
 /* ---------- progress ---------- */
 #rail{position:fixed; top:0; left:0; right:0; height:3px; background:transparent; z-index:50}
-#bar{height:100%; width:0; background:var(--honey); transition:width .12s linear}
+/* transform, not width: the progress bar animates on the compositor */
+#bar{height:100%; width:100%; transform:scaleX(0); transform-origin:left; background:var(--honey); transition:transform .12s linear}
+/* the skip link parks offscreen until keyboard focus lands on it */
+.skip{position:fixed; left:-999px; top:10px; z-index:60; background:var(--milk); border:1px solid var(--taupe); border-radius:var(--radius-pill); padding:8px 16px; font-weight:800; color:var(--ink); text-decoration:none}
+.skip:focus{left:16px}
 /* The way home, in the slide's top gutter (sections carry 72px of top padding, so it
    never lands on content). Visually a wordmark, no underline and no pill, the same
    convention the game's own header uses. */
@@ -84,6 +92,7 @@ section{
 h1{font-family:var(--font-display); font-weight:400; font-size:clamp(3rem,12vw,6.5rem); line-height:.95; margin:0 0 .2em; letter-spacing:.02em}
 h2{font-family:var(--font-display); font-weight:400; font-size:clamp(1.7rem,4.6vw,2.9rem); line-height:1.15; margin:0 0 .5em}
 h3{font-family:var(--font-display); font-weight:400; font-size:1.15rem; margin:0 0 .35em}
+h1,h2,h3{text-wrap:balance}
 p{margin:0 0 1em; max-width:60ch}
 .lede{font-size:clamp(1.05rem,2.2vw,1.3rem); color:var(--soft-ink); max-width:56ch}
 strong{font-weight:800}
@@ -142,7 +151,7 @@ figure{margin:0}
 .shot.screen.crop{max-width:860px; margin-inline:auto}
 .shot.screen.crop img{height:clamp(190px,27vh,290px); object-fit:cover; object-position:top center}
 /* A tall capture the reader can scroll inside, like the diagram scrolls sideways. */
-.shot.screen.scrolly .pane{height:clamp(340px,52vh,520px); overflow-y:auto; -webkit-overflow-scrolling:touch; border-radius:6px}
+.shot.screen.scrolly .pane{height:clamp(340px,52vh,520px); overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; border-radius:6px}
 .shot.screen.scrolly .pane img{border-radius:0}
 figcaption{font-size:.8rem; color:var(--faint-ink); margin-top:10px; text-align:center}
 
@@ -154,7 +163,7 @@ figcaption{font-size:.8rem; color:var(--faint-ink); margin-top:10px; text-align:
 .stat span{display:block; font-size:.82rem; color:var(--soft-ink); margin-top:6px; line-height:1.35}
 
 /* tables */
-.scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 0 1em}
+.scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain; margin:0 0 1em}
 table{border-collapse:collapse; width:100%; min-width:560px; font-size:.92rem}
 th,td{text-align:left; padding:11px 14px; border-bottom:1px solid var(--taupe); vertical-align:top}
 th{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint-ink); font-weight:800; white-space:nowrap}
@@ -202,7 +211,7 @@ ul.plain li b{font-weight:800}
 .finding q{display:block; margin-top:5px; color:var(--soft-ink); font-style:italic}
 
 /* diagram */
-.diagram{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 0 14px}
+.diagram{overflow-x:auto; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain; margin:0 0 14px}
 .diagram svg{display:block; min-width:760px; width:100%; height:auto}
 
 /* specimen sets, rendered in the game's own tile vocabulary */
@@ -219,12 +228,13 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 </head>
 <body>
 
+<a class="skip" href="#main">Skip to content</a>
 <a id="home" href="../../" aria-label="ASTO, back to the homepage">ASTO</a>
 <div id="rail"><div id="bar"></div></div>
-<div id="count" aria-hidden="true">1 / 23</div>
+<div id="count" aria-hidden="true">1 / 17</div>
 
 <!-- 1 ────────────────────────────────────────────────── -->
-<section>
+<section id="main">
   <div class="wrap">
     <div class="cols two">
       <div>
@@ -233,12 +243,12 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <p class="lede" style="margin-bottom:1.2em"><em>This is to that.</em> A word game about analogies, live at <a href="../../">playasto.com</a>.</p>
         <div class="callout">
           <span class="lbl">Who made this</span>
-          <p>I'm Max Rowe, and I made ASTO solo: the design, the code direction, the editorial judgement, all of it. One name on the credits means every decision in this deck is attributable, including the bad ones.</p>
+          <p>I’m Max Rowe, and I made ASTO solo: the design, the code direction, the editorial judgement, all of it. One name on the credits means every decision in this deck is attributable, including the bad ones.</p>
         </div>
         <p class="note" style="margin-top:1.2em">As of <strong>August 17, 2026</strong>.</p>
       </div>
       <figure class="shot phone">
-        <img src="assets/board.png" alt="The ASTO board: sixteen cream word tiles in a 4 by 4 grid on a warm background, with an empty analogy frame above.">
+        <img src="assets/board.png" width="390" height="555" alt="The ASTO board: sixteen cream word tiles in a 4 by 4 grid on a warm background, with an empty analogy frame above.">
       </figure>
     </div>
   </div>
@@ -289,14 +299,14 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <p class="lede">Connections, but with analogies: a 4&times;4 board of sixteen words hides four analogy sets. Tap four words to form <strong>A : B :: C : D</strong>, <em>seed is to tree as spark is to fire</em>, review the frame, press Confirm.</p>
         <ul class="plain">
           <li><b>The whole board is the theme; each analogy holds a different relationship.</b> The challenge is finding the relationships through words that all seem to belong together.</li>
-          <li><b>Order is the game.</b> A submission is never sorted. The ordered claim is the claim (a true reading is accepted even when it isn't the stored one). Half the machinery in this deck follows from that one choice.</li>
+          <li><b>Order is the game.</b> A submission is never sorted. The ordered claim is the claim (a true reading is accepted even when it isn’t the stored one). Half the machinery in this deck follows from that one choice.</li>
           <li><b>The fourth tap fills the frame without submitting.</b> You get to look at your own claim before you make it.</li>
           <li><b>“So close!”</b> (right four words, wrong order) costs a mistake and clears the selection. The penalty is also the hint. Repeating an identical failed guess is free; a different order is a new claim.</li>
         </ul>
-        <p class="note" style="margin-top:1.2em">If you arrived from the game, this is the part you couldn't see. If you haven't played, one round makes it click.</p>
+        <p class="note" style="margin-top:1.2em">If you arrived from the game, this is the part you couldn’t see. If you haven’t played, one round makes it click.</p>
       </div>
       <figure class="shot phone">
-        <img src="assets/frame-filled.png" alt="The board with four tiles selected and the frame reading Seed : Tree :: Spark : Fire, with the Confirm button now active.">
+        <img src="assets/frame-filled.png" width="390" height="555" loading="lazy" alt="The board with four tiles selected and the frame reading Seed : Tree :: Spark : Fire, with the Confirm button now active.">
         <figcaption>Four tiles chosen. Nothing submitted yet.</figcaption>
       </figure>
     </div>
@@ -321,7 +331,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <p class="note">This deck is how ASTO was made. <a href="../asto-gdd.html">The game design document</a> (v0.13, living) is what it was meant to be. They are companion reads.</p>
       </div>
       <figure class="shot phone">
-        <img src="assets/win.png" alt="The win screen listing all four solved sets with their tier badges, analogies and explanations.">
+        <img src="assets/win.png" width="375" height="812" loading="lazy" alt="The win screen listing all four solved sets with their tier badges, analogies and explanations.">
       </figure>
     </div>
   </div>
@@ -335,14 +345,14 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <p class="lede">A puzzle game is hungry: it needs a steady supply of boards that all clear the same bar. AI could generate that scale. Generation alone was nowhere near trustworthy enough to publish.</p>
     <div class="cols two">
       <div>
-        <p><strong>One model call can't hold the job.</strong> A publishable board has to satisfy sixteen unique words, one set per difficulty tier, four distinct relationship types, no accidental cross-set groupings, fair ordering, and a theme that feels like something. Asked for all of that at once, a model quietly trades constraints away and nobody can say which step failed.</p>
+        <p><strong>One model call can’t hold the job.</strong> A publishable board has to satisfy sixteen unique words, one set per difficulty tier, four distinct relationship types, no accidental cross-set groupings, fair ordering, and a theme that feels like something. Asked for all of that at once, a model quietly trades constraints away and nobody can say which step failed.</p>
         <p><strong>So the job is split into agents with one job each</strong>: an author, a grouper, a rater, a builder, a row of evaluators. Each has a declared input and output schema. Each can be tested, measured and improved alone. When a board fails, the failure has an address.</p>
-        <p><strong>And one judgement is never delegated:</strong> whether a board ships. Taste stays human. The machine's job is to make my judgement cheaper to apply, not to replace it.</p>
+        <p><strong>And one judgement is never delegated:</strong> whether a board ships. Taste stays human. The machine’s job is to make my judgement cheaper to apply, not to replace it.</p>
       </div>
       <div>
         <blockquote class="quote">The intuition going in was that generating good pairs is the difficult part and assembling them is bookkeeping. That is backwards.</blockquote>
-        <p class="attrib">from my first pipeline's lessons-learned</p>
-        <p class="note" style="margin-top:1.2em">My first version was a five-agent Python crew, and it worked. I retired it anyway and rebuilt inside the game's own repo, importing the game's own validators: one schema, no drift between the thing that writes the puzzles and the thing that plays them.</p>
+        <p class="attrib">from my first pipeline’s lessons-learned</p>
+        <p class="note" style="margin-top:1.2em">My first version was a five-agent Python crew, and it worked. I retired it anyway and rebuilt inside the game’s own repo, importing the game’s own validators: one schema, no drift between the thing that writes the puzzles and the thing that plays them.</p>
       </div>
     </div>
   </div>
@@ -353,12 +363,12 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <p class="kicker">The method</p>
     <h2>Tests are how I read code.</h2>
-    <p class="lede">I'm not a programmer by training. I direct the code rather than write it, and that only works if trust never depends on my ability to eyeball a diff.</p>
+    <p class="lede">I’m not a programmer by training. I direct the code rather than write it, and that only works if trust never depends on my ability to eyeball a diff.</p>
     <div class="cols two" style="align-items:start">
       <p>The discipline is boring on purpose. Every session opens by re-reading the plan and closes by verifying and recording. Every decision is written down with the trigger that would reverse it. The main branch only ever holds verified states, so any point in its history is a safe rollback. The repo carries its own memory; nothing depends on mine.</p>
       <div>
         <div class="stats" style="grid-template-columns:1fr 1fr">
-          <div class="stat"><b>1,440</b><span>tests passing, zero failing, on the platform's own test runner</span></div>
+          <div class="stat"><b>1,440</b><span>tests passing, zero failing, on the platform’s own test runner</span></div>
           <div class="stat"><b>0</b><span>dependencies: no framework, no build step, nothing in package.json</span></div>
         </div>
         <p class="note" style="margin-top:1.2em">The suite turns <em>“it works”</em> from a feeling into a fact I can check. Nothing ships on my confidence.</p>
@@ -374,7 +384,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <h2>Nine agents, one deterministic gate, one human.</h2>
 
     <div class="diagram">
-      <svg viewBox="0 0 1000 470" role="img" aria-label="Pipeline diagram: a subject scout feeds stage 01. Stages 01 through 04 feed a deterministic integrity gate, which feeds evaluator stages 05 through 08 and then the glossary author at 09. From there an auto-revise step may fire once on allowlisted findings, sending the board back through stages 01 to 04, before the board reaches the human editorial gate. The human's judgement flows into a corpus which steers the next run's stage 01. A revision proposer sits off the pipeline.">
+      <svg viewBox="0 0 1000 470" role="img" aria-label="Pipeline diagram: a subject scout feeds stage 01. Stages 01 through 04 feed a deterministic integrity gate, which feeds evaluator stages 05 through 08 and then the glossary author at 09. From there an auto-revise step may fire once on allowlisted findings, sending the board back through stages 01 to 04, before the board reaches the human editorial gate. The human’s judgement flows into a corpus which steers the next run’s stage 01. A revision proposer sits off the pipeline.">
         <defs>
           <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M0,0 L10,5 L0,10 z" fill="#A5977F"/>
@@ -411,7 +421,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <g>
           <rect class="n-off" x="60" y="2" width="190" height="44"/>
           <text class="nm" x="72" y="22">subject scout</text>
-          <text class="sub" x="72" y="38">invents the run's subject</text>
+          <text class="sub" x="72" y="38">invents the run’s subject</text>
           <rect class="n-off" x="290" y="2" width="250" height="44"/>
           <text class="nm" x="302" y="22">revision proposer</text>
           <text class="sub" x="302" y="38">called at review, and by auto-revise</text>
@@ -492,7 +502,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <path class="lr" d="M60 352 H42 V152 H110 V136" marker-end="url(#ar-r)"/>
         <text class="cap cap-r" x="124" y="172">ONE AUTO-REVISION PER BOARD · RE-RUNS 01&ndash;04</text>
 
-        <!-- judgement: below everything, into the next run's 01 -->
+        <!-- judgement: below everything, into the next run’s 01 -->
         <path class="lh" d="M600 396 V444 H22 V101 H56" marker-end="url(#ar-h)"/>
         <text class="cap cap-h" x="300" y="436">JUDGEMENT STEERS THE NEXT RUN</text>
       </svg>
@@ -500,13 +510,13 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 
     <div class="cols two" style="align-items:start">
       <div>
-        <p class="note">Every agent is a <strong>pure function</strong> with a declared input and output schema, and each one has exactly one job. The run is unattended: I'm only involved once a complete candidate board exists. The diagram is the tour; three stops deserve a word.</p>
+        <p class="note">Every agent is a <strong>pure function</strong> with a declared input and output schema, and each one has exactly one job. The run is unattended: I’m only involved once a complete candidate board exists. The diagram is the tour; three stops deserve a word.</p>
         <p class="note">The <strong>revision proposer</strong> reads my feedback and drafts the fix brief: it proposes, never authors. <strong>Auto-revise</strong> is the one bounded repair the machine may make before I see a board, only on findings I explicitly allowlisted, and taste never triggers it.</p>
       </div>
       <ul class="plain" style="font-size:.92rem">
         <li><b>04a Integrity gate</b> is deterministic code, no model: it checks every rule that can be checked exhaustively, including all <b>43,680</b> ordered four-word claims for accidental valid analogies.</li>
         <li><b>06 Adversarial solver</b> tries to break the board the way a sharp player would: cross-set groupings, second readings. Its findings come back in the delegation lesson.</li>
-        <li><b>09 Glossary author</b> writes one definition for the board's hardest word, and is allowed to decline: a definition that gives the set away is worse than none.</li>
+        <li><b>09 Glossary author</b> writes one definition for the board’s hardest word, and is allowed to decline: a definition that gives the set away is worse than none.</li>
       </ul>
     </div>
   </div>
@@ -518,24 +528,24 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <p class="kicker">The method</p>
     <h2>Judgement needed a room of its own.</h2>
     <div class="cols two">
-      <p class="note">The pipeline only makes candidates. The other half is a local <strong>Review Studio</strong> where every board meets its editor: I start runs there, play the candidate exactly as a player would, and read each agent's report beside the thing it judged. All <strong>726 judgements</strong> that tune the agents were recorded in that room, and approving a board publishes it through the same validators the game loads.</p>
+      <p class="note">The pipeline only makes candidates. The other half is a local <strong>Review Studio</strong> where every board meets its editor: I start runs there, play the candidate exactly as a player would, and read each agent’s report beside the thing it judged. All <strong>726 judgements</strong> that tune the agents were recorded in that room, and approving a board publishes it through the same validators the game loads.</p>
       <p class="note">It grew with the project: first review and publish, then a player-ratings panel, then a hand editor where I fix a board in place, every save validated and recorded as before-and-after signal. Judgement becomes data here, and nothing publishes without me.</p>
     </div>
     <div class="cols wide-left" style="align-items:start; margin-top:8px">
       <figure class="shot screen scrolly">
         <div class="pane">
-          <img src="assets/studio-review-full.jpg" alt="The Review Studio's full review page for an approved run: the run header and publish panel, Play this board and Edit this board buttons, the style guide's unity and evocativeness readings, the sixteen-tile candidate board, per-set cards with tier chips and taxonomy annotations, every evaluator's report, and the feedback form with approve, reject and request-revision actions.">
+          <img src="assets/studio-review-full.jpg" width="760" height="4688" loading="lazy" alt="The Review Studio’s full review page for an approved run: the run header and publish panel, Play this board and Edit this board buttons, the style guide’s unity and evocativeness readings, the sixteen-tile candidate board, per-set cards with tier chips and taxonomy annotations, every evaluator’s report, and the feedback form with approve, reject and request-revision actions.">
         </div>
-        <figcaption>One run's whole review page. Scroll inside the frame: the agents' readings, the board, every per-set verdict, my feedback form, and the publish panel.</figcaption>
+        <figcaption>One run’s whole review page. Scroll inside the frame: the agents’ readings, the board, every per-set verdict, my feedback form, and the publish panel.</figcaption>
       </figure>
       <div>
         <figure class="shot screen crop" style="margin:0">
-          <img src="assets/studio-editor.png" alt="The hand editor open on the same board: editable fields for the title and, per set, the relationship line and the four words.">
+          <img src="assets/studio-editor.png" width="835" height="1422" loading="lazy" alt="The hand editor open on the same board: editable fields for the title and, per set, the relationship line and the four words.">
           <figcaption>The hand editor: I fix a board in place, and every save is validated before it lands.</figcaption>
         </figure>
         <figure class="shot screen crop" style="margin:14px 0 0">
-          <img src="assets/studio-ratings.png" alt="The player ratings panel: a table of published boards with players, win rate, and average difficulty, delight and fairness ratings.">
-          <figcaption>The player-ratings panel: strangers' judgements, one row per board, best delight first.</figcaption>
+          <img src="assets/studio-ratings.png" width="869" height="536" loading="lazy" alt="The player ratings panel: a table of published boards with players, win rate, and average difficulty, delight and fairness ratings.">
+          <figcaption>The player-ratings panel: strangers’ judgements, one row per board, best delight first.</figcaption>
         </figure>
       </div>
     </div>
@@ -550,7 +560,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <p class="lede">The early failures were not prompt problems; they were lessons in what a model structurally cannot do. Four principles, each paid for by a real dead run.</p>
     <ul class="plain" style="max-width:none">
       <li><b>Judgement gets slack.</b> A brief that supplies exactly enough pairs makes discarding a weak one fatal, so every brief now leaves room to discard, enforced at every door.</li>
-      <li><b>Retries step the effort down, not just up.</b> When an agent's <em>thinking</em> overruns its output ceiling, the retry lowers the deliberation budget instead of raising the ceiling. A theme that had died completed on the first down-stepped retry.</li>
+      <li><b>Retries step the effort down, not just up.</b> When an agent’s <em>thinking</em> overruns its output ceiling, the retry lowers the deliberation budget instead of raising the ceiling. A theme that had died completed on the first down-stepped retry.</li>
       <li><b>Every retry must change its input.</b> Three identical attempts against an unchanged pool returned three identical refusals. A retry that changes nothing is resampling.</li>
       <li><b>Never ask a model to prove what code can check.</b> One stage was asked to verify no two sets could regroup, combinatorial over sixteen words, while the deterministic gate already proved it exhaustively on every run. That job moved to the gate.</li>
     </ul>
@@ -565,9 +575,9 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <div class="cols two">
       <div>
         <p>Every board was starting to feel the same, and the corpus said why: <strong>~80% of all 284 pairs ever authored were the same relationship</strong>, one thing becoming or producing another. The obvious next move was to write my own taxonomy of relationship types from taste, and steer the pipeline with it.</p>
-        <blockquote class="quote">I can't be fully relied on to create a foundation for analogies because I am not an expert. I'm merely interested in playing them.</blockquote>
+        <blockquote class="quote">I can’t be fully relied on to create a foundation for analogies because I am not an expert. I’m merely interested in playing them.</blockquote>
         <p class="attrib">the note where I stopped myself</p>
-        <p style="margin-top:1.4em">So I didn't write one. I went and found one: <strong>Bejar, Chaffin &amp; Embretson (1991)</strong>, developed at ETS to classify GRE verbal analogy items, and compiled it into a controlled vocabulary the pipeline actually runs on and is checked against.</p>
+        <p style="margin-top:1.4em">So I didn’t write one. I went and found one: <strong>Bejar, Chaffin &amp; Embretson (1991)</strong>, developed at ETS to classify GRE verbal analogy items, and compiled it into a controlled vocabulary the pipeline actually runs on and is checked against.</p>
       </div>
       <div>
         <div class="card">
@@ -579,7 +589,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
           </ul>
           <p class="note" style="margin:1em 0 0">A vocabulary you can count against turns a vague feeling, <em>“these all seem similar”</em>, into a number you can steer with.</p>
         </div>
-        <p class="note" style="margin-top:1.2em">The literature even validated two of the game's earliest instincts, and the framework still had to be borrowed.</p>
+        <p class="note" style="margin-top:1.2em">The literature even validated two of the game’s earliest instincts, and the framework still had to be borrowed.</p>
       </div>
     </div>
   </div>
@@ -589,14 +599,14 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <section>
   <div class="wrap">
     <p class="kicker">What I learned</p>
-    <h2>The taxonomy was right, and it didn't work.</h2>
+    <h2>The taxonomy was right, and it didn’t work.</h2>
     <div class="cols two">
       <div>
         <p><strong>Round 1.</strong> A board built with one set from each of four <em>formally different</em> families. I played it blind, and it read as <em>“all the same, an object moving forward in time somehow.”</em> I demoted three of the four tiers. The experiment invalidated its own design: formal diversity produced <strong>zero felt diversity</strong>, because every set still carried an <strong>arrow</strong>: a direction, a before and an after.</p>
-        <p><strong>Round 2.</strong> Blind again, board letters flipped, with an equally evocative control so the effect couldn't be a theme artefact. The mixed arrowed/arrowless board came back as <em>“the best puzzle yet… This is ASTO.”</em> I rejected the all-arrowed control and named the effect without knowing which board I was holding: <em>“another ‘arrow’ puzzle.”</em></p>
+        <p><strong>Round 2.</strong> Blind again, board letters flipped, with an equally evocative control so the effect couldn’t be a theme artefact. The mixed arrowed/arrowless board came back as <em>“the best puzzle yet… This is ASTO.”</em> I rejected the all-arrowed control and named the effect without knowing which board I was holding: <em>“another ‘arrow’ puzzle.”</em></p>
         <div class="callout">
           <span class="lbl">And then I deliberately did not make it a law</span>
-          <p>Recorded as decision <strong>D-3</strong>, marked <strong>n=2, hypothesis not law</strong>, with a written trigger naming what would have to happen to overturn it. <em>“Let's make sure we don't view the revised principle as immutable.”</em></p>
+          <p>Recorded as decision <strong>D-3</strong>, marked <strong>n=2, hypothesis not law</strong>, with a written trigger naming what would have to happen to overturn it. <em>“Let’s make sure we don’t view the revised principle as immutable.”</em></p>
         </div>
       </div>
       <div>
@@ -645,7 +655,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <p>I rejected two boards for two specific defects, then found the adversarial solver had already flagged both, in almost the same words, with nothing routing its findings anywhere. I was re-deriving by hand what the pipeline had written down.</p>
         <div class="finding">
           <span class="sev">[medium] cross-set-association</span> Museum, Louvre…
-          <q>Louvre and Musée d'Orsay are themselves extremely famous museums</q>
+          <q>Louvre and Musée d’Orsay are themselves extremely famous museums</q>
         </div>
         <div class="finding">
           <span class="sev">[high] unfair</span> spy, alias, operative, cyanide pill
@@ -661,7 +671,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
           <span class="lbl">Three zones, drawn in advance</span>
           <p>Deterministic checks are automated outright. AI revision runs only on an allowlist <strong>chosen by me and revocable by me</strong>: cross-set findings at high severity and the order-ambiguity cluster, nothing else, one auto-revision per board. <strong>Taste never triggers a revision.</strong> A failed repair sends the board to me carrying both the findings and the diagnosis.</p>
         </div>
-        <p style="margin-top:1.2em"><strong>Order fairness is the allowlist's other half.</strong> An analogy that reads as truly backwards (<em>seed : bud :: bloom : wilt</em>, where I lost a mistake to a coin flip) is a fairness bug, not a style note, and three detectors now catch that shape. All three report and none can block: a wrong fix gets reviewed by a person, but a wrong veto silently costs a good board. Signals, deliberately not gates.</p>
+        <p style="margin-top:1.2em"><strong>Order fairness is the allowlist’s other half.</strong> An analogy that reads as truly backwards (<em>seed : bud :: bloom : wilt</em>, where I lost a mistake to a coin flip) is a fairness bug, not a style note, and three detectors now catch that shape. All three report and none can block: a wrong fix gets reviewed by a person, but a wrong veto silently costs a good board. Signals, deliberately not gates.</p>
       </div>
     </div>
   </div>
@@ -688,7 +698,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
       <div>
         <div class="callout">
           <span class="lbl">And it disagreed with me, out loud</span>
-          <p>I had called that board an absolute snooze. Today's agent answered <em>strong</em>, and went on to praise the exact wording my own note had wanted sharpened. The disagreement was reported as it came back, unedited.</p>
+          <p>I had called that board an absolute snooze. Today’s agent answered <em>strong</em>, and went on to praise the exact wording my own note had wanted sharpened. The disagreement was reported as it came back, unedited.</p>
         </div>
         <p style="margin-top:1.2em">That is the useful result, not the improvement. <strong>An evaluator that only ever agrees with you is not an instrument, it is a mirror.</strong></p>
         <p class="note">The counterweight: one board, one stage, chosen by the person the machine was flattering. It measures that the agent changed. It does not measure that the agent is right.</p>
@@ -704,9 +714,9 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <h2>Things that were wrong.</h2>
     <p class="lede">The full list in the project log runs to thirteen items and grows with the project on purpose: keeping it is a method, not a confession. Three of them, chosen for what they teach.</p>
     <ul class="plain fails" style="max-width:none">
-      <li><b>The teaching example that shipped.</b> Stage 01 was reproducing its own prompt's example, and a board built that way went live before anyone noticed. Generative systems reproduce their own scaffolding; a test now proves no generative prompt quotes a complete set.</li>
+      <li><b>The teaching example that shipped.</b> Stage 01 was reproducing its own prompt’s example, and a board built that way went live before anyone noticed. Generative systems reproduce their own scaffolding; a test now proves no generative prompt quotes a complete set.</li>
       <li><b>The synthetic-feedback near-miss.</b> Four verification runs, carrying feedback an AI had typed to exercise the form, were swept into version control by a <code>git add -A</code>. Synthetic judgement is indistinguishable from real judgement once it is in the file the editorial rubric compiles from. Caught at wrap-up; all four removed.</li>
-      <li><b>The recurring scar, named as this project's signature failure:</b> a rule enforced at one door and not the one downstream. A pair floor added to the form and not the CLI. A quota checked at the wrong granularity. Evaluator findings produced and never routed. Each one individually reasonable; together, a pattern worth having a name for.</li>
+      <li><b>The recurring scar, named as this project’s signature failure:</b> a rule enforced at one door and not the one downstream. A pair floor added to the form and not the CLI. A quota checked at the wrong granularity. Evaluator findings produced and never routed. Each one individually reasonable; together, a pattern worth having a name for.</li>
     </ul>
   </div>
 </section>
@@ -715,7 +725,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <section id="live">
   <div class="wrap">
     <p class="kicker">The game, live</p>
-    <h2>Here's the game.</h2>
+    <h2>Here’s the game.</h2>
     <p class="lede">Live at <a href="../../"><strong>playasto.com</strong></a> since August 13, 2026. A real domain, free static hosting, roughly 130 real pipeline runs behind it, all of it built solo.</p>
     <div class="stats" style="grid-template-columns:repeat(2,1fr); margin-bottom:22px">
       <div class="stat"><b>48</b><span>boards published and playable</span></div>
@@ -730,10 +740,10 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
           <span class="lbl">Disclosure is owed, not a feature</span>
           <p>An About page states plainly that the boards are AI-generated and human-approved: every published puzzle was played by me before release. It is linked from the end screen as well as the homepage, because a shared link goes straight to a board and never passes the front door.</p>
         </div>
-        <p style="margin-top:1.4em"><strong>Go play it.</strong> The fastest way to evaluate everything this deck has claimed is one round at <a href="../../">playasto.com</a>. Come back for the last slide when you're done.</p>
+        <p style="margin-top:1.4em"><strong>Go play it.</strong> The fastest way to evaluate everything this deck has claimed is one round at <a href="../../">playasto.com</a>. Come back for the last slide when you’re done.</p>
       </div>
       <figure class="shot phone">
-        <img src="assets/about.png" alt="The About page: the ASTO wordmark, then sections headed What this is, How the puzzles are made, and The process, stating that the puzzles are generated by an AI pipeline and that every published puzzle has been played and approved by Max.">
+        <img src="assets/about.png" width="343" height="876" loading="lazy" alt="The About page: the ASTO wordmark, then sections headed What this is, How the puzzles are made, and The process, stating that the puzzles are generated by an AI pipeline and that every published puzzle has been played and approved by Max.">
         <figcaption>The disclosure, as a visitor meets it.</figcaption>
       </figure>
     </div>
@@ -749,7 +759,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <div class="cols two">
       <div>
         <p class="note"><strong>The open loop, named:</strong> the editorial rubric does not exist yet. The plan said thirty judged boards; there are 109. I would rather name the debt than have this deck imply it is done.</p>
-        <p class="note" style="margin-top:1.2em"><strong>Where this goes next:</strong> <strong>Relics of the Nine</strong>, my systems-driven roguelike, is the next project this workflow gets pointed at. What transfers is the machine's shape: generator, validators, an adversarial check, and a human editor whose taste is the standard.</p>
+        <p class="note" style="margin-top:1.2em"><strong>Where this goes next:</strong> <strong>Relics of the Nine</strong>, my systems-driven roguelike, is the next project this workflow gets pointed at. What transfers is the machine’s shape: generator, validators, an adversarial check, and a human editor whose taste is the standard.</p>
       </div>
       <div>
         <h3>What transfers</h3>
@@ -770,7 +780,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   function update(){
     const h = document.documentElement;
     const max = h.scrollHeight - h.clientHeight;
-    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+    bar.style.transform = 'scaleX(' + (max > 0 ? h.scrollTop / max : 0) + ')';
     const mid = h.scrollTop + h.clientHeight / 2;
     let n = 0;
     secs.forEach((s, i) => { if (s.offsetTop <= mid) n = i; });
