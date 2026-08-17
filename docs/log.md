@@ -2,6 +2,62 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-17 — The deck becomes a portfolio piece, and the disclosure finally ships
+
+The open gate from 2026-08-16 closed the long way: instead of line edits, Max
+brought a full restructure brief, then three rounds of notes on reads of the
+result. The 23-slide six-act chronology is now a **17-slide four-pillar
+portfolio deck** (the idea · the game · the method · what I learned · the
+game live · forward), **first person throughout**, aimed at potential
+employers as a sent deck. Five commits on `work/about-page`, merged to `main`
+this wrapup, **deployed with the About page** — the site says how the puzzles
+are made, live to the public for the first time.
+
+- **All pricing content cut** at the brief's direction — both cost slides, the
+  $108.17 total, the $0.163 retry story, even the $11 domain line. This
+  resolves the open publish-the-spend question from 2026-08-16: the answer was
+  neither figure; a sent deck carries no prices. The cost material that
+  mattered was retold as **model limits** (four principles, each paid for by a
+  dead run) with no dollars.
+- **Max's specimen call:** the deck now shows the taste it claims — two sets
+  from night-experiment-b (the board that earned "This is ASTO") rendered in
+  tile styling on the playtest slide: Firefly:Glow::Cricket:Chirp beside
+  Shadow:Weight::Ghost:Footprint, one arrowed, one arrowless, the mix named as
+  the finding.
+- **The Review Studio got its own slide** ("Judgement needed a room of its
+  own") at his ask — the room where all 726 judgements were recorded — shot
+  live from the running Studio (sunday-morning-market's review page), framed
+  below the run header so no cost figure enters the deck. His follow-up call:
+  the Studio appears exactly once; the run-ledger figure came back off the
+  honest list (`studio-runs.png` stays on disk unreferenced).
+- **The game slide** carries the GDD §7.3 ordering material compressed to one
+  clause, his theme line ("the whole board is the theme; each analogy holds a
+  different relationship"), and the pipeline is **shown, not toured** — prose
+  only for 04a (with its 43,680), 06, and 09.
+- **New win.png**: retaken from the live game as a full-element capture of the
+  solved end screen (survey hidden for the shot), replacing the offset
+  viewport crop Max flagged.
+- **Stamp moved to August 17, 2026** in the deck and its test guard; page
+  title now "ASTO: how I built the machine that writes the puzzles".
+- **Verified:** `npm test` **1440/0** (four times across the session) ·
+  `check-board` 48 clean · every pass walked at 1280/1200 and 375 via
+  Playwright: no overflow, no kicker wrap, all images loading, contents
+  anchors landing exactly · `check-deploy` green post-push (below).
+- **Also this session:** Assignment 7 **submitted by Max** (was due Thu 8/20)
+  — the standing item clears. The deck's counts (1,440 tests · 48 boards ·
+  133 runs · 726 events) will drift again; the staleness-guard test stays in
+  the backlog, now with more numbers to pin.
+- **Phase status:** Phases 1–5 complete and shipped; no game-rule or engine
+  change this session (the game's screens untouched). Gate: automated and
+  Claude-verifiable **passed** with evidence above; **Max acceptance passed**
+  — "ok, lets publish this" after his read of the final deck.
+- **Next:** watch D-20's bounce trigger now that strangers can reach the
+  About page and deck from both doors; `npm run ratings` watch; his D-22
+  editor test-drive; batch five on his word. The two overdue triggers stand
+  and are now public claims on the deck's forward slide: **the rubric at 109
+  judged boards** and the slim-down lap. Backlog: the deck-staleness count
+  guard.
+
 ## 2026-08-16 — The site says how the puzzles are made, and the deck says when
 
 The decided-but-unbuilt AI-disclosure page (backlog, 2026-08-14) built, then Max

@@ -421,6 +421,11 @@
   verdict and no proposal, and re-running the proposer by hand produced a good brief on the
   first try — so whatever happened the first time is unknowable by construction. A one-line
   failure artifact on the null path would close it.
+- **The deck's claimed counts have no guard (2026-08-17, restating the 2026-08-16 note
+  below now that the deck is public).** The portfolio deck states 1,440 tests, 48 boards,
+  133 runs and 726 feedback events as of August 17; every one will drift. The cheap
+  guard is a test comparing the deck's claimed counts against the real ones, failing
+  when they diverge past a tolerance.
 - ~~**The process deck is a dated snapshot, not a current account (2026-08-16).**~~
   **Done the same day.** Restructured into six acts and brought current: 15 slides to 23,
   eight new (order fairness, the steering failures, the auto-revise graduation, the ship,
