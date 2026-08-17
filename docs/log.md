@@ -2,6 +2,54 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-17 — The compression pass, and the Studio shown whole
+
+Two units on `work/deck-compression`, both accepted by Max and deployed
+together: his **v2 editing plan** executed on the live deck, and the Review
+Studio slide grown from one cropped screenshot into **three live exhibits**.
+
+- **The v2 plan's [ALREADY DONE] markers were verified accurate** against the
+  live deck before any edit, so nothing regressed. Every named cut executed:
+  slide 6 reframed as the trust problem; slide 7's rituals folded to a
+  paragraph; the Studio slide's architecture paragraph out; taxonomy detail
+  to a line; the instrument paragraph to two sentences; slide 13 redrawn
+  around three zones named in advance; slide 14 cut ~40%; the honest list
+  five to three (teaching example, synthetic feedback, recurring scar); the
+  forward slide rebalanced so nothing follows the thesis line.
+- **Max's calls at intake:** Where-to-jump stays (its anchors already work);
+  Pass 5's deep-dive pages **deferred** to the backlog rather than opening a
+  new public surface that can go stale.
+- **The honest number: 3,529 → 3,098 body words, 12%,** against the plan's
+  directional 30–40%. Every cut the plan named is in; the protect list is
+  what bounds the number. Reported to Max as such, not dressed up.
+- **The Studio slide now shows the room** (his ask): the entire review page
+  (4,688px) in a vertically scrollable frame, the same overflow trick the
+  diagram uses sideways; the hand editor open on the same board; and the
+  player-ratings panel showing real strangers' rows and comments. All
+  captured live from the running Studio; the run header's cost figure was
+  stripped in the page before capture so no dollar enters the deck. The
+  ratings panel now shows multiple players across several boards, which the
+  D-21 watch should note.
+- **A near-repeat of the honest list's own scar:** the exhibits commit first
+  swept in five scratch files (a `cd` had moved the shell's working
+  directory, so a cleanup `rm` ran elsewhere and `git add -A` collected the
+  leftovers). Caught in the commit output, amended out before push, tree
+  verified clean. The deck's synthetic-feedback entry earned its keep twice.
+- **Verified:** `npm test` 1440/0 · `check-board` 48 clean · walks at
+  1280/1200 and 375: no overflow, no kicker wrap, all 7 images loading,
+  anchors landing, the exhibit pane scrolling on mobile, thesis the last
+  element on the page · no em dashes, no prices · `check-deploy` green
+  post-push (below).
+- **Phase status:** Phases 1–5 complete and shipped; no game or engine
+  change. Gate: automated and Claude-verifiable passed with the evidence
+  above; **Max acceptance passed** ("awesome! lets /wrapup").
+- **Next:** the standing watches (`npm run ratings` — the panel visibly
+  accumulating now, D-20's bounce trigger, his D-22 editor test-drive, batch
+  five on his word) and the two overdue triggers the deck names in public:
+  the rubric at 109 judged boards, the slim-down lap. Backlog carries the
+  deferred deep-dive appendix and the deck-staleness count guard, both from
+  this deck cycle.
+
 ## 2026-08-17 — The deck becomes a portfolio piece, and the disclosure finally ships
 
 The open gate from 2026-08-16 closed the long way: instead of line edits, Max
