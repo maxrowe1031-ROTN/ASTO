@@ -56,6 +56,23 @@ test('both doors carry the link — the title screen and the end screen', () => 
   }
 });
 
+test('both standalone pages carry the wordmark home', () => {
+  // The game's own screens already do this (header-view.js, select-view.js): the
+  // logo is the way back. These two pages sit outside the SPA, so they need their
+  // own — a visitor who lands on either must never be stranded there.
+  assert.match(
+    about,
+    /<h1[^>]*class="title-wordmark"[^>]*>\s*<a[^>]*href="\.\/"/,
+    'the About page wordmark must link to the homepage',
+  );
+  const deck = read('docs', 'presentation', 'index.html');
+  assert.match(
+    deck,
+    /<a[^>]*id="home"[^>]*href="\.\.\/\.\.\/"/,
+    'the deck must carry a wordmark link back to the homepage',
+  );
+});
+
 test('the deck itself wears the snapshot stamp', () => {
   const deck = read('docs', 'presentation', 'index.html');
   assert.ok(

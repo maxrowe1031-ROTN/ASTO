@@ -49,6 +49,19 @@ body{
 /* ---------- progress ---------- */
 #rail{position:fixed; top:0; left:0; right:0; height:3px; background:transparent; z-index:50}
 #bar{height:100%; width:0; background:var(--honey); transition:width .12s linear}
+/* The way home, in the slide's top gutter (sections carry 72px of top padding, so it
+   never lands on content). Visually a wordmark — no underline, no pill — the same
+   convention the game's own header uses. */
+#home{
+  position:fixed; left:16px; top:14px; z-index:50;
+  font-family:var(--font-display); font-size:20px; letter-spacing:.02em;
+  color:var(--ink); text-decoration:none;
+  padding:6px 8px; margin:-6px -8px;
+  transition:opacity .18s var(--ease);
+}
+#home:active{opacity:.6}
+@media (max-width:900px){#home{font-size:17px}}
+
 #count{
   position:fixed; right:14px; bottom:14px; z-index:50;
   font-size:12px; letter-spacing:.08em; color:var(--soft-ink);
@@ -197,6 +210,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 </head>
 <body>
 
+<a id="home" href="../../" aria-label="ASTO — back to the homepage">ASTO</a>
 <div id="rail"><div id="bar"></div></div>
 <div id="count" aria-hidden="true">1 / 15</div>
 

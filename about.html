@@ -54,13 +54,34 @@
       text-underline-offset: 3px;
       font-weight: 700;
     }
+    /* The wordmark is the way home, exactly as it is on the game's own screens:
+       no underline, no pill — a logo that goes home is a convention visitors
+       already know. Two classes so it outranks the prose-link rule above. */
+    .about .about-home {
+      color: inherit;
+      font-weight: inherit;
+      text-decoration: none;
+      position: relative;
+      display: inline-block;
+      transition: opacity var(--motion-fast) var(--ease);
+    }
+    /* 44px tap target without changing the box — same trick as .header .wordmark. */
+    .about .about-home::after {
+      content: '';
+      position: absolute;
+      inset: -8px -10px;
+    }
+    .about .about-home:active {
+      opacity: 0.6;
+    }
   </style>
 </head>
 <body>
   <main class="screen">
     <div class="about">
       <header class="about-header">
-        <h1 class="title-wordmark">ASTO</h1>
+        <h1 class="title-wordmark"><a class="about-home" href="./"
+          aria-label="ASTO — back to the homepage">ASTO</a></h1>
         <p class="title-tagline">About this project</p>
       </header>
 
