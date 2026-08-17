@@ -2,6 +2,42 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-17 — The review kit's first outing, applied to the deck
+
+A new user-level tool entered the stack this session (outside this repo):
+the `web-design-guidelines` skill from vercel-labs/agent-skills, installed
+to `~/.claude/skills` after both its stub and its runtime-fetched ruleset
+were reviewed in full, plus `@playwright/cli` 0.1.18 globally (Max ran the
+sudo). First outing: the kit reviewed the deck, and Max applied everything
+except two waived house-style findings (Title Case headings, second-person
+copy — the deck's voice is deliberate).
+
+- **Applied on `work/deck-review-fixes`:** explicit width/height on all 7
+  images (no layout shift) · `loading="lazy"` on the 6 below-fold images
+  including the 571KB studio exhibit · progress bar animates
+  `transform: scaleX` instead of `width` · `overscroll-behavior: contain`
+  on all three scroll containers · curly apostrophes across all body prose
+  (straight quotes remain only in CSS comments and JS) · `text-wrap:
+  balance` on headings · a keyboard skip link, offscreen until focused ·
+  the fonts stylesheet preloaded as style · the counter's static fallback
+  corrected from "1 / 23" to "1 / 17".
+- **Verified live:** bar transforming on scroll, counter correct, skip link
+  focusable with its target present, 7/7 images with dims and ratios
+  preserved, 6 lazy, no overflow at 1280/375, no kicker wrap ·
+  `npm test` 1440/0 · `check-board` 48 clean · `check-deploy` green
+  post-push.
+- **Phase status:** Phases 1–5 complete and shipped; no game or engine
+  change. Gate: automated and Claude-verifiable passed; Max acceptance
+  passed (he directed the application and the wrapup).
+- **Next:** run the same review kit across the game site itself
+  (`index.html`, `about.html`, the `src/view/*` templates,
+  `styles/components.css`) read-only, findings sorted into mechanical
+  fixes vs anything touching play feel — the latter gated on Max's
+  playtest, per the GDD's no-list and motion rules. Then the standing
+  watches: ratings (`npm run ratings`), D-20 bounce, his D-22 editor
+  test-drive, batch five on his word, and the two overdue triggers (the
+  rubric at 109 judged boards, the slim-down lap).
+
 ## 2026-08-17 — The compression pass, and the Studio shown whole
 
 Two units on `work/deck-compression`, both accepted by Max and deployed
