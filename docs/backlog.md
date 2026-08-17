@@ -421,11 +421,15 @@
   verdict and no proposal, and re-running the proposer by hand produced a good brief on the
   first try — so whatever happened the first time is unknowable by construction. A one-line
   failure artifact on the null path would close it.
-- **The process deck is a dated snapshot, not a current account (2026-08-16).** The About
-  page links it labeled "snapshot of August 5, 2026" — honest, but it predates the public
-  ship, D-14, D-21, D-22, and says "eight agents" where there are 11. A content refresh is
-  its own session's work; if it re-dates the deck, update the stamp guard in
-  `test/content/about-page.test.js` to match.
+- ~~**The process deck is a dated snapshot, not a current account (2026-08-16).**~~
+  **Done the same day.** Restructured into six acts and brought current: 15 slides to 23,
+  eight new (order fairness, the steering failures, the auto-revise graduation, the ship,
+  what shipping changed, the first outside judgement, the cost reversal, the run-evaluator
+  before/after), every stale number corrected, the diagram redrawn for stage 09 and the
+  auto-revise loop, all four screenshots retaken plus three new, and the em dashes swept.
+  The stamp guard now pins August 16, 2026. **What remains:** the deck will go stale again
+  the same way, and nothing measures that. The cheap guard, if it recurs, is a test that
+  compares the deck's claimed test/board counts against the real ones.
 - **Nothing on the shipped site says the puzzles are AI-generated (2026-08-14).** Raised in a
   Development Brain session while pulling `intent-over-output` against ASTO; **Max decided the
   shape the same session and deferred the build to a working session here.** The site has been

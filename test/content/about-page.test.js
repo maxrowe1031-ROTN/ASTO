@@ -83,10 +83,20 @@ test('both standalone pages carry the wordmark home', () => {
   );
 });
 
-test('the deck itself wears the snapshot stamp', () => {
+test('the deck says when it was last true', () => {
+  // The deck was a 2026-08-05 snapshot until 2026-08-16, when it was restructured
+  // into acts and brought current. The stamp is what stops it being read as a
+  // description of the pipeline as it stands whenever someone finds it next, so
+  // the guard survives the rewrite: only the date it pins has changed.
   const deck = read('docs', 'presentation', 'index.html');
   assert.ok(
-    deck.includes('snapshot of August 5, 2026'),
+    deck.includes('August 16, 2026'),
     'a future deck edit must not silently drop the date stamp',
   );
+});
+
+test('the deck carries no em dashes either', () => {
+  const deck = read('docs', 'presentation', 'index.html');
+  assert.ok(!deck.includes('—'), 'the deck copy must use no em dashes');
+  assert.ok(!deck.includes('&mdash;'), 'an escaped em dash is still an em dash');
 });

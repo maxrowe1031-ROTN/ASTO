@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ASTO — building the machine that writes the puzzles</title>
-<meta name="description" content="A five-day build log: a word game, an eight-agent authoring pipeline, and the judgements that couldn't be delegated.">
+<title>ASTO: building the machine that writes the puzzles</title>
+<meta name="description" content="A build log: a word game, a nine-agent authoring pipeline, and the judgements that could not be delegated.">
 <!-- Inline so the page stays a single file and never 404s a favicon. -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2340342A'/%3E%3Ccircle cx='11' cy='16' r='3' fill='%23F3ECDC'/%3E%3Ccircle cx='21' cy='16' r='3' fill='%23D9A741'/%3E%3C/svg%3E">
 
@@ -16,7 +16,7 @@
       href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Nunito:ital,wght@0,600;0,700;0,800;1,600&display=swap">
 
 <style>
-/* ASTO design tokens — copied from styles/tokens.css so this page stands alone. */
+/* ASTO design tokens, copied from styles/tokens.css so this page stands alone. */
 :root{
   --cream:#F3ECDC; --milk:#FAF5E9; --oat:#EAE0CB; --taupe:#D8CCB3;
   --faint-ink:#A5977F; --soft-ink:#7A6B57; --ink:#40342A;
@@ -50,7 +50,7 @@ body{
 #rail{position:fixed; top:0; left:0; right:0; height:3px; background:transparent; z-index:50}
 #bar{height:100%; width:0; background:var(--honey); transition:width .12s linear}
 /* The way home, in the slide's top gutter (sections carry 72px of top padding, so it
-   never lands on content). Visually a wordmark — no underline, no pill — the same
+   never lands on content). Visually a wordmark, no underline and no pill, the same
    convention the game's own header uses. */
 #home{
   position:fixed; left:16px; top:14px; z-index:50;
@@ -212,20 +212,21 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 
 <a id="home" href="../../" aria-label="ASTO, back to the homepage">ASTO</a>
 <div id="rail"><div id="bar"></div></div>
-<div id="count" aria-hidden="true">1 / 15</div>
+<div id="count" aria-hidden="true">1 / 23</div>
 
 <!-- 1 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
     <div class="cols two">
       <div>
-        <p class="kicker">A five-day build · snapshot of August 5, 2026</p>
+        <p class="kicker">Act I · The game</p>
         <h1>ASTO</h1>
         <p class="lede" style="margin-bottom:1.2em">Connections, but with analogies. A 4&times;4 board of sixteen words hides four analogy sets.</p>
         <div class="callout">
           <span class="lbl">What this is about</span>
-          <p>The game is the deliverable. The machine that authors it — and the governance around that machine — is the work.</p>
+          <p>The game is the deliverable. The machine that authors it, and the governance around that machine, is the work.</p>
         </div>
+        <p class="note" style="margin-top:1.2em">As of <strong>August 16, 2026</strong>. The game is live at <a href="../../">playasto.com</a>.</p>
       </div>
       <figure class="shot phone">
         <img src="assets/board.png" alt="The ASTO board: sixteen cream word tiles in a 4 by 4 grid on a warm background, with an empty analogy frame above.">
@@ -239,13 +240,13 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <div class="cols wide-left">
       <div>
-        <p class="kicker">The game</p>
+        <p class="kicker">Act I · The rules</p>
         <h2>Four words, in order.</h2>
-        <p class="lede">Tap four words to form <strong>A : B :: C : D</strong> — <em>seed is to tree as spark is to fire</em> — review the frame, press Confirm.</p>
+        <p class="lede">Tap four words to form <strong>A : B :: C : D</strong>, <em>seed is to tree as spark is to fire</em>, review the frame, press Confirm.</p>
         <ul class="plain">
           <li><b>Order is the game.</b> A submission is never sorted. The ordered claim is the claim.</li>
           <li><b>The fourth tap fills the frame without submitting.</b> You get to look at your own claim before you make it.</li>
-          <li><b>“So close!”</b> — right four words, wrong order — costs a mistake and clears the selection. The penalty is also the hint.</li>
+          <li><b>“So close!”</b> (right four words, wrong order) costs a mistake and clears the selection. The penalty is also the hint.</li>
           <li><b>Repeating an identical failed guess is free.</b> Same words, same order, no charge. Different order is a new claim.</li>
           <li><b>Cozy is a constraint, not a mood.</b> No timers, no confetti, no particles. Mistake pips are coffee beans and never red.</li>
         </ul>
@@ -263,16 +264,16 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <div class="cols wide-right">
       <div>
-        <p class="kicker">The fantasy</p>
+        <p class="kicker">Act I · The fantasy</p>
         <h2>Recognition, not speed.</h2>
         <p>The puzzle is not <em>“which words are similar?”</em> It is <em>“what relationship repeats across these pairs?”</em></p>
-        <p>Four sets, four difficulty tiers. Tiers are revealed on solve and never shown on the live board — so the difficulty is something you discover, not something you're warned about.</p>
+        <p>Four sets, four difficulty tiers. Tiers are revealed on solve and never shown on the live board, so the difficulty is something you discover, not something you're warned about.</p>
         <div class="chips">
           <span class="chip g">GREEN</span><span class="chip y">YELLOW</span>
           <span class="chip r">RED</span><span class="chip k">BLACK</span>
         </div>
         <p class="analogy">Seed : Tree :: Spark : Fire</p>
-        <p class="note">Lose on the fourth mistake. The loss screen reveals every unsolved set <em>with its explanation</em> — you always find out what you missed.</p>
+        <p class="note">Lose on the fourth mistake. The loss screen reveals every unsolved set <em>with its explanation</em>, so you always find out what you missed.</p>
       </div>
       <figure class="shot phone">
         <img src="assets/win.png" alt="The win screen listing all four solved sets with their tier badges, analogies and explanations.">
@@ -285,18 +286,18 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 4 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">What came first</p>
+    <p class="kicker">Act II · The machine</p>
     <h2>A working pipeline, retired on purpose.</h2>
     <div class="cols two">
       <div>
-        <p>The first version was a five-agent Python crew — raw SDK, no framework, blackboard orchestration, a bounded revise loop, and a retrieval layer. It ran. It produced boards.</p>
+        <p>The first version was a five-agent Python crew: raw SDK, no framework, blackboard orchestration, a bounded revise loop, and a retrieval layer. It ran. It produced boards.</p>
         <p>It was retired anyway. The replacement lives <em>inside the game repo</em>, in the same language as the game, so it imports the game's own validators directly. One schema, no drift between the thing that generates content and the thing that plays it.</p>
-        <p>Retired in place, not deleted — with a handoff document written so someone could rebuild it without access to the original code.</p>
+        <p>Retired in place, not deleted, with a handoff document written so someone could rebuild it without access to the original code.</p>
       </div>
       <div>
         <blockquote class="quote">The intuition going in was that generating good pairs is the difficult part and assembling them is bookkeeping. That is backwards.</blockquote>
-        <p class="attrib">— from the retired crew's lessons-learned</p>
-        <p class="note" style="margin-top:1.2em">Assembling four sets that simultaneously satisfy one-per-tier, sixteen unique words, no cross-set collisions and four distinct relation types is <strong>constraint satisfaction</strong> — and that is where it actually failed.</p>
+        <p class="attrib">from the retired crew's lessons-learned</p>
+        <p class="note" style="margin-top:1.2em">Assembling four sets that simultaneously satisfy one-per-tier, sixteen unique words, no cross-set collisions and four distinct relation types is <strong>constraint satisfaction</strong>, and that is where it actually failed.</p>
       </div>
     </div>
   </div>
@@ -305,17 +306,20 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 5 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">The studio</p>
-    <h2>Eight agents, one deterministic gate, one human.</h2>
+    <p class="kicker">Act II · The studio</p>
+    <h2>Nine agents, one deterministic gate, one human.</h2>
 
     <div class="diagram">
-      <svg viewBox="0 0 1000 470" role="img" aria-label="Pipeline diagram: stages 01 through 04 feed a deterministic integrity gate, which feeds stages 05 through 08 and then a human review gate; the human's judgement flows into a corpus which steers stage 01.">
+      <svg viewBox="0 0 1000 470" role="img" aria-label="Pipeline diagram: a subject scout feeds stage 01. Stages 01 through 04 feed a deterministic integrity gate, which feeds evaluator stages 05 through 08 and then the glossary author at 09. From there an auto-revise step may fire once on allowlisted findings, sending the board back through stages 01 to 04, before the board reaches the human editorial gate. The human's judgement flows into a corpus which steers the next run's stage 01. A revision proposer sits off the pipeline.">
         <defs>
           <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M0,0 L10,5 L0,10 z" fill="#A5977F"/>
           </marker>
           <marker id="ar-h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M0,0 L10,5 L0,10 z" fill="#D9A741"/>
+          </marker>
+          <marker id="ar-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#C2603E"/>
           </marker>
         </defs>
         <style>
@@ -326,10 +330,30 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
           .ln{stroke:#A5977F; stroke-width:1.5; fill:none}
           .lh{stroke:#D9A741; stroke-width:1.5; fill:none; stroke-dasharray:5 4}
           .cap{font:800 10px 'Nunito',system-ui,sans-serif; fill:#A5977F; letter-spacing:.12em}
+          /* Three line kinds, three meanings: grey solid is flow, honey dashed is
+             judgement, red dashed is repair. Red is already this deck's defect colour. */
+          .lr{stroke:#C2603E; stroke-width:1.5; fill:none; stroke-dasharray:2 4}
+          /* Conditional: auto-revise fires only on allowlisted findings. Deliberately NOT
+             04a's solid honey fill, which means "no model, no cost" and this one bills. */
+          .n-cond{fill:#FAF5E9; stroke:#D9A741; stroke-width:1.5; stroke-dasharray:5 4; rx:10}
+          /* Adjacent to the pipeline, not on it. */
+          .n-off{fill:#F3ECDC; stroke:#D8CCB3; stroke-width:1.5; stroke-dasharray:4 4; rx:10}
           /* Presentation attributes lose to CSS classes, so overrides need their own selectors. */
           .on-dark{fill:#F3ECDC} .on-dark-dim{fill:#D8CCB3}
-          .on-honey{fill:#8A6519} .on-green{fill:#4F6B47} .cap-h{fill:#D9A741}
+          .on-honey{fill:#8A6519} .on-green{fill:#4F6B47} .cap-h{fill:#D9A741} .cap-r{fill:#C2603E}
         </style>
+
+        <!-- off-pipeline agents, in the empty top band -->
+        <g>
+          <rect class="n-off" x="60" y="2" width="190" height="44"/>
+          <text class="nm" x="72" y="22">subject scout</text>
+          <text class="sub" x="72" y="38">invents the run's subject</text>
+          <rect class="n-off" x="290" y="2" width="250" height="44"/>
+          <text class="nm" x="302" y="22">revision proposer</text>
+          <text class="sub" x="302" y="38">called at review, and by auto-revise</text>
+        </g>
+        <path class="ln" d="M135 46 V66" marker-end="url(#ar)"/>
+        <text class="cap" x="556" y="28">NOT PIPELINE STAGES</text>
 
         <!-- row 1 -->
         <g>
@@ -355,8 +379,8 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <path class="ln" d="M855 70 V44 H675 V66" marker-end="url(#ar)"/>
         <text class="cap" x="700" y="38">REBUILD, BOUNDED</text>
 
-        <!-- gate down to row 2 -->
-        <path class="ln" d="M855 132 V172 H135 V226" marker-end="url(#ar)"/>
+        <!-- gate down to row 2 (y=190: clears the red repair line and its caption above) -->
+        <path class="ln" d="M855 132 V190 H135 V226" marker-end="url(#ar)"/>
 
         <!-- row 2 -->
         <g>
@@ -368,30 +392,51 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
           <text class="num" x="434" y="252">07</text><text class="nm" x="434" y="272">test player</text>
           <rect class="n" x="600" y="230" width="150" height="62"/>
           <text class="num" x="614" y="252">08</text><text class="nm" x="614" y="272">style guide</text>
-          <rect x="780" y="230" width="150" height="62" rx="10" fill="#40342A" stroke="#40342A"/>
-          <text class="num on-dark-dim" x="794" y="252">HUMAN</text>
-          <text class="nm on-dark" x="794" y="272">editorial gate</text>
+          <rect class="n" x="780" y="230" width="150" height="62"/>
+          <text class="num" x="794" y="252">09</text>
+          <text class="nm" x="794" y="268">glossary author</text>
+          <text class="sub" x="794" y="283">one definition, or declines</text>
         </g>
         <path class="ln" d="M210 261 H236" marker-end="url(#ar)"/>
         <path class="ln" d="M390 261 H416" marker-end="url(#ar)"/>
         <path class="ln" d="M570 261 H596" marker-end="url(#ar)"/>
         <path class="ln" d="M750 261 H776" marker-end="url(#ar)"/>
 
-        <!-- corpus feedback -->
-        <rect x="600" y="368" width="330" height="66" rx="10" fill="#E9EFE0" stroke="#8FAC84" stroke-width="1.5"/>
-        <text class="nm on-green" x="616" y="392">corpus</text>
-        <text class="sub on-green" x="616" y="410">policies · examples with reasons · calibration</text>
-        <text class="sub on-green" x="616" y="425">versioned, inspectable, never self-modified</text>
+        <!-- row 3: the conditional repair step, the human, and the corpus -->
+        <g>
+          <rect class="n-cond" x="60" y="330" width="195" height="66"/>
+          <text class="num on-honey" x="74" y="352">AUTO</text>
+          <text class="nm on-honey" x="74" y="368">revise, once</text>
+          <text class="sub on-honey" x="74" y="383">only on allowlisted flags</text>
 
-        <path class="lh" d="M855 292 V364" marker-end="url(#ar-h)"/>
-        <path class="lh" d="M600 401 H25 V101 H56" marker-end="url(#ar-h)"/>
-        <text class="cap cap-h" x="300" y="393">JUDGEMENT STEERS THE NEXT RUN</text>
+          <rect x="295" y="330" width="175" height="66" rx="10" fill="#40342A" stroke="#40342A"/>
+          <text class="num on-dark-dim" x="309" y="356">HUMAN</text>
+          <text class="nm on-dark" x="309" y="376">editorial gate</text>
+
+          <rect x="560" y="330" width="370" height="66" rx="10" fill="#E9EFE0" stroke="#8FAC84" stroke-width="1.5"/>
+          <text class="nm on-green" x="576" y="354">corpus</text>
+          <text class="sub on-green" x="576" y="372">policies · examples with reasons · calibration</text>
+          <text class="sub on-green" x="576" y="387">versioned, inspectable, never self-modified</text>
+        </g>
+
+        <!-- 09 hands the finished board down to the repair step -->
+        <path class="ln" d="M855 292 V312 H150 V326" marker-end="url(#ar)"/>
+        <path class="ln" d="M255 363 H291" marker-end="url(#ar)"/>
+        <path class="lh" d="M470 363 H556" marker-end="url(#ar-h)"/>
+
+        <!-- repair: back to the authoring stages, at most once per board -->
+        <path class="lr" d="M60 352 H42 V152 H110 V136" marker-end="url(#ar-r)"/>
+        <text class="cap cap-r" x="124" y="172">ONE AUTO-REVISION PER BOARD · RE-RUNS 01&ndash;04</text>
+
+        <!-- judgement: below everything, into the next run's 01 -->
+        <path class="lh" d="M600 396 V444 H22 V101 H56" marker-end="url(#ar-h)"/>
+        <text class="cap cap-h" x="300" y="436">JUDGEMENT STEERS THE NEXT RUN</text>
       </svg>
     </div>
 
     <div class="cols two">
-      <p class="note">Every agent is a <strong>pure function</strong> with a declared input and output schema. One module is the only writer of run artifacts. One module owns the only network call. The eight stages run unattended — <strong>no mid-pipeline human gates</strong> — and a person is involved only once a complete candidate board exists.</p>
-      <p class="note"><strong>Zero dependencies.</strong> No framework, no build step, no package in <code>package.json</code>. Tests use node's own runner. The schema validator is hand-written because the constraint demanded it — and that constraint is what produced the injectable transport seam that makes the whole pipeline testable offline.</p>
+      <p class="note">Every agent is a <strong>pure function</strong> with a declared input and output schema. One module is the only writer of run artifacts. One module owns the only network call. The nine stages run unattended, with <strong>no mid-pipeline human gates</strong>, and a person is involved only once a complete candidate board exists. Two agents sit off the line: the <strong>subject scout</strong>, because a static pool of 91 subjects had lapped twice, and the <strong>revision proposer</strong>, which proposes fixes and never authors them.</p>
+      <p class="note"><strong>Zero dependencies.</strong> No framework, no build step, no package in <code>package.json</code>. Tests use node's own runner. The schema validator is hand-written because the constraint demanded it, and that constraint is what produced the injectable transport seam that makes the whole pipeline testable offline. The dashed <strong>auto-revise</strong> step is the one place the machine may fix a board before a person sees it. What it is allowed to touch is Act IV.</p>
     </div>
   </div>
 </section>
@@ -399,15 +444,15 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 6 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">What went wrong</p>
+    <p class="kicker">Act II · What went wrong</p>
     <h2>A run died on arithmetic, and paid three times to find out.</h2>
     <div class="cols two">
       <div>
-        <p>The brief asked for <strong>8 pairs</strong>. A set is two pairs, so 8 is exactly four sets with zero slack. The grouper set aside two pairs as not belonging to any coherent set — leaving six pairs, so three sets. The builder needs four.</p>
+        <p>The brief asked for <strong>8 pairs</strong>. A set is two pairs, so 8 is exactly four sets with zero slack. The grouper set aside two pairs as not belonging to any coherent set, leaving six pairs, so three sets. The builder needs four.</p>
         <p>It refused rather than inventing one. That part was the guard working.</p>
         <div class="callout">
           <span class="lbl">The actual bug</span>
-          <p>8 pairs can only ever succeed if nothing is discarded — and grouping always discards.</p>
+          <p>8 pairs can only ever succeed if nothing is discarded, and grouping always discards.</p>
         </div>
       </div>
       <div>
@@ -416,7 +461,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <p class="note"><strong>$0.163</strong> to rediscover something knowable the moment stage 02 returned.</p>
         <h3 style="margin-top:1.4em">Fixed at three doors</h3>
         <ul class="plain">
-          <li><b>Supply.</b> The brief floor moved from 4 to 12 pairs, default 14 — enforced server-side, not just in the form.</li>
+          <li><b>Supply.</b> The brief floor moved from 4 to 12 pairs, default 14, enforced server-side and not just in the form.</li>
           <li><b>Self-correction.</b> The grouper must return four sets or fail validation, with its own set-aside list handed back to it.</li>
           <li><b>No blind re-roll.</b> A pool under four sets now fails immediately instead of entering the rebuild loop.</li>
         </ul>
@@ -428,7 +473,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 7 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">Making it affordable</p>
+    <p class="kicker">Act II · Making it affordable</p>
     <h2>$0.54 &rarr; $0.21 a run.</h2>
     <p class="lede">The diagnosis was not “use a cheaper model.”</p>
     <div class="scroll-x">
@@ -443,12 +488,13 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     </div>
     <div class="cols two">
       <div>
-        <p>Three stages were <strong>85% of cost and 84% of time</strong> — and on all three, <strong>91–94% of billed output was thinking rather than answer.</strong> The stages weren't too big. They were being asked to deliberate over work that didn't need deliberating.</p>
-        <p>The board builder's prompt had four jobs. One of them was <em>“prove no two sets could regroup into another valid analogy.”</em> That is combinatorial over sixteen words — and it was already being done exhaustively by the deterministic gate, for free, on every single run.</p>
+        <p>Three stages were <strong>85% of cost and 84% of time</strong>, and on all three, <strong>91–94% of billed output was thinking rather than answer.</strong> The stages weren't too big. They were being asked to deliberate over work that didn't need deliberating.</p>
+        <p>The board builder's prompt had four jobs. One of them was <em>“prove no two sets could regroup into another valid analogy.”</em> That is combinatorial over sixteen words, and it was already being done exhaustively by the deterministic gate, for free, on every single run.</p>
+        <p class="note">That number was true on August 5. It did not hold, and the reason it did not hold was a choice. Act VI.</p>
       </div>
       <div class="callout">
         <span class="lbl">The call that found it</span>
-        <p>Told the board builder was the expensive problem, Max pushed back: it only picks one analogy per tier, so it should be simple. He was right. The stage <em>was</em> simple — its prompt wasn't. Stop paying a model to prove what a deterministic check already proves.</p>
+        <p>Told the board builder was the expensive problem, Max pushed back: it only picks one analogy per tier, so it should be simple. He was right. The stage <em>was</em> simple; its prompt wasn't. Stop paying a model to prove what a deterministic check already proves.</p>
       </div>
     </div>
   </div>
@@ -457,11 +503,11 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 8 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">The limit</p>
+    <p class="kicker">Act III · The limit</p>
     <h2>The part that couldn't be delegated.</h2>
     <div class="cols two">
       <div>
-        <p>Every board was starting to feel the same. The corpus said why: <strong>~80% of all 284 pairs ever authored were the same relationship</strong> — one thing becomes or produces another.</p>
+        <p>Every board was starting to feel the same. The corpus said why: <strong>~80% of all 284 pairs ever authored were the same relationship</strong>, one thing becoming or producing another.</p>
         <p>The obvious next move was to write a taxonomy of relationship types from taste, and steer the pipeline with it.</p>
         <div class="callout">
           <span class="lbl">A measurement bug found on the way</span>
@@ -470,7 +516,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
       </div>
       <div>
         <blockquote class="quote">I can't be fully relied on to create a foundation for analogies because I am not an expert. I'm merely interested in playing them.</blockquote>
-        <p class="attrib">— Max, redirecting the project</p>
+        <p class="attrib">Max, redirecting the project</p>
         <p style="margin-top:1.4em">So the project didn't write one. It went and found one.</p>
       </div>
     </div>
@@ -480,11 +526,11 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 9 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">The fix</p>
+    <p class="kicker">Act III · The fix</p>
     <h2>Borrowed expertise beats invented expertise.</h2>
     <div class="cols two">
       <div>
-        <p><strong>Bejar, Chaffin &amp; Embretson (1991)</strong> — 10 families, 79 relation types, developed at ETS to classify GRE verbal analogy items, reachable through SemEval-2012 Task 2 under CC-BY.</p>
+        <p><strong>Bejar, Chaffin &amp; Embretson (1991)</strong>: 10 families, 79 relation types, developed at ETS to classify GRE verbal analogy items, reachable through SemEval-2012 Task 2 under CC-BY.</p>
         <p>Compiled into a controlled vocabulary the pipeline actually runs on: <strong>36 relation types and 8 stances</strong>, with a named failure mode on each, enforced at four separate doors.</p>
         <p class="note">Two of the game's locked decisions turned out to be independently validated by that literature: pair <strong>order</strong> matters (reversed pairs are marked as bad examples), and relation membership is <strong>graded</strong> rather than binary.</p>
       </div>
@@ -493,10 +539,10 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
           <h3>The honest audit</h3>
           <p style="margin-bottom:.6em">Mapping the existing corpus onto the taxonomy showed exactly how narrow it had been:</p>
           <ul class="plain">
-            <li>Family 8 — <em>cause &amp; purpose</em> — was roughly <b>80% of everything</b>.</li>
+            <li>Family 8, <em>cause &amp; purpose</em>, was roughly <b>80% of everything</b>.</li>
             <li>Families 1, 3, 5 and 6 had <b>never appeared at all</b>.</li>
           </ul>
-          <p class="note" style="margin:1em 0 0">A vocabulary you can count against turns a vague feeling — <em>“these all seem similar”</em> — into a number you can steer with.</p>
+          <p class="note" style="margin:1em 0 0">A vocabulary you can count against turns a vague feeling, <em>“these all seem similar”</em>, into a number you can steer with.</p>
         </div>
       </div>
     </div>
@@ -506,15 +552,15 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 10 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">The playtest</p>
+    <p class="kicker">Act III · The playtest</p>
     <h2>The taxonomy was right, and it didn't work.</h2>
     <div class="cols two">
       <div>
-        <p><strong>Round 1.</strong> A board built with one set from each of four <em>formally different</em> families. Played blind, it read as <em>“all the same — an object moving forward in time somehow.”</em> Three of the four tiers got demoted. The experiment invalidated its own design: formal diversity produced <strong>zero felt diversity</strong>, because every set still carried an <strong>arrow</strong> — a direction, a before and an after.</p>
+        <p><strong>Round 1.</strong> A board built with one set from each of four <em>formally different</em> families. Played blind, it read as <em>“all the same, an object moving forward in time somehow.”</em> Three of the four tiers got demoted. The experiment invalidated its own design: formal diversity produced <strong>zero felt diversity</strong>, because every set still carried an <strong>arrow</strong>: a direction, a before and an after.</p>
         <p><strong>Round 2.</strong> Blind again, board letters flipped, with an equally evocative control so the effect couldn't be a theme artefact. The mixed arrowed/arrowless board came back as <em>“the best puzzle yet… This is ASTO.”</em> The all-arrowed control was rejected with the effect named unprompted: <em>“another ‘arrow’ puzzle.”</em></p>
         <div class="callout">
           <span class="lbl">And then it was deliberately not made a law</span>
-          <p>Recorded as decision <strong>D-3</strong>, marked <strong>n=2, hypothesis not law</strong> at Max's own instruction — with a written trigger naming what would have to happen to overturn it. <em>“Let's make sure we don't view the revised principle as immutable.”</em></p>
+          <p>Recorded as decision <strong>D-3</strong>, marked <strong>n=2, hypothesis not law</strong> at Max's own instruction, with a written trigger naming what would have to happen to overturn it. <em>“Let's make sure we don't view the revised principle as immutable.”</em></p>
         </div>
       </div>
       <div>
@@ -540,17 +586,18 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 11 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">Measuring taste</p>
+    <p class="kicker">Act III · Measuring taste</p>
     <h2>The instrument couldn't say what he meant.</h2>
     <div class="cols two">
       <div>
-        <p>141 recorded judgements in, the corpus had a hole in it: <strong>21 of 79 tagged set-events said <code>reject-set</code> while carrying nothing but praise.</strong> The board-level button was stamping its verdict onto every set beneath it. Sets he had called <em>“a great green”</em> were logged as rejected — in the very corpus the editorial rubric would be compiled from.</p>
+        <p>141 recorded judgements in, the corpus had a hole in it: <strong>21 of 79 tagged set-events said <code>reject-set</code> while carrying nothing but praise.</strong> The board-level button was stamping its verdict onto every set beneath it. Sets he had called <em>“a great green”</em> were logged as rejected, in the very corpus the editorial rubric would be compiled from.</p>
         <p>His richest signal was never the chips at all. It was prose: <strong>103 written notes</strong>, 112 characters on average, carrying fix proposals 6&times;, emotion 10&times;, and cross-set comparison 14&times;.</p>
         <div class="callout">
           <span class="lbl">The rule the rebuild was designed around</span>
           <p>Board rejection means <em>the whole is unpublishable</em>. The sets still get honest, independent reads.</p>
         </div>
         <p class="note">Rebuilt: a tri-state board verdict with named blockers, per-set verdicts that are never inherited, a first-class <em>“how would you fix it?”</em> field, and a <code>formVersion</code> on everything, so two different instruments are never read as one population.</p>
+        <p class="note">This is the instrument every number in the rest of this deck comes from. It has since recorded <strong>726 feedback events across 109 judged boards</strong>, and <code>formVersion</code> is why the boards judged before the rebuild are never silently pooled with the ones after it.</p>
       </div>
       <div>
         <div class="card">
@@ -567,7 +614,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     </div>
     <figure class="shot screen crop" style="margin-top:22px">
       <img src="assets/feedback-form.png" alt="The rebuilt review form: a tri-state board verdict, blocked-by checkboxes, tags grouped under The Relationship, Difficulty, Fairness and The Board As A Whole, then an independent verdict and tier picker for each set.">
-      <figcaption>Board verdict and set verdicts, separated — and a tier picker so “this plays like a green” is a recordable judgement, not a note.</figcaption>
+      <figcaption>Board verdict and set verdicts, separated, plus a tier picker so “this plays like a green” is a recordable judgement rather than a note.</figcaption>
     </figure>
   </div>
 </section>
@@ -575,20 +622,20 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 12 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">The routing gap</p>
+    <p class="kicker">Act IV · Earning delegation</p>
     <h2>It had already found both defects.</h2>
-    <p class="lede">Two boards were rejected for two specific problems. The adversarial solver had flagged both of them — in almost the same words — and nothing carried that anywhere.</p>
+    <p class="lede">Two boards were rejected for two specific problems. The adversarial solver had flagged both of them, in almost the same words, and nothing carried that anywhere.</p>
     <div class="cols two">
       <div>
         <div class="finding">
-          <span class="sev">[medium] cross-set-association</span> — Museum, Louvre…
+          <span class="sev">[medium] cross-set-association</span> Museum, Louvre…
           <q>Louvre and Musée d'Orsay are themselves extremely famous museums</q>
         </div>
         <div class="finding">
-          <span class="sev">[high] unfair</span> — spy, alias, operative, cyanide pill
+          <span class="sev">[high] unfair</span> spy, alias, operative, cyanide pill
           <q>near-synonyms… stock spy-gear items</q>
         </div>
-        <p class="note">He was re-deriving by hand what the pipeline had already written down.</p>
+        <p class="note">He was re-deriving by hand what the pipeline had already written down. Everything in this act is an answer to that, and the answer took four attempts before it was allowed to touch a board.</p>
       </div>
       <div>
         <div class="card">
@@ -605,34 +652,25 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 13 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">How the AI was run</p>
-    <h2>Governed, not just used.</h2>
-    <p class="lede">Six decisions taken against the recommendation, or against the plan of record. Each is written down in the same shape: what was recommended, what was chosen and why, the risk accepted, and a concrete trigger for reconsidering.</p>
-    <div class="dec">
-      <div class="rec">
-        <span class="id">D-1</span>
-        <p>The board builder may label its hardest set Black even when the graded pool doesn't span all four tiers.</p>
-        <p class="trig"><strong>Risk accepted:</strong> that Black's difficulty is the builder's ranking, not independent judgement. <strong>Reconsider when:</strong> the rater starts returning 4s on its own, or the corpus shows promoted Blacks are consistently too easy.</p>
+    <p class="kicker">Act IV · Order, again</p>
+    <h2>Order is the game, so order has to be fair.</h2>
+    <p class="lede">A submission is never sorted, so the ordered claim is the claim. That turns an ambiguous order from a style note into a <strong>fairness bug</strong>.</p>
+    <div class="cols two">
+      <div>
+        <p>If <strong>A : B :: C : D</strong> reads exactly as truly backwards, the player is no longer solving the puzzle. They are guessing which direction the author happened to pick.</p>
+        <p class="analogy">seed : bud :: bloom : wilt</p>
+        <p class="note">The board that surfaced it: he had read the right half the other way round, got the four words correct, and lost a mistake to a coin flip. Three detectors were added across the pipeline to catch that shape before a player meets it.</p>
       </div>
-      <div class="rec">
-        <span class="id">D-3</span>
-        <p>The arrow finding — kept explicitly as a hypothesis at n=2, not promoted to a rule.</p>
-        <p class="trig"><strong>Reconsider when:</strong> a third or fourth board fails to reproduce it, or boards built under it draw the opposite complaint.</p>
-      </div>
-      <div class="rec">
-        <span class="id">D-5</span>
-        <p>The Revision Proposer proposes fixes and never authors them — deliberately not a pipeline stage, and it reads the human's judgement first, the evaluators' second.</p>
-        <p class="trig"><strong>Graduation trigger, written before the feature that would earn it:</strong> ~10 briefs with a recorded verdict. If they're accepted substantially unedited, propose a bounded auto-revise loop.</p>
-      </div>
-    </div>
-    <div class="cols two" style="margin-top:22px">
-      <ul class="plain">
-        <li><b>Two house rules broken on purpose</b>, each named with its own reconsider-trigger rather than quietly ignored.</li>
-        <li><b>A rule retired, never deleted.</b> An inherited rule turned out to forbid the sets rated best. Its wording is out of every prompt and a test proves it — but the rule and its history stay in the corpus.</li>
-      </ul>
-      <div class="card">
-        <h3>No permanent rule is silently created</h3>
-        <p class="note" style="margin:0">1 occurrence &rarr; keep it as an example. 3 similar &rarr; a possible pattern. 5 consistent &rarr; propose a rule to a human. Agents improve through external, versioned, inspectable memory — never by rewriting themselves.</p>
+      <div>
+        <ul class="plain">
+          <li><b>A cross-reading check</b> that names the relation each half declares, and may read either half in either direction.</li>
+          <li><b>A symmetry flag at the deterministic gate</b>, where reversing a pair costs nothing to test exhaustively.</li>
+          <li><b>The test player's <code>orderGuessed</code></b>, which records that it solved the words but had to guess the direction.</li>
+        </ul>
+        <div class="callout">
+          <span class="lbl">Signals, deliberately not gates</span>
+          <p>All three report and none of them can block. A wrong fix gets reviewed by a person; a wrong veto silently costs a good board, and nobody ever sees what was lost.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -641,43 +679,290 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <!-- 14 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">The honest list</p>
-    <h2>Things that were wrong.</h2>
-    <ul class="plain fails">
-      <li>A default of <b>8 pairs</b> that could never assemble a board, because grouping always discards.</li>
-      <li>Three builder retries against an <b>unchanged pool</b> — paying a model to resample and calling it a retry.</li>
-      <li><b>Highest-effort settings on two stages</b>, both walked back. One came back 16&times; faster and 11&times; cheaper with no quality loss.</li>
-      <li>An experiment that <b>invalidated its own design</b> — the board built to demonstrate diversity was the thing that proved the definition of diversity was wrong.</li>
-      <li>An inherited rule that <b>forbade the best sets</b> on the already-approved launch board.</li>
-      <li>A free-text <code>shape</code> field that made <b>40% of the corpus uncountable</b> and the diversity steering blind to it.</li>
-      <li>A <b>measurement error</b>: counting declared labels instead of the relationships actually built. Caught by Max, who had played the boards and knew the claim was false. The direction held; the method was invalid.</li>
-      <li>141 human judgements — the most expensive asset in the project — sitting on <b>one disk</b>, under a <code>.gitignore</code> of <code>*</code>.</li>
-      <li>Four verification runs swept into version control by a <code>git add -A</code>, carrying <b>feedback the AI had typed itself</b> to exercise the form. Synthetic judgement is indistinguishable from real judgement once it is in the file the rubric compiles from. Caught at wrap-up; all four removed.</li>
-    </ul>
+    <p class="kicker">Act IV · Steering</p>
+    <h2>An exclusion can only relocate the slot.</h2>
+    <p class="lede">Two prompt-authoring failures with the same root: a prompt teaches by example, and both of these taught the wrong thing.</p>
+    <div class="cols two">
+      <div>
+        <h3>The example that came back</h3>
+        <p>Stage 01 was <strong>reproducing its own prompt's teaching example</strong>, and a board built that way had already shipped before anyone noticed. A teaching example must not be shaped like the deliverable, so the example was demoted to a fragment no finished set could be copied from, and a test now proves no generative prompt quotes a complete set.</p>
+        <h3 style="margin-top:1.4em">The slot that would not move</h3>
+        <p>The hardest set had become a clock: <strong>time held 19 of 54 Blacks</strong>, 35% against 17% for the next stance. Max refused to publish an already-approved board over it.</p>
+        <blockquote class="quote" style="margin-top:1em">We def need to fix this.</blockquote>
+        <p class="attrib">Max, on a board the pipeline had passed</p>
+      </div>
+      <div>
+        <div class="callout">
+          <span class="lbl">Why the first fix failed</span>
+          <p>The first attempt forbade the clock. Usage barely moved, because <strong>an exclusion can only relocate the slot</strong>: forbid one well and the model simply finds the next one. A negative steer never says what you do want.</p>
+        </div>
+        <p style="margin-top:1.4em">The fix that worked was a <strong>positive, always-on ask</strong>: name the stance the hardest set should carry, vary it deliberately across runs, and say so at every stage that holds a lever rather than only at the first.</p>
+        <p class="note">When the next batch came back with its Blacks actually spread across reference, absence and inclusion, his entire note was one word.</p>
+        <p class="analogy" style="margin-top:.6em">FINALLY!</p>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- 15 ────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <p class="kicker">Where it stands</p>
-    <h2>Five days in.</h2>
+    <p class="kicker">Act IV · The graduation</p>
+    <h2>It caught them before he did.</h2>
+    <p class="lede">The machine is now allowed to fix a board before a person ever sees it. What it took to earn that, and what it still may not touch, are the same story.</p>
+    <div class="cols two" style="align-items:start">
+      <div>
+        <h3>How it earned it</h3>
+        <ul class="plain">
+          <li><b>The trigger was written before the feature.</b> D-5 said: about ten briefs with a recorded verdict, and if they are accepted substantially unedited, propose a bounded loop. That standard was set while there was still nothing to grade.</li>
+          <li><b>A revision had to be told what to revise.</b> Until then the channel carried a rejection but no target, so the pipeline re-rolled the board instead of fixing it. A re-roll is not a repair.</li>
+          <li><b>Then the evidence arrived.</b> Fourteen proposal verdicts are now on the record and <b>every one is accepted</b>.</li>
+          <li><b>And it caught all four.</b> On one batch the loop flagged every structural defect Max independently caught, before he saw the boards.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What it may not touch</h3>
+        <div class="callout">
+          <span class="lbl">The allowlist is the whole authority it has</span>
+          <p>Chosen explicitly by Max and revocable by him: the adversarial solver's <code>cross-set-association</code> at high severity, and the order-ambiguity cluster from the previous slide. Nothing else is read.</p>
+        </div>
+        <ul class="plain" style="margin-top:1.2em">
+          <li><b>Taste never triggers a revision.</b> Nothing from the analogy validator or the style guide is consulted at all.</li>
+          <li><b><code>knowledgeGated</code> is deliberately off the list.</b> A flag that names a wall without condemning a set must not trigger surgery, and the board it flagged was his best one.</li>
+          <li><b>One auto-revision per board</b>, inside the existing cap, never in addition to it. Never revise until clear.</li>
+        </ul>
+        <p class="note">If the fix still trips the allowlist, the board goes to him as it is, carrying both the findings and the diagnosis of the failed repair.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16 ────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="kicker">Act V · In public</p>
+    <h2>It has a front door.</h2>
+    <div class="cols wide-left">
+      <div>
+        <p class="lede">Shipped on <strong>August 13, 2026</strong> to <strong>playasto.com</strong>, tagged <code>v0.2.0-public</code>.</p>
+        <ul class="plain">
+          <li><b>The domain costs about $11 a year</b> and is the only recurring cost the project has. Hosting and the certificate are free, and the one hosted service it uses is a free tier.</li>
+          <li><b>The forced first-run tutorial was retired before sharing.</b> A front door that stops you is not a front door. The tutorial is still there, one tap away, for anyone who wants it.</li>
+          <li><b>The site says how the puzzles are made.</b> An About page, in the project's own words, states that the boards are AI-generated and human-approved.</li>
+        </ul>
+        <div class="callout">
+          <span class="lbl">Disclosure is owed, not a feature</span>
+          <p>Anyone can play a board without knowing a pipeline wrote it. That is exactly why the page exists, and why it is linked from the end screen as well as the homepage: a shared link goes straight to a board and never passes the front door.</p>
+        </div>
+      </div>
+      <figure class="shot phone">
+        <img src="assets/about.png" alt="The About page: the ASTO wordmark, then sections headed What this is, How the puzzles are made, and The process, stating that the puzzles are generated by an AI pipeline and that every published puzzle has been played and approved by Max.">
+        <figcaption>The disclosure, as a visitor meets it.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 17 ────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="kicker">Act V · What shipping changed</p>
+    <h2>The game started pulling on the pipeline.</h2>
+    <div class="cols wide-left">
+      <div>
+        <p class="lede">Before the ship, the pipeline decided what the game could be. After it, the game started specifying the pipeline.</p>
+        <ul class="plain">
+          <li><b>A hint button.</b> One free reveal, worn in its set's tier colour. Raised at breakfast, playtested and merged the same day.</li>
+          <li><b>A vocabulary button</b>, one authored definition for the board's hardest word. To have that definition, the pipeline <strong>grew a ninth stage</strong>. It is the only feature here that changed the diagram.</li>
+          <li><b>A hand editor.</b> Max fixes a board in place, with every save validated server-side and recorded as before-and-after signal. It discharged the last outstanding piece of a house rule the project had been deferring since the beginning.</li>
+        </ul>
+        <div class="callout">
+          <span class="lbl">The constraint that makes stage 09 interesting</span>
+          <p>The glossary author must define the word without leaking the set's relationship, and it is allowed to decline. A definition that gives the puzzle away is worse than no definition, so the stage's real job is being useful without spoiling.</p>
+        </div>
+      </div>
+      <figure class="shot phone">
+        <img src="assets/vocab.png" alt="A board mid-play with the vocabulary line revealed beneath it, defining mandrake as a forked, human-shaped root once believed to hold magical powers.">
+        <figcaption>Stage 09's output, as a footnote under the board.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 18 ────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="kicker">Act V · The first outside judgement</p>
+    <h2>A stranger rated a board.</h2>
+    <div class="cols two">
+      <div>
+        <p>An end-screen survey, three questions and a comment box, writing to the first hosted service the project has ever adopted. It is a free tier and it costs nothing.</p>
+        <p>Within hours of it going live, somebody who is not Max rated a board and left a note.</p>
+        <blockquote class="quote">loved the theme of this one</blockquote>
+        <p class="attrib">the first judgement in this project not made by its author</p>
+      </div>
+      <div>
+        <div class="callout">
+          <span class="lbl">What this is not</span>
+          <p><strong>n=1</strong>, from an instrument three days old. It is not validation and it is not traction. What changed is a category, not a score: the loop now has a door a stranger can put a judgement through.</p>
+        </div>
+        <p class="note" style="margin-top:1.2em">All <strong>726</strong> feedback events the pipeline is actually steered by are still his. Every claim in the previous act rests on one person's taste, and the machine was trained to catch what that one person catches.</p>
+        <figure class="shot screen crop" style="margin-top:1.2em">
+          <img src="assets/survey.png" alt="The end-screen survey: rows for Difficulty, Delight and Fairness each with four buttons, and a free-text box reading Anything else?">
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19 ────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="kicker">Act VI · The account</p>
+    <h2>Governed, not just used.</h2>
+    <p class="lede"><strong>Twenty-two numbered decisions</strong>, thirty records counting amendments, and <strong>426 decision events</strong> in the run corpus. Each decision is written down in the same shape: what was recommended, what was chosen and why, the risk accepted, and a concrete trigger for reconsidering it.</p>
+    <div class="dec">
+      <div class="rec">
+        <span class="id">D-3</span>
+        <p>The arrow finding, kept explicitly as a hypothesis at n=2 and not promoted to a rule.</p>
+        <p class="trig"><strong>Reconsider when:</strong> a third or fourth board fails to reproduce it, or boards built under it draw the opposite complaint.</p>
+      </div>
+      <div class="rec">
+        <span class="id">D-5</span>
+        <p>The Revision Proposer proposes fixes and never authors them: deliberately not a pipeline stage, and it reads the human's judgement first, the evaluators' second.</p>
+        <p class="trig"><strong>Graduation trigger, written before the feature that would earn it:</strong> ~10 briefs with a recorded verdict. If they're accepted substantially unedited, propose a bounded auto-revise loop. <strong>Cashed in Act IV.</strong></p>
+      </div>
+      <div class="rec">
+        <span class="id">D-14, second amendment</span>
+        <p>The auto-revision bound was counted per run. A revision that died on billing before running a single stage consumed the board's only shot, and a board carrying a defect three detectors had flagged reached him anyway.</p>
+        <p class="trig"><strong>Changed to:</strong> the unit is the board, not the run. A re-rolled board is a new board and is entitled to its own examination. A machine given authority also gets its bound tightened when the bound turns out to be wrong.</p>
+      </div>
+    </div>
+    <div class="cols two" style="margin-top:22px">
+      <ul class="plain">
+        <li><b>Two house rules broken on purpose</b>, each named with its own reconsider-trigger rather than quietly ignored.</li>
+        <li><b>A rule retired, never deleted.</b> An inherited rule turned out to forbid the sets rated best. Its wording is out of every prompt and a test proves it, but the rule and its history stay in the corpus.</li>
+      </ul>
+      <div class="card">
+        <h3>No permanent rule is silently created</h3>
+        <p class="note" style="margin:0">1 occurrence &rarr; keep it as an example. 3 similar &rarr; a possible pattern. 5 consistent &rarr; propose a rule to a human. Agents improve through external, versioned, inspectable memory, never by rewriting themselves.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 ────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="kicker">Act VI · The bill</p>
+    <h2>The money went back out on purpose.</h2>
+    <p class="lede">$0.21 a run was true on August 5. It is not true now.</p>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>Measure</th><th>August 5</th><th>Today</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td>Cost per run <span class="note">measured</span></td><td class="num">$0.2097</td><td class="num">~$1.38 <span class="note">avg since Aug 9</span></td><td class="num">6.6&times;</td></tr>
+          <tr><td>Pipeline stages</td><td class="num">8 agents</td><td class="num">9 agents, plus 2 off the line</td><td class="num">+1 stage</td></tr>
+          <tr><td><strong>Total spend</strong></td><td class="num">not tracked</td><td class="num"><strong>$108.17</strong> <span class="note">129 real-API runs</span></td><td class="num">&nbsp;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols two">
+      <div class="callout">
+        <span class="lbl">What the money bought</span>
+        <p>A ninth stage that writes the vocabulary definitions. The auto-revise loop, which spends a whole extra pass to hand a person a better board. Richer prompts carrying a controlled vocabulary and a corpus. A model upgrade on the two stages whose judgement turned out to matter most. Every one of those was chosen.</p>
+      </div>
+      <div>
+        <p>So the first cost slide is still true, and it is also the smaller half of the story. The optimization was real and the pipeline that got optimized no longer exists.</p>
+        <p class="note">The uncomfortable half: the slim-down lap that would reclaim some of this is written down, agreed, and still not run. Its trigger was <em>about ten judged boards under the new profile</em>. There are <strong>109</strong>. That is the same shape as the rubric on the closing slide, and two overdue triggers in the same project is a pattern rather than an excuse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 21 ────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="kicker">Act VI · The honest list</p>
+    <h2>Things that were wrong.</h2>
+    <p class="lede">Thirteen of them. The list grows with the deck on purpose: an act of mostly successful material was added, so the account of what went wrong had to grow with it.</p>
+    <div class="cols two">
+      <ul class="plain fails">
+        <li>A default of <b>8 pairs</b> that could never assemble a board, because grouping always discards.</li>
+        <li>Three builder retries against an <b>unchanged pool</b>, paying a model to resample and calling it a retry.</li>
+        <li><b>Highest-effort settings on two stages</b>, both walked back. One came back 16&times; faster and 11&times; cheaper with no quality loss.</li>
+        <li>An experiment that <b>invalidated its own design</b>. The board built to demonstrate diversity was the thing that proved the definition of diversity was wrong.</li>
+        <li>An inherited rule that <b>forbade the best sets</b> on the already-approved launch board.</li>
+        <li>A free-text <code>shape</code> field that made <b>40% of the corpus uncountable</b> and the diversity steering blind to it.</li>
+        <li>A <b>measurement error</b>: counting declared labels instead of the relationships actually built. Caught by Max, who had played the boards and knew the claim was false. The direction held; the method was invalid.</li>
+      </ul>
+      <ul class="plain fails">
+        <li>141 human judgements, the most expensive asset in the project, sitting on <b>one disk</b> under a <code>.gitignore</code> of <code>*</code>.</li>
+        <li>Four verification runs swept into version control by a <code>git add -A</code>, carrying <b>feedback the AI had typed itself</b> to exercise the form. Synthetic judgement is indistinguishable from real judgement once it is in the file the rubric compiles from. Caught at wrap-up; all four removed.</li>
+        <li>A revision channel that carried a rejection <b>but no target</b>, so the pipeline re-rolled the board instead of fixing it, for as long as revisions had existed.</li>
+        <li>Stage 01 <b>reproducing its own prompt's teaching example</b>, and a board built that way shipped before anyone noticed.</li>
+        <li>The Black slot was <b>a clock in 19 of 54 boards</b>, and the first fix, an exclusion, only moved the rut somewhere else.</li>
+        <li>An auto-revision bound counted <b>per run instead of per board</b>, so a revision that died on billing spent a board's only shot, and a board carrying a defect three detectors had flagged reached him anyway.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 22 ────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="kicker">Act VI · Measured again</p>
+    <h2>It asked a question the old one could not.</h2>
+    <p class="lede">A read-only tool re-runs any evaluator stage against any board already in the archive, so the <strong>agent is the only variable</strong>. Same board, same model, same effort, eleven days of prompt work in between.</p>
+    <div class="cols two">
+      <div>
+        <div class="finding">
+          <span class="sev">[Aug 5] the old stage 08</span>
+          <q>unity: strong</q>
+        </div>
+        <div class="finding">
+          <span class="sev">[Aug 16] the same stage today</span>
+          <q>evocativeness: strong</q>
+        </div>
+        <p class="note">The second answer is to a question the first version had <strong>no field for</strong>. The axis did not exist yet, so the old agent could not have been wrong about it. It could only be silent.</p>
+        <p class="note">Input is built by the pipeline's own stage-input builders, so a re-run cannot drift from a real run. It writes to the terminal and nowhere else: a re-run is commentary, never history.</p>
+      </div>
+      <div>
+        <div class="callout">
+          <span class="lbl">And it disagreed with him, out loud</span>
+          <p>Max had called that board <em>an absolute snooze</em>. Today's agent answered <strong>strong</strong>, and went on to praise the exact wording his own note had wanted sharpened. The disagreement was reported as it came back, unedited.</p>
+        </div>
+        <p style="margin-top:1.4em">That is the useful result, not the improvement. An evaluator that only ever agrees with you is not an instrument, it is a mirror. Across the whole archive the same axis has returned <em>generic</em> fourteen times, and every one of the fourteen carried a concrete replacement suggestion.</p>
+        <p class="note">The counterweight: one board, one stage, chosen by the person the machine was flattering. It measures that the agent changed. It does not measure that the agent is right.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 23 ────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="kicker">Act VI · August 16, 2026</p>
+    <h2>Shipped, and still unfinished.</h2>
     <div class="stats" style="margin-bottom:22px">
-      <div class="stat"><b>79</b><span>commits, across five days</span></div>
-      <div class="stat"><b>0</b><span>dependencies — no framework, no build step</span></div>
-      <div class="stat"><b>841</b><span>tests, zero failing</span></div>
-      <div class="stat"><b>40</b><span>pipeline runs — 13 approved, 15 rejected, 8 failed</span></div>
-      <div class="stat"><b>154</b><span>recorded judgements, every one human</span></div>
-      <div class="stat"><b>36 · 8</b><span>relation types and stances in the vocabulary</span></div>
+      <div class="stat"><b>48</b><span>boards published, live at playasto.com</span></div>
+      <div class="stat"><b>109</b><span>boards judged, every judgement human</span></div>
+      <div class="stat"><b>133</b><span>studio runs: 63 approved, 40 rejected, 16 failed</span></div>
+      <div class="stat"><b>1,439</b><span>tests passing, zero failing, still zero dependencies</span></div>
+      <div class="stat"><b>$108.17</b><span>total spend, across 129 real-API runs</span></div>
+      <div class="stat"><b>0</b><span>editorial rubrics compiled, against a plan that said thirty boards ago</span></div>
     </div>
     <div class="cols two">
       <div>
         <h3>Not finished</h3>
-        <p class="note">Phases 1–4 are complete and the game is playable end to end. Phase 5 is still in flight: <strong>five boards are live against a bar of ten</strong>, and the seam that carries an approved board out of the Studio and into the game only landed today. The editorial rubric this whole feedback loop exists to compile still doesn't exist — it wants roughly thirty judged boards, and the corpus isn't there yet.</p>
+        <p class="note">Phases 1 through 5 are complete and the game is live. Three things are not.</p>
+        <p class="note"><strong>The rubric does not exist.</strong> This entire feedback loop was built to compile one. The plan of record said compile it at roughly thirty judged boards, and there are 109. It is the oldest unpaid debt in the project and there is no good reason for it.</p>
+        <p class="note"><strong>The slim-down lap has not been run.</strong> A run costs about six and a half times what it cost on August 5. That was a choice; the reclaim is a choice that keeps not being made.</p>
+        <p class="note"><strong>One judgement in the corpus is not his.</strong> A stranger rated a board on August 13. Every other one of the 726 events steering this pipeline was recorded by the person who built it.</p>
       </div>
       <div>
         <h3>What transfers</h3>
-        <p class="note">Not the game. The habit of writing down what was decided and why, of naming the trigger that would change your mind before you need it, of keeping the failed experiment instead of the tidy summary — and of knowing which judgements are yours to make and which ones you should go and borrow from someone who actually knows.</p>
+        <p class="note">Not the game. The habit of writing down what was decided and why, of naming the trigger that would change your mind before you need it, of granting a machine authority only against evidence you wrote the standard for in advance, of keeping the failed experiment instead of the tidy summary, and of knowing which judgements are yours to make and which ones you should go and borrow from someone who actually knows.</p>
         <p class="end" style="margin-top:1.2em">Validity can be delegated and checked. Taste is the product.</p>
       </div>
     </div>
