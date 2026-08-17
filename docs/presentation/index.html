@@ -219,14 +219,14 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <div class="cols two">
       <div>
-        <p class="kicker">Act I · The game</p>
+        <p class="kicker">A word game, made solo</p>
         <h1>ASTO</h1>
-        <p class="lede" style="margin-bottom:1.2em">Connections, but with analogies. A 4&times;4 board of sixteen words hides four analogy sets.</p>
+        <p class="lede" style="margin-bottom:1.2em"><em>This is to that.</em> A word game about analogies, live at <a href="../../">playasto.com</a>.</p>
         <div class="callout">
-          <span class="lbl">What this is about</span>
-          <p>The game is the deliverable. The machine that authors it, and the governance around that machine, is the work.</p>
+          <span class="lbl">Who made this</span>
+          <p>I'm Max Rowe, and I made ASTO solo: the design, the code direction, the editorial judgement, all of it. One name on the credits means every decision in this deck is attributable, including the bad ones.</p>
         </div>
-        <p class="note" style="margin-top:1.2em">As of <strong>August 16, 2026</strong>. The game is live at <a href="../../">playasto.com</a>.</p>
+        <p class="note" style="margin-top:1.2em">As of <strong>August 16, 2026</strong>.</p>
       </div>
       <figure class="shot phone">
         <img src="assets/board.png" alt="The ASTO board: sixteen cream word tiles in a 4 by 4 grid on a warm background, with an empty analogy frame above.">
@@ -240,16 +240,16 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <div class="cols wide-left">
       <div>
-        <p class="kicker">Act I · The rules</p>
+        <p class="kicker">The game</p>
         <h2>Four words, in order.</h2>
-        <p class="lede">Tap four words to form <strong>A : B :: C : D</strong>, <em>seed is to tree as spark is to fire</em>, review the frame, press Confirm.</p>
+        <p class="lede">Connections, but with analogies: a 4&times;4 board of sixteen words hides four analogy sets. Tap four words to form <strong>A : B :: C : D</strong>, <em>seed is to tree as spark is to fire</em>, review the frame, press Confirm.</p>
         <ul class="plain">
-          <li><b>Order is the game.</b> A submission is never sorted. The ordered claim is the claim.</li>
+          <li><b>Order is the game.</b> A submission is never sorted. The ordered claim is the claim. Every rule below, and half the machinery in this deck, follows from that one choice.</li>
           <li><b>The fourth tap fills the frame without submitting.</b> You get to look at your own claim before you make it.</li>
           <li><b>“So close!”</b> (right four words, wrong order) costs a mistake and clears the selection. The penalty is also the hint.</li>
           <li><b>Repeating an identical failed guess is free.</b> Same words, same order, no charge. Different order is a new claim.</li>
-          <li><b>Cozy is a constraint, not a mood.</b> No timers, no confetti, no particles. Mistake pips are coffee beans and never red.</li>
         </ul>
+        <p class="note" style="margin-top:1.2em">If you arrived here from the game, this list is the part you couldn't see. If you haven't played yet, it takes one round to feel why order matters.</p>
       </div>
       <figure class="shot phone">
         <img src="assets/frame-filled.png" alt="The board with four tiles selected and the frame reading Seed : Tree :: Spark : Fire, with the Confirm button now active.">
@@ -264,7 +264,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <div class="cols wide-right">
       <div>
-        <p class="kicker">Act I · The fantasy</p>
+        <p class="kicker">The feel</p>
         <h2>Recognition, not speed.</h2>
         <p>The puzzle is not <em>“which words are similar?”</em> It is <em>“what relationship repeats across these pairs?”</em></p>
         <p>Four sets, four difficulty tiers. Tiers are revealed on solve and never shown on the live board, so the difficulty is something you discover, not something you're warned about.</p>
@@ -272,8 +272,9 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
           <span class="chip g">GREEN</span><span class="chip y">YELLOW</span>
           <span class="chip r">RED</span><span class="chip k">BLACK</span>
         </div>
-        <p class="analogy">Seed : Tree :: Spark : Fire</p>
-        <p class="note">Lose on the fourth mistake. The loss screen reveals every unsolved set <em>with its explanation</em>, so you always find out what you missed.</p>
+        <p><strong>Cozy is a constraint, not a mood.</strong> No timers, no confetti, no particles. Mistake pips are coffee beans and never red. Lose on the fourth mistake and the loss screen reveals every unsolved set <em>with its explanation</em>, so you always find out what you missed.</p>
+        <p>I declared the taste bar on day one, not once the pipeline made it necessary: it is not enough for a set to be valid, it has to feel like something. That standard has a name later in this deck, and a machine gets graded against it.</p>
+        <p class="note">This deck is how ASTO was made. <a href="../asto-gdd.html">The game design document</a> (v0.13, living) is what it was meant to be. They are companion reads.</p>
       </div>
       <figure class="shot phone">
         <img src="assets/win.png" alt="The win screen listing all four solved sets with their tier badges, analogies and explanations.">
@@ -285,6 +286,40 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 
 <!-- 4 ────────────────────────────────────────────── -->
 <section>
+  <div class="wrap">
+    <p class="kicker">The goals</p>
+    <h2>What I set out to do.</h2>
+    <p class="lede" style="margin-bottom:1.4em">Two goals, named up front. Every slide after this one is evidence toward one of them.</p>
+    <div class="cols two" style="align-items:start">
+      <div class="card">
+        <h3>Ship a real game that carries a feeling</h3>
+        <p style="max-width:none">Not a demo. A finished, public word game with a specific character: cozy, unhurried, built on recognition. A puzzle had to clear an emotional bar, not just a validity check, and I wanted strangers to be able to play it at a real address.</p>
+      </div>
+      <div class="card">
+        <h3>Learn to build it with AI</h3>
+        <p style="max-width:none">Two distinct learnings, deliberately taken on together: building production software through AI tools as a non-programmer, and designing an agentic pipeline that authors content to a taste it does not hold itself.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 ────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="kicker">Contents</p>
+    <h2>Where to jump.</h2>
+    <p class="lede" style="margin-bottom:1.4em">The deck reads front to back, but nothing stops you from going straight to the part you care about.</p>
+    <ul class="plain">
+      <li><a href="#method"><b>The method</b></a>: how a non-programmer ships tested software with AI, and the pipeline it produced.</li>
+      <li><a href="#lessons"><b>What I learned</b></a>: four lessons about expertise, taste, delegation and measurement.</li>
+      <li><a href="#wrong"><b>What went wrong</b></a>: the honest list. It grows with the project on purpose.</li>
+      <li><a href="#game"><b>The game, live</b></a>: what shipped, what the numbers are, and the invitation to play it.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 6 ────────────────────────────────────────────── -->
+<section id="method">
   <div class="wrap">
     <p class="kicker">Act II · The machine</p>
     <h2>A working pipeline, retired on purpose.</h2>
@@ -501,7 +536,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 </section>
 
 <!-- 8 ────────────────────────────────────────────── -->
-<section>
+<section id="lessons">
   <div class="wrap">
     <p class="kicker">Act III · The limit</p>
     <h2>The part that couldn't be delegated.</h2>
@@ -738,7 +773,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 </section>
 
 <!-- 16 ────────────────────────────────────────────── -->
-<section>
+<section id="game">
   <div class="wrap">
     <p class="kicker">Act V · In public</p>
     <h2>It has a front door.</h2>
@@ -881,7 +916,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 </section>
 
 <!-- 21 ────────────────────────────────────────────── -->
-<section>
+<section id="wrong">
   <div class="wrap">
     <p class="kicker">Act VI · The honest list</p>
     <h2>Things that were wrong.</h2>
