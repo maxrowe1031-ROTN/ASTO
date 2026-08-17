@@ -250,11 +250,11 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <div class="cols two" style="align-items:start">
       <div class="card">
         <h3>Ship a real game that carries a feeling</h3>
-        <p style="max-width:none">Not a demo. A finished, public word game with a specific character: cozy, unhurried, built on recognition. A puzzle had to clear an emotional bar, not just a validity check, and I wanted strangers to be able to play it at a real address.</p>
+        <p style="max-width:none">Not a demo. A finished, public word game with a specific character: cozy, unhurried, built on recognition. Every puzzle had to clear an emotional bar, not just a validity check, and strangers had to be able to play it at a real address.</p>
       </div>
       <div class="card">
         <h3>Learn to build it with AI</h3>
-        <p style="max-width:none">Two distinct learnings, deliberately taken on together: building production software through AI tools as a non-programmer, and designing an agentic pipeline that authors content to a taste it does not hold itself.</p>
+        <p style="max-width:none">Two distinct learnings: building production software through AI tools as a non-programmer, and designing an agentic pipeline that authors content to a taste it does not hold itself.</p>
       </div>
     </div>
   </div>
@@ -265,7 +265,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <p class="kicker">The idea</p>
     <h2>Where to jump.</h2>
-    <p class="lede" style="margin-bottom:1.4em">The deck reads front to back, but nothing stops you from going straight to the part you care about.</p>
+    <p class="lede" style="margin-bottom:1.4em">The deck reads front to back; the jumps work too.</p>
     <ul class="plain">
       <li><a href="#game"><b>The game</b></a>: what ASTO is, and the feel it had to carry.</li>
       <li><a href="#method"><b>The method</b></a>: why an agentic pipeline, how a non-programmer ships tested software with AI, the machine it produced, and the studio where every board meets its editor.</li>
@@ -285,12 +285,12 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <h2>Four words, in order.</h2>
         <p class="lede">Connections, but with analogies: a 4&times;4 board of sixteen words hides four analogy sets. Tap four words to form <strong>A : B :: C : D</strong>, <em>seed is to tree as spark is to fire</em>, review the frame, press Confirm.</p>
         <ul class="plain">
-          <li><b>The whole board is the theme; each analogy holds a different relationship.</b> The challenge is finding the relationships through sixteen similar-themed words that all seem to belong together.</li>
+          <li><b>The whole board is the theme; each analogy holds a different relationship.</b> The challenge is finding the relationships through words that all seem to belong together.</li>
           <li><b>Order is the game.</b> A submission is never sorted. The ordered claim is the claim (a true reading is accepted even when it isn't the stored one). Half the machinery in this deck follows from that one choice.</li>
           <li><b>The fourth tap fills the frame without submitting.</b> You get to look at your own claim before you make it.</li>
           <li><b>“So close!”</b> (right four words, wrong order) costs a mistake and clears the selection. The penalty is also the hint. Repeating an identical failed guess is free; a different order is a new claim.</li>
         </ul>
-        <p class="note" style="margin-top:1.2em">If you arrived here from the game, this list is the part you couldn't see. If you haven't played yet, it takes one round to feel why order matters.</p>
+        <p class="note" style="margin-top:1.2em">If you arrived from the game, this is the part you couldn't see. If you haven't played, one round makes it click.</p>
       </div>
       <figure class="shot phone">
         <img src="assets/frame-filled.png" alt="The board with four tiles selected and the frame reading Seed : Tree :: Spark : Fire, with the Confirm button now active.">
@@ -308,7 +308,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <p class="kicker">The feel</p>
         <h2>Recognition, not speed.</h2>
         <p>The puzzle is not <em>“which words are similar?”</em> It is <em>“what relationship repeats across these pairs?”</em></p>
-        <p>Four sets, four difficulty tiers. Tiers are revealed on solve and never shown on the live board, so the difficulty is something you discover, not something you're warned about.</p>
+        <p>Four sets, four difficulty tiers, revealed on solve and never shown on the live board: difficulty is discovered, not warned about.</p>
         <div class="chips">
           <span class="chip g">GREEN</span><span class="chip y">YELLOW</span>
           <span class="chip r">RED</span><span class="chip k">BLACK</span>
@@ -329,7 +329,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <p class="kicker">The method</p>
     <h2>Why an agentic pipeline.</h2>
-    <p class="lede">A puzzle game is hungry. The design needs a steady supply of boards that all clear the same bar, and I wanted the making of them to be the thing I learned.</p>
+    <p class="lede">A puzzle game is hungry: it needs a steady supply of boards that all clear the same bar. AI could generate that scale. Generation alone was nowhere near trustworthy enough to publish.</p>
     <div class="cols two">
       <div>
         <p><strong>One model call can't hold the job.</strong> A publishable board has to satisfy sixteen unique words, one set per difficulty tier, four distinct relationship types, no accidental cross-set groupings, fair ordering, and a theme that feels like something. Asked for all of that at once, a model quietly trades constraints away and nobody can say which step failed.</p>
@@ -339,7 +339,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
       <div>
         <blockquote class="quote">The intuition going in was that generating good pairs is the difficult part and assembling them is bookkeeping. That is backwards.</blockquote>
         <p class="attrib">from my first pipeline's lessons-learned</p>
-        <p class="note" style="margin-top:1.2em">I learned that the hard way: my first version was a five-agent Python crew, and it worked. I retired it anyway and rebuilt inside the game's own repo, where the pipeline imports the game's own validators directly. One schema, no drift between the thing that writes the puzzles and the thing that plays them.</p>
+        <p class="note" style="margin-top:1.2em">My first version was a five-agent Python crew, and it worked. I retired it anyway and rebuilt inside the game's own repo, importing the game's own validators: one schema, no drift between the thing that writes the puzzles and the thing that plays them.</p>
       </div>
     </div>
   </div>
@@ -352,17 +352,13 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <h2>Tests are how I read code.</h2>
     <p class="lede">I'm not a programmer by training. I direct the code rather than write it, and that only works if trust never depends on my ability to eyeball a diff.</p>
     <div class="cols two" style="align-items:start">
-      <ul class="plain">
-        <li><b>Every session starts and ends the same way.</b> A warmup that re-reads the plan, the log and the open decisions; a wrapup that verifies, records and merges. The repo carries its own memory, so no session depends on mine.</li>
-        <li><b>Documentation is part of the codebase.</b> A build plan where every decision records what was recommended, what I chose, the risk I accepted, and the trigger for changing my mind. A dev log where every entry says what was verified.</li>
-        <li><b>Verified states only.</b> Implementation rides work branches; the main branch only ever holds states that passed the full gate, so any point in its history is a safe place to roll back to.</li>
-      </ul>
+      <p>The discipline is boring on purpose. Every session opens by re-reading the plan and closes by verifying and recording. Every decision is written down with the trigger that would reverse it. The main branch only ever holds verified states, so any point in its history is a safe rollback. The repo carries its own memory; nothing depends on mine.</p>
       <div>
         <div class="stats" style="grid-template-columns:1fr 1fr">
           <div class="stat"><b>1,440</b><span>tests passing, zero failing, on the platform's own test runner</span></div>
           <div class="stat"><b>0</b><span>dependencies: no framework, no build step, nothing in package.json</span></div>
         </div>
-        <p class="note" style="margin-top:1.2em">The suite is the mechanism that makes this whole approach viable: it is what turns <em>“it works”</em> from a feeling into a fact I can check without reading the diff. Nothing ships on my confidence.</p>
+        <p class="note" style="margin-top:1.2em">The suite turns <em>“it works”</em> from a feeling into a fact I can check. Nothing ships on my confidence.</p>
       </div>
     </div>
   </div>
@@ -519,8 +515,8 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <p class="kicker">The method</p>
     <h2>Judgement needed a room of its own.</h2>
     <div class="cols two">
-      <p class="note">The pipeline only makes candidates. What made the game possible is the other half: a local <strong>Review Studio</strong> where every board meets its editor. I start runs there, play the candidate exactly as a player would, and read each agent's report beside the thing it judged. The feedback form lives there too: all <strong>726 judgements</strong> that tune the agents were recorded in that room, and approving a board publishes it through the same validators the game itself loads.</p>
-      <p class="note">It grew with the project: first review and publish, then the player-ratings panel, then a hand editor where I fix a board in place, every save validated server-side and recorded as before-and-after signal. And it keeps the architecture honest: the Studio reads state only through the core's public queries and changes it only through commands. If it couldn't be built through those seams, that would be the architecture's failure, not the Studio's.</p>
+      <p class="note">The pipeline only makes candidates. The other half is a local <strong>Review Studio</strong> where every board meets its editor: I start runs there, play the candidate exactly as a player would, and read each agent's report beside the thing it judged. All <strong>726 judgements</strong> that tune the agents were recorded in that room, and approving a board publishes it through the same validators the game loads.</p>
+      <p class="note">It grew with the project: first review and publish, then a player-ratings panel, then a hand editor where I fix a board in place, every save validated and recorded as before-and-after signal. Judgement becomes data here, and nothing publishes without me.</p>
     </div>
     <figure class="shot screen crop" style="margin-top:8px">
       <img src="assets/studio-review.png" alt="The Review Studio's review page for an approved run: Play this board and Edit this board buttons, the style guide's unity and evocativeness readings, the sixteen-tile candidate board, and per-set cards carrying tier chips, relationship lines and taxonomy annotations.">
@@ -534,7 +530,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <p class="kicker">The method</p>
     <h2>The model has limits. The agents were redesigned around them.</h2>
-    <p class="lede">The pipeline's early failures were not prompt problems. They were me learning what a model structurally cannot do. Four principles came out of them, each paid for by a real dead run.</p>
+    <p class="lede">The early failures were not prompt problems; they were lessons in what a model structurally cannot do. Four principles, each paid for by a real dead run.</p>
     <ul class="plain" style="max-width:none">
       <li><b>Judgement gets slack.</b> A brief that supplies exactly enough pairs makes discarding a weak one fatal, so every brief now leaves room to discard, enforced at every door.</li>
       <li><b>Retries step the effort down, not just up.</b> When an agent's <em>thinking</em> overruns its output ceiling, the retry lowers the deliberation budget instead of raising the ceiling. A theme that had died completed on the first down-stepped retry.</li>
@@ -554,7 +550,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <p>Every board was starting to feel the same, and the corpus said why: <strong>~80% of all 284 pairs ever authored were the same relationship</strong>, one thing becoming or producing another. The obvious next move was to write my own taxonomy of relationship types from taste, and steer the pipeline with it.</p>
         <blockquote class="quote">I can't be fully relied on to create a foundation for analogies because I am not an expert. I'm merely interested in playing them.</blockquote>
         <p class="attrib">the note where I stopped myself</p>
-        <p style="margin-top:1.4em">So I didn't write one. I went and found one: <strong>Bejar, Chaffin &amp; Embretson (1991)</strong>, 10 families and 79 relation types, developed at ETS to classify GRE verbal analogy items, reachable through SemEval-2012 under CC-BY. I compiled it into a controlled vocabulary the pipeline actually runs on: <strong>36 relation types and 8 stances</strong>, each with a named failure mode, enforced at four separate doors.</p>
+        <p style="margin-top:1.4em">So I didn't write one. I went and found one: <strong>Bejar, Chaffin &amp; Embretson (1991)</strong>, developed at ETS to classify GRE verbal analogy items, and compiled it into a controlled vocabulary the pipeline actually runs on and is checked against.</p>
       </div>
       <div>
         <div class="card">
@@ -566,7 +562,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
           </ul>
           <p class="note" style="margin:1em 0 0">A vocabulary you can count against turns a vague feeling, <em>“these all seem similar”</em>, into a number you can steer with.</p>
         </div>
-        <p class="note" style="margin-top:1.2em">Two of the game's earliest locked decisions turned out to be independently validated by that literature: pair <strong>order</strong> matters, and relation membership is <strong>graded</strong> rather than binary. The instincts were right. The framework still had to be borrowed.</p>
+        <p class="note" style="margin-top:1.2em">The literature even validated two of the game's earliest instincts, and the framework still had to be borrowed.</p>
       </div>
     </div>
   </div>
@@ -615,7 +611,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
           <p class="spec-rel">the one thing it can never have</p>
           <p class="note" style="margin:1em 0 0">The green points somewhere: a creature and what it emits. The black points nowhere at all, and it is the set this game exists for. One arrowed, one arrowless. The mix is the finding.</p>
         </div>
-        <p class="note" style="margin-top:1.2em"><strong>How taste gets measured at all:</strong> the feedback form itself had to be rebuilt around how I actually judge. Its quick tags were compiled from my own prose notes (the four judgements I kept writing because no tag carried them became tags), and board verdicts were separated from set verdicts so rejecting a board never silently rejects a set I praised. It has recorded <strong>726 judgements across 109 boards</strong>, and every number in this deck rests on it.</p>
+        <p class="note" style="margin-top:1.2em"><strong>How taste gets measured at all:</strong> the feedback form was rebuilt around how I actually judge, its tags compiled from my own prose notes and board verdicts separated from set verdicts. Every number in this deck rests on that instrument.</p>
       </div>
     </div>
   </div>
@@ -629,7 +625,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <p class="lede">The machine is allowed to fix a board before I ever see it. It earned that authority against a standard I wrote before the feature existed, and the bound on it is the interesting part.</p>
     <div class="cols two" style="align-items:start">
       <div>
-        <p>The case for it was already in my own rejections: I rejected two boards for two specific defects, then found the adversarial solver had flagged both, in almost the same words, with nothing routing its findings anywhere. I was re-deriving by hand what the pipeline had already written down.</p>
+        <p>I rejected two boards for two specific defects, then found the adversarial solver had already flagged both, in almost the same words, with nothing routing its findings anywhere. I was re-deriving by hand what the pipeline had written down.</p>
         <div class="finding">
           <span class="sev">[medium] cross-set-association</span> Museum, Louvre…
           <q>Louvre and Musée d'Orsay are themselves extremely famous museums</q>
@@ -645,11 +641,10 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
       </div>
       <div>
         <div class="callout">
-          <span class="lbl">The allowlist is the whole authority it has</span>
-          <p>Chosen explicitly by me and revocable by me: the adversarial solver's cross-set findings at high severity, and the order-ambiguity cluster. Nothing else is read. <strong>Taste never triggers a revision</strong>, one auto-revision per board, and if the fix still trips the allowlist the board comes to me as it is, carrying the findings and the diagnosis of the failed repair.</p>
+          <span class="lbl">Three zones, drawn in advance</span>
+          <p>Deterministic checks are automated outright. AI revision runs only on an allowlist <strong>chosen by me and revocable by me</strong>: cross-set findings at high severity and the order-ambiguity cluster, nothing else, one auto-revision per board. <strong>Taste never triggers a revision.</strong> A failed repair sends the board to me carrying both the findings and the diagnosis.</p>
         </div>
-        <p style="margin-top:1.2em"><strong>Order fairness is the allowlist's other half.</strong> A submission is never sorted, so an analogy that reads as truly backwards (<em>seed : bud :: bloom : wilt</em>, where I lost a mistake to a coin flip) is a fairness bug, not a style note. Three detectors now catch that shape: a cross-reading check, a symmetry flag at the deterministic gate, and the test player recording when it had to guess a direction.</p>
-        <p class="note">All three report and none can block. A wrong fix gets reviewed by a person; a wrong veto silently costs a good board, and nobody ever sees what was lost. Signals, deliberately not gates.</p>
+        <p style="margin-top:1.2em"><strong>Order fairness is the allowlist's other half.</strong> An analogy that reads as truly backwards (<em>seed : bud :: bloom : wilt</em>, where I lost a mistake to a coin flip) is a fairness bug, not a style note, and three detectors now catch that shape. All three report and none can block: a wrong fix gets reviewed by a person, but a wrong veto silently costs a good board. Signals, deliberately not gates.</p>
       </div>
     </div>
   </div>
@@ -671,8 +666,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
           <span class="sev">[Aug 16] the same stage today</span>
           <q>evocativeness: strong</q>
         </div>
-        <p>The second answer is to a question the first version had no field for. The axis did not exist yet, so the old agent could not have been wrong about it. It could only be silent. That axis exists because of a hole my own judgements kept falling through.</p>
-        <p class="note">Across the whole archive the new axis has returned <em>generic</em> fourteen times, and every one of the fourteen carried a concrete replacement suggestion. The re-run tool itself writes to the terminal and nowhere else: a re-run is commentary, never history.</p>
+        <p>The second answer is to a question the first version had no field for. The axis did not exist yet, so the old agent could not have been wrong about it. It could only be silent.</p>
       </div>
       <div>
         <div class="callout">
@@ -691,13 +685,11 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <p class="kicker">What went wrong</p>
     <h2>Things that were wrong.</h2>
-    <p class="lede">The full list in the project log runs to thirteen items and grows with the project on purpose: keeping it is a method, not a confession. These are the ones that taught me the most.</p>
+    <p class="lede">The full list in the project log runs to thirteen items and grows with the project on purpose: keeping it is a method, not a confession. Three of them, chosen for what they teach.</p>
     <ul class="plain fails" style="max-width:none">
-      <li><b>The experiment that invalidated its own design.</b> The board I built to demonstrate diversity was the thing that proved my definition of diversity was wrong.</li>
+      <li><b>The teaching example that shipped.</b> Stage 01 was reproducing its own prompt's example, and a board built that way went live before anyone noticed. Generative systems reproduce their own scaffolding; a test now proves no generative prompt quotes a complete set.</li>
       <li><b>The synthetic-feedback near-miss.</b> Four verification runs, carrying feedback an AI had typed to exercise the form, were swept into version control by a <code>git add -A</code>. Synthetic judgement is indistinguishable from real judgement once it is in the file the editorial rubric compiles from. Caught at wrap-up; all four removed.</li>
       <li><b>The recurring scar, named as this project's signature failure:</b> a rule enforced at one door and not the one downstream. A pair floor added to the form and not the CLI. A quota checked at the wrong granularity. Evaluator findings produced and never routed. Each one individually reasonable; together, a pattern worth having a name for.</li>
-      <li><b>The teaching example that shipped.</b> Stage 01 was reproducing its own prompt's example, and a board built that way went live before anyone noticed. A test now proves no generative prompt quotes a complete set.</li>
-      <li><b>The uncountable corpus.</b> One free-text field made 40% of the pair corpus impossible to count, so the diversity steering ran blind on nearly half its data. I only found it because I went to measure something else.</li>
     </ul>
   </div>
 </section>
@@ -736,20 +728,18 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <p class="kicker">Forward</p>
     <h2>Shipped, and still unfinished.</h2>
+    <p class="note" style="margin-bottom:1.6em">As of August 17, 2026 · <a href="../../">playasto.com</a> · <a href="../asto-gdd.html">the game design document</a></p>
     <div class="cols two">
       <div>
-        <h3>The open loop, named</h3>
-        <p class="note"><strong>The editorial rubric does not exist yet.</strong> The entire feedback loop was built to compile one; the plan of record said thirty judged boards, and there are 109. It is the oldest unpaid debt in the project, and I would rather name it here than have this deck imply it is done.</p>
-        <h3 style="margin-top:1.4em">Where this goes next</h3>
-        <p class="note"><strong>Relics of the Nine</strong>, my systems-driven roguelike, is the next project this workflow gets pointed at. The pattern that transfers is the machine's shape: generator, validators, an adversarial check, and a human editor whose taste is the standard everything is measured against.</p>
+        <p class="note"><strong>The open loop, named:</strong> the editorial rubric does not exist yet. The plan said thirty judged boards; there are 109. I would rather name the debt than have this deck imply it is done.</p>
+        <p class="note" style="margin-top:1.2em"><strong>Where this goes next:</strong> <strong>Relics of the Nine</strong>, my systems-driven roguelike, is the next project this workflow gets pointed at. What transfers is the machine's shape: generator, validators, an adversarial check, and a human editor whose taste is the standard.</p>
       </div>
       <div>
         <h3>What transfers</h3>
         <p class="note">Not the game. The habit of writing down what was decided and why, of naming the trigger that would change my mind before I need it, of granting a machine authority only against evidence I wrote the standard for in advance, of keeping the failed experiment instead of the tidy summary, and of knowing which judgements are mine to make and which ones to go and borrow from someone who actually knows.</p>
-        <p class="end" style="margin-top:1.2em">Validity can be delegated and checked. Taste is the product.</p>
+        <p class="end" style="margin-top:1.6em">Validity can be delegated and checked. Taste is the product.</p>
       </div>
     </div>
-    <p class="note" style="margin-top:22px">As of August 17, 2026 · <a href="../../">playasto.com</a> · <a href="../asto-gdd.html">the game design document</a></p>
   </div>
 </section>
 

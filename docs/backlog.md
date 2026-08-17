@@ -421,6 +421,12 @@
   verdict and no proposal, and re-running the proposer by hand produced a good brief on the
   first try — so whatever happened the first time is unknowable by construction. A one-line
   failure artifact on the null path would close it.
+- **A deep-dive appendix for the deck's cut material (2026-08-18, deferred from the v2
+  compression pass at Max's call).** The v2 editing plan's Pass 5 wanted cut material
+  (workflow rituals, instrument mechanics, the two dropped failures, order-fairness
+  detail) preserved on public pages under `docs/` with "deeper dive" links from the
+  slides. Deferred: it is a new public surface that can go stale. The material survives
+  in docs/design.md, docs/log.md and git history meanwhile.
 - **The deck's claimed counts have no guard (2026-08-17, restating the 2026-08-16 note
   below now that the deck is public).** The portfolio deck states 1,440 tests, 48 boards,
   133 runs and 726 feedback events as of August 17; every one will drift. The cheap
