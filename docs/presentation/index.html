@@ -202,6 +202,12 @@ ul.plain li b{font-weight:800}
 .diagram{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 0 14px}
 .diagram svg{display:block; min-width:760px; width:100%; height:auto}
 
+/* specimen sets, rendered in the game's own tile vocabulary */
+.spec{display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:10px 0 4px}
+.spec .tile{background:var(--milk); border:1px solid var(--taupe); border-radius:8px; padding:5px 10px; font-weight:800; font-size:.85rem; color:var(--ink); box-shadow:0 1px 2px rgba(64,52,42,.06)}
+.spec .op{color:var(--faint-ink); font-weight:800; font-size:.9rem}
+.spec-rel{font-size:.82rem; font-style:italic; color:var(--soft-ink); margin:4px 0 0}
+
 .analogy{font-family:var(--font-display); font-size:clamp(1.1rem,3vw,1.6rem); color:var(--tier-green-deep); margin:0}
 .note{font-size:.88rem; color:var(--soft-ink); max-width:62ch}
 .end{font-family:var(--font-display); font-size:clamp(1.2rem,3vw,1.75rem); line-height:1.35; max-width:34ch; margin:0 0 .5em}
@@ -280,8 +286,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
         <p class="lede">Connections, but with analogies: a 4&times;4 board of sixteen words hides four analogy sets. Tap four words to form <strong>A : B :: C : D</strong>, <em>seed is to tree as spark is to fire</em>, review the frame, press Confirm.</p>
         <ul class="plain">
           <li><b>The whole board is the theme; each analogy holds a different relationship.</b> The challenge is finding the relationships through sixteen similar-themed words that all seem to belong together.</li>
-          <li><b>Order is the game.</b> A submission is never sorted. The ordered claim is the claim. Half the machinery in this deck follows from that one choice.</li>
-          <li><b>A true reading wins, not the stored one.</b> A solution stored as <strong>A : B :: C : D</strong> is accepted four ways (A:B::C:D, C:D::A:B, B:A::D:C, D:C::B:A), because the analogy stays true when both sides swap or both relationships reverse. Cross-pair orders like A:C::B:D are not accepted, and on a correct non-canonical claim the tiles reorder to the stored form as the set locks.</li>
+          <li><b>Order is the game.</b> A submission is never sorted. The ordered claim is the claim (a true reading is accepted even when it isn't the stored one). Half the machinery in this deck follows from that one choice.</li>
           <li><b>The fourth tap fills the frame without submitting.</b> You get to look at your own claim before you make it.</li>
           <li><b>“So close!”</b> (right four words, wrong order) costs a mistake and clears the selection. The penalty is also the hint. Repeating an identical failed guess is free; a different order is a new claim.</li>
         </ul>
@@ -494,24 +499,15 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
       </svg>
     </div>
 
-    <p class="note" style="margin-bottom:1em">Every agent is a <strong>pure function</strong> with a declared input and output schema, and each one has exactly one job. The run is unattended: I'm only involved once a complete candidate board exists.</p>
     <div class="cols two" style="align-items:start">
+      <div>
+        <p class="note">Every agent is a <strong>pure function</strong> with a declared input and output schema, and each one has exactly one job. The run is unattended: I'm only involved once a complete candidate board exists. The diagram is the tour; three stops deserve a word.</p>
+        <p class="note">The <strong>revision proposer</strong> reads my feedback and drafts the fix brief: it proposes, never authors. <strong>Auto-revise</strong> is the one bounded repair the machine may make before I see a board, only on findings I explicitly allowlisted, and taste never triggers it.</p>
+      </div>
       <ul class="plain" style="font-size:.92rem">
-        <li><b>Subject scout</b> invents each run's theme, steered away from territory the recent boards already covered.</li>
-        <li><b>01 Pair author</b> writes candidate word pairs, each carrying the relationship it claims to hold.</li>
-        <li><b>02 Theme grouper</b> assembles those pairs into candidate analogy sets. Four coherent sets or it fails, by design.</li>
-        <li><b>03 Difficulty rater</b> grades each set and has to say <em>where</em> the difficulty comes from, not just how much there is.</li>
-        <li><b>04 Board builder</b> picks one set per tier and lays the sixteen-word board.</li>
-        <li><b>04a Integrity gate</b> is deterministic code, no model: it checks every rule that can be checked exhaustively, including all 43,680 ordered four-word claims for accidental valid analogies.</li>
-      </ul>
-      <ul class="plain" style="font-size:.92rem">
-        <li><b>05 Analogy validator</b> asks: is each analogy actually true, read exactly as written?</li>
-        <li><b>06 Adversarial solver</b> tries to break the board: cross-set groupings, second readings, anything a sharp player would find.</li>
-        <li><b>07 Test player</b> plays the board cold and reports where it got stuck, what it had to guess, and what knowledge it needed.</li>
-        <li><b>08 Style guide</b> checks tone, evocativeness and content concerns against my written editorial rules.</li>
+        <li><b>04a Integrity gate</b> is deterministic code, no model: it checks every rule that can be checked exhaustively, including all <b>43,680</b> ordered four-word claims for accidental valid analogies.</li>
+        <li><b>06 Adversarial solver</b> tries to break the board the way a sharp player would: cross-set groupings, second readings. Its findings come back in the delegation lesson.</li>
         <li><b>09 Glossary author</b> writes one definition for the board's hardest word, and is allowed to decline: a definition that gives the set away is worse than none.</li>
-        <li><b>Revision proposer</b> reads my feedback and drafts the fix brief. It proposes; it never authors.</li>
-        <li><b>Auto-revise</b> is the one bounded repair the machine may make before I see a board, and only on findings I explicitly allowlisted. Taste never triggers it.</li>
       </ul>
     </div>
   </div>
@@ -522,25 +518,13 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   <div class="wrap">
     <p class="kicker">The method</p>
     <h2>The model has limits. The agents were redesigned around them.</h2>
-    <p class="lede">The pipeline's early failures were not prompt problems. They were me learning what a model structurally cannot do, and reshaping the agents so they never depend on it.</p>
-    <div class="cols two" style="align-items:start">
-      <div>
-        <ul class="plain fails">
-          <li><b>A run died on arithmetic.</b> The brief asked for exactly enough pairs to build four sets, with zero slack. The grouper judged two pairs as belonging to no coherent set, and the builder refused to invent a fourth set rather than fake one. The refusal was the guard working; the real bug was a brief that left the model's judgement no room to discard anything.</li>
-          <li><b>An agent thought itself to death.</b> On hard themes the pair author kept dying mid-answer: its <em>thinking</em> overran the output ceiling before the answer began. Raising the ceiling could never fix that, because what overran was deliberation, not deliverable.</li>
-          <li><b>A retry that changes nothing is resampling.</b> Three identical builder attempts against an unchanged pool returned three identical refusals. A model is not a slot machine: same input, same verdict.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>How the agents changed</h3>
-        <ul class="plain">
-          <li><b>Judgement gets slack.</b> The pair floor moved from barely-enough to comfortable, enforced at every door and not just the form, so discarding weak pairs is expected work instead of fatal.</li>
-          <li><b>Retries step the effort down, not just up.</b> When thinking overruns the ceiling, the retry lowers the deliberation budget. A theme that had died completed on the first down-stepped retry.</li>
-          <li><b>Every retry must change its input.</b> A short pool fails immediately now; the grouper gets its own set-aside list handed back rather than a blind re-roll.</li>
-          <li><b>Never ask a model to prove what code can check.</b> One stage was asked to verify no two sets could regroup, combinatorial over sixteen words, while the deterministic gate already proved it exhaustively on every run. That job moved to the gate, where it belongs.</li>
-        </ul>
-      </div>
-    </div>
+    <p class="lede">The pipeline's early failures were not prompt problems. They were me learning what a model structurally cannot do. Four principles came out of them, each paid for by a real dead run.</p>
+    <ul class="plain" style="max-width:none">
+      <li><b>Judgement gets slack.</b> A brief that supplies exactly enough pairs makes discarding a weak one fatal, so every brief now leaves room to discard, enforced at every door.</li>
+      <li><b>Retries step the effort down, not just up.</b> When an agent's <em>thinking</em> overruns its output ceiling, the retry lowers the deliberation budget instead of raising the ceiling. A theme that had died completed on the first down-stepped retry.</li>
+      <li><b>Every retry must change its input.</b> Three identical attempts against an unchanged pool returned three identical refusals. A retry that changes nothing is resampling.</li>
+      <li><b>Never ask a model to prove what code can check.</b> One stage was asked to verify no two sets could regroup, combinatorial over sixteen words, while the deterministic gate already proved it exhaustively on every run. That job moved to the gate.</li>
+    </ul>
   </div>
 </section>
 
@@ -600,6 +584,20 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
             <span class="verdict">all four sets arrowed</span>
           </div>
           <p class="note" style="margin:1em 0 0">Same theme, same night, same evocativeness, letters assigned blind. The only variable was whether every set pointed in a direction.</p>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3>Two sets from the board that earned it</h3>
+          <div class="chips" style="margin:12px 0 0"><span class="chip g">GREEN</span></div>
+          <div class="spec">
+            <span class="tile">Firefly</span><span class="op">:</span><span class="tile">Glow</span><span class="op">::</span><span class="tile">Cricket</span><span class="op">:</span><span class="tile">Chirp</span>
+          </div>
+          <p class="spec-rel">the night creature and the signal it gives off</p>
+          <div class="chips" style="margin:14px 0 0"><span class="chip k">BLACK</span></div>
+          <div class="spec">
+            <span class="tile">Shadow</span><span class="op">:</span><span class="tile">Weight</span><span class="op">::</span><span class="tile">Ghost</span><span class="op">:</span><span class="tile">Footprint</span>
+          </div>
+          <p class="spec-rel">the one thing it can never have</p>
+          <p class="note" style="margin:1em 0 0">The green points somewhere: a creature and what it emits. The black points nowhere at all, and it is the set this game exists for. One arrowed, one arrowless. The mix is the finding.</p>
         </div>
         <p class="note" style="margin-top:1.2em"><strong>How taste gets measured at all:</strong> the feedback form itself had to be rebuilt around how I actually judge. Its quick tags were compiled from my own prose notes (the four judgements I kept writing because no tag carried them became tags), and board verdicts were separated from set verdicts so rejecting a board never silently rejects a set I praised. It has recorded <strong>726 judgements across 109 boards</strong>, and every number in this deck rests on it.</p>
       </div>
