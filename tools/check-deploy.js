@@ -23,10 +23,12 @@ const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const DEFAULT_BASE = 'https://www.playasto.com';
 
 // One file per layer that changes for different reasons: the page shell, the
-// content manifest, game code, and design tokens. A deploy that serves all
-// four current is serving the commit they came from.
+// content manifest, game code, design tokens — and the AI disclosure, whose
+// failure mode on a bad deploy is a silent 404. A deploy that serves all of
+// these current is serving the commit they came from.
 export const DEPLOY_CHECK_FILES = Object.freeze([
   'index.html',
+  'about.html',
   'puzzles/index.json',
   'src/app.js',
   'styles/tokens.css',

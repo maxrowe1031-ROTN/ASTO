@@ -30,7 +30,10 @@ export class EndView {
         <button class="pill primary" data-action="next-puzzle">Next puzzle</button>
       </div>
       <p class="share-feedback" role="status" aria-live="polite"></p>
-      <button class="text-action" data-action="back-to-puzzles">Back to puzzles</button>`;
+      <button class="text-action" data-action="back-to-puzzles">Back to puzzles</button>
+      <!-- Deep-linked visitors never see the title screen (D-20 routing), so this is
+           the one surface where a stranger can learn how the puzzles are made. -->
+      <a class="text-action" href="about.html">About this project</a>`;
 
     this.titleEl = root.querySelector('.end-title');
     this.scoreEl = root.querySelector('.end-score');

@@ -1,4 +1,6 @@
 // The title screen. READ-ONLY — emits play/tutorial intents and nothing else.
+// (The one exception is a static anchor to about.html: navigation, not an intent,
+// so it carries no callback.)
 //
 // Unlike the other views it is not state-driven, so it has no update(state): it is a
 // front door, shown before any game exists. It is what makes the tutorial replayable
@@ -18,7 +20,8 @@ export class TitleView {
           <button class="pill" data-action="tutorial">How to play</button>
           <button class="pill primary" data-action="play">Play</button>
         </div>
-      </div>`;
+      </div>
+      <a class="text-action" href="about.html">About this project</a>`;
 
     root.querySelector('[data-action="play"]').addEventListener('click', onPlay);
     root.querySelector('[data-action="tutorial"]').addEventListener('click', onTutorial);
