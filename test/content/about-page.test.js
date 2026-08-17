@@ -25,14 +25,24 @@ const about = read('about.html');
 
 test('the disclosure carries its load-bearing claims', () => {
   const lower = about.toLowerCase();
-  for (const word of ['capstone', 'multi-agent', 'generated', 'approved']) {
-    assert.ok(lower.includes(word), `about.html must say "${word}"`);
+  for (const claim of ['capstone', 'multi-agent', 'generated', 'played by max']) {
+    assert.ok(lower.includes(claim), `about.html must say "${claim}"`);
   }
 });
 
-test('the deck is linked, and labeled as the snapshot it is', () => {
+test('the copy carries no em dashes', () => {
+  // Max's call, 2026-08-16: an em dash in prose reads as machine-written, and
+  // this page's whole job is being believed. The whole file is swept rather
+  // than just the body, so there is no line to argue about: comments included,
+  // aria-labels and the <title> included.
+  assert.ok(!about.includes('—'), 'the About page must use no em dashes');
+});
+
+test('both the deck and the GDD are linked', () => {
+  // Two files, not one: the deck documents the build, the GDD is the game
+  // spec. The deck names no GDD content anywhere in its fifteen slides.
   assert.ok(about.includes('href="docs/presentation/"'), 'deck link missing');
-  assert.ok(about.includes('August 5, 2026'), 'snapshot date missing at the point of entry');
+  assert.ok(about.includes('href="docs/asto-gdd.html"'), 'GDD link missing');
 });
 
 test('the page dresses in the real tokens and hardcodes none of its own', () => {
