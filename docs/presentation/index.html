@@ -268,7 +268,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
     <p class="lede" style="margin-bottom:1.4em">The deck reads front to back, but nothing stops you from going straight to the part you care about.</p>
     <ul class="plain">
       <li><a href="#game"><b>The game</b></a>: what ASTO is, and the feel it had to carry.</li>
-      <li><a href="#method"><b>The method</b></a>: why an agentic pipeline, how a non-programmer ships tested software with AI, and the machine it produced.</li>
+      <li><a href="#method"><b>The method</b></a>: why an agentic pipeline, how a non-programmer ships tested software with AI, the machine it produced, and the studio where every board meets its editor.</li>
       <li><a href="#lessons"><b>What I learned</b></a>: four lessons about expertise, taste, delegation and measurement.</li>
       <li><a href="#wrong"><b>What went wrong</b></a>: the honest list. It grows with the project on purpose.</li>
       <li><a href="#live"><b>The game, live</b></a>: what shipped, what the numbers are, and the invitation to play it.</li>
@@ -517,6 +517,22 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
 <section>
   <div class="wrap">
     <p class="kicker">The method</p>
+    <h2>Judgement needed a room of its own.</h2>
+    <div class="cols two">
+      <p class="note">The pipeline only makes candidates. What made the game possible is the other half: a local <strong>Review Studio</strong> where every board meets its editor. I start runs there, play the candidate exactly as a player would, and read each agent's report beside the thing it judged. The feedback form lives there too: all <strong>726 judgements</strong> that tune the agents were recorded in that room, and approving a board publishes it through the same validators the game itself loads.</p>
+      <p class="note">It grew with the project: first review and publish, then the player-ratings panel, then a hand editor where I fix a board in place, every save validated server-side and recorded as before-and-after signal. And it keeps the architecture honest: the Studio reads state only through the core's public queries and changes it only through commands. If it couldn't be built through those seams, that would be the architecture's failure, not the Studio's.</p>
+    </div>
+    <figure class="shot screen crop" style="margin-top:8px">
+      <img src="assets/studio-review.png" alt="The Review Studio's review page for an approved run: Play this board and Edit this board buttons, the style guide's unity and evocativeness readings, the sixteen-tile candidate board, and per-set cards carrying tier chips, relationship lines and taxonomy annotations.">
+      <figcaption>One screen: the agents' readings, the candidate board, and the editorial surface where judgement becomes data.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 10 ────────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="kicker">The method</p>
     <h2>The model has limits. The agents were redesigned around them.</h2>
     <p class="lede">The pipeline's early failures were not prompt problems. They were me learning what a model structurally cannot do. Four principles came out of them, each paid for by a real dead run.</p>
     <ul class="plain" style="max-width:none">
@@ -528,7 +544,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   </div>
 </section>
 
-<!-- 10 ────────────────────────────────────────────────── -->
+<!-- 11 ────────────────────────────────────────────────── -->
 <section id="lessons">
   <div class="wrap">
     <p class="kicker">What I learned</p>
@@ -556,7 +572,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   </div>
 </section>
 
-<!-- 11 ────────────────────────────────────────────────── -->
+<!-- 12 ────────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
     <p class="kicker">What I learned</p>
@@ -605,7 +621,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   </div>
 </section>
 
-<!-- 12 ────────────────────────────────────────────────── -->
+<!-- 13 ────────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
     <p class="kicker">What I learned</p>
@@ -639,7 +655,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   </div>
 </section>
 
-<!-- 13 ────────────────────────────────────────────────── -->
+<!-- 14 ────────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
     <p class="kicker">What I learned</p>
@@ -670,7 +686,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   </div>
 </section>
 
-<!-- 14 ────────────────────────────────────────────────── -->
+<!-- 15 ────────────────────────────────────────────────── -->
 <section id="wrong">
   <div class="wrap">
     <p class="kicker">What went wrong</p>
@@ -683,10 +699,14 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
       <li><b>The teaching example that shipped.</b> Stage 01 was reproducing its own prompt's example, and a board built that way went live before anyone noticed. A test now proves no generative prompt quotes a complete set.</li>
       <li><b>The uncountable corpus.</b> One free-text field made 40% of the pair corpus impossible to count, so the diversity steering ran blind on nearly half its data. I only found it because I went to measure something else.</li>
     </ul>
+    <figure class="shot screen crop" style="margin-top:22px">
+      <img src="assets/studio-runs.png" alt="The Review Studio's run ledger: a list of runs with status badges reading awaiting-review, approved, rejected and failed, all in the same list.">
+      <figcaption>The run ledger keeps the misses: rejected and failed runs sit in the same list as the approved ones, and nothing gets tidied away.</figcaption>
+    </figure>
   </div>
 </section>
 
-<!-- 15 ────────────────────────────────────────────────── -->
+<!-- 16 ────────────────────────────────────────────────── -->
 <section id="live">
   <div class="wrap">
     <p class="kicker">The game, live</p>
@@ -715,7 +735,7 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
   </div>
 </section>
 
-<!-- 16 ────────────────────────────────────────────────── -->
+<!-- 17 ────────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
     <p class="kicker">Forward</p>
