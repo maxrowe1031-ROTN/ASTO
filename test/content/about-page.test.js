@@ -40,7 +40,7 @@ test('the copy carries no em dashes', () => {
 
 test('both the deck and the GDD are linked', () => {
   // Two files, not one: the deck documents the build, the GDD is the game
-  // spec. The deck names no GDD content anywhere in its fifteen slides.
+  // spec. The deck links the GDD as a companion read; it does not contain it.
   assert.ok(about.includes('href="docs/presentation/"'), 'deck link missing');
   assert.ok(about.includes('href="docs/asto-gdd.html"'), 'GDD link missing');
 });
@@ -84,13 +84,14 @@ test('both standalone pages carry the wordmark home', () => {
 });
 
 test('the deck says when it was last true', () => {
-  // The deck was a 2026-08-05 snapshot until 2026-08-16, when it was restructured
-  // into acts and brought current. The stamp is what stops it being read as a
-  // description of the pipeline as it stands whenever someone finds it next, so
-  // the guard survives the rewrite: only the date it pins has changed.
+  // The deck became a four-pillar portfolio piece on 2026-08-17 (it had been a
+  // six-act chronology since 2026-08-16, and a 2026-08-05 snapshot before that).
+  // The stamp is what stops it being read as a description of the pipeline as it
+  // stands whenever someone finds it next, so the guard survives every rewrite:
+  // only the date it pins changes.
   const deck = read('docs', 'presentation', 'index.html');
   assert.ok(
-    deck.includes('August 16, 2026'),
+    deck.includes('August 17, 2026'),
     'a future deck edit must not silently drop the date stamp',
   );
 });
