@@ -141,6 +141,9 @@ figure{margin:0}
 /* Show the top of a tall capture rather than shrinking the whole thing illegibly. */
 .shot.screen.crop{max-width:860px; margin-inline:auto}
 .shot.screen.crop img{height:clamp(190px,27vh,290px); object-fit:cover; object-position:top center}
+/* A tall capture the reader can scroll inside, like the diagram scrolls sideways. */
+.shot.screen.scrolly .pane{height:clamp(340px,52vh,520px); overflow-y:auto; -webkit-overflow-scrolling:touch; border-radius:6px}
+.shot.screen.scrolly .pane img{border-radius:0}
 figcaption{font-size:.8rem; color:var(--faint-ink); margin-top:10px; text-align:center}
 
 /* stats */
@@ -518,10 +521,24 @@ a{color:var(--ink); text-decoration-color:var(--honey); text-underline-offset:3p
       <p class="note">The pipeline only makes candidates. The other half is a local <strong>Review Studio</strong> where every board meets its editor: I start runs there, play the candidate exactly as a player would, and read each agent's report beside the thing it judged. All <strong>726 judgements</strong> that tune the agents were recorded in that room, and approving a board publishes it through the same validators the game loads.</p>
       <p class="note">It grew with the project: first review and publish, then a player-ratings panel, then a hand editor where I fix a board in place, every save validated and recorded as before-and-after signal. Judgement becomes data here, and nothing publishes without me.</p>
     </div>
-    <figure class="shot screen crop" style="margin-top:8px">
-      <img src="assets/studio-review.png" alt="The Review Studio's review page for an approved run: Play this board and Edit this board buttons, the style guide's unity and evocativeness readings, the sixteen-tile candidate board, and per-set cards carrying tier chips, relationship lines and taxonomy annotations.">
-      <figcaption>One screen: the agents' readings, the candidate board, and the editorial surface where judgement becomes data.</figcaption>
-    </figure>
+    <div class="cols wide-left" style="align-items:start; margin-top:8px">
+      <figure class="shot screen scrolly">
+        <div class="pane">
+          <img src="assets/studio-review-full.jpg" alt="The Review Studio's full review page for an approved run: the run header and publish panel, Play this board and Edit this board buttons, the style guide's unity and evocativeness readings, the sixteen-tile candidate board, per-set cards with tier chips and taxonomy annotations, every evaluator's report, and the feedback form with approve, reject and request-revision actions.">
+        </div>
+        <figcaption>One run's whole review page. Scroll inside the frame: the agents' readings, the board, every per-set verdict, my feedback form, and the publish panel.</figcaption>
+      </figure>
+      <div>
+        <figure class="shot screen crop" style="margin:0">
+          <img src="assets/studio-editor.png" alt="The hand editor open on the same board: editable fields for the title and, per set, the relationship line and the four words.">
+          <figcaption>The hand editor: I fix a board in place, and every save is validated before it lands.</figcaption>
+        </figure>
+        <figure class="shot screen crop" style="margin:14px 0 0">
+          <img src="assets/studio-ratings.png" alt="The player ratings panel: a table of published boards with players, win rate, and average difficulty, delight and fairness ratings.">
+          <figcaption>The player-ratings panel: strangers' judgements, one row per board, best delight first.</figcaption>
+        </figure>
+      </div>
+    </div>
   </div>
 </section>
 
