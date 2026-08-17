@@ -506,6 +506,15 @@
   padding: 0 12px;
 }
 
+/* The class was written for <button>; on an inline <a> (the About links),
+   min-height and align-self need a flex box to take effect. */
+a.text-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
 /* ---------- Title screen ---------- */
 
 .title-block {

@@ -91,6 +91,7 @@ test('one stale file among matches still fails the whole check and names the fil
 
 test('the default file set covers the page, the manifest, code and styles', () => {
   assert.ok(DEPLOY_CHECK_FILES.includes('index.html'));
+  assert.ok(DEPLOY_CHECK_FILES.includes('about.html'));
   assert.ok(DEPLOY_CHECK_FILES.includes('puzzles/index.json'));
   assert.ok(DEPLOY_CHECK_FILES.some((f) => f.startsWith('src/')));
   assert.ok(DEPLOY_CHECK_FILES.some((f) => f.startsWith('styles/')));

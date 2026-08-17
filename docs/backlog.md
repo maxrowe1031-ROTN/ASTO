@@ -421,7 +421,28 @@
   verdict and no proposal, and re-running the proposer by hand produced a good brief on the
   first try — so whatever happened the first time is unknowable by construction. A one-line
   failure artifact on the null path would close it.
-- **Nothing on the shipped site says the puzzles are AI-generated (2026-08-14).** Raised in a
+- **The deck's claimed counts have no guard (2026-08-17, restating the 2026-08-16 note
+  below now that the deck is public).** The portfolio deck states 1,440 tests, 48 boards,
+  133 runs and 726 feedback events as of August 17; every one will drift. The cheap
+  guard is a test comparing the deck's claimed counts against the real ones, failing
+  when they diverge past a tolerance.
+- ~~**The process deck is a dated snapshot, not a current account (2026-08-16).**~~
+  **Done the same day.** Restructured into six acts and brought current: 15 slides to 23,
+  eight new (order fairness, the steering failures, the auto-revise graduation, the ship,
+  what shipping changed, the first outside judgement, the cost reversal, the run-evaluator
+  before/after), every stale number corrected, the diagram redrawn for stage 09 and the
+  auto-revise loop, all four screenshots retaken plus three new, and the em dashes swept.
+  The stamp guard now pins August 16, 2026. **What remains:** the deck will go stale again
+  the same way, and nothing measures that. The cheap guard, if it recurs, is a test that
+  compares the deck's claimed test/board counts against the real ones.
+- ~~**Nothing on the shipped site says the puzzles are AI-generated (2026-08-14).**~~ **Built
+  2026-08-16 — see design.md D-23.** The About page ships with Max's own copy, linked from
+  both the title screen and the end screen (the homepage alone would have missed every
+  visitor arriving on a shared `?puzzle=` link). The deck and the GDD are linked as the two
+  separate files they are. **What remains:** the page asserts that every published puzzle
+  was played before release and no test enforces it — D-23 records the trigger. The original
+  entry:
+  Raised in a
   Development Brain session while pulling `intent-over-output` against ASTO; **Max decided the
   shape the same session and deferred the build to a working session here.** The site has been
   public since 2026-08-13 and carries no disclosure anywhere — `index.html` is 58 lines with no
