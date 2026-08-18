@@ -614,7 +614,9 @@ a.text-action {
 
 .select-head {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   gap: 2px;
   padding: 6px 2px 0;
 }
@@ -947,4 +949,217 @@ button.pours-day:active {
 .day-card + .text-action {
   margin-top: 6px;
   margin-bottom: 8px;
+}
+
+/* ---------- Statistics (the calendar's record, read as numbers) ---------- */
+
+/* The header's second element: the wordmark stays a wordmark, and the door to
+   the statistics sits opposite it (the row layout lives on .select-head itself,
+   in the Past Pours block above — one rule, not an override). */
+.select-head-action {
+  align-self: center;
+  padding-right: 2px;
+}
+
+.stats-title,
+.stats-chart-title {
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+
+.stats-title {
+  font-size: 24px;
+  margin: 14px 2px 10px;
+}
+
+.stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.stat-tile {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  padding: 12px 6px;
+  text-align: center;
+  border: 1px solid var(--taupe);
+  border-radius: var(--radius-card);
+  background: var(--milk);
+}
+
+/* Same paper grain every card on the site wears. */
+.stat-tile::after,
+.stats-chart::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: var(--grain);
+  opacity: var(--grain-strength);
+  pointer-events: none;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--soft-ink);
+}
+
+.stat-note {
+  font-size: 11px;
+  color: var(--faint-ink);
+}
+
+.stats-empty {
+  margin: 16px 2px;
+  color: var(--soft-ink);
+  text-align: center;
+}
+
+.stats-chart {
+  position: relative;
+  isolation: isolate;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--taupe);
+  border-radius: var(--radius-card);
+  background: var(--milk);
+}
+
+.stats-chart-title {
+  font-size: 17px;
+}
+
+.stats-chart-note {
+  margin: 2px 0 12px;
+  font-size: 12px;
+  color: var(--faint-ink);
+}
+
+.stat-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stat-bar-row {
+  display: grid;
+  grid-template-columns: 2.5em 1fr 2em;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-bar-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--soft-ink);
+  text-align: right;
+}
+
+.stat-bar-track {
+  height: 18px;
+  border-radius: var(--radius-pill);
+  background: var(--oat);
+  overflow: hidden;
+}
+
+/* Roast brown, the colour a used bean already is — never red (GDD no-list). */
+.stat-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--bean-filled);
+  transition: width var(--motion-slow) var(--ease);
+}
+
+/* A loss is part of the record, not a scolding: the muted tier-black tone keeps
+   it legible and unalarming beside the roast-brown wins. */
+.stat-bar-row[data-lost='true'] .stat-bar-fill {
+  background: var(--tier-black-main);
+}
+
+.stat-bar-row[data-lost='true'] .stat-bar-label {
+  color: var(--faint-ink);
+}
+
+.stat-bar-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The four cups: the calendar's vocabulary, counted. Pose says how the board
+   ended, colour says whether a hint was taken — the same grammar as the grid,
+   so this row needs no legend. */
+.stat-outcomes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.stat-outcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px 9px;
+  border-radius: var(--radius-card);
+  background: var(--oat);
+}
+
+/* Icon and number ride together on one line; the name sits under them. */
+.stat-outcome-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-outcome-icon {
+  display: flex;
+  align-items: center;
+}
+
+.stat-outcome-icon .result-cup {
+  width: 26px;
+  height: 26px;
+}
+
+.stat-outcome-count {
+  font-family: var(--font-display);
+  font-size: 19px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Four names across a 375px screen: small, tight-leaded, and balanced so
+   "Won with no hint" breaks evenly rather than dropping one orphaned word. */
+.stat-outcome-label {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--soft-ink);
+  text-align: center;
+  text-wrap: balance;
 }

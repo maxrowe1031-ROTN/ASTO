@@ -2301,6 +2301,75 @@ seam. Parked in the backlog with the stats spec, where it belongs.
 **GDD drift to flag:** screens 5/6 (select list → Past Pours) and the daily cadence are
 not in GDD v0.13 — a version bump is Max's, not a working session's.
 
+### D-25 — The statistics page: the calendar's record, read as numbers (2026-08-18)
+
+**Max's ask:** build the statistics page D-24 spun off. Full spec:
+`docs/superpowers/specs/2026-08-18-statistics-page-design.md`.
+
+**The decisions, all Max's this session:**
+
+1. **A streak counts consecutive board DATES won**, walking the released catalogue
+   backward from today — not consecutive days shown up. Playing an old board on the
+   calendar repairs a gap retroactively. Rejected: Connections' play-date streak, and
+   won-on-its-own-day. ASTO is a calendar a player can wander, and a cozy game should not
+   punish a good week away from the phone.
+2. **Counts are BOARDS, best result each** — `asto.results` + the manifest, the same
+   record the calendar's cups show. A replay improves a board's row and never adds to the
+   count.
+3. **The door is the calendar header**, keeping the title screen at two buttons (D-24's
+   review call). Back returns to the calendar; the wordmark still goes home.
+4. **Four outcome cups, not two or three** (Max's correction mid-build): won/lost ×
+   clean/hinted, in D-16's grammar — the POSE says how the board ended, the COLOUR says
+   how it was played. Labelled in his words: "Won with no hint", "Won with hint", "Lost
+   with no hint", "Lost with hint".
+
+**What decisions 1 and 2 bought:** the page needs **no new storage at all**. The
+best-result blob predates the daily turn, so the whole back catalogue counts on day one
+rather than the page launching empty, and every number agrees with a cup on the calendar.
+
+**The honest cost, recorded rather than hidden:** `asto.history` — D-24's down-payment —
+**powers nothing in v1**. It keeps accruing (it is the only record of replays and of when
+a board was played) and a later surface will want it, but this design does not read it.
+
+**A coupling that turned out not to exist:** the backlog had filed the end-screen-restore
+item with this spec, assuming both were one storage-schema conversation. This page adds no
+schema, so the two are independent; the backlog entry is corrected and the restore keeps
+its own scoping.
+
+**Accepted consequence with a reconsider-when:** the manifest is both numerator and
+denominator, so a result for a board the manifest no longer lists is ignored. The
+hard-launch trim will therefore visibly shrink a player's Played count (48 → ~30) — a
+one-time drop only Max is positioned to see. **Reconsider-when:** a real player reports
+that finished puzzles vanished from their record.
+
+**Architecture:** `src/stats.js` (pure, no DOM/fetch/clock/storage) reviving
+`releasedPuzzles()` from `release.js`, which had been exported and tested but imported by
+nothing since D-24; `src/view/stats-view.js` read-only; the cup SVGs extracted from
+`calendar-view.js` into `src/view/result-icons.js` so both screens share one set rather
+than forking paths that carry real design history.
+
+### D-25 addendum — the stale-URL bug, found by Max (2026-08-18)
+
+**Symptom, in his words:** "sometimes when I press the ASTO header at the top of the
+page, it takes me to a board instead of the home page."
+
+**Root cause:** `rememberInUrl`'s contract is that `?puzzle=` names the board ON SCREEN,
+but only `startGame` ever called it. Every door — title, calendar, statistics — changed
+the screen and left the query naming the board just left. In-tab it looked correct; the
+next load took the deep-link route straight back into that board. Hence "sometimes": it
+only surfaces when the page actually reloads (a backgrounded mobile tab reclaimed, a
+pull-to-refresh, a reopened tab). **All five navigation paths were affected**, not only
+the header.
+
+**Fix:** one `showDoor(route)` helper that clears the query before showing any door, so
+the rule lives in one place rather than five call sites free to drift; the URL string math
+moved to `src/url-state.js`, pure and tested, making "a door clears the query" an
+enforced rule instead of an implicit consequence. The bootstrap deliberately does NOT
+clear — a pasted link to a future-dated board must survive until its release date.
+
+**Provenance:** a pre-existing bug in shipped code, unrelated to the statistics work. It
+has been live since deep links met the title screen.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

@@ -2,6 +2,65 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-18 — The statistics page, the four cups, and a bug Max caught in shipped code
+
+The stats page D-24 spun off, specced and built on `work/statistics-page`, plus a
+genuine pre-existing bug found by Max mid-session. **D-25** records the decisions
+and the bug's root cause.
+
+- **Specced first, then built.** `docs/superpowers/specs/2026-08-18-statistics-page-design.md`.
+  Four decisions, all his: **streaks count consecutive board DATES won** (an old
+  board repairs a gap; Connections' play-date rule rejected as punishing a week
+  away), **counts are boards not plays**, **the door is the calendar header**
+  (title screen stays two buttons), end-screen-restore **out of scope**.
+- **The consequence that shaped everything:** those two decisions mean the page
+  needs **no new storage** — it reads `asto.results` + the manifest, so the whole
+  back catalogue counts on day one. Recorded honestly: **`asto.history` powers
+  nothing in v1**. It keeps accruing for a later surface.
+- **A coupling dissolved.** The backlog had filed the end-screen-restore item with
+  this spec assuming a shared schema conversation; there is no schema here, so the
+  two are independent. Backlog entry corrected rather than left misleading.
+- **Built:** `src/stats.js` (pure — reviving `releasedPuzzles()`, exported and
+  tested but imported by nothing since D-24), `src/view/stats-view.js`, the
+  `screen-stats` section, the router's third door, the calendar's Statistics
+  affordance. **TDD throughout at Max's direction** ("do the streak tests first") —
+  and the streak tests earned it immediately: the first grace clause forgave a
+  LOSS as well as an unplayed day, caught by the test written for exactly that.
+- **The four cups (his correction).** Not two states but four: won/lost ×
+  clean/hinted, in D-16's grammar — pose says how it ended, colour how it was
+  played. Labelled in his words. The cup SVGs were **extracted to
+  `src/view/result-icons.js`** so the calendar and the stats screen share one set
+  rather than forking paths that carry real design history.
+- **The bug Max found:** "pressing ASTO takes me to a board." Root cause — every
+  door left `?puzzle=` naming the board just left, so the next reload took the
+  deep-link route back into it; "sometimes" because it needs an actual reload.
+  **All five navigation paths were affected.** Fixed with one `showDoor()` helper
+  plus pure, tested `src/url-state.js`. A **pre-existing bug in shipped code**,
+  unrelated to the statistics work.
+- **Also:** a Back link at the bottom of the board (his ask) — to the calendar, in
+  the calendar's own voice, hidden during the tutorial which owns its own exit.
+- **Verified:** `npm test` **1512/0** (+26) · `check-board` 48 clean · in the
+  preview at 375px and 1280px: empty state (honest zeros, chart hidden), populated
+  state, all four cups summing to Played, no horizontal overflow at either width,
+  44px targets, console clean on every screen. The bug fix verified in **both**
+  directions — press ASTO then reload now lands on the title screen (was: the
+  board), and reloading while ON a board still returns to that board.
+- **Phase status:** Phases 1–5 remain complete and shipped; this is a post-ship
+  feature unit plus a shipped-code bug fix. Gate: automated and Claude-verifiable
+  **passed** with the evidence above; **Max acceptance passed** — he directed the
+  spec, the cup row and its copy, reported the bug, and called for the merge.
+- **Not pushed live in this wrapup** — merged to `main` at his instruction while
+  batch five generates; the deploy is a separate call, and the URL fix is the part
+  most worth shipping when he makes it.
+- **Next:** batch five is generating (6 boards, sequential per D-15's recorded
+  race) — review and publish to build runway, since **the queue is still dry after
+  today** and each publish takes the next free date (first = Aug 19); push `main`
+  to deploy when Max says; the hard-launch trim when he names the keep-list and
+  date; GDD version bump for screens 5/6 + daily cadence (his); the standing
+  watches (`npm run ratings`, `npm run check-schedule`, D-20 bounce, D-22 editor
+  test-drive) and the two overdue triggers (the rubric at 109 judged boards, the
+  slim-down lap). Backlog: dead `.select-count` CSS from the retired select list.
+
 ## 2026-08-18 — ASTO turns daily: dated release, the calendar door, and the pot of coffee
 
 Max's ask at warmup: three features toward a hard launch — a daily puzzle, a

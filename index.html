@@ -29,6 +29,8 @@
 
   <section id="screen-pours" class="screen" aria-label="Past Pours" hidden></section>
 
+  <section id="screen-stats" class="screen" aria-label="Statistics" hidden></section>
+
   <section id="screen-play" class="screen" aria-label="Puzzle" hidden>
     <header id="header" class="header"></header>
     <div id="status" class="status" role="status" aria-live="polite"></div>
@@ -42,6 +44,11 @@
     <aside id="tutorial-coach" class="coach" aria-live="polite" hidden></aside>
     <div id="controls" class="controls"></div>
     <div id="solved-sets" class="solved-sets" aria-label="Solved sets"></div>
+    <!-- The way back to the calendar, in the same place and the same voice as the
+         calendar's own Back. Hidden during the tutorial, which has its own exit
+         (app.js toggles it) — a first-timer should not have two ways out that
+         behave differently. -->
+    <button id="board-back" class="text-action" hidden>Back</button>
   </section>
 
   <section id="screen-end" class="screen" aria-label="Results" hidden></section>
