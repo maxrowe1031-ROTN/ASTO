@@ -6,26 +6,24 @@
 // front door, shown before any game exists. It is what makes the tutorial replayable
 // once the first run is behind the player.
 //
-// Since D-24, Play means TODAY'S puzzle — the daily loop's front door — and
-// Past Pours is the door to every day before this one. "How to play" stays a
-// peer of playing rather than a footnote under a calendar.
+// Since D-24 (revised at Max's review, 2026-08-18), Play opens the CALENDAR
+// with today highlighted — one door into all the puzzles, today first among
+// them. Two buttons on purpose: the simpler front door was his call.
 
 export class TitleView {
-  constructor(root, { onPlay, onPours, onTutorial }) {
+  constructor(root, { onPlay, onTutorial }) {
     root.innerHTML = `
       <div class="title-block">
         <h1 class="title-wordmark">ASTO</h1>
         <p class="title-tagline">This is to that.</p>
         <div class="controls title-actions">
           <button class="pill" data-action="tutorial">How to play</button>
-          <button class="pill" data-action="pours">Past Pours</button>
           <button class="pill primary" data-action="play">Play</button>
         </div>
         <a class="text-action" href="about.html">About this project</a>
       </div>`;
 
     root.querySelector('[data-action="play"]').addEventListener('click', onPlay);
-    root.querySelector('[data-action="pours"]').addEventListener('click', onPours);
     root.querySelector('[data-action="tutorial"]').addEventListener('click', onTutorial);
   }
 }

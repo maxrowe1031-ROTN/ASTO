@@ -779,13 +779,37 @@ button.pours-day:active {
   position: relative;
   isolation: isolate;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-top: 10px;
   padding: 14px;
   border: 1px solid var(--taupe);
   border-radius: var(--radius-card);
   background: var(--milk);
+}
+
+.day-card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0; /* a long title truncates the column, never pushes the icon out */
+}
+
+/* The state, writ large — the empty right side of the card was doing nothing
+   (Max's circle on the review screenshot). Same SVGs as the grid; size is CSS. */
+.day-card-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 6px;
+}
+
+.day-card-icon .result-cup {
+  width: 64px;
+  height: 64px;
 }
 
 .day-card::after {
@@ -819,7 +843,7 @@ button.pours-day:active {
   min-height: 20px;
 }
 
-.day-card .pill {
+.day-card-main .pill {
   align-self: flex-start;
   margin-top: 4px;
 }
@@ -852,6 +876,25 @@ button.pours-day:active {
 .is-hinted .cup-body {
   fill: var(--bean-filled);
   stroke: none;
+}
+
+/* The diner carafe: glass and handle wear the clean-cup treatment, the coffee
+   is bean brown (it IS the beans, pre-pour), and the lid is ink — the only
+   solid-ink shape in the icon set, which is what makes the pot read at 18px. */
+.pot-glass,
+.pot-handle {
+  fill: var(--cup-clean);
+  stroke: var(--faint-ink);
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+}
+
+.pot-coffee {
+  fill: var(--bean-filled);
+}
+
+.pot-lid {
+  fill: var(--ink);
 }
 
 .cup-steam {

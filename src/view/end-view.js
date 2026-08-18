@@ -27,8 +27,9 @@ export class EndView {
         <!-- Ink fill is reserved for the one primary action, and after a finished board
              that is moving on. The daily loop's "on" is the calendar: yesterday's board,
              or the knowledge that tomorrow brings a new one (D-24 — "Next puzzle"
-             retired with the list it walked). -->
-        <button class="pill primary" data-action="pours">Past Pours</button>
+             retired with the list it walked; "Past Pours" retired as a label at Max's
+             review, since the calendar is the main door now, not strictly an archive). -->
+        <button class="pill primary" data-action="pours">Puzzles</button>
       </div>
       <p class="share-feedback" role="status" aria-live="polite"></p>
       <!-- Deep-linked visitors never see the title screen (D-20 routing), so this is

@@ -4,8 +4,8 @@
 // Routing (D-20 retired the forced tutorial; D-24 made the game daily):
 //   ?puzzle=<slug>   → straight into that board — unless it is dated in the
 //                      future, which lands on the title screen instead
-//   everything else  → the title screen → Play (today's board), Past Pours
-//                      (the calendar), or How to play
+//   everything else  → the title screen → Play (the calendar, today
+//                      highlighted) or How to play
 // The tutorial is opt-in via "How to play", first visit or fiftieth.
 // Boards are swapped on ONE controller and ONE set of views via controller.loadPuzzle,
 // so nothing is torn down and rebuilt between the tutorial and the real puzzle.
@@ -16,7 +16,7 @@ import { GameController } from './controller/game-controller.js';
 import { TUTORIAL_RULES } from './controller/tutorial-script.js';
 import { buildShareText, share } from './share.js';
 import { LocalJsonSource } from './source/local-json-source.js';
-import { dateKeyFor, isReleased, todaysPuzzle } from './source/release.js';
+import { dateKeyFor, isReleased } from './source/release.js';
 import { Storage } from './storage.js';
 import { BoardView } from './view/board-view.js';
 import { VocabView } from './view/vocab-view.js';
@@ -135,34 +135,24 @@ async function main() {
   };
 
   /**
-   * The front door (D-24). Play means today's board; a finished today means the
-   * end screen — the result and the share are the rest of the day's answer, and
-   * "come back tomorrow" is the honest one. A dry queue falls back to the
-   * calendar rather than a dead door; no manifest at all falls back to the one
-   * board that always works, as it always has.
+   * The front door (D-24, revised at Max's review): Play opens the calendar
+   * with today selected — today's card is one tap from its board, and a
+   * finished today shows its result right on the card. No manifest at all
+   * falls back to the one board that always works, as it always has.
    */
-  const playToday = () => {
-    const today = todaysPuzzle(manifest, todayKey());
-    if (!today) return manifest.length > 0 ? showPours() : play(DEFAULT_PUZZLE);
-    if (controller && controller.state.puzzle.id === today.id && controller.state.status !== 'playing') {
-      router.show('game'); // the end screen resurfaces: state was held, not torn down
-      return;
-    }
-    return play(today.slug);
-  };
+  const playDoor = () => (manifest.length > 0 ? showPours() : play(DEFAULT_PUZZLE));
 
   const leaveTutorial = () => {
     storage.markTutorialSeen();
     // The tutorial IS First Light now, so handing off to DEFAULT_PUZZLE would replay
-    // the board the player just left. A deep link still wins; everyone else gets
-    // today's board — the daily loop is the game the tutorial was teaching.
+    // the board the player just left. A deep link still wins; everyone else lands
+    // on the calendar, where today is already waiting.
     if (deepLink) return play(deepLink);
-    return playToday();
+    return playDoor();
   };
 
   new TitleView(document.getElementById('screen-title'), {
-    onPlay: playToday,
-    onPours: showPours,
+    onPlay: playDoor,
     onTutorial: () => startGame(null, TUTORIAL_RULES, true).catch(fail)
   });
 

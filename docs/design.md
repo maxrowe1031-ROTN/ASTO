@@ -2283,11 +2283,20 @@ down-payment ships now (below). Full spec:
 unique — "today's puzzle" must be one board); board `date` was already optional in schema
 v1.0, so the puzzle schema is untouched. `select-view.js` and `nextUnfinished` retired.
 
-**Known gap, deliberate:** "Play reopens today's end screen" holds within a session (the
-controller keeps the finished state). After a reload, Play lands on the title card /
-replay instead, because rebuilding a finished end screen needs persisted `solvedSetIds`
-plus an engine restore seam — parked in the backlog with the stats spec, where it
-belongs.
+**Revised at Max's review, same day.** He played the build and called four changes:
+the title screen back to **two buttons** (Play opens the calendar with today
+highlighted, not today's board directly — the simpler front door); a **large state icon
+on the day card's right side**; a **new icon — a pot of coffee — for unplayed boards**
+(the vocabulary is now pot = waiting, steaming cup = won, spilled = lost, brown = hinted,
+on the grid and the card alike); and the **"Past Pours" label retired** (the calendar is
+the main door now, not strictly an archive — subtitle removed, the end screen's pill
+reads "Puzzles"). Decision 4's end-screen-resurface door went with Play-means-today;
+today's card showing the result covers the same need one tap away.
+
+**Known gap, narrowed by the revision:** the finished END SCREEN itself (share button,
+set reveals) still cannot be rebuilt across a reload — the day card shows the result,
+but re-opening the full end screen needs persisted `solvedSetIds` plus an engine restore
+seam. Parked in the backlog with the stats spec, where it belongs.
 
 **GDD drift to flag:** screens 5/6 (select list → Past Pours) and the daily cadence are
 not in GDD v0.13 — a version bump is Max's, not a working session's.

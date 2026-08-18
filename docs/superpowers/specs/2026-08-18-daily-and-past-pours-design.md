@@ -1,5 +1,11 @@
 # Daily ASTO + Past Pours — dated release and the calendar door
 
+> **Revised at Max's review, 2026-08-18** (see D-24's amendment in
+> `docs/design.md`): Play opens the calendar rather than today's board, the
+> title screen keeps two buttons, unplayed boards wear a pot-of-coffee icon
+> (grid and day card, large on the card), and the "Past Pours" label is
+> retired from the UI.
+
 ## Context
 
 Max wants ASTO feature-complete ahead of a **hard launch**: a new puzzle
