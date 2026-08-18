@@ -1,10 +1,11 @@
 // Bootstrap: decide where a player lands, load boards through the source seam, build the
 // views once, and drive them all with a single controller.
 //
-// Routing (amended 2026-08-13, Max's call before sharing — see design.md D-20;
-// GDD §5.2's forced first-run tutorial is retired):
-//   ?puzzle=<slug>   → straight into that board, however the player arrived
-//   everything else  → the title screen → Play (the puzzle list) or How to play
+// Routing (D-20 retired the forced tutorial; D-24 made the game daily):
+//   ?puzzle=<slug>   → straight into that board — unless it is dated in the
+//                      future, which lands on the title screen instead
+//   everything else  → the title screen → Play (today's board), Past Pours
+//                      (the calendar), or How to play
 // The tutorial is opt-in via "How to play", first visit or fiftieth.
 // Boards are swapped on ONE controller and ONE set of views via controller.loadPuzzle,
 // so nothing is torn down and rebuilt between the tutorial and the real puzzle.
@@ -15,6 +16,7 @@ import { GameController } from './controller/game-controller.js';
 import { TUTORIAL_RULES } from './controller/tutorial-script.js';
 import { buildShareText, share } from './share.js';
 import { LocalJsonSource } from './source/local-json-source.js';
+import { dateKeyFor, isReleased, todaysPuzzle } from './source/release.js';
 import { Storage } from './storage.js';
 import { BoardView } from './view/board-view.js';
 import { VocabView } from './view/vocab-view.js';
@@ -22,7 +24,7 @@ import { ControlsView } from './view/controls-view.js';
 import { EndView } from './view/end-view.js';
 import { FrameView } from './view/frame-view.js';
 import { HeaderView } from './view/header-view.js';
-import { nextUnfinished, SelectView } from './view/select-view.js';
+import { CalendarView } from './view/calendar-view.js';
 import { SolvedSetsView } from './view/solved-sets-view.js';
 import { StatusView } from './view/status-view.js';
 import { SurveyView } from './view/survey-view.js';
@@ -42,6 +44,10 @@ const TUTORIAL_PATH = `puzzles/${DEFAULT_PUZZLE}.json`;
 const SLUG = /^[a-z0-9][a-z0-9-]{0,63}$/;
 
 const pathFor = (slug) => `puzzles/${slug}.json`;
+
+// The one place the game asks what day it is (D-24): evaluated per use, never
+// cached, so a tab left open across Mountain midnight flips without a reload.
+const todayKey = () => dateKeyFor(new Date());
 
 /** `?puzzle=<slug>`, when it is one — a deep link into a specific board. */
 function requestedSlug() {
@@ -102,7 +108,6 @@ async function main() {
     currentSlug = slug;
     rememberInUrl(slug);
     coach.setActive(coaching);
-    endView.showNext(nextUnfinished(manifest, storage.allResults(), slug) !== null);
     router.show('game');
 
     // Coming back to a board that is still in play RESUMES it. Visiting the title screen
@@ -123,29 +128,45 @@ async function main() {
 
   const play = (slug) => startGame(slug, {}, false).catch(fail);
 
+  /** Show the calendar, always freshly painted — a result may have landed since last time. */
+  const showPours = () => {
+    calendarView.render(manifest, storage.allResults(), todayKey());
+    router.show('pours');
+  };
+
+  /**
+   * The front door (D-24). Play means today's board; a finished today means the
+   * end screen — the result and the share are the rest of the day's answer, and
+   * "come back tomorrow" is the honest one. A dry queue falls back to the
+   * calendar rather than a dead door; no manifest at all falls back to the one
+   * board that always works, as it always has.
+   */
+  const playToday = () => {
+    const today = todaysPuzzle(manifest, todayKey());
+    if (!today) return manifest.length > 0 ? showPours() : play(DEFAULT_PUZZLE);
+    if (controller && controller.state.puzzle.id === today.id && controller.state.status !== 'playing') {
+      router.show('game'); // the end screen resurfaces: state was held, not torn down
+      return;
+    }
+    return play(today.slug);
+  };
+
   const leaveTutorial = () => {
     storage.markTutorialSeen();
     // The tutorial IS First Light now, so handing off to DEFAULT_PUZZLE would replay
-    // the board the player just left. A deep link still wins; everyone else gets the
-    // list (or the board itself when the manifest failed to load — better than a wall).
+    // the board the player just left. A deep link still wins; everyone else gets
+    // today's board — the daily loop is the game the tutorial was teaching.
     if (deepLink) return play(deepLink);
-    return manifest.length > 0 ? showSelect() : play(DEFAULT_PUZZLE);
-  };
-
-  /** Show the list, always freshly painted — a result may have landed since last time. */
-  const showSelect = () => {
-    selectView.render(manifest, storage.allResults());
-    router.show('select');
+    return playToday();
   };
 
   new TitleView(document.getElementById('screen-title'), {
-    // With no manifest there is no list worth showing, so Play falls back to the board the
-    // tutorial has always handed off to.
-    onPlay: () => (manifest.length > 0 ? showSelect() : play(DEFAULT_PUZZLE)),
+    onPlay: playToday,
+    onPours: showPours,
     onTutorial: () => startGame(null, TUTORIAL_RULES, true).catch(fail)
   });
 
-  const selectView = new SelectView(document.getElementById('screen-select'), {
+  const calendarView = new CalendarView(document.getElementById('screen-pours'), {
     onPick: play,
     onBack: () => router.show('title')
   });
@@ -162,16 +183,7 @@ async function main() {
       endView.showShareResult(await share(buildShareText(controller.state)));
     },
     onPlayAgain: () => controller.restart(),
-    // Read at TAP time, not render time: the result of the board just finished is already
-    // saved by then, so a board won a moment ago is correctly skipped.
-    onNextPuzzle: () => {
-      // A null currentSlug means the tutorial — which plays First Light's board without
-      // recording a result, so "next" must still skip it or it would be offered back.
-      const next = nextUnfinished(manifest, storage.allResults(), currentSlug ?? DEFAULT_PUZZLE);
-      if (next) play(next.slug);
-      else showSelect();
-    },
-    onBackToPuzzles: () => (manifest.length > 0 ? showSelect() : router.show('title'))
+    onPours: () => (manifest.length > 0 ? showPours() : router.show('title'))
   });
 
   // --- the end-screen survey (D-21) ---
@@ -251,7 +263,7 @@ async function main() {
     // same reason the router does — update(state) is the hook the controller offers, and
     // something that only READS state cannot break the boundary law. Before the end view,
     // so the result is on disk by the time the end screen offers "Next puzzle".
-    new ResultsRecorder(storage, () => currentSlug),
+    new ResultsRecorder(storage, () => currentSlug, todayKey),
     // The router runs BEFORE the end view so the end screen is already on-screen when its
     // cards settle in — animating a hidden section just throws the motion away.
     router,
@@ -262,11 +274,17 @@ async function main() {
   ];
 
   // D-20: everyone lands on the title screen; the tutorial is opt-in through "How to
-  // play". (GDD §5.2's forced first run retired at Max's direction, 2026-08-13 — the
-  // title screen already names both doors, and a shared link should open on the front
-  // door, not a lesson.) A deep link still goes straight to its board.
-  if (deepLink) await startGame(deepLink, {}, false);
-  else router.show('title');
+  // play". A deep link still goes straight to its board — with one D-24 exception: a
+  // link to a FUTURE-dated board lands on the title screen instead, no error ceremony.
+  // A slug the manifest has never heard of still loads if its file exists (an
+  // unlisted board keeps its old links; a genuinely wrong slug fails as it always
+  // has, in startGame).
+  const linkedEntry = deepLink === null ? null : manifest.find((entry) => entry.slug === deepLink);
+  if (deepLink && !(linkedEntry && !isReleased(linkedEntry, todayKey()))) {
+    await startGame(deepLink, {}, false);
+  } else {
+    router.show('title');
+  }
 }
 
 /**
@@ -291,12 +309,12 @@ function rememberInUrl(slug) {
 class ScreenRouter {
   // The doors. Standing on one means the game underneath keeps its state and is simply
   // not on screen; only `game` defers to the status.
-  static DOORS = ['title', 'select'];
+  static DOORS = ['title', 'pours'];
 
   constructor() {
     this.sections = {
       title: document.getElementById('screen-title'),
-      select: document.getElementById('screen-select'),
+      pours: document.getElementById('screen-pours'),
       play: document.getElementById('screen-play'),
       end: document.getElementById('screen-end')
     };

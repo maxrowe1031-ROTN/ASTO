@@ -9,7 +9,13 @@ import { ResultsRecorder } from '../src/results-recorder.js';
 /** Records what it was told, in order, so a double-write is visible. */
 function fakeStorage() {
   const calls = [];
-  return { calls, recordResult: (slug, result) => calls.push({ slug, result }) };
+  const history = [];
+  return {
+    calls,
+    history,
+    recordResult: (slug, result) => calls.push({ slug, result }),
+    appendHistory: (entry) => history.push(entry)
+  };
 }
 
 const state = (status, over = {}) => ({
@@ -21,10 +27,11 @@ const state = (status, over = {}) => ({
 });
 
 const on = (slug) => () => slug;
+const TODAY = () => '2026-08-18';
 
 test('a win is recorded with its beans and its solved count', () => {
   const storage = fakeStorage();
-  const recorder = new ResultsRecorder(storage, on('first-light'));
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
 
   recorder.update(state('playing'));
   recorder.update(state('won', { mistakes: 2, solvedSetIds: ['a', 'b', 'c', 'd'] }));
@@ -38,7 +45,7 @@ test('a win is recorded with its beans and its solved count', () => {
 // player took the hint (design.md D-16 addendum).
 test('a hinted game records how many hints it spent', () => {
   const storage = fakeStorage();
-  const recorder = new ResultsRecorder(storage, on('first-light'));
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
 
   recorder.update(state('won', { solvedSetIds: ['a', 'b', 'c', 'd'], hintsUsed: 1 }));
 
@@ -49,7 +56,7 @@ test('a hinted game records how many hints it spent', () => {
 // also cope with a state that lacks one (an old saved game replayed mid-migration).
 test('a state without hintsUsed records zero, not undefined', () => {
   const storage = fakeStorage();
-  const recorder = new ResultsRecorder(storage, on('first-light'));
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
 
   const legacy = state('won', { solvedSetIds: ['a', 'b', 'c', 'd'] });
   delete legacy.hintsUsed;
@@ -60,7 +67,7 @@ test('a state without hintsUsed records zero, not undefined', () => {
 
 test('a loss is recorded too, carrying how far the player got', () => {
   const storage = fakeStorage();
-  const recorder = new ResultsRecorder(storage, on('yankees-baseball'));
+  const recorder = new ResultsRecorder(storage, on('yankees-baseball'), TODAY);
 
   recorder.update(state('lost', { mistakes: 4, solvedSetIds: ['a', 'b'] }));
 
@@ -74,7 +81,7 @@ test('a loss is recorded too, carrying how far the player got', () => {
 
 test('a live game records nothing', () => {
   const storage = fakeStorage();
-  const recorder = new ResultsRecorder(storage, on('first-light'));
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
 
   recorder.update(state('playing'));
   recorder.update(state('playing', { mistakes: 3, solvedSetIds: ['a'] }));
@@ -86,7 +93,7 @@ test('a live game records nothing', () => {
 // has the same guard for the same reason.
 test('the same finished game records exactly once, however often it repaints', () => {
   const storage = fakeStorage();
-  const recorder = new ResultsRecorder(storage, on('first-light'));
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
 
   const finished = state('won', { solvedSetIds: ['a', 'b', 'c', 'd'] });
   recorder.update(finished);
@@ -98,7 +105,7 @@ test('the same finished game records exactly once, however often it repaints', (
 
 test('playing the same board again records the new result', () => {
   const storage = fakeStorage();
-  const recorder = new ResultsRecorder(storage, on('first-light'));
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
 
   recorder.update(state('lost', { mistakes: 4 }));
   recorder.update(state('playing')); // restart
@@ -114,7 +121,7 @@ test('playing the same board again records the new result', () => {
 // would be a badge for showing up.
 test('the tutorial records nothing, because it has no slug', () => {
   const storage = fakeStorage();
-  const recorder = new ResultsRecorder(storage, () => null);
+  const recorder = new ResultsRecorder(storage, () => null, TODAY);
 
   recorder.update(state('won', { solvedSetIds: ['a', 'b', 'c', 'd'] }));
 
@@ -126,7 +133,7 @@ test('the tutorial records nothing, because it has no slug', () => {
 test('it records against whichever board is on screen now', () => {
   const storage = fakeStorage();
   let slug = 'first-light';
-  const recorder = new ResultsRecorder(storage, () => slug);
+  const recorder = new ResultsRecorder(storage, () => slug, TODAY);
 
   recorder.update(state('won', { solvedSetIds: ['a', 'b', 'c', 'd'] }));
   slug = 'by-the-shore';
@@ -140,7 +147,48 @@ test('it records against whichever board is on screen now', () => {
 });
 
 test('it never writes to state — it is a reader in the views array', () => {
-  const recorder = new ResultsRecorder(fakeStorage(), on('first-light'));
+  const recorder = new ResultsRecorder(fakeStorage(), on('first-light'), TODAY);
   const finished = Object.freeze(state('won', { solvedSetIds: Object.freeze(['a']) }));
   assert.doesNotThrow(() => recorder.update(finished));
+});
+
+// --- the history row, appended beside the best-result write (D-24) ---
+
+test('a finished game appends one history row, stamped with the day it was played', () => {
+  const storage = fakeStorage();
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
+
+  recorder.update(state('playing'));
+  recorder.update(state('won', { mistakes: 1, solvedSetIds: ['a', 'b', 'c', 'd'], hintsUsed: 1 }));
+
+  assert.deepEqual(storage.history, [{
+    slug: 'first-light',
+    dateKey: '2026-08-18',
+    status: 'won',
+    mistakes: 1,
+    solvedCount: 4,
+    hintsUsed: 1
+  }]);
+});
+
+test('a replay of the same board appends a second row — history never overwrites', () => {
+  const storage = fakeStorage();
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
+
+  recorder.update(state('playing'));
+  recorder.update(state('lost', { mistakes: 4, solvedSetIds: ['a'] }));
+  recorder.update(state('playing'));
+  recorder.update(state('won', { solvedSetIds: ['a', 'b', 'c', 'd'] }));
+
+  assert.equal(storage.history.length, 2);
+});
+
+test('the tutorial leaves no history row, same as it leaves no result', () => {
+  const storage = fakeStorage();
+  const recorder = new ResultsRecorder(storage, () => null, TODAY);
+
+  recorder.update(state('playing'));
+  recorder.update(state('won', { solvedSetIds: ['a', 'b', 'c', 'd'] }));
+
+  assert.deepEqual(storage.history, []);
 });

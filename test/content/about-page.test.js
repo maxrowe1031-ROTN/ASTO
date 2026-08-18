@@ -67,7 +67,7 @@ test('both doors carry the link — the title screen and the end screen', () => 
 });
 
 test('both standalone pages carry the wordmark home', () => {
-  // The game's own screens already do this (header-view.js, select-view.js): the
+  // The game's own screens already do this (header-view.js, calendar-view.js): the
   // logo is the way back. These two pages sit outside the SPA, so they need their
   // own — a visitor who lands on either must never be stranded there.
   assert.match(

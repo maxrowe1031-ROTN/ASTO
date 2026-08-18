@@ -261,6 +261,10 @@
   .survey-dot:hover:not([aria-pressed='true']) {
     background: var(--oat);
   }
+  button.pours-day:hover {
+    background: var(--oat);
+  }
+
   .text-action:hover {
     color: var(--ink);
   }
@@ -606,7 +610,7 @@ a.text-action {
   display: none;
 }
 
-/* ---------- Puzzle select (GDD Screen 6) ---------- */
+/* ---------- Past Pours (D-24 — the calendar that replaced GDD Screen 6's list) ---------- */
 
 .select-head {
   display: flex;
@@ -645,37 +649,76 @@ a.text-action {
   font-size: 14px;
 }
 
-.puzzle-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* Wells on the page, cards under the finger. Each row is a real <button>, so keyboard
-   focus, Enter and the 44px tap target all come from the platform. */
-.puzzle-row {
-  position: relative;
-  isolation: isolate;
+/* Month header: arrows flanking the name, all 44px targets. */
+.pours-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  min-height: 62px;
-  padding: 12px 14px;
-  text-align: left;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.pours-month {
+  font-family: var(--font-display);
+  font-size: 20px;
+  text-align: center;
+}
+
+.pours-nav-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--taupe);
+  background: var(--milk);
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1;
+  transition: opacity var(--motion-fast) var(--ease), background-color var(--motion-fast) var(--ease);
+}
+
+/* Past the earliest month or the current one there is nothing to see; the arrow
+   stays for layout but says so. */
+.pours-nav-arrow:disabled {
+  opacity: 0.3;
+}
+
+.pours-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  padding: 4px 0 2px;
+  color: var(--soft-ink);
+  font-size: 12px;
+  text-align: center;
+}
+
+.pours-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+/* A day square. Board days are real <button>s — keyboard focus, Enter and the tap
+   target come from the platform; future days and gaps are inert spans. */
+.pours-day {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  aspect-ratio: 1;
+  min-height: 44px;
   border: 1px solid var(--taupe);
   border-radius: var(--radius-card);
   background: var(--milk);
-  transition: transform var(--motion-fast) var(--ease);
+  color: var(--ink);
+  font-size: 13px;
+  transition: transform var(--motion-fast) var(--ease), background-color var(--motion-fast) var(--ease);
 }
 
-/* A finished board sits a shade back — read, not pending. */
-.puzzle-row[data-played] {
-  background: var(--oat);
-  border-color: var(--taupe);
-}
-
-.puzzle-row::after {
+.pours-day::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -686,27 +729,99 @@ a.text-action {
   pointer-events: none;
 }
 
-.puzzle-row:active {
+/* The day that has not arrived: an empty well, no number — tomorrow keeps its
+   mystery (D-24: never a title before its day). A past day with no board keeps
+   its number but fades: it came and went, nothing lived there. */
+.pours-day[data-kind='future'] {
+  background: transparent;
+  border-style: dashed;
+  color: transparent;
+}
+
+.pours-day[data-kind='blank'] {
+  background: transparent;
+  color: var(--faint-ink);
+}
+
+/* A finished board sits a shade back — read, not pending — same rule the old rows had. */
+.pours-day[data-played] {
+  background: var(--oat);
+}
+
+.pours-day[data-selected] {
+  border-color: var(--ink);
+  border-width: 2px;
+}
+
+/* Today wears the honey ring the primary pill's hover uses — the one square that is
+   an invitation rather than a memory. */
+.pours-day[data-today]:not([data-played]) {
+  border-color: var(--honey);
+  border-width: 2px;
+}
+
+button.pours-day:active {
   transform: translateY(1px);
 }
 
-.puzzle-row-title {
+.pours-day .result-cup {
+  width: 18px;
+  height: 18px;
+}
+
+.pours-day-number {
+  line-height: 1;
+}
+
+/* ---------- The title card: where a day's board says its name ---------- */
+
+.day-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--taupe);
+  border-radius: var(--radius-card);
+  background: var(--milk);
+}
+
+.day-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: var(--grain);
+  opacity: var(--grain-strength);
+  pointer-events: none;
+}
+
+.day-card-date {
+  color: var(--soft-ink);
+  font-size: 13px;
+}
+
+.day-card-title {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.2;
 }
 
-.puzzle-row-status {
+.day-card-status {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
+  color: var(--soft-ink);
+  font-size: 14px;
+  min-height: 20px;
 }
 
-.puzzle-row-status.is-unplayed {
-  color: var(--faint-ink);
-  font-size: 20px;
-  padding-right: 4px;
+.day-card .pill {
+  align-self: flex-start;
+  margin-top: 4px;
 }
 
 /* How the board went, as a coffee cup — steaming on a solve, spilled on a loss. Coffee is
@@ -785,8 +900,8 @@ a.text-action {
 .tier-dot[data-solved][data-tier='red']    { background: var(--tier-red-main);    border-color: var(--tier-red-main); }
 .tier-dot[data-solved][data-tier='black']  { background: var(--tier-black-main);  border-color: var(--tier-black-main); }
 
-/* Room to breathe below the last row before the Back action. */
-.puzzle-list + .text-action {
-  margin-top: 2px;
+/* Room to breathe below the card before the Back action. */
+.day-card + .text-action {
+  margin-top: 6px;
   margin-bottom: 8px;
 }

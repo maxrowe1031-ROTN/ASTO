@@ -14,6 +14,7 @@
 export const TUTORIAL_SEEN_KEY = 'asto.tutorialSeen';
 export const RESULTS_KEY = 'asto.results';
 export const RATED_BOARDS_KEY = 'asto.ratedBoards';
+export const HISTORY_KEY = 'asto.history';
 
 const SEEN = 'true';
 
@@ -101,11 +102,38 @@ export class Storage {
     }
   }
 
+  // --- play history, the statistics down-payment (D-24) ---
+  //
+  // Append-only where the results blob is best-only: the results blob answers
+  // "how did my best run go?" per board, and this answers "what have I played?"
+  // over time — the question a statistics page asks. Nothing reads it yet;
+  // recording starts now so the data exists the day that page is built. Same
+  // degrade rule as everything here: a broken blob is an empty history, and an
+  // append onto a broken blob starts a fresh one.
+
+  /** Every finished game, in play order. Never null. */
+  history() {
+    const raw = this.read(HISTORY_KEY);
+    if (raw === null) return [];
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  /** One finished game: { slug, dateKey, status, mistakes, solvedCount, hintsUsed }. */
+  appendHistory(entry) {
+    this.write(HISTORY_KEY, JSON.stringify([...this.history(), entry]));
+  }
+
   /** Forget everything ASTO stores — how a fresh-profile run is set up by hand. */
   clear() {
     this.remove(TUTORIAL_SEEN_KEY);
     this.remove(RESULTS_KEY);
     this.remove(RATED_BOARDS_KEY);
+    this.remove(HISTORY_KEY);
   }
 
   // --- the guarded primitives; nothing above this line touches the store directly ---

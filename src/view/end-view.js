@@ -12,7 +12,7 @@ import { difficultyToTier } from '../engine/tiers.js';
 import { settleIn, staggerStep } from './motion.js';
 
 export class EndView {
-  constructor(root, { onShare, onPlayAgain, onNextPuzzle, onBackToPuzzles }) {
+  constructor(root, { onShare, onPlayAgain, onPours }) {
     root.innerHTML = `
       <h1 class="end-title"></h1>
       <p class="end-score"></p>
@@ -25,12 +25,12 @@ export class EndView {
         <button class="pill" data-action="share">Share</button>
         <button class="pill" data-action="play-again">Play again</button>
         <!-- Ink fill is reserved for the one primary action, and after a finished board
-             that is moving on — the GDD's own Screen 4 markup fills this pill, not Share.
-             When there is no board left it hides, and no pill is filled. -->
-        <button class="pill primary" data-action="next-puzzle">Next puzzle</button>
+             that is moving on. The daily loop's "on" is the calendar: yesterday's board,
+             or the knowledge that tomorrow brings a new one (D-24 — "Next puzzle"
+             retired with the list it walked). -->
+        <button class="pill primary" data-action="pours">Past Pours</button>
       </div>
       <p class="share-feedback" role="status" aria-live="polite"></p>
-      <button class="text-action" data-action="back-to-puzzles">Back to puzzles</button>
       <!-- Deep-linked visitors never see the title screen (D-20 routing), so this is
            the one surface where a stranger can learn how the puzzles are made. -->
       <a class="text-action" href="about.html">About this project</a>`;
@@ -39,26 +39,13 @@ export class EndView {
     this.scoreEl = root.querySelector('.end-score');
     this.setsEl = root.querySelector('.end-sets');
     this.feedbackEl = root.querySelector('.share-feedback');
-    this.nextEl = root.querySelector('[data-action="next-puzzle"]');
     /** Handed to app.js, which mounts the SurveyView here (or leaves it hidden). */
     this.surveyMount = root.querySelector('.survey');
     this.renderedFor = null;
 
     root.querySelector('[data-action="share"]').addEventListener('click', onShare);
     root.querySelector('[data-action="play-again"]').addEventListener('click', onPlayAgain);
-    this.nextEl.addEventListener('click', onNextPuzzle);
-    root
-      .querySelector('[data-action="back-to-puzzles"]')
-      .addEventListener('click', onBackToPuzzles);
-  }
-
-  /**
-   * Whether there is a board left to hand the player. Told, never decided here — which
-   * board is next is a question about the manifest and the saved results, and this view
-   * knows about neither.
-   */
-  showNext(hasNext) {
-    this.nextEl.hidden = !hasNext;
+    root.querySelector('[data-action="pours"]').addEventListener('click', onPours);
   }
 
   /** Called by the controller like any other view; it simply ignores live games. */

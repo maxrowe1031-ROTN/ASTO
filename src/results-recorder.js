@@ -11,12 +11,14 @@
 
 export class ResultsRecorder {
   /**
-   * @param {object} storage       anything with recordResult(slug, result)
+   * @param {object} storage       anything with recordResult(slug, result) and appendHistory(entry)
    * @param {() => string|null} currentSlug  which board is on screen; null for the tutorial
+   * @param {() => string} todayKey  what day it is in the game's one timezone (D-24)
    */
-  constructor(storage, currentSlug) {
+  constructor(storage, currentSlug, todayKey) {
     this.storage = storage;
     this.currentSlug = currentSlug;
+    this.todayKey = todayKey;
     this.recordedFor = null;
   }
 
@@ -38,12 +40,17 @@ export class ResultsRecorder {
     const slug = this.currentSlug();
     if (!slug) return;
 
-    this.storage.recordResult(slug, {
+    const result = {
       status: state.status,
       mistakes: state.mistakes,
       solvedCount: state.solvedSetIds.length,
       // ?? 0: a state from before hints existed still records a truthful zero.
       hintsUsed: state.hintsUsed ?? 0
-    });
+    };
+    this.storage.recordResult(slug, result);
+    // The best-result write above keeps the cups honest; this row keeps the
+    // record. Every finish appends — replays included — because a statistics
+    // page counts plays, not bests (D-24).
+    this.storage.appendHistory({ slug, dateKey: this.todayKey(), ...result });
   }
 }
