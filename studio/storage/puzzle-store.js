@@ -208,6 +208,39 @@ export function createPuzzleStore({ rootDir = PUZZLES_DIR, today = () => dateKey
 
     has: (slug) => SLUG.test(slug ?? '') && existsSync(pathFor(slug)),
 
+    /**
+     * Move a board to another day — or, with `date: null`, take it off the
+     * calendar entirely: the file stays (old ?puzzle= links keep working), the
+     * manifest entry goes. This is the launch trim's one verb (D-24), kept
+     * here because unscheduling is a WRITE into puzzles/.
+     *
+     * Refuses, having written nothing, if the slug has no board or the day is
+     * already another board's.
+     */
+    reschedule(slug, date) {
+      if (!store.has(slug)) {
+        throw new PublishRefused('bad-slug', `no board at puzzles/${slug}.json to reschedule`);
+      }
+      if (date !== null) {
+        const taken = store
+          .list()
+          .find((entry) => entry.slug !== slug && entry.date === date);
+        if (taken) {
+          throw new PublishRefused(
+            'occupied',
+            `${date} already belongs to "${taken.slug}" — one board per day`,
+          );
+        }
+      }
+
+      const board = readBoard(slug);
+      if (date === null) delete board.date;
+      else board.date = date;
+      writeJsonAtomic(pathFor(slug), board);
+      store.writeManifest();
+      return { slug, date };
+    },
+
     read: (slug) => readBoard(slug),
 
     /** Every published board, by slug. Unreadable files are skipped, not thrown. */

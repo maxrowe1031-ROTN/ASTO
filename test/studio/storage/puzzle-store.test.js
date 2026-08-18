@@ -424,6 +424,47 @@ test('the tutorial is on disk but never in the list', () => {
   });
 });
 
+// --- reschedule: the launch tool's one verb (D-24) ---
+
+test('reschedule moves a board to a new day, in the file and the list together', () => {
+  withStore((store, rootDir) => {
+    store.publish({ board: goodBoard(), slug: 'batman' });
+    store.reschedule('batman', '2026-09-01');
+
+    assert.equal(store.read('batman').date, '2026-09-01');
+    assert.equal(readManifest(rootDir).puzzles[0].date, '2026-09-01');
+  });
+});
+
+test('reschedule to null unpublishes — off the list, still on disk', () => {
+  withStore((store, rootDir) => {
+    store.publish({ board: goodBoard(), slug: 'batman' });
+    store.reschedule('batman', null);
+
+    assert.equal('date' in store.read('batman'), false);
+    assert.deepEqual(readManifest(rootDir).puzzles, []);
+    assert.equal(store.has('batman'), true, 'the file left the disk');
+  });
+});
+
+test('reschedule refuses a day another board already holds', () => {
+  withStore((store) => {
+    store.publish({ board: goodBoard(), slug: 'a' }); // today
+    store.publish({ board: goodBoard(), slug: 'b' }); // tomorrow
+    assert.throws(
+      () => store.reschedule('b', TODAY),
+      (error) => error instanceof PublishRefused && error.reason === 'occupied',
+    );
+    assert.equal(store.read('b').date, '2026-08-19', 'a refusal must write nothing');
+  });
+});
+
+test('reschedule refuses a slug with no board behind it', () => {
+  withStore((store) => {
+    assert.throws(() => store.reschedule('missing', '2026-09-01'), PublishRefused);
+  });
+});
+
 test('rebuilding an unchanged manifest is a no-op — the tool can be run any time', () => {
   withStore((store, rootDir) => {
     store.publish({ board: goodBoard(), slug: 'batman' });
