@@ -472,14 +472,26 @@
   3. **The deck is a 2026-08-05 snapshot** — it says "eight agents" (there are 11), and predates
      the public ship, D-14, D-21 and D-22. Date-stamp it or update it; linking it unlabelled would
      misdescribe what the visitor just played.
-- **The statistics page (D-24 spun it off, 2026-08-18).** Max's third feature from the
-  Connections screenshots: completed count, win %, streaks, mistake distribution — stat
-  tiles and the bar chart, **badges deliberately cut** (an achievements subsystem doing
-  the least work on that screen). The data already accrues: `asto.history` records every
-  finished game with its date. Needs its own spec: which stats, how streaks treat
-  pre-daily history, and the end-screen-restore item below.
+- **The statistics page (D-24 spun it off, 2026-08-18).** **Specced the same day** —
+  `docs/superpowers/specs/2026-08-18-statistics-page-design.md`, brainstormed with Max,
+  awaiting his acceptance and then a build. Max's third feature from the Connections
+  screenshots: completed count, win %, streaks, mistake distribution — stat tiles and the
+  bar chart, **badges deliberately cut** (an achievements subsystem doing the least work
+  on that screen). The two questions this entry named are answered: **streaks count
+  consecutive board dates won** (walking the calendar backward, so an old board can repair
+  a gap), and **the counts read `asto.results` + the manifest, not `asto.history`** — which
+  means the whole back catalogue counts on day one and the page needs no new storage.
+  `asto.history` keeps accruing and powers nothing in v1.
 - **Play cannot reopen a finished end screen across a reload (2026-08-18).** Within a
   session it works (the controller holds the state); after a reload Play lands on the
   title card instead, because rebuilding the end screen needs persisted `solvedSetIds`
-  and an engine restore seam. Belongs with the statistics spec — same storage schema
-  conversation.
+  and an engine restore seam. ~~Belongs with the statistics spec — same storage schema
+  conversation.~~ **Correction, 2026-08-18:** the coupling does not exist. The statistics
+  page turned out to need no new storage at all (it reads `asto.results` + the manifest),
+  so there is no shared schema conversation to join. This is independent work, and the
+  heavier half of it — a restore seam on the engine — touches the module the boundary law
+  guards hardest. It needs its own scoping when Max pulls it in.
+- **Dead `.select-count` CSS from the retired select list (2026-08-18).** Noticed while
+  folding the row layout into `.select-head` for the statistics door. The rule is styled
+  in `styles/components.css` and rendered by nothing since D-24 retired the list. Left
+  alone to keep that diff focused; a one-line sweep whenever someone is next in the file.

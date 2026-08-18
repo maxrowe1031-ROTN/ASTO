@@ -17,7 +17,9 @@ import { TUTORIAL_RULES } from './controller/tutorial-script.js';
 import { buildShareText, share } from './share.js';
 import { LocalJsonSource } from './source/local-json-source.js';
 import { dateKeyFor, isReleased } from './source/release.js';
+import { summarize } from './stats.js';
 import { Storage } from './storage.js';
+import { hrefFor } from './url-state.js';
 import { BoardView } from './view/board-view.js';
 import { VocabView } from './view/vocab-view.js';
 import { ControlsView } from './view/controls-view.js';
@@ -26,6 +28,7 @@ import { FrameView } from './view/frame-view.js';
 import { HeaderView } from './view/header-view.js';
 import { CalendarView } from './view/calendar-view.js';
 import { SolvedSetsView } from './view/solved-sets-view.js';
+import { StatsView } from './view/stats-view.js';
 import { StatusView } from './view/status-view.js';
 import { SurveyView } from './view/survey-view.js';
 import { TitleView } from './view/title-view.js';
@@ -108,6 +111,9 @@ async function main() {
     currentSlug = slug;
     rememberInUrl(slug);
     coach.setActive(coaching);
+    // The tutorial owns its own exit; a second one mid-coach-mark could strand a
+    // first-timer half-taught, without ever marking the tutorial seen.
+    boardBack.hidden = coaching;
     router.show('game');
 
     // Coming back to a board that is still in play RESUMES it. Visiting the title screen
@@ -128,10 +134,39 @@ async function main() {
 
   const play = (slug) => startGame(slug, {}, false).catch(fail);
 
+  // The board's own way out (2026-08-18, Max's call). It goes to the CALENDAR,
+  // not the title screen: back means the door you came through, the same rule
+  // the statistics screen follows, and the end screen's primary action already
+  // sends a finished player there. The wordmark remains the way home, so both
+  // destinations stay reachable from a board.
+  const boardBack = document.getElementById('board-back');
+  boardBack.addEventListener('click', () =>
+    manifest.length > 0 ? showPours() : showDoor('title')
+  );
+
+  /**
+   * Any door: the title screen, the calendar, the statistics.
+   *
+   * Clearing `?puzzle=` is the entire point. rememberInUrl's contract is that the
+   * query names the board ON SCREEN, and on a door there is none — but until
+   * 2026-08-18 only startGame ever called it, so every door left the address
+   * pointing at the board the player had just left. In the tab it looked right;
+   * on the next load the deep-link route won and dropped them back into that
+   * board. Max hit it as "pressing ASTO takes me to a board" — "sometimes",
+   * because it only shows once the page actually reloads.
+   *
+   * Every door goes through here so the rule lives in one place rather than at
+   * five call sites free to drift apart.
+   */
+  const showDoor = (route) => {
+    rememberInUrl(null);
+    router.show(route);
+  };
+
   /** Show the calendar, always freshly painted — a result may have landed since last time. */
   const showPours = () => {
     calendarView.render(manifest, storage.allResults(), todayKey());
-    router.show('pours');
+    showDoor('pours');
   };
 
   /**
@@ -141,6 +176,16 @@ async function main() {
    * falls back to the one board that always works, as it always has.
    */
   const playDoor = () => (manifest.length > 0 ? showPours() : play(DEFAULT_PUZZLE));
+
+  /**
+   * The statistics screen, recomputed on every showing exactly as the calendar is:
+   * a board finished since last time must already be in the numbers. The model is
+   * pure and cheap, so there is nothing to cache and nothing to invalidate.
+   */
+  const showStats = () => {
+    statsView.render(summarize(manifest, storage.allResults(), todayKey()));
+    showDoor('stats');
+  };
 
   const leaveTutorial = () => {
     storage.markTutorialSeen();
@@ -158,7 +203,15 @@ async function main() {
 
   const calendarView = new CalendarView(document.getElementById('screen-pours'), {
     onPick: play,
-    onBack: () => router.show('title')
+    onBack: () => showDoor('title'),
+    onStats: showStats
+  });
+
+  // Back returns to the calendar, not the title screen: back means the door you
+  // came through. The wordmark still goes home, as it does everywhere else.
+  const statsView = new StatsView(document.getElementById('screen-stats'), {
+    onBack: showPours,
+    onHome: () => showDoor('title')
   });
 
   const coach = new TutorialOverlay(document.getElementById('tutorial-coach'), {
@@ -173,7 +226,7 @@ async function main() {
       endView.showShareResult(await share(buildShareText(controller.state)));
     },
     onPlayAgain: () => controller.restart(),
-    onPours: () => (manifest.length > 0 ? showPours() : router.show('title'))
+    onPours: () => (manifest.length > 0 ? showPours() : showDoor('title'))
   });
 
   // --- the end-screen survey (D-21) ---
@@ -225,7 +278,7 @@ async function main() {
   // frame → board → card, and the screen only swaps once the motion has finished.
   const views = [
     new HeaderView(document.getElementById('header'), {
-      onHome: () => router.show('title')
+      onHome: () => showDoor('title')
     }),
     new ControlsView(document.getElementById('controls'), {
       onConfirm: () => controller.confirmPressed(),
@@ -273,6 +326,9 @@ async function main() {
   if (deepLink && !(linkedEntry && !isReleased(linkedEntry, todayKey()))) {
     await startGame(deepLink, {}, false);
   } else {
+    // NOT showDoor: this is the first paint, not a navigation. A visitor who
+    // pasted a link to a future-dated board lands here, and clearing the query
+    // would throw their link away — it starts working on its release date.
     router.show('title');
   }
 }
@@ -285,10 +341,7 @@ async function main() {
  * competing with the real one.
  */
 function rememberInUrl(slug) {
-  const url = new URL(globalThis.location.href);
-  if (slug === null) url.searchParams.delete('puzzle');
-  else url.searchParams.set('puzzle', slug);
-  globalThis.history?.replaceState?.(null, '', url);
+  globalThis.history?.replaceState?.(null, '', hrefFor(globalThis.location.href, slug));
 }
 
 /**
@@ -299,12 +352,13 @@ function rememberInUrl(slug) {
 class ScreenRouter {
   // The doors. Standing on one means the game underneath keeps its state and is simply
   // not on screen; only `game` defers to the status.
-  static DOORS = ['title', 'pours'];
+  static DOORS = ['title', 'pours', 'stats'];
 
   constructor() {
     this.sections = {
       title: document.getElementById('screen-title'),
       pours: document.getElementById('screen-pours'),
+      stats: document.getElementById('screen-stats'),
       play: document.getElementById('screen-play'),
       end: document.getElementById('screen-end')
     };
