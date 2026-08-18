@@ -69,8 +69,8 @@ test('malformed JSON rejects cleanly', async () => {
 // --- the manifest: the same seam, the other artifact ---
 
 const manifest = {
-  schemaVersion: 1,
-  puzzles: [{ slug: 'first-light', id: 'asto-first-light', title: 'First Light' }]
+  schemaVersion: 2,
+  puzzles: [{ slug: 'first-light', id: 'asto-first-light', title: 'First Light', date: '2026-08-18' }]
 };
 
 test('a valid manifest loads and comes back parsed', async () => {

@@ -40,6 +40,7 @@ import { writeJsonAtomic } from './atomic-write.js';
 import { SLUG } from '../slug.js';
 import { validatePuzzle } from '../../src/source/validate-puzzle.js';
 import { checkBoard } from '../../src/engine/board-integrity.js';
+import { dateKeyFor, nextDay } from '../../src/source/release.js';
 
 const PUZZLES_DIR = fileURLToPath(new URL('../../puzzles/', import.meta.url));
 
@@ -52,8 +53,11 @@ const MANIFEST_FILENAME = 'index.json';
 const RESERVED = new Set([MANIFEST_FILENAME]);
 
 // The manifest's own version, independent of puzzle schema v1.0 — it describes
-// the LIST, not a board. Bumped only if the entry shape changes.
-const MANIFEST_VERSION = 1;
+// the LIST, not a board. Version 2 (D-24): every entry carries `date`, the day
+// the board is released; the array is date order, and a dateless board is OFF
+// the list — which is exactly how a board is unpublished without breaking the
+// `?puzzle=` links already pointing at its file.
+const MANIFEST_VERSION = 2;
 
 // On disk but never in the list: the tutorial is reached through "How to play"
 // on the title screen, and offering it as a puzzle would hand a returning
@@ -79,11 +83,30 @@ export class PublishRefused extends Error {
   }
 }
 
-export function createPuzzleStore({ rootDir = PUZZLES_DIR } = {}) {
+/**
+ * `today` is injectable for the same reason the engine's RNG is — the queue
+ * math has to be testable without waiting for midnight. The default asks the
+ * real clock in the game's one timezone (D-24).
+ */
+export function createPuzzleStore({ rootDir = PUZZLES_DIR, today = () => dateKeyFor(new Date()) } = {}) {
   const pathFor = (slug) => join(rootDir, `${slug}.json`);
   const manifestPath = join(rootDir, MANIFEST_FILENAME);
 
   const readBoard = (slug) => JSON.parse(readFileSync(pathFor(slug), 'utf8'));
+
+  /**
+   * The day the next publish releases: the day after the last scheduled board,
+   * or today when the queue has run dry — a stale queue does not backfill,
+   * because yesterday's missing puzzle is not something a new board can be.
+   */
+  const nextFreeDate = () => {
+    const dates = store
+      .list()
+      .filter((entry) => !UNLISTED.has(entry.slug) && typeof entry.date === 'string')
+      .map((entry) => entry.date);
+    const latest = dates.length > 0 ? dates.reduce((a, b) => (a > b ? a : b)) : null;
+    return latest !== null && latest >= today() ? nextDay(latest) : today();
+  };
 
   const store = {
     /**
@@ -108,7 +131,22 @@ export function createPuzzleStore({ rootDir = PUZZLES_DIR } = {}) {
         );
       }
 
-      const published = { ...board, id: idFor(slug) };
+      // The date is decided here, at publish, because this is the only door into
+      // `puzzles/` — the queue cannot drift from the files if nothing else can
+      // write them. A board that arrives with a date keeps it (schedule-launch,
+      // hand-authored schedules); a replace keeps the date the board already
+      // had on disk (editing is not rescheduling); a new board takes the next
+      // free day.
+      const existingDate = () => {
+        try {
+          const current = readBoard(slug);
+          return typeof current.date === 'string' ? current.date : null;
+        } catch {
+          return null;
+        }
+      };
+      const date = board?.date ?? existingDate() ?? nextFreeDate();
+      const published = { ...board, id: idFor(slug), date };
 
       const schema = validatePuzzle(published);
       if (!schema.ok) {
@@ -154,6 +192,7 @@ export function createPuzzleStore({ rootDir = PUZZLES_DIR } = {}) {
         filename: `${slug}.json`,
         path: destination,
         id: published.id,
+        date: published.date,
         originalId: board?.id ?? null,
         title: published.title,
         integrity: {
@@ -180,7 +219,7 @@ export function createPuzzleStore({ rootDir = PUZZLES_DIR } = {}) {
         const slug = filename.slice(0, -'.json'.length);
         try {
           const board = readBoard(slug);
-          entries.push({ slug, filename, id: board.id, title: board.title });
+          entries.push({ slug, filename, id: board.id, title: board.title, date: board.date });
         } catch {
           continue;
         }
@@ -205,43 +244,21 @@ export function createPuzzleStore({ rootDir = PUZZLES_DIR } = {}) {
      * Rebuild `puzzles/index.json` from the boards actually on disk, and
      * return it.
      *
-     * ORDER IS PRESERVED, and that is the whole design. The array order is the
-     * play order and the Next-puzzle order — an editorial judgement Max owns,
-     * not something a directory listing should decide. So: slugs already in
-     * the manifest keep their position, slugs whose files are gone drop out,
-     * and genuinely new boards are appended alphabetically at the end. Max can
-     * reorder the file by hand and a republish will not fight him.
-     *
-     * The entries themselves are always re-read from the boards, so a retitled
-     * board cannot leave a stale title in the list.
+     * DATE ORDER IS THE ORDER (D-24, superseding D-10's hand-preserved play
+     * order): the calendar reads chronology, and chronology is not an editable
+     * arrangement. A board with no `date` is deliberately absent — that is how
+     * a board is unpublished without deleting its file — and the entries are
+     * always re-read from the boards, so a retitled or rescheduled board
+     * cannot leave a stale line in the list.
      */
     writeManifest() {
-      const boards = new Map(
-        store
-          .list()
-          .filter((entry) => !UNLISTED.has(entry.slug))
-          .map((entry) => [entry.slug, { slug: entry.slug, id: entry.id, title: entry.title }]),
-      );
+      const puzzles = store
+        .list()
+        .filter((entry) => !UNLISTED.has(entry.slug) && typeof entry.date === 'string')
+        .map((entry) => ({ slug: entry.slug, id: entry.id, title: entry.title, date: entry.date }))
+        .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
 
-      // A hand-edited manifest can carry anything, including the same slug
-      // twice — dedupe as we keep, so a slip in the file cannot produce a
-      // board that appears in the list more than once.
-      const previous = store.readManifest();
-      const seen = new Set();
-      const kept = [];
-      for (const entry of Array.isArray(previous?.puzzles) ? previous.puzzles : []) {
-        const slug = entry?.slug;
-        if (!boards.has(slug) || seen.has(slug)) continue;
-        seen.add(slug);
-        kept.push(slug);
-      }
-
-      const appended = [...boards.keys()].filter((slug) => !seen.has(slug)).sort();
-
-      const manifest = {
-        schemaVersion: MANIFEST_VERSION,
-        puzzles: [...kept, ...appended].map((slug) => boards.get(slug)),
-      };
+      const manifest = { schemaVersion: MANIFEST_VERSION, puzzles };
 
       mkdirSync(rootDir, { recursive: true });
       writeJsonAtomic(manifestPath, manifest);
