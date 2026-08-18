@@ -2,6 +2,40 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-17 — The review kit reads the game, and mostly approves
+
+The `web-design-guidelines` kit's second outing, this time across the game
+itself (`index.html`, `about.html`, all of `src/view/`, the stylesheets).
+**Headline: the game was already compliant almost everywhere** — semantic
+buttons throughout, `aria-pressed` on tiles and dots, three `aria-live`
+regions, reduced motion no-op'd centrally in `motion.js`, safe-area insets,
+`touch-action: manipulation` with a correctly scoped drag exception,
+`focus-visible` outlines, motion tokens, no `transition: all`. The GDD's
+discipline held up under an outside ruleset.
+
+- **Four findings, applied on `work/site-review-fixes`:** hover states for
+  the controls the tiles left behind — outline pills and survey dots take
+  the tiles' oat fill, the ink primary wears the frame's honey glow,
+  text-actions darken to ink, all inside `@media (hover: hover)` so touch
+  never sticks · `autocomplete="off"` on the survey's comment input (no
+  password-manager popup over the D-21 instrument) · about.html's one
+  straight apostrophe curled · `text-wrap: balance` on about.html headings.
+- **Waived as house voice** (Max's call, consistent with the deck round):
+  placeholder phrasing, Title Case headings, second-person copy.
+- **Verified:** hover computed live in the browser (oat `#EAE0CB` on
+  outline pills, the honey-glow ring on Play, screenshot sent to Max) ·
+  `npm test` 1440/0 · `check-board` 48 clean · no engine, controller, or
+  rules change — one attribute in a view template, CSS elsewhere ·
+  `check-deploy` green post-push (below).
+- **Phase status:** Phases 1–5 complete and shipped. Gate: automated and
+  Claude-verifiable passed; **Max acceptance passed** — he saw the hover
+  capture and called the wrapup.
+- **Next:** the standing watches (`npm run ratings` — the panel is visibly
+  accumulating multiple players now, D-20 bounce, his D-22 editor
+  test-drive, batch five on his word) and the two overdue triggers: the
+  rubric at 109 judged boards, the slim-down lap. Backlog: the deep-dive
+  appendix, the deck-staleness count guard.
+
 ## 2026-08-17 — The review kit's first outing, applied to the deck
 
 A new user-level tool entered the stack this session (outside this repo):
