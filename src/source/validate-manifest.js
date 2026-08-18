@@ -10,16 +10,34 @@
 // `first-light.json` exists and is a valid puzzle is `validatePuzzle`'s job at
 // the moment that board is loaded. Two checks, two moments, no overlap.
 //
+// Version 2 (D-24): every entry carries `date` — the day the board is (or was,
+// or will be) released. Required and unique, because "today's puzzle" must
+// name exactly one board. Whether a date is in the FUTURE is release.js's
+// question, not a validity question: a scheduled board is a correct manifest
+// entry, not an error.
+//
 // Returns { ok, errors: [{ path, message }] } and collects EVERY problem — the
 // same contract as validate-puzzle.js, so callers handle both identically.
 
-const VERSION = 1;
+const VERSION = 2;
 
 // Lowercase, hyphen-separated, no leading hyphen. Duplicated from studio/slug.js
 // on purpose: this module imports nothing, and the pattern is the boundary
 // between a query string and a filesystem path. A shared import would make the
 // game's boundary check depend on the Studio.
 const SLUG = /^[a-z0-9][a-z0-9-]{0,63}$/;
+
+// Shape first, then reality: 2026-02-30 matches the pattern and is still not a
+// day anyone can play a puzzle on. The UTC round-trip catches rollover without
+// hand-writing a days-in-month table (Date.UTC(2026, 1, 30) lands in March).
+const DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
+function isCalendarDay(value) {
+  const match = typeof value === 'string' ? value.match(DATE) : null;
+  if (!match) return false;
+  const [, year, month, day] = match.map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+}
 
 export function validateManifest(manifest) {
   const errors = [];
@@ -44,6 +62,7 @@ export function validateManifest(manifest) {
 
   const seenSlugs = new Set();
   const seenIds = new Set();
+  const seenDates = new Set();
 
   manifest.puzzles.forEach((entry, i) => {
     const at = `puzzles[${i}]`;
@@ -72,6 +91,14 @@ export function validateManifest(manifest) {
     } else seenIds.add(entry.id);
 
     if (!isText(entry.title)) fail(`${at}.title`, 'Required: a non-empty string title.');
+
+    if (!isCalendarDay(entry.date)) {
+      fail(`${at}.date`, 'Required: a real calendar day as YYYY-MM-DD.');
+    } else if (seenDates.has(entry.date)) {
+      fail(`${at}.date`, `Duplicate date "${entry.date}" — "today's puzzle" must be one board.`);
+    } else {
+      seenDates.add(entry.date);
+    }
   });
 
   return { ok: errors.length === 0, errors };

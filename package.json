@@ -2,7 +2,7 @@
   "name": "asto",
   "version": "0.1.0",
   "private": true,
-  "description": "ASTO — This is to that. A cozy, mobile-first browser word puzzle.",
+  "description": "ASTO \u2014 This is to that. A cozy, mobile-first browser word puzzle.",
   "type": "module",
   "scripts": {
     "test": "node --test \"test/**/*.test.js\"",
@@ -12,7 +12,8 @@
     "manifest": "node tools/build-manifest.js",
     "studio": "node studio/run.js",
     "studio:review": "node studio/review/server.js",
-    "ratings": "node tools/ratings-report.js"
+    "ratings": "node tools/ratings-report.js",
+    "check-schedule": "node tools/check-schedule.js"
   },
   "engines": {
     "node": ">=22"

@@ -1,240 +1,287 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "puzzles": [
     {
       "slug": "warm-up",
       "id": "asto-warm-up",
-      "title": "Warm Up"
+      "title": "Warm Up",
+      "date": "2026-07-03"
     },
     {
       "slug": "bedside-manor",
       "id": "asto-bedside-manor",
-      "title": "Bedside Manor"
+      "title": "Bedside Manor",
+      "date": "2026-07-04"
     },
     {
       "slug": "by-the-shore",
       "id": "asto-by-the-shore",
-      "title": "By the Shore"
+      "title": "By the Shore",
+      "date": "2026-07-05"
     },
     {
       "slug": "for-the-birds",
       "id": "asto-for-the-birds",
-      "title": "For the Birds"
+      "title": "For the Birds",
+      "date": "2026-07-06"
     },
     {
       "slug": "gotham-connections",
       "id": "asto-gotham-connections",
-      "title": "Gotham Connections"
+      "title": "Gotham Connections",
+      "date": "2026-07-07"
     },
     {
       "slug": "maps-tools-and-directions",
       "id": "asto-maps-tools-and-directions",
-      "title": "Maps, Tools, and Directions"
+      "title": "Maps, Tools, and Directions",
+      "date": "2026-07-08"
     },
     {
       "slug": "trees-tools-and-time",
       "id": "asto-trees-tools-and-time",
-      "title": "Trees, Tools, and Time"
+      "title": "Trees, Tools, and Time",
+      "date": "2026-07-09"
     },
     {
       "slug": "voyages-warnings-and-watery-wisdom",
       "id": "asto-voyages-warnings-and-watery-wisdom",
-      "title": "Voyages, Warnings, and Watery Wisdom"
+      "title": "Voyages, Warnings, and Watery Wisdom",
+      "date": "2026-07-10"
     },
     {
       "slug": "yankees-baseball",
       "id": "asto-yankees-baseball",
-      "title": "Yankees Baseball"
+      "title": "Yankees Baseball",
+      "date": "2026-07-11"
     },
     {
       "slug": "weather-watch",
       "id": "asto-weather-watch",
-      "title": "Weather Watch"
+      "title": "Weather Watch",
+      "date": "2026-07-12"
     },
     {
       "slug": "ascent",
       "id": "asto-ascent",
-      "title": "Ascent"
+      "title": "Ascent",
+      "date": "2026-07-13"
     },
     {
       "slug": "furniture-craft-analogies",
       "id": "asto-furniture-craft-analogies",
-      "title": "Furniture & Craft Analogies"
+      "title": "Furniture & Craft Analogies",
+      "date": "2026-07-14"
     },
     {
       "slug": "behind-the-scenes",
       "id": "asto-behind-the-scenes",
-      "title": "Behind the Scenes"
+      "title": "Behind the Scenes",
+      "date": "2026-07-15"
     },
     {
       "slug": "on-stage-and-behind-it",
       "id": "asto-on-stage-and-behind-it",
-      "title": "On Stage and Behind It"
+      "title": "On Stage and Behind It",
+      "date": "2026-07-16"
     },
     {
       "slug": "mail-call",
       "id": "asto-mail-call",
-      "title": "Mail Call"
+      "title": "Mail Call",
+      "date": "2026-07-17"
     },
     {
       "slug": "the-library-shelf",
       "id": "asto-the-library-shelf",
-      "title": "The Library Shelf"
+      "title": "The Library Shelf",
+      "date": "2026-07-18"
     },
     {
       "slug": "money-matters",
       "id": "asto-money-matters",
-      "title": "Money Matters"
+      "title": "Money Matters",
+      "date": "2026-07-19"
     },
     {
       "slug": "the-locksmith-s-trade",
       "id": "asto-the-locksmith-s-trade",
-      "title": "The Locksmith's Trade"
+      "title": "The Locksmith's Trade",
+      "date": "2026-07-20"
     },
     {
       "slug": "tools-of-the-trade",
       "id": "asto-tools-of-the-trade",
-      "title": "Tools of the Trade"
+      "title": "Tools of the Trade",
+      "date": "2026-07-21"
     },
     {
       "slug": "under-the-big-top",
       "id": "asto-under-the-big-top",
-      "title": "Under the Big Top"
+      "title": "Under the Big Top",
+      "date": "2026-07-22"
     },
     {
       "slug": "backstage-logic",
       "id": "asto-backstage-logic",
-      "title": "Backstage Logic"
+      "title": "Backstage Logic",
+      "date": "2026-07-23"
     },
     {
       "slug": "house-rules",
       "id": "asto-house-rules",
-      "title": "House Rules"
+      "title": "House Rules",
+      "date": "2026-07-24"
     },
     {
       "slug": "school-days",
       "id": "asto-school-days",
-      "title": "School Days"
+      "title": "School Days",
+      "date": "2026-07-25"
     },
     {
       "slug": "in-the-garden",
       "id": "asto-in-the-garden",
-      "title": "In the Garden"
+      "title": "In the Garden",
+      "date": "2026-07-26"
     },
     {
       "slug": "festival-grounds",
       "id": "asto-festival-grounds",
-      "title": "Festival Grounds"
+      "title": "Festival Grounds",
+      "date": "2026-07-27"
     },
     {
       "slug": "enchanted-analogies",
       "id": "asto-enchanted-analogies",
-      "title": "Enchanted Analogies"
+      "title": "Enchanted Analogies",
+      "date": "2026-07-28"
     },
     {
       "slug": "river-systems",
       "id": "asto-river-systems",
-      "title": "River Systems"
+      "title": "River Systems",
+      "date": "2026-07-29"
     },
     {
       "slug": "the-long-ride",
       "id": "asto-the-long-ride",
-      "title": "The Long Ride"
+      "title": "The Long Ride",
+      "date": "2026-07-30"
     },
     {
       "slug": "through-the-looking-glass",
       "id": "asto-through-the-looking-glass",
-      "title": "Through the Looking Glass"
+      "title": "Through the Looking Glass",
+      "date": "2026-07-31"
     },
     {
       "slug": "borders-bounds-and-bearings",
       "id": "asto-borders-bounds-and-bearings",
-      "title": "Borders, Bounds, and Bearings"
+      "title": "Borders, Bounds, and Bearings",
+      "date": "2026-08-01"
     },
     {
       "slug": "kitchen-relations",
       "id": "asto-kitchen-relations",
-      "title": "Kitchen Relations"
+      "title": "Kitchen Relations",
+      "date": "2026-08-02"
     },
     {
       "slug": "behind-the-curtain",
       "id": "asto-behind-the-curtain",
-      "title": "Behind the Curtain"
+      "title": "Behind the Curtain",
+      "date": "2026-08-03"
     },
     {
       "slug": "apothecary-s-shelf",
       "id": "asto-apothecary-s-shelf",
-      "title": "Apothecary's Shelf"
+      "title": "Apothecary's Shelf",
+      "date": "2026-08-04"
     },
     {
       "slug": "signs-of-the-turning-season",
       "id": "asto-signs-of-the-turning-season",
-      "title": "Signs of the Turning Season"
+      "title": "Signs of the Turning Season",
+      "date": "2026-08-05"
     },
     {
       "slug": "in-the-bakery",
       "id": "asto-in-the-bakery",
-      "title": "In the Bakery"
+      "title": "In the Bakery",
+      "date": "2026-08-06"
     },
     {
       "slug": "festival-of-lanterns",
       "id": "asto-festival-of-lanterns",
-      "title": "Festival of Lanterns"
+      "title": "Festival of Lanterns",
+      "date": "2026-08-07"
     },
     {
       "slug": "ink-anatomy",
       "id": "asto-ink-anatomy",
-      "title": "Ink & Anatomy"
+      "title": "Ink & Anatomy",
+      "date": "2026-08-08"
     },
     {
       "slug": "the-tailor-s-bench",
       "id": "asto-the-tailor-s-bench",
-      "title": "The Tailor's Bench"
+      "title": "The Tailor's Bench",
+      "date": "2026-08-09"
     },
     {
       "slug": "harvest-almanac",
       "id": "asto-harvest-almanac",
-      "title": "Harvest Almanac"
+      "title": "Harvest Almanac",
+      "date": "2026-08-10"
     },
     {
       "slug": "all-aboard-a-railway-journey",
       "id": "asto-all-aboard-a-railway-journey",
-      "title": "All Aboard: A Railway Journey"
+      "title": "All Aboard: A Railway Journey",
+      "date": "2026-08-11"
     },
     {
       "slug": "light-life-and-the-things-between",
       "id": "asto-light-life-and-the-things-between",
-      "title": "Light, Life, and the Things Between"
+      "title": "Light, Life, and the Things Between",
+      "date": "2026-08-12"
     },
     {
       "slug": "sewing-room-logic",
       "id": "asto-sewing-room-logic",
-      "title": "Sewing Room Logic"
+      "title": "Sewing Room Logic",
+      "date": "2026-08-13"
     },
     {
       "slug": "roots-and-reasons",
       "id": "asto-roots-and-reasons",
-      "title": "Roots and Reasons"
+      "title": "Roots and Reasons",
+      "date": "2026-08-14"
     },
     {
       "slug": "hives-trees-and-the-turning-year",
       "id": "asto-hives-trees-and-the-turning-year",
-      "title": "Hives, Trees, and the Turning Year"
+      "title": "Hives, Trees, and the Turning Year",
+      "date": "2026-08-15"
     },
     {
       "slug": "carnival-nights",
       "id": "asto-carnival-nights",
-      "title": "Carnival Nights"
+      "title": "Carnival Nights",
+      "date": "2026-08-16"
     },
     {
       "slug": "ink-wax-and-what-they-can-t-do",
       "id": "asto-ink-wax-and-what-they-can-t-do",
-      "title": "Ink, Wax, and What They Can't Do"
+      "title": "Ink, Wax, and What They Can't Do",
+      "date": "2026-08-17"
     },
     {
       "slug": "from-farm-to-market",
       "id": "asto-from-farm-to-market",
-      "title": "From Farm to Market"
+      "title": "From Farm to Market",
+      "date": "2026-08-18"
     }
   ]
 }

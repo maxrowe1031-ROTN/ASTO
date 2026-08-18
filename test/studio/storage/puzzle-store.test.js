@@ -52,10 +52,12 @@ const goodBoard = () => ({
   ],
 });
 
+const TODAY = '2026-08-18';
+
 function withStore(run) {
   const rootDir = tempDir();
   try {
-    return run(createPuzzleStore({ rootDir }), rootDir);
+    return run(createPuzzleStore({ rootDir, today: () => TODAY }), rootDir);
   } finally {
     rmSync(rootDir, { recursive: true, force: true });
   }
@@ -91,8 +93,9 @@ test('a published board carries no provenance — it is indistinguishable from a
     store.publish({ board: goodBoard(), slug: 'batman' });
     const written = store.read('batman');
     // Schema v1.0 is locked. Anything beyond it would make the shipped game's
-    // content two shapes instead of one.
-    assert.deepEqual(Object.keys(written).sort(), ['id', 'sets', 'title']);
+    // content two shapes instead of one. `date` is IN the schema (optional
+    // since v1.0, the scheduling field since D-24) — it is when, not where-from.
+    assert.deepEqual(Object.keys(written).sort(), ['date', 'id', 'sets', 'title']);
   });
 });
 
@@ -248,9 +251,9 @@ test('publishing writes the board INTO the manifest, not merely onto disk', () =
     const result = store.publish({ board: goodBoard(), slug: 'batman' });
 
     const manifest = readManifest(rootDir);
-    assert.equal(manifest.schemaVersion, 1);
+    assert.equal(manifest.schemaVersion, 2);
     assert.deepEqual(manifest.puzzles, [
-      { slug: 'batman', id: 'asto-batman', title: 'Gotham Connections' },
+      { slug: 'batman', id: 'asto-batman', title: 'Gotham Connections', date: TODAY },
     ]);
     // The publish result says where it landed, so the Studio can show it.
     assert.equal(result.listedAt, 0);
@@ -278,24 +281,77 @@ test('the very first refusal writes no manifest at all', () => {
   });
 });
 
-// The array order is the play order, which is Max's editorial call. Regeneration
-// must never quietly re-sort it.
-test('a hand-reordered manifest keeps its order, and a new board is appended', () => {
+// D-24: date order IS the order. D-10's hand-preserved play order is superseded —
+// the calendar reads chronology, and chronology is not editable by reordering a file.
+test('the manifest is ordered by date, whatever order the publishes came in', () => {
   withStore((store, rootDir) => {
-    store.publish({ board: goodBoard(), slug: 'alpha' });
-    store.publish({ board: goodBoard(), slug: 'beta' });
-
-    const reordered = readManifest(rootDir);
-    reordered.puzzles.reverse(); // beta, alpha — as if Max edited the file
-    writeFileSync(join(rootDir, 'index.json'), JSON.stringify(reordered, null, 2));
-
-    store.publish({ board: goodBoard(), slug: 'gamma' });
+    store.publish({ board: { ...goodBoard(), date: '2026-08-20' }, slug: 'later' });
+    store.publish({ board: { ...goodBoard(), date: '2026-08-16' }, slug: 'earlier' });
 
     assert.deepEqual(
       readManifest(rootDir).puzzles.map((entry) => entry.slug),
-      ['beta', 'alpha', 'gamma'],
-      'a republish re-sorted an order a human chose',
+      ['earlier', 'later'],
     );
+  });
+});
+
+// --- the daily queue: publish assigns the date (D-24) ---
+
+test('the first publish of a dry queue is released today, not parked in the future', () => {
+  withStore((store) => {
+    const result = store.publish({ board: goodBoard(), slug: 'batman' });
+    assert.equal(result.date, TODAY);
+    assert.equal(store.read('batman').date, TODAY);
+  });
+});
+
+test('each further publish queues the next free day — five publishes, five days', () => {
+  withStore((store) => {
+    assert.equal(store.publish({ board: goodBoard(), slug: 'a' }).date, '2026-08-18');
+    assert.equal(store.publish({ board: goodBoard(), slug: 'b' }).date, '2026-08-19');
+    assert.equal(store.publish({ board: goodBoard(), slug: 'c' }).date, '2026-08-20');
+  });
+});
+
+test('a stale queue does not backfill — the next publish is today, gaps stay gaps', () => {
+  withStore((store) => {
+    store.publish({ board: { ...goodBoard(), date: '2026-08-01' }, slug: 'old' });
+    assert.equal(store.publish({ board: goodBoard(), slug: 'fresh' }).date, TODAY);
+  });
+});
+
+test('a board that arrives with its own date keeps it', () => {
+  withStore((store) => {
+    const result = store.publish({ board: { ...goodBoard(), date: '2026-09-01' }, slug: 'scheduled' });
+    assert.equal(result.date, '2026-09-01');
+  });
+});
+
+test('a republish keeps the date the board already had — editing is not rescheduling', () => {
+  withStore((store) => {
+    store.publish({ board: goodBoard(), slug: 'batman' });
+    store.publish({ board: goodBoard(), slug: 'other' }); // queue moves to the 19th
+
+    const result = store.publish({ board: goodBoard(), slug: 'batman', replace: true });
+    assert.equal(result.date, TODAY, 'a replace pushed the board to the back of the queue');
+  });
+});
+
+test('a dateless board on disk is off the manifest — that is the trim mechanism', () => {
+  withStore((store, rootDir) => {
+    store.publish({ board: goodBoard(), slug: 'batman' });
+    const parked = { ...store.read('batman'), id: 'asto-parked' };
+    delete parked.date;
+    writeFileSync(join(rootDir, 'parked.json'), JSON.stringify(parked, null, 2));
+    store.writeManifest();
+
+    assert.deepEqual(
+      readManifest(rootDir).puzzles.map((entry) => entry.slug),
+      ['batman'],
+      'a dateless board reached the list',
+    );
+    // Still on disk, still readable — an old ?puzzle= link keeps working.
+    assert.equal(store.has('parked'), true);
   });
 });
 
@@ -319,7 +375,8 @@ test('a retitled board cannot leave a stale title in the list', () => {
     store.publish({ board: goodBoard(), slug: 'batman' });
     writeFileSync(
       join(rootDir, 'batman.json'),
-      JSON.stringify({ ...goodBoard(), id: 'asto-batman', title: 'Gotham, Revisited' }, null, 2),
+      // A hand-edit keeps the date — dropping it would deliberately unlist the board.
+      JSON.stringify({ ...goodBoard(), id: 'asto-batman', title: 'Gotham, Revisited', date: TODAY }, null, 2),
     );
 
     store.writeManifest();
@@ -364,6 +421,47 @@ test('the tutorial is on disk but never in the list', () => {
       ['batman'],
       'the tutorial reached the player-facing list',
     );
+  });
+});
+
+// --- reschedule: the launch tool's one verb (D-24) ---
+
+test('reschedule moves a board to a new day, in the file and the list together', () => {
+  withStore((store, rootDir) => {
+    store.publish({ board: goodBoard(), slug: 'batman' });
+    store.reschedule('batman', '2026-09-01');
+
+    assert.equal(store.read('batman').date, '2026-09-01');
+    assert.equal(readManifest(rootDir).puzzles[0].date, '2026-09-01');
+  });
+});
+
+test('reschedule to null unpublishes — off the list, still on disk', () => {
+  withStore((store, rootDir) => {
+    store.publish({ board: goodBoard(), slug: 'batman' });
+    store.reschedule('batman', null);
+
+    assert.equal('date' in store.read('batman'), false);
+    assert.deepEqual(readManifest(rootDir).puzzles, []);
+    assert.equal(store.has('batman'), true, 'the file left the disk');
+  });
+});
+
+test('reschedule refuses a day another board already holds', () => {
+  withStore((store) => {
+    store.publish({ board: goodBoard(), slug: 'a' }); // today
+    store.publish({ board: goodBoard(), slug: 'b' }); // tomorrow
+    assert.throws(
+      () => store.reschedule('b', TODAY),
+      (error) => error instanceof PublishRefused && error.reason === 'occupied',
+    );
+    assert.equal(store.read('b').date, '2026-08-19', 'a refusal must write nothing');
+  });
+});
+
+test('reschedule refuses a slug with no board behind it', () => {
+  withStore((store) => {
+    assert.throws(() => store.reschedule('missing', '2026-09-01'), PublishRefused);
   });
 });
 

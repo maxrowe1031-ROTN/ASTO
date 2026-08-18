@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { RATED_BOARDS_KEY, RESULTS_KEY, Storage, TUTORIAL_SEEN_KEY } from '../src/storage.js';
+import { RATED_BOARDS_KEY, RESULTS_KEY, Storage, TUTORIAL_SEEN_KEY , HISTORY_KEY } from '../src/storage.js';
 
 /** A stand-in for localStorage: same three methods, no browser. */
 function fakeStore(initial = {}) {
@@ -227,4 +227,50 @@ test('a hostile store never rates and never throws', () => {
   const storage = new Storage({ store: hostileStore() });
   assert.doesNotThrow(() => storage.markRated('first-light'));
   assert.equal(storage.hasRated('first-light'), false);
+});
+
+// --- play history, the statistics down-payment (D-24) ---
+//
+// Append-only and read-back-whole: nothing in the game reads it yet, but every
+// finished game from today onward is a row the future stats page can count.
+
+test('history starts empty and appends in order', () => {
+  const storage = new Storage({ store: fakeStore() });
+  assert.deepEqual(storage.history(), []);
+
+  storage.appendHistory({ slug: 'a', dateKey: '2026-08-18', status: 'won', mistakes: 1, solvedCount: 4, hintsUsed: 0 });
+  storage.appendHistory({ slug: 'b', dateKey: '2026-08-18', status: 'lost', mistakes: 4, solvedCount: 2, hintsUsed: 1 });
+
+  assert.equal(storage.history().length, 2);
+  assert.equal(storage.history()[0].slug, 'a');
+  assert.equal(storage.history()[1].status, 'lost');
+});
+
+test('replays append too — history is the record of PLAYS, not of bests', () => {
+  const storage = new Storage({ store: fakeStore() });
+  storage.appendHistory({ slug: 'a', dateKey: '2026-08-18', status: 'lost', mistakes: 4, solvedCount: 1, hintsUsed: 0 });
+  storage.appendHistory({ slug: 'a', dateKey: '2026-08-19', status: 'won', mistakes: 0, solvedCount: 4, hintsUsed: 0 });
+  assert.equal(storage.history().length, 2);
+});
+
+test('a corrupt history blob degrades to empty instead of throwing', () => {
+  for (const raw of ['{ not json', '{}', 'null', '"a string"', '42']) {
+    const storage = new Storage({ store: fakeStore({ [HISTORY_KEY]: raw }) });
+    assert.deepEqual(storage.history(), [], raw);
+    assert.doesNotThrow(() => storage.appendHistory({ slug: 'a', dateKey: '2026-08-18' }), raw);
+    assert.equal(storage.history().length, 1, raw);
+  }
+});
+
+test('clear() forgets history along with everything else', () => {
+  const storage = new Storage({ store: fakeStore() });
+  storage.appendHistory({ slug: 'a', dateKey: '2026-08-18' });
+  storage.clear();
+  assert.deepEqual(storage.history(), []);
+});
+
+test('a hostile store keeps no history and never throws', () => {
+  const storage = new Storage({ store: hostileStore() });
+  assert.doesNotThrow(() => storage.appendHistory({ slug: 'a', dateKey: '2026-08-18' }));
+  assert.deepEqual(storage.history(), []);
 });

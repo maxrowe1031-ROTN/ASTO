@@ -6,9 +6,9 @@
 // front door, shown before any game exists. It is what makes the tutorial replayable
 // once the first run is behind the player.
 //
-// It survived the select screen rather than being absorbed by it: Play now opens the
-// puzzle list, and this stays the one screen where "How to play" is a peer of playing
-// rather than a footnote under a list of boards.
+// Since D-24 (revised at Max's review, 2026-08-18), Play opens the CALENDAR
+// with today highlighted — one door into all the puzzles, today first among
+// them. Two buttons on purpose: the simpler front door was his call.
 
 export class TitleView {
   constructor(root, { onPlay, onTutorial }) {

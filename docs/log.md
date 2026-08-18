@@ -2,6 +2,74 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-18 — ASTO turns daily: dated release, the calendar door, and the pot of coffee
+
+Max's ask at warmup: three features toward a hard launch — a daily puzzle, a
+calendar of published boards, a statistics page. Brainstormed to a spec
+(`docs/superpowers/specs/2026-08-18-daily-and-past-pours-design.md`), built on
+`work/daily-and-past-pours`, revised once at his review, accepted. **D-24**
+records all of it; **D-10 superseded** (date order replaces hand-ordered play
+order). Stats is deferred to its own spec; badges cut.
+
+- **The release rule:** every board carries `date`; `src/source/release.js`
+  (pure) gates by string comparison; "today" is Mountain midnight via
+  `Intl.DateTimeFormat`, computed at the impure edge and injected. **Max
+  challenged the queue+GitHub-Action recommendation and it reversed on
+  examination** — client-side gate, all boards committed, Wordle precedent,
+  reconsider-when recorded (a pre-date leak in the wild → the queue earns its
+  machinery). `main` stays human-only.
+- **Manifest v2:** `date` required, real, unique; date order; dateless boards
+  excluded — which IS the unpublish mechanism, files and old `?puzzle=` links
+  intact. All 47 listed boards backdated 2026-07-03 → 2026-08-18 through the
+  store's own publish gate (each re-passed schema + the 43,680-tuple sweep).
+- **The calendar** (`calendar-month.js` pure + tested; `calendar-view.js`):
+  month grid, bounded ‹ › nav, weekday header; a future square can never
+  carry an entry, so no view can leak a title early. Tapping a day opens the
+  **title card** — title, date, result, Play. The old select list and
+  `nextUnfinished` retired.
+- **Max's review revision, same day:** title screen back to **two buttons**
+  (Play → the calendar, today ringed and selected — `playToday` retired);
+  a **pot-of-coffee icon** for unplayed boards, drawn to his reference (diner
+  carafe: glass belly, coffee in the bottom, ink lid, D-handle), iterated
+  live against five alternatives at 18px and 64px; the day card carries the
+  **large state icon** on its right (his circled screenshot); the **"Past
+  Pours" label retired** (the calendar is the main door, not strictly an
+  archive) — end-screen pill reads "Puzzles", changeable on his word.
+- **Studio:** `puzzle-store` assigns the next free date at publish (dry queue
+  → today; replace keeps its date); new `reschedule()` is the only unpublish
+  verb. `npm run check-schedule` reports today/runway/gaps/dateless — the
+  human-visible replacement for a cron alert, a new standing watch.
+  `tools/schedule-launch.js` (the hard-launch trim: keep-list → backdates,
+  cuts go dateless) is **built and not run** — plan-by-default, writes only
+  with `--commit`, only on Max's word.
+- **Statistics down-payment:** `asto.history` (append-only, one dated row per
+  finished game) records from today; nothing reads it yet.
+- **Verified:** `npm test` **1486/0** (+46) · `check-board` 48 clean ·
+  `check-schedule` green (today covered) · live in the preview: won today's
+  board through the real UI (history row + best result landed, cup steamed on
+  the 18th), Play → calendar with today selected, 17 carafes on the August
+  grid, the 13th's card showed the big pot beside "Sewing Room Logic", July
+  bounded both ends, no future square carries a title, unlisted deep link
+  (`first-light`) works, no "Past Pours" text anywhere, 375px no overflow /
+  44px squares, console clean.
+- **Phase status:** Phases 1–5 remain complete and shipped; this is a
+  post-ship feature unit. Gate: automated and Claude-verifiable **passed**
+  with the evidence above; **Max acceptance passed** — he reviewed at
+  localhost, directed the calendar-first revision, saw it applied, and called
+  the wrapup.
+- **The urgent watch this creates: the queue is DRY after today.** Runway is
+  1 day, 0 queued ahead — tomorrow (Aug 19) has no board until the Studio
+  publishes, and Play falls back to the calendar. Batch five (on Max's word)
+  is what fills the queue; every publish now schedules the next free day.
+- **Next:** publish boards to build runway (batch five — the queue is dry
+  after today); the hard-launch trim when Max names the keep-list and date
+  (`schedule-launch` is ready); the statistics spec (history is accruing;
+  includes the end-screen-restore item); GDD version bump for screens 5/6 +
+  daily cadence (Max's); the standing watches (`npm run ratings`, D-20
+  bounce, D-22 editor test-drive, **`npm run check-schedule` joins them**)
+  and the two overdue triggers (the rubric at 109 judged boards, the
+  slim-down lap).
+
 ## 2026-08-17 — The review kit reads the game, and mostly approves
 
 The `web-design-guidelines` kit's second outing, this time across the game

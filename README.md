@@ -18,6 +18,11 @@ Then open http://localhost:8080.
 npm test
 ```
 
+The game is **daily** (D-24): one board releases at midnight Mountain Time, gated
+client-side by each board's `date`; **Past Pours** is the calendar of every day before
+this one. `npm run check-schedule` reports the publishing runway — today's board, days
+queued ahead, gaps.
+
 Zero dependencies. Vanilla HTML/CSS/JS ES modules, no build step. Tests use node's
 built-in `node:test` (requires Node 22+).
 

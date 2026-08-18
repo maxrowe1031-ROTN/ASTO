@@ -25,17 +25,27 @@ const UNLISTED = new Set(['tutorial', 'first-light']);
 
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
 
-const boardSlugs = readdirSync(PUZZLES)
+const boards = readdirSync(PUZZLES)
   .filter((f) => f.endsWith('.json') && f !== 'index.json')
-  .map((f) => f.slice(0, -'.json'.length))
-  .filter((slug) => !UNLISTED.has(slug));
+  .map((f) => {
+    const slug = f.slice(0, -'.json'.length);
+    return { slug, date: JSON.parse(readFileSync(join(PUZZLES, f), 'utf8')).date };
+  })
+  .filter((board) => !UNLISTED.has(board.slug));
+
+// D-24: the manifest lists exactly the DATED boards. A dateless board is
+// deliberately unpublished (the trim mechanism) — its file stays so old
+// ?puzzle= links keep working, but it is off the calendar. check-schedule
+// is what makes dateless boards visible, so going dateless can only be a
+// decision, never a quiet accident.
+const boardSlugs = boards.filter((b) => typeof b.date === 'string').map((b) => b.slug);
 
 test('the committed manifest is valid', () => {
   const result = validateManifest(manifest);
   assert.deepEqual(result.errors, [], 'run `npm run manifest` to rebuild it');
 });
 
-test('every board on disk is listed — a published board cannot go unplayable', () => {
+test('every dated board on disk is listed — a scheduled board cannot go unplayable', () => {
   const listed = new Set(manifest.puzzles.map((entry) => entry.slug));
   const missing = boardSlugs.filter((slug) => !listed.has(slug));
   assert.deepEqual(missing, [], `not in puzzles/index.json — run \`npm run manifest\``);
@@ -51,12 +61,18 @@ test('the tutorial is deliberately absent from the list', () => {
   assert.ok(manifest.puzzles.every((entry) => !UNLISTED.has(entry.slug)));
 });
 
-test('each entry carries the id and title of the board it points at', () => {
+test('each entry carries the id, title and date of the board it points at', () => {
   for (const entry of manifest.puzzles) {
     const board = JSON.parse(readFileSync(join(PUZZLES, `${entry.slug}.json`), 'utf8'));
     assert.equal(entry.id, board.id, `${entry.slug}: manifest id disagrees with the board`);
     assert.equal(entry.title, board.title, `${entry.slug}: manifest title disagrees with the board`);
+    assert.equal(entry.date, board.date, `${entry.slug}: manifest date disagrees with the board`);
   }
+});
+
+test('the list is date order — the calendar reads chronology (D-24)', () => {
+  const dates = manifest.puzzles.map((entry) => entry.date);
+  assert.deepEqual(dates, [...dates].sort(), 'run \`npm run manifest\` to rebuild it');
 });
 
 // Phase 5's content bar, pinned where it will keep being checked.

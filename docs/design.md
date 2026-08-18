@@ -1011,6 +1011,11 @@ too wide — shrink it. Either way the answer comes from played boards, not from
 
 ### D-10 — The puzzle list is generated data, and its order is Max's (2026-08-07)
 
+> **Superseded by D-24 (2026-08-18):** the manifest's order is DATE order now — chronology
+> is the calendar's law, not an editable arrangement. What D-10 kept ("the list is a
+> generated file, results live in localStorage") stands; what it protected (hand-ordered
+> play order) retired with the select list itself.
+
 **Why now:** Phase 5's content bar was met at 10 boards, so the phase's remaining work was
 the part players actually touch — a way to choose a board and a memory of how it went.
 
@@ -2223,6 +2228,78 @@ played by Max before release") that no test enforces. It is true today and the c
 it, but nothing would catch a future board published without a playthrough.
 **Reconsider-when:** if a board is ever published without a recorded playthrough, either the
 claim softens or `publish()` grows a check that the attempt carries one.
+
+### D-24 — The game turns daily: dated release, Past Pours, and the launch trim (2026-08-18)
+
+**Max's ask:** ASTO should feel feature-complete for a **hard launch** — a new puzzle
+every day at midnight, a calendar of published puzzles (Connections' "archive," renamed),
+and later a statistics page. The stats page is a separate future spec; its data
+down-payment ships now (below). Full spec:
+`docs/superpowers/specs/2026-08-18-daily-and-past-pours-design.md`.
+
+**The decisions, all Max's this session:**
+
+1. **Client-side date gate; every board committed.** No GitHub Action, no bot commits —
+   §9's "main holds verified states only" stays human-only. The initial recommendation was
+   a queue plus a scheduled promotion job; **Max challenged it and the recommendation
+   reversed on examination**: the Action's worst failure is "no puzzle today" (invisible
+   until a player finds it, untestable by `npm test`), while the client gate's worst
+   failure is a devtools reader spoiling their own game — the Wordle precedent, where
+   every future answer shipped in the bundle and it never mattered. Every gate decision is
+   a pure string comparison, fully unit-tested. **Accepted cost:** future titles are
+   readable in `index.json` and future board files are fetchable.
+   **Reconsider-when:** a board's title or answers show up anywhere public before its
+   date — then the queue+promotion machinery earns its keep, and the client code does not
+   change when it arrives.
+2. **One midnight for the whole world: America/Denver** (inferred from the repo's own
+   commit offsets, confirmed by Max). Computed with `Intl.DateTimeFormat` — platform tz
+   database, DST handled, HR-1 intact. A shared result means the same board to both
+   people.
+3. **Past Pours** (his name, from three candidates) **replaces the puzzle list.** A month
+   grid wearing the select screen's own paper cups; tapping a day opens a **title card**
+   (title, date, prior result, Play) so board titles keep working one tap deeper. Future
+   days are empty squares — `calendar-month.js` never puts an entry on a future square,
+   so no view built on it can leak a title early.
+4. **Play means today's board.** Finished it → the end screen resurfaces (result, share,
+   Past Pours) for the rest of the day; dry queue → Past Pours, never a dead door; no
+   manifest at all → the old single-board fallback.
+5. **The launch trim: best ~30, backdated, on his word.** `tools/schedule-launch.js`
+   takes his ordered keep-list, lands the last board on launch day walking backward one
+   per day, and unpublishes the rest **by removing their date** — files stay, so every
+   `?puzzle=` link ever shared keeps working. Plan-by-default; writes only with
+   `--commit`, only through `puzzle-store.reschedule()`. Until launch day, all 47 listed
+   boards carry sequential backdates (2026-07-03 → 2026-08-18) and the site plays
+   identically.
+6. **The queue is watched by a person, not a cron.** `npm run check-schedule` reports
+   today's board, the runway, gaps, and dateless boards; it joins /warmup's standing
+   checks. Publishing assigns the next free date in `puzzle-store` — a dry queue
+   publishes today, a replace keeps its date, five publishes queue five days.
+7. **History recording starts now** (`asto.history`, append-only, one row per finished
+   game with the date it was played) so the future statistics page has data from day
+   one. Nothing reads it yet. **Badges are cut** from that future scope — the stat tiles
+   and mistake distribution are the substance.
+
+**Schema/infra facts:** manifest bumped to **v2** (`date` required, real calendar day,
+unique — "today's puzzle" must be one board); board `date` was already optional in schema
+v1.0, so the puzzle schema is untouched. `select-view.js` and `nextUnfinished` retired.
+
+**Revised at Max's review, same day.** He played the build and called four changes:
+the title screen back to **two buttons** (Play opens the calendar with today
+highlighted, not today's board directly — the simpler front door); a **large state icon
+on the day card's right side**; a **new icon — a pot of coffee — for unplayed boards**
+(the vocabulary is now pot = waiting, steaming cup = won, spilled = lost, brown = hinted,
+on the grid and the card alike); and the **"Past Pours" label retired** (the calendar is
+the main door now, not strictly an archive — subtitle removed, the end screen's pill
+reads "Puzzles"). Decision 4's end-screen-resurface door went with Play-means-today;
+today's card showing the result covers the same need one tap away.
+
+**Known gap, narrowed by the revision:** the finished END SCREEN itself (share button,
+set reveals) still cannot be rebuilt across a reload — the day card shows the result,
+but re-opening the full end screen needs persisted `solvedSetIds` plus an engine restore
+seam. Parked in the backlog with the stats spec, where it belongs.
+
+**GDD drift to flag:** screens 5/6 (select list → Past Pours) and the daily cadence are
+not in GDD v0.13 — a version bump is Max's, not a working session's.
 
 ## House-rule exceptions
 
