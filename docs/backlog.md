@@ -472,3 +472,14 @@
   3. **The deck is a 2026-08-05 snapshot** — it says "eight agents" (there are 11), and predates
      the public ship, D-14, D-21 and D-22. Date-stamp it or update it; linking it unlabelled would
      misdescribe what the visitor just played.
+- **The statistics page (D-24 spun it off, 2026-08-18).** Max's third feature from the
+  Connections screenshots: completed count, win %, streaks, mistake distribution — stat
+  tiles and the bar chart, **badges deliberately cut** (an achievements subsystem doing
+  the least work on that screen). The data already accrues: `asto.history` records every
+  finished game with its date. Needs its own spec: which stats, how streaks treat
+  pre-daily history, and the end-screen-restore item below.
+- **Play cannot reopen a finished end screen across a reload (2026-08-18).** Within a
+  session it works (the controller holds the state); after a reload Play lands on the
+  title card instead, because rebuilding the end screen needs persisted `solvedSetIds`
+  and an engine restore seam. Belongs with the statistics spec — same storage schema
+  conversation.
