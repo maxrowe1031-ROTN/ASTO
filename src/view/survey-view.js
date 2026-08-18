@@ -33,7 +33,7 @@ export class SurveyView {
       </div>`
       ).join('')}
       <div class="survey-comment">
-        <input class="survey-input" type="text" maxlength="280"
+        <input class="survey-input" type="text" maxlength="280" autocomplete="off"
                placeholder="Anything else?" aria-label="Anything else?">
         <button class="pill" data-action="send-comment">Send</button>
       </div>

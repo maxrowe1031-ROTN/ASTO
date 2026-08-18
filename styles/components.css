@@ -248,6 +248,24 @@
   transform: translateY(1px);
 }
 
+/* Desktop-only feedback, the same convention the tiles set: outline controls take the
+   oat fill, the one ink-filled primary wears the frame's honey glow instead — hover
+   never invents a colour the game doesn't already use. */
+@media (hover: hover) {
+  .pill:hover:not(:disabled):not(.primary) {
+    background: var(--oat);
+  }
+  .pill.primary:hover:not(:disabled) {
+    box-shadow: 0 0 0 3px var(--honey-glow);
+  }
+  .survey-dot:hover:not([aria-pressed='true']) {
+    background: var(--oat);
+  }
+  .text-action:hover {
+    color: var(--ink);
+  }
+}
+
 /* Ink fill is reserved for the one primary action on screen. */
 .pill.primary {
   background: var(--ink);
