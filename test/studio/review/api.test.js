@@ -133,7 +133,7 @@ test('GET /api/runs summarises every run, newest first', async () => {
     assert.equal(status, 200);
     assert.equal(body.runs.length, 2);
     assert.deepEqual(Object.keys(body.runs[0]).sort(), [
-      'attemptCount', 'createdAt', 'currentAttemptId', 'revisionCount', 'runId', 'status', 'theme',
+      'attemptCount', 'createdAt', 'currentAttemptId', 'reviewableAttemptId', 'revisionCount', 'runId', 'status', 'theme',
     ]);
     assert.ok(body.runs[0].runId > body.runs[1].runId, 'not newest-first');
   } finally {
@@ -1545,6 +1545,47 @@ test('a revision after an edit publishes the revision\'s board — stale edits n
     const { status, body } = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
     assert.equal(status, 200);
     assert.equal(body.published.title, 'Revised Title');
+  } finally {
+    cleanup();
+  }
+});
+
+// A run whose LATEST attempt failed can still hold a complete, reviewable board
+// from an earlier one — three did across batches five and six (2026-08-19), each
+// reading `failed` in the list while a finished board sat underneath. The list
+// now says so, because a red badge over a good board is a board nobody opens.
+test('a failed run names the earlier attempt that is still complete', async () => {
+  const { store, api, cleanup } = setup();
+  try {
+    const { runId } = store.createRun({ slug: 'parade', theme: 'brass band parade', brief: { count: 14 } });
+    store.updateStatus(runId, 'running');
+    store.createAttempt(runId, { startingStage: '01-pair-author' });
+    store.completeAttempt(runId, '0001', { status: 'complete' });
+    store.createAttempt(runId, { startingStage: '01-pair-author', parentAttemptId: '0001' });
+    store.completeAttempt(runId, '0002', { status: 'failed' });
+    store.updateStatus(runId, 'failed');
+
+    const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
+    const row = body.runs.find((r) => r.runId === runId);
+    assert.equal(row.status, 'failed', 'the run status itself is unchanged');
+    assert.equal(row.reviewableAttemptId, '0001', 'the good attempt should be named');
+  } finally {
+    cleanup();
+  }
+});
+
+test('a run with nothing complete names no reviewable attempt', async () => {
+  const { store, api, cleanup } = setup();
+  try {
+    const { runId } = store.createRun({ slug: 'doomed', theme: 'doomed', brief: { count: 14 } });
+    store.updateStatus(runId, 'running');
+    store.createAttempt(runId, { startingStage: '01-pair-author' });
+    store.completeAttempt(runId, '0001', { status: 'failed' });
+    store.updateStatus(runId, 'failed');
+
+    const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
+    const row = body.runs.find((r) => r.runId === runId);
+    assert.equal(row.reviewableAttemptId, null);
   } finally {
     cleanup();
   }

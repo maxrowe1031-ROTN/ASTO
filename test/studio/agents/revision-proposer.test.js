@@ -172,3 +172,29 @@ test('buildPrompt survives a board with no findings and no context', () => {
   assert.doesNotThrow(() => proposer.buildPrompt({ board: BOARD, feedback: [] }, undefined));
   assert.doesNotThrow(() => proposer.buildPrompt({}, {}));
 });
+
+// --- candidates must stay inside the theme's world (2026-08-19) -----------
+//
+// Root cause of three terminal failures across batches five and six: the
+// proposer suggested replacement words from another domain to fix a structural
+// problem, the reviser used them as instructed, and enforceRevisionUnity then
+// failed the whole attempt for importing them. In every case the fatal word was
+// the proposer's own suggestion — "kickoff:final whistle (sports game)" onto a
+// brass band parade, "Kneading"/"Baking" onto a tannery, "backlit silhouette"
+// onto a puppeteer's trunk. The proposer optimised for "an unrelated span" while
+// the guard demanded "the same world", and nothing reconciled them.
+
+test('both prompts require candidate fixes to stay inside the board\'s world', () => {
+  const board = { title: 'Brass Band Parade', sets: [] };
+  const forEditor = proposer.buildPrompt({ board, feedback: [{ action: 'reject', note: 'x' }], findings: [] });
+  const preReview = proposer.buildPrompt({ board, findings: [], preReview: true });
+
+  for (const [label, prompt] of [['editor', forEditor], ['pre-review', preReview]]) {
+    assert.match(prompt, /world|theme/i, `${label} prompt should speak about the theme's world`);
+    assert.match(
+      prompt,
+      /outside|another domain|different domain|other domain/i,
+      `${label} prompt should warn against reaching outside it`,
+    );
+  }
+});

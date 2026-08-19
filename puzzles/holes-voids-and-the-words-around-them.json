@@ -1,0 +1,85 @@
+{
+  "id": "asto-holes-voids-and-the-words-around-them",
+  "title": "Holes, Voids, and the Words Around Them",
+  "sets": [
+    {
+      "id": "set-agent-instrument-explorers",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "A diver reaches for a flashlight and a climber reaches for a rope — each explorer paired with the gear that defines the job.",
+      "pairs": [
+        [
+          "diver",
+          "flashlight"
+        ],
+        [
+          "climber",
+          "rope"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": []
+    },
+    {
+      "id": "set-object-component-hollow",
+      "relationshipLabel": "a hollow landform necessarily has this structural part",
+      "explanation": "Every pit has a rim and every basin has a floor — the part is not optional, it's what makes the hollow a hollow.",
+      "pairs": [
+        [
+          "pit",
+          "rim"
+        ],
+        [
+          "basin",
+          "floor"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "basin could suggest a taxonomic landform type"
+      ]
+    },
+    {
+      "id": "set-cause-effect-formation",
+      "relationshipLabel": "a geological process and the non-karst result it necessarily leaves behind",
+      "explanation": "Collapse leaves rubble and dissolution carves a channel — each process named by its plain physical aftermath, not by a fancy cave-type name.",
+      "pairs": [
+        [
+          "collapse",
+          "rubble"
+        ],
+        [
+          "dissolution",
+          "channel"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "channel could suggest a watercourse-type landform, pulling toward the taxonomic set"
+      ]
+    },
+    {
+      "id": "set-taxonomic-caves",
+      "relationshipLabel": "a kind of large karst feature, more specific type",
+      "explanation": "A cenote is a specific kind of sinkhole and a grotto is a specific kind of cave — the general term hiding a named subtype.",
+      "pairs": [
+        [
+          "sinkhole",
+          "cenote"
+        ],
+        [
+          "cave",
+          "grotto"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": []
+    }
+  ],
+  "glossary": [
+    {
+      "word": "cenote",
+      "definition": "a deep natural pool of water surrounded by rock, formed where ground collapses to reveal groundwater below"
+    }
+  ],
+  "date": "2026-09-18"
+}

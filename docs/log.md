@@ -2,6 +2,63 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-19 — Why auto-revision kept failing: the pipeline was punishing the reviser for obeying it
+
+Max: *"lets look at why auto-revision keeps failing."* Three of twelve boards
+across batches five and six had died at `[terminal-content]`. **D-14 amendment**
+records the investigation and the three fixes.
+
+- **Root cause, confirmed 3 for 3: the fatal word was the pipeline's own
+  suggestion.** For the brass band parade, the revision notes proposed *"a
+  start/end pair from an unrelated span, e.g. curtain-up:curtain-call (theater)
+  or kickoff:final whistle (sports game)"*; the reviser used `kickoff:final
+  whistle`; `enforceRevisionUnity` then failed the board for importing sports
+  words onto a parade. Same shape for `backlit silhouette`/`glove animation`
+  (puppeteer's trunk) and `Kneading`/`Baking` (marrakech tanneries) — every
+  fatal word appeared verbatim in the notes the pipeline had sent.
+- **The conflict:** `revision-proposer` optimises for STRUCTURE and asks for "an
+  unrelated span"; `enforceRevisionUnity` enforces THEME and forbids exactly
+  that. Both are individually right; nothing reconciled them. **The guard's own
+  call-site comment already used `kickoff` as its example** — the word had done
+  this before, and the recorded lesson was "the guard is right" rather than
+  "who suggested it?".
+- **Evidence gathered before any fix:** compared attempt 0001's unity outliers
+  (zero) against 0002's (two), so the guard was firing correctly; then matched
+  each fatal word against the stored revision notes — 3 for 3.
+- **Fix 1 — the proposer stays in-world.** Both prompt builders now require
+  every candidate to belong to the board's own subject, with the reasoning that
+  a second timeline usually exists INSIDE a subject (a parade has a tuning-up
+  and a last note as surely as a match has a kickoff).
+- **Fix 2 — a breach earns a bounded rebuild, not a single strike.** Every other
+  rejection in this pipeline gets rounds of feedback; this one threw away a whole
+  attempt over a fixable word. The offending words go back to the board builder
+  by name and stages 05–08 re-run, because they judged the words that changed.
+  Terminal only once `maxIntegrityRetries` rebuilds are spent. The stage loop
+  became index-based to be re-enterable.
+- **Fix 3 — the Studio stops hiding good boards.** A failed run holding a
+  complete earlier attempt now reports `reviewableAttemptId`, badged in the run
+  list; the run's status stays `failed` because it did fail. **This surfaced 5
+  boards, not the 3 known** — two older runs were also hiding finished work.
+- **Verified:** `npm test` **1562/0** (+3, incl. a new test pinning that a
+  rebuild which removes the offending word lets the attempt COMPLETE — the old
+  test only proved the terminal path) · `check-board` **51 clean** ·
+  `check-schedule` **32 days, 31 queued** · the badge confirmed live against the
+  real failed runs (5 of 19 rendering it).
+- **Also this session:** Max published two boards from batch six —
+  *Holes, Voids, and the Words Around Them* (Sep 18) and *The Curing Room*
+  (Sep 19), the first published boards generated under the register rotation.
+- **Phase status:** Phases 1–5 complete and shipped; Studio pipeline work. Gate:
+  automated **passed**, Claude-verifiable **passed** (badge verified in the
+  browser against real data). **Max acceptance passed** — he directed the
+  investigation, chose both fixes plus the Studio change, and called the wrapup.
+- **Next:** **review the 5 recovered boards** hiding behind failed badges — free
+  boards already paid for (the spice bazaar and the last day of the fair remain
+  unreviewed repeats from batch five and can be skipped). Then: push to deploy
+  when Max says; the hard-launch trim on his keep-list; GDD version bump for
+  screens 5/6 + daily cadence (his); the standing watches (`npm run ratings`,
+  `npm run check-schedule`, D-20 bounce, D-22 editor test-drive) and the two
+  overdue triggers (the rubric at 109 judged boards, the slim-down lap).
+
 ## 2026-08-19 — The live site had no puzzle today; July becomes thirty days of runway
 
 Three units, in the order they mattered: today's board was missing from the live

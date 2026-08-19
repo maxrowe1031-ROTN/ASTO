@@ -2440,6 +2440,54 @@ looked like a regression from the stricter guard. It was not — fallbacks were
 nearby ideas. **A real batch is ~6 boards; the tail of a 100-sampling is an
 artificial stress condition and must not be read as production output.**
 
+### D-14 amendment — the pipeline stopped punishing the reviser for obeying it (2026-08-19)
+
+**How it surfaced:** three of twelve boards across batches five and six died at
+`[terminal-content]`, always the same way — "the revision introduced word(s)
+outside the theme's world".
+
+**Root cause, confirmed 3 for 3:** in every case **the fatal word was the
+pipeline's own suggestion.**
+
+| board | fatal words | in the revision notes? |
+| --- | --- | --- |
+| brass band parade | `kickoff`, `final whistle` | yes |
+| the puppeteer's trunk | `backlit silhouette`, `glove animation` | yes |
+| marrakech tanneries | `Kneading`, `Baking` | yes |
+
+Two parts of the pipeline held **contradictory standards** with nothing
+reconciling them. `revision-proposer` fixes STRUCTURE and, to break a
+single-timeline cross-reading on a parade board, proposed *"a start/end pair from
+an unrelated span, e.g. curtain-up:curtain-call (theater) or kickoff:final
+whistle (sports game)"*. `enforceRevisionUnity` enforces THEME and fails any
+introduced word 08 names an outlier. "Use an unrelated domain" and "stay in this
+world" cannot both be satisfied; the reviser obeyed the instruction and the gate
+killed the board for obeying.
+
+Bitter detail: the guard's own call-site comment already used `kickoff` as its
+example. The same word had done this before and the lesson recorded was
+"the guard is right" rather than "who suggested it?".
+
+**Three fixes, all landed:**
+1. **The proposer must stay in-world.** Both prompt builders now require every
+   candidate to belong to the board's own subject, with the reasoning that a
+   second timeline exists INSIDE most subjects (a parade has a tuning-up and a
+   last note as surely as a match has a kickoff).
+2. **The breach earns a bounded rebuild, not a single strike.** Every other
+   rejection in this pipeline gets rounds of feedback; this one threw away a
+   whole attempt over a fixable word. The offending words now go back to the
+   board builder by name, and stages 05–08 re-run because they judged the words
+   that changed. Terminal only once `maxIntegrityRetries` rebuilds are spent.
+3. **The Studio stops hiding good boards.** A failed run that holds a complete
+   earlier attempt now reports `reviewableAttemptId`, badged in the run list.
+   The run's own status stays `failed` — it did fail, and saying otherwise would
+   be a lie — but what survived is named. **This immediately surfaced 5 boards,
+   not the 3 known: two older runs were also hiding finished work.**
+
+**Reconsider-when:** a unity breach survives the bounded rebuilds in a real run —
+then the board builder is not able to act on the feedback and the fix belongs
+further upstream, at whichever stage keeps proposing the out-of-world span.
+
 ### D-24 amendment — July becomes the queue; the calendar starts at August (2026-08-19)
 
 **Max's ask:** *"take all of the puzzles currently in july and backlog them and use

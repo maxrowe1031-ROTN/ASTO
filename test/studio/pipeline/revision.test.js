@@ -261,6 +261,72 @@ test('the evaluators stay blind — they judge the board, not the request', asyn
 // the flag was advisory, so the breach reached Max and cost the board. A word a
 // REVISION introduces that lands in 08's unity outliers now fails the attempt —
 // first drafts stay advisory-only, since Max sees those fresh.
+// The bounded rebuild (2026-08-19). The gate above used to be a single strike,
+// and three attempts across batches five and six died on it — every time to a
+// word the pipeline's OWN proposer had suggested ("kickoff:final whistle (sports
+// game)" to fix a timeline collision on a brass band parade). The proposer now
+// has to stay in-world; this is the net beneath it. A rebuild that removes the
+// offending word must let the attempt finish, the way every other rejection in
+// this pipeline gets bounded rounds of feedback rather than one strike.
+test('a unity breach is rebuilt out of, and the attempt then completes', async () => {
+  const { store, runId, cleanup } = await completedRun();
+  let dropFixtures = () => {};
+  try {
+    const breached = structuredClone(fixtureBoard());
+    const set = breached.sets.find((s) => s.pairs.flat().includes('Harvest'));
+    set.pairs = set.pairs.map((pair) => pair.map((w) => (w === 'Harvest' ? 'kickoff' : w)));
+
+    // The rebuild replaces the import with an in-world word.
+    const repaired = structuredClone(fixtureBoard());
+
+    const eight = JSON.parse(
+      readFileSync(join('studio', 'fixtures', 'responses', '08-style-guide.json'), 'utf8'),
+    );
+    const breachedEight = JSON.parse(eight.text);
+    breachedEight.unity = {
+      verdict: 'weak',
+      reasoning: 'kickoff reads as imported from another world.',
+      outliers: [{ word: 'kickoff', note: 'american football on a rustic-morning board' }],
+    };
+
+    // fixturesWith writes static files, so a reply cannot vary per call. Wrap
+    // the mock transport instead: the board builder answers with the breach
+    // first and the repair after, and 08 flags the outlier only the first time.
+    const { dir, cleanup: drop } = fixturesWith({
+      '06-adversarial-solver': solverReply(repaired),
+    });
+    dropFixtures = drop;
+
+    const base = mockTransport(dir);
+    let builderCall = 0;
+    let styleCall = 0;
+    const transport = async (request) => {
+      const reply = await base(request);
+      if (request.stageId === '04-board-builder') {
+        builderCall += 1;
+        return { ...reply, ...boardReply(builderCall === 1 ? breached : repaired) };
+      }
+      if (request.stageId === '06-adversarial-solver') {
+        return { ...reply, ...solverReply(builderCall === 1 ? breached : repaired) };
+      }
+      if (request.stageId === '08-style-guide') {
+        styleCall += 1;
+        if (styleCall === 1) return { ...reply, text: JSON.stringify(breachedEight) };
+      }
+      return reply;
+    };
+
+    requestRevision(store, runId, { fromStage: FROM, notes: 'fix the black set' });
+    const result = await runPipeline({ runId, store, transport, ...fastTime() });
+
+    assert.equal(result.status, 'complete', 'the rebuild should have rescued the attempt');
+    assert.ok(builderCall > 1, 'the board builder should have been re-run with the breach named');
+  } finally {
+    dropFixtures();
+    cleanup();
+  }
+});
+
 test('a revision that introduces a unity outlier fails, and names the word', async () => {
   const { store, runId, cleanup } = await completedRun();
   let dropFixtures = () => {};
