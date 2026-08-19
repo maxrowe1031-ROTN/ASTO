@@ -1,0 +1,86 @@
+{
+  "id": "board-luthier-analogies",
+  "title": "The Luthier's Workshop",
+  "sets": [
+    {
+      "id": "set-location-activity",
+      "relationshipLabel": "the place and the activity it exists to host",
+      "explanation": "A violin shop exists for lutherie just as a concert hall exists for a recital — each place is defined by the craft or performance it enables.",
+      "pairs": [
+        [
+          "violin shop",
+          "lutherie"
+        ],
+        [
+          "concert hall",
+          "recital"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "violin",
+        "concert hall"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "raw material rendered into the luthier's working substance",
+      "explanation": "Hide is boiled down into glue and resin is refined into rosin — each pair turns a raw material into the substance a luthier actually uses.",
+      "pairs": [
+        [
+          "hide",
+          "glue"
+        ],
+        [
+          "resin",
+          "rosin"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "resin",
+        "rosin"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the start and end of a musical or making process",
+      "explanation": "Practice ends in performance and a commission ends in delivery — each pair marks the opening and closing point of a process, not a simple opposite.",
+      "pairs": [
+        [
+          "practice",
+          "performance"
+        ],
+        [
+          "commission",
+          "delivery"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "commission",
+        "practice"
+      ]
+    },
+    {
+      "id": "set-class-individual",
+      "relationshipLabel": "a kind of instrument or part and one legendary example of it",
+      "explanation": "A violin can be a Stradivarius and a bow can be a Tourte — each pair moves from the general class of instrument or part to its most legendary maker's name.",
+      "pairs": [
+        [
+          "violin",
+          "Stradivarius"
+        ],
+        [
+          "bow",
+          "Tourte"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "violin",
+        "Stradivarius"
+      ]
+    }
+  ]
+}

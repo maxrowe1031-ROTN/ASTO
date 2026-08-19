@@ -1,0 +1,86 @@
+{
+  "id": "board-asto-spice-market",
+  "title": "The Spice Market",
+  "sets": [
+    {
+      "id": "set-taxonomic-flavor",
+      "relationshipLabel": "a category and a kind within it",
+      "explanation": "Cinnamon is a spice and pistachio is a nut — each pair names a broad category and one member of it.",
+      "pairs": [
+        [
+          "spice",
+          "cinnamon"
+        ],
+        [
+          "nut",
+          "pistachio"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "flavor-words",
+        "kitchen-category"
+      ]
+    },
+    {
+      "id": "set-conversion-spice",
+      "relationshipLabel": "raw source processed into the traded spice",
+      "explanation": "Each pair moves from the raw plant part to the processed product sold as spice or flavoring.",
+      "pairs": [
+        [
+          "saffron flower",
+          "saffron thread"
+        ],
+        [
+          "vanilla pod",
+          "vanilla extract"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "shared-word-source",
+        "processing"
+      ]
+    },
+    {
+      "id": "set-creature-possession-cargo",
+      "relationshipLabel": "a creature and the carrying gear that belongs to it",
+      "explanation": "A saddlebag belongs on a camel and a pannier on a donkey — each animal paired with the gear built to ride it.",
+      "pairs": [
+        [
+          "camel",
+          "saddlebag"
+        ],
+        [
+          "donkey",
+          "pannier"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "carrying-gear",
+        "pack-animals"
+      ]
+    },
+    {
+      "id": "set-before-after-span",
+      "relationshipLabel": "the start and end of one span",
+      "explanation": "Planting begins what harvest ends, and opening begins what closing ends — each pair marks the two edges of a single stretch of time.",
+      "pairs": [
+        [
+          "planting",
+          "harvest"
+        ],
+        [
+          "opening",
+          "closing"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "time-words",
+        "season-cycle"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "asto-icecream-01",
+  "title": "Ice Cream Stand",
+  "sets": [
+    {
+      "id": "set-flavor-category",
+      "relationshipLabel": "category and a kind within it",
+      "explanation": "Chocolate is a flavor and sprinkles are a topping — each pair names a broad category followed by one specific example of it.",
+      "pairs": [
+        [
+          "flavor",
+          "chocolate"
+        ],
+        [
+          "topping",
+          "sprinkles"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "dessert-words",
+        "easy-inclusion"
+      ]
+    },
+    {
+      "id": "set-place-stocked",
+      "relationshipLabel": "place and the thing kept there",
+      "explanation": "Tubs live in the freezer case and nuts live at the sundae bar — each first word is a spot, and the second is what's stocked there.",
+      "pairs": [
+        [
+          "freezer case",
+          "tubs"
+        ],
+        [
+          "sundae bar",
+          "nuts"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "shop-layout",
+        "container-vs-place"
+      ]
+    },
+    {
+      "id": "set-image-of-real",
+      "relationshipLabel": "a made image and the real thing it depicts",
+      "explanation": "A sign shows a cone and a photo shows a sundae — each first word is a representation standing in for the real dessert it pictures.",
+      "pairs": [
+        [
+          "sign",
+          "cone"
+        ],
+        [
+          "photo",
+          "sundae"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "looks-like-inclusion",
+        "picture-vs-object"
+      ]
+    },
+    {
+      "id": "set-enabler",
+      "relationshipLabel": "the thing that lets an action happen",
+      "explanation": "Rock salt is what makes freezing possible and a wafer is what makes scooping possible — each first word is the necessary enabler behind the action.",
+      "pairs": [
+        [
+          "rock salt",
+          "freeze"
+        ],
+        [
+          "wafer",
+          "scoop"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "cause-vs-time",
+        "abstract-enabling"
+      ]
+    }
+  ]
+}

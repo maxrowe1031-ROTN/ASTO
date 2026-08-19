@@ -1,0 +1,86 @@
+{
+  "id": "asto-cured-meats",
+  "title": "The Curing Room",
+  "sets": [
+    {
+      "id": "set-category",
+      "relationshipLabel": "broad category and a specific kind within it",
+      "explanation": "Charcuterie is the broad category that salami exemplifies, just as sausage is the category chorizo belongs to.",
+      "pairs": [
+        [
+          "charcuterie",
+          "salami"
+        ],
+        [
+          "sausage",
+          "chorizo"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "food category",
+        "meat terms"
+      ]
+    },
+    {
+      "id": "set-fixture",
+      "relationshipLabel": "structure and the fixture it has for handling meat",
+      "explanation": "A smokehouse holds meat on a hook, and a curing chamber holds it on a rack — each structure defined by the fixture it uses.",
+      "pairs": [
+        [
+          "smokehouse",
+          "hook"
+        ],
+        [
+          "curing chamber",
+          "rack"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "curing equipment",
+        "structures"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "agent that stops the process it prevents",
+      "explanation": "Salt halts spoilage and nitrite halts botulism — each agent existing specifically to block the danger named beside it.",
+      "pairs": [
+        [
+          "salt",
+          "spoilage"
+        ],
+        [
+          "nitrite",
+          "botulism"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "preservation chemistry",
+        "food safety"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "outer layer concealing the true feature beneath it",
+      "explanation": "Bark hides the smoke ring within a brisket, and bloom hides the casing beneath it — each visible surface masking what's really happening underneath.",
+      "pairs": [
+        [
+          "bark",
+          "smoke ring"
+        ],
+        [
+          "bloom",
+          "casing"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "surface texture",
+        "curing appearance"
+      ]
+    }
+  ]
+}

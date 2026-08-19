@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-marching-band",
+  "title": "March Order",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "instrument and the component it simply has",
+      "explanation": "A trumpet has a valve and a clarinet has a reed — each pair names an instrument and the part built into it.",
+      "pairs": [
+        [
+          "trumpet",
+          "valve"
+        ],
+        [
+          "clarinet",
+          "reed"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "instrument",
+        "part"
+      ]
+    },
+    {
+      "id": "set-representation",
+      "relationshipLabel": "a thing and its drawn/diagrammed image",
+      "explanation": "A formation is captured on a drill chart just as a route is captured on a map — each pair links a real thing to its diagram.",
+      "pairs": [
+        [
+          "formation",
+          "drill chart"
+        ],
+        [
+          "route",
+          "map"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "diagram",
+        "spatial"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the start and end of one span",
+      "explanation": "Step-off begins a performance and disband ends it, just as warm-up opens a session and finale closes it — each pair bookends the same stretch of time.",
+      "pairs": [
+        [
+          "step-off",
+          "disband"
+        ],
+        [
+          "warm-up",
+          "finale"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "performance",
+        "sequence"
+      ]
+    },
+    {
+      "id": "set-enabling-agent",
+      "relationshipLabel": "the cue that lets a group begin its action",
+      "explanation": "A whistle triggers the cadence and a downbeat triggers the entrance — each pair is a signal necessarily followed by the action it authorizes.",
+      "pairs": [
+        [
+          "whistle",
+          "cadence"
+        ],
+        [
+          "downbeat",
+          "entrance"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "cue",
+        "signal"
+      ]
+    }
+  ]
+}

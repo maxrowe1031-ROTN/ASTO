@@ -1,0 +1,86 @@
+{
+  "id": "board-tack-leatherwork",
+  "title": "Leatherwork & Tack",
+  "sets": [
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "raw material becomes worked material through processing",
+      "explanation": "Hide is tanned into leather just as flax is spun into thread — each pair names a raw material and the finished good it becomes.",
+      "pairs": [
+        [
+          "hide",
+          "leather"
+        ],
+        [
+          "flax",
+          "thread"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "material",
+        "processing"
+      ]
+    },
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A saddler works leather with an awl, while a tanner works hides with a fleshing knife — each craftsman paired with the tool that defines their trade.",
+      "pairs": [
+        [
+          "saddler",
+          "awl"
+        ],
+        [
+          "tanner",
+          "fleshing knife"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "trade",
+        "tool"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "leather cover and the structure it hides beneath it",
+      "explanation": "A skirt conceals the saddle tree and a flap conceals the billet strap — each visible leather panel hides a working part underneath it.",
+      "pairs": [
+        [
+          "skirt",
+          "saddle tree"
+        ],
+        [
+          "flap",
+          "billet"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "leather",
+        "hidden part"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "opening and closing stage of a process",
+      "explanation": "Soaking begins the tanning process just as finishing ends it, and breaking-in begins a working life just as retiring ends it — each pair marks the first and last stage of a very different span.",
+      "pairs": [
+        [
+          "soaking",
+          "finishing"
+        ],
+        [
+          "breaking-in",
+          "retiring"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "process",
+        "span"
+      ]
+    }
+  ]
+}

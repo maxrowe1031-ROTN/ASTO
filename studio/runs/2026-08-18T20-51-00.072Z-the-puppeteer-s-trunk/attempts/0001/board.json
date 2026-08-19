@@ -1,0 +1,84 @@
+{
+  "id": "asto-puppetry-board",
+  "title": "Strings Attached",
+  "sets": [
+    {
+      "id": "set-object-feature",
+      "relationshipLabel": "a thing and a feature it simply has",
+      "explanation": "A puppet has a mouth and a stage has a curtain — each is just a part its whole always possesses.",
+      "pairs": [
+        [
+          "puppet",
+          "mouth"
+        ],
+        [
+          "stage",
+          "curtain"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "puppet-generic"
+      ]
+    },
+    {
+      "id": "set-puppet-type",
+      "relationshipLabel": "a kind of puppet and a famous individual example of it",
+      "explanation": "Pinocchio is the famous marionette and Lamb Chop the famous sock puppet — each pair names a puppet style and its best-known star.",
+      "pairs": [
+        [
+          "marionette",
+          "Pinocchio"
+        ],
+        [
+          "sock puppet",
+          "Lamb Chop"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "puppet-generic",
+        "character-name"
+      ]
+    },
+    {
+      "id": "set-craft-tool",
+      "relationshipLabel": "a worker and the tool of their craft",
+      "explanation": "A puppeteer works a rod and a ventriloquist works a dummy — each is the instrument that defines their act.",
+      "pairs": [
+        [
+          "puppeteer",
+          "rod"
+        ],
+        [
+          "ventriloquist",
+          "dummy"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "puppetry-terms"
+      ]
+    },
+    {
+      "id": "set-creature-form",
+      "relationshipLabel": "a creature and the puppet-form made to depict it",
+      "explanation": "Dragons are conventionally staged as shadow puppets and witches as hand puppets — a fixed convention, not a necessity, which is what makes it the hardest link on the board.",
+      "pairs": [
+        [
+          "dragon",
+          "shadow puppet"
+        ],
+        [
+          "witch",
+          "hand puppet"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "puppet-generic",
+        "fairy-tale-creature"
+      ]
+    }
+  ]
+}

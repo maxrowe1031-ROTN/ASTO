@@ -1,0 +1,84 @@
+{
+  "id": "asto-fairground-01",
+  "title": "A Day at the Fairground",
+  "sets": [
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "category and a kind of fairground thing it includes",
+      "explanation": "An attraction can be bumper cars and a game can be ring toss — each pair names a broad category and one specific member of it.",
+      "pairs": [
+        [
+          "attraction",
+          "bumper cars"
+        ],
+        [
+          "game",
+          "ring toss"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "fairground-theme"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "the thing that stops the event",
+      "explanation": "A safety bar exists to stop a fall and a fence exists to stop an escape — each device is defined by the outcome it necessarily blocks.",
+      "pairs": [
+        [
+          "safety bar",
+          "fall"
+        ],
+        [
+          "fence",
+          "escape"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "fairground-safety",
+        "structure-vs-Ferris-wheel"
+      ]
+    },
+    {
+      "id": "set-reverse",
+      "relationshipLabel": "an action and the action that undoes it",
+      "explanation": "To raise is undone by a strike, and to kindle is undone by a douse — each pair is an action paired with its exact reversal.",
+      "pairs": [
+        [
+          "raise",
+          "strike"
+        ],
+        [
+          "kindle",
+          "douse"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "strength-game-red-herring"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "thing and the feature it necessarily has",
+      "explanation": "A Ferris wheel always has a gondola and a carousel always has a carved animal — each ride is defined by a part it cannot lack.",
+      "pairs": [
+        [
+          "Ferris wheel",
+          "gondola"
+        ],
+        [
+          "carousel",
+          "carved animal"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "fence-as-structure",
+        "ride-parts"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "asto-tannery-board",
+  "title": "Tannery Trade",
+  "sets": [
+    {
+      "id": "set-taxonomic-dye",
+      "relationshipLabel": "a category and one specific kind of it",
+      "explanation": "Indigo is a dye and saffron is a spice — each pair names a broad category followed by one named example of it.",
+      "pairs": [
+        [
+          "Dye",
+          "Indigo"
+        ],
+        [
+          "Spice",
+          "Saffron"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "color",
+        "cooking"
+      ]
+    },
+    {
+      "id": "set-reverse-hide-actions",
+      "relationshipLabel": "an action and the action that undoes it",
+      "explanation": "Drying reverses soaking and shrinking reverses stretching — each pair is an action paired with the action that cancels it out.",
+      "pairs": [
+        [
+          "Soak",
+          "Dry"
+        ],
+        [
+          "Stretch",
+          "Shrink"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "hide-work",
+        "opposites"
+      ]
+    },
+    {
+      "id": "set-sequence-tanning",
+      "relationshipLabel": "a stage and the larger process it opens or closes",
+      "explanation": "Soaking is the stage that opens tanning, and drying is the stage that opens finishing — each pair links a single step to the larger phase it sets in motion.",
+      "pairs": [
+        [
+          "Soaking",
+          "Tanning"
+        ],
+        [
+          "Drying",
+          "Finishing"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "hide-work",
+        "process"
+      ]
+    },
+    {
+      "id": "set-cause-effect-tanning",
+      "relationshipLabel": "a substance and the process it causes in the hide",
+      "explanation": "Lime causes dehairing and tannin causes curing — each pair links a chemical to the specific transformation it triggers in the hide.",
+      "pairs": [
+        [
+          "Lime",
+          "Dehairing"
+        ],
+        [
+          "Tannin",
+          "Curing"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "chemistry",
+        "hide-work"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-001",
+  "title": "Ships, Museums, and the Sea",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "a shipboard thing and a feature it simply has",
+      "explanation": "A vessel has an anchor and a cabin has a porthole — each pair names a whole and a part it always possesses.",
+      "pairs": [
+        [
+          "vessel",
+          "anchor"
+        ],
+        [
+          "cabin",
+          "porthole"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "nautical vocabulary",
+        "part-whole"
+      ]
+    },
+    {
+      "id": "set-representation",
+      "relationshipLabel": "a thing and the made image that depicts it",
+      "explanation": "A shipwreck is captured in a diorama and a captain is captured in a portrait — each first item is rendered as the second.",
+      "pairs": [
+        [
+          "shipwreck",
+          "diorama"
+        ],
+        [
+          "captain",
+          "portrait"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "museum objects",
+        "depiction"
+      ]
+    },
+    {
+      "id": "set-agent-object",
+      "relationshipLabel": "a museum worker and the thing their work is about",
+      "explanation": "A curator's work centers on the exhibit and a conservator's on the artifact — each professional is defined by the object they tend.",
+      "pairs": [
+        [
+          "curator",
+          "exhibit"
+        ],
+        [
+          "conservator",
+          "artifact"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "museum roles",
+        "agent-object"
+      ]
+    },
+    {
+      "id": "set-directional",
+      "relationshipLabel": "the same kind of vessel or inlet, smaller then larger",
+      "explanation": "A skiff scaled up becomes a galleon, and a cove scaled up becomes a bay — each pair names the same category of thing at two ends of a size scale.",
+      "pairs": [
+        [
+          "skiff",
+          "galleon"
+        ],
+        [
+          "cove",
+          "bay"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "ship types",
+        "coastal geography"
+      ]
+    }
+  ]
+}

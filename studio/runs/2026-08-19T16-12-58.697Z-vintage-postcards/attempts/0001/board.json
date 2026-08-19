@@ -1,0 +1,83 @@
+{
+  "id": "board-post-and-picture",
+  "title": "Mail, Memory, and Motion",
+  "sets": [
+    {
+      "id": "set-tool",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A mail carrier's satchel and a photographer's camera are the instruments each profession is defined by.",
+      "pairs": [
+        [
+          "mail carrier",
+          "satchel"
+        ],
+        [
+          "photographer",
+          "camera"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "postal-theme",
+        "photography-theme"
+      ]
+    },
+    {
+      "id": "set-process",
+      "relationshipLabel": "origin becomes result through a process",
+      "explanation": "A negative is developed into a print just as a painting is copied into a reproduction — raw source turned into finished output.",
+      "pairs": [
+        [
+          "negative",
+          "print"
+        ],
+        [
+          "painting",
+          "reproduction"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "photography-theme"
+      ]
+    },
+    {
+      "id": "set-missing-feature",
+      "relationshipLabel": "the one thing it structurally can never have",
+      "explanation": "A postcard is read by anyone who handles it and a telegram is composed by an operator, so privacy and a signature are exactly what each format structurally excludes.",
+      "pairs": [
+        [
+          "postcard",
+          "privacy"
+        ],
+        [
+          "telegram",
+          "signature"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "postal-theme"
+      ]
+    },
+    {
+      "id": "set-journey-bounds",
+      "relationshipLabel": "start and end of a journey",
+      "explanation": "A postmark opens a letter's trip toward delivery, and boarding opens a traveler's trip toward disembarking — the first and last marker of a journey.",
+      "pairs": [
+        [
+          "postmark",
+          "delivery"
+        ],
+        [
+          "boarding",
+          "disembarking"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "postal-theme"
+      ]
+    }
+  ]
+}

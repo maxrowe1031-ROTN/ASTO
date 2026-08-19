@@ -1,0 +1,78 @@
+{
+  "id": "asto-board-hollow-forms",
+  "title": "Holes, Voids, and the Words Around Them",
+  "sets": [
+    {
+      "id": "set-object-component-hollow",
+      "relationshipLabel": "a hollow landform necessarily has this structural part",
+      "explanation": "Every pit has a rim and every basin has a floor — the part is not optional, it's what makes the hollow a hollow.",
+      "pairs": [
+        [
+          "pit",
+          "rim"
+        ],
+        [
+          "basin",
+          "floor"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "basin could suggest a taxonomic landform type"
+      ]
+    },
+    {
+      "id": "set-agent-instrument-explorers",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "A diver reaches for a flashlight and a climber reaches for a rope — each explorer paired with the gear that defines the job.",
+      "pairs": [
+        [
+          "diver",
+          "flashlight"
+        ],
+        [
+          "climber",
+          "rope"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": []
+    },
+    {
+      "id": "set-cause-effect-formation",
+      "relationshipLabel": "a geological process produces this resulting void",
+      "explanation": "Collapse leaves a crater and dissolution carves a chasm — each process names the specific emptiness it leaves behind.",
+      "pairs": [
+        [
+          "collapse",
+          "crater"
+        ],
+        [
+          "dissolution",
+          "chasm"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "crater and chasm read like more hollow-types, pulling toward the taxonomic set"
+      ]
+    },
+    {
+      "id": "set-taxonomic-caves",
+      "relationshipLabel": "a kind of large karst feature, more specific type",
+      "explanation": "A cenote is a specific kind of sinkhole and a grotto is a specific kind of cave — the general term hiding a named subtype.",
+      "pairs": [
+        [
+          "sinkhole",
+          "cenote"
+        ],
+        [
+          "cave",
+          "grotto"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": []
+    }
+  ]
+}
