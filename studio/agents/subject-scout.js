@@ -19,6 +19,7 @@
 // so every batch carries its own comparison (design.md D-15).
 
 import { JSON_ONLY, composePrompt, parseJson, validateAgainst } from './agent-kit.js';
+import { registerById, REGISTERS } from '../corpus/registers.js';
 import { slugify } from '../slug.js';
 
 export const id = 'subject-scout';
@@ -26,11 +27,19 @@ export const stageId = '00-subject-scout';
 
 const MAX_SUBJECT_LENGTH = 48;
 
+const MAX_FAMILY_LENGTH = 32;
+
+// `family` is required, and that is the point: naming the franchise or core
+// idea out loud is what lets CODE refuse a second board from it. Four Harry
+// Potter subjects sharing no significant word slipped past every earlier guard
+// (D-15 second amendment, 2026-08-18) because nothing ever asked which story
+// they came from.
 const SCHEMA = {
   type: 'object',
-  required: ['subject'],
+  required: ['subject', 'family'],
   properties: {
     subject: { type: 'string', minLength: 1, maxLength: MAX_SUBJECT_LENGTH },
+    family: { type: 'string', minLength: 1, maxLength: MAX_FAMILY_LENGTH },
   },
 };
 
@@ -46,23 +55,44 @@ const BANDING = [
   'Hard-science subjects are welcome only as a rare minority — they tend to make boards feel clinical.',
   'Whimsy is prized: clocks, mirrors, shadows, fairy tales are the register this game calls its own.',
   'The subject seeds a 16-word puzzle board, so it must be rich in concrete, recognisable THINGS — a subject with no nouns in it cannot become a board.',
-  // Batch two came back "the harvest moon, the night train, the umbrella shop…" —
-  // six for six on one shape (D-15 amendment, 2026-08-11). The reflex is the rut.
-  'Vary the grammatical shape of the subject: bare noun phrases ("harvest supper"), gerunds ' +
-    '("mending nets"), prepositional turns ("after the rain") are all welcome. "The <thing>" is ' +
-    'allowed but must not be the reflex — if the most recent subjects on the used list already ' +
-    'start with "the", choose a different shape this time.',
-  // The deeper rut, named by the editor on batch four (D-17 amendment,
-  // 2026-08-11): shapes varied, but every subject was a cozy commonplace place.
-  // His words: "we haven't seen anything like a tropical island, or mars, or
-  // egypt... or harry potter, or the yankees. a large variety and mix is key."
-  'Cozy everyday places are this game\'s HOME REGISTER, not its only one. Periodically reach ' +
-    'elsewhere: far places ("a tropical island", "the pyramids", "mars"), history and myth, ' +
-    'fiction and fandom, sports and pop culture, proper-noun subjects a curious person knows. ' +
-    'These still obey the taste guidance above — concrete, recognisable, warm — they just widen ' +
-    'the map. If the most recent subjects on the used list all sit in one register, go somewhere ' +
-    'genuinely different this time.',
+  // Shape. Shortened when the register landed, on the theory that the register
+  // was doing the real work — and the very next sampling came back 85% "the
+  // <thing>", WORSE than the 74% before. Restored and stated as a proportion,
+  // because "must not be the reflex" is a judgement the model kept passing
+  // itself on, and a number is not.
+  'Vary the grammatical shape. AT MOST HALF of subjects should open with "the" — the rest must ' +
+    'take another shape: bare noun phrases ("harvest supper"), gerunds ("mending nets"), ' +
+    'prepositional turns ("after the rain"), plain plurals ("tide pools"), or a name on its own. ' +
+    'If the recent subjects below already open with "the", this one must not.',
+  // Added after the same sampling: a quarter of 100 subjects ended in a
+  // time-of-day tail ("at dawn", "at dusk", "by lamplight"). An atmosphere tic
+  // that survives any register, so it is named here rather than per register.
+  'Do not append a time of day or lighting to make a subject feel evocative — no "at dawn", ' +
+    '"at dusk", "at midnight", "by lamplight". Let the subject itself be interesting.',
 ];
+
+// The register's own ask (corpus/registers.js) carries what the retired D-17
+// paragraph used to plead for. Assignment replaced instruction because the
+// instruction was measured and did not work — see the corpus file's header.
+// Asked plainly. A family that dodges ("gringotts") is caught by the alias
+// table anyway (corpus/families.js), so there is nothing to gain by hedging the
+// question — but asking plainly gets the easy cases right for free.
+const FAMILY_ASK =
+  'Also name the SUBJECT FAMILY this belongs to, in one to three plain words: the franchise, ' +
+  'place or core idea a reader would say it is about. "hogwarts common room" -> "harry potter"; ' +
+  '"the salt mines of bolivia" -> "salt"; "seventh-inning stretch" -> "baseball". ONE board per ' +
+  'family, ever — if a family already appears on the used list, that whole story or idea is ' +
+  'spent, so reach for a different one entirely rather than another corner of it.';
+
+const CASE_RULE = {
+  open:
+    'Two to five words, plain language. Proper names ARE welcome in this register — capitalise ' +
+    'them normally (Harry Potter, the Silk Road, Mars). No punctuation beyond spaces, ' +
+    'apostrophes and hyphens.',
+  plain:
+    'Two to five words, lowercase, plain language. No title case, no punctuation beyond spaces ' +
+    'and apostrophes.',
+};
 
 const STYLE_ASKS = {
   world:
@@ -77,23 +107,26 @@ const STYLE_ASKS = {
 };
 
 export function buildPrompt(input = {}, context) {
-  const { used = [], style = 'world' } = input;
+  const { used = [], style = 'world', register = REGISTERS[0].id } = input;
+  const assigned = registerById(register) ?? REGISTERS[0];
 
   return composePrompt({
     role:
-      'You are the Subject Scout for ASTO, a cozy word-analogy puzzle. Your one job: invent a single ' +
+      'You are the Subject Scout for ASTO, a word-analogy puzzle. Your one job: invent a single ' +
       'FRESH subject for the next surprise-me board — a subject this project has never used before.',
     context,
     task: [
+      assigned.ask,
       STYLE_ASKS[style] ?? STYLE_ASKS.world,
       'The used list below is a hard avoid-list. Do not return anything on it, and do not return a close ' +
         'overlap of anything on it — "cameras and lenses" is not fresh next to "photography", and ' +
         '"the stage" is not fresh next to "theatre". Genuinely elsewhere, not adjacent.',
       ...BANDING,
-      'Two to five words, lowercase, plain language. No title case, no punctuation beyond spaces and apostrophes.',
+      assigned.allowProperNouns ? CASE_RULE.open : CASE_RULE.plain,
+      FAMILY_ASK,
     ].join('\n'),
     data: ['Subjects already used, oldest first:', ...used.map((theme) => `- ${theme}`)].join('\n'),
-    outputRules: [`Return { "subject": "..." }.`, JSON_ONLY].join(' '),
+    outputRules: [`Return { "subject": "...", "family": "..." }.`, JSON_ONLY].join(' '),
   });
 }
 

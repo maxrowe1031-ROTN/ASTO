@@ -363,7 +363,14 @@ export function createApi({
       // Where the subject came from and which style was asked of the scout
       // (design.md D-15) — the audit trail for whether generation carries the
       // load, and the segmentation key for the world-vs-lens comparison.
-      ...(pick ? { subjectSource: pick.source, subjectStyle: pick.style } : {}),
+      ...(pick
+      ? {
+          subjectSource: pick.source,
+          subjectStyle: pick.style,
+          subjectRegister: pick.register,
+          subjectFamily: pick.family,
+        }
+      : {}),
     };
     const { runId } = store.createRun({ slug, theme: runTheme, brief });
     // Fire and forget: a real run takes minutes, so the answer is 202 and the

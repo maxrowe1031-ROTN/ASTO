@@ -495,3 +495,24 @@
   folding the row layout into `.select-head` for the statistics door. The rule is styled
   in `styles/components.css` and rendered by nothing since D-24 retired the list. Left
   alone to keep that diff focused; a one-line sweep whenever someone is next in the file.
+- **The static fallback pool is stale (2026-08-18).** `studio/corpus/subjects.js` holds
+  91 strings from the cozy-premises era, and a fallback bypasses BOTH the register and
+  family axes — v4's fallbacks were `dance`, `laundry day`, `street food`, `autumn
+  leaves`, `the toolshed`, visibly flatter than the generated picks. ~0% of a six-board
+  batch (fallbacks cluster in the exhausted tail of a long sampling) but ~14% of a
+  100-sampling. Cheap fix if it ever bites: seed a fresh pool from the sampler's own
+  best output, which now spans 18 registers.
+- **`/api/player-ratings` intermittently 500s (2026-08-18).** Measured three
+  consecutive Review Studio loads: 200, 500, 200 — roughly one in three. The route is
+  D-21's Supabase reader and is unrelated to the register work (confirmed: that
+  session's only `api.js` change was four brief fields inside `createRun`). A retry
+  succeeds and returns real data, so the panel self-heals on refresh; worth a look if
+  Max sees the ratings panel blank.
+- **Cross-sampling repeats are by design (2026-08-18).** `sample-subjects.js` persists
+  nothing, so two samplings do not constrain each other — `the taxidermist's studio`
+  appeared in both v2 and v3. Correct (samples must never enter the avoid-list) but
+  worth remembering when reading two lists side by side.
+- **Window-edge misses in the echo guard (2026-08-18).** v4 put `brass band parade`
+  (#3) and `brass band parade instruments` (#29) 26 apart — one position past the
+  25-pick word-echo window. Deliberately not chased: widening the window bans common
+  words for longer, and the family guard covers the cases that matter at batch scale.

@@ -118,7 +118,14 @@ export function briefFor({ index, theme, count, mock = false, autoRevise = true,
     // Where a surprise-me subject came from and which style the scout was
     // asked for (design.md D-15) — absent on themed runs, exactly as in the
     // Studio's brief.
-    ...(pick ? { subjectSource: pick.source, subjectStyle: pick.style } : {}),
+    ...(pick
+      ? {
+          subjectSource: pick.source,
+          subjectStyle: pick.style,
+          subjectRegister: pick.register,
+          subjectFamily: pick.family,
+        }
+      : {}),
   };
 }
 
