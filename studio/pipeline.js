@@ -229,19 +229,62 @@ export async function runPipeline({
   if (resumed) store.recordResume(runId, attemptId, { reenteredAt: entryStage });
 
   try {
-    for (const stage of stagesFrom(entryStage)) {
+    // An index walk rather than a for-of, because the unity gate can send the
+    // attempt BACK to the board builder (see below) and the loop has to be
+    // re-enterable to allow it.
+    const stages = stagesFrom(entryStage);
+    let unityRebuilds = 0;
+
+    for (let i = 0; i < stages.length; i += 1) {
+      const stage = stages[i];
       budget.beginStage(stage.id);
       budget.check();
       if (stage.kind === 'gate') await runIntegrityGate(ctx);
       else await runAgentStage(ctx, stage);
+
       // The unity gate on revisions (D-17 second amendment, 2026-08-11): a
-      // word a revision INTRODUCED that 08 names as a unity outlier fails the
-      // attempt. On a fresh board unity stays advisory — Max judges those
-      // himself — but a revision was asked to repair a board, and importing
-      // "kickoff" onto a boat board (mending nets) is not a repair.
+      // word a revision INTRODUCED that 08 names as a unity outlier is not a
+      // repair. On a fresh board unity stays advisory — Max judges those
+      // himself — but a revision was asked to fix a board, and importing
+      // "kickoff" onto a parade board makes it worse.
+      //
+      // BOUNDED REBUILD rather than a terminal failure (2026-08-19). Three
+      // attempts across batches five and six died here, and in every one the
+      // fatal word was the pipeline's OWN suggestion — the proposer offered
+      // "kickoff:final whistle (sports game)" to break a timeline collision on
+      // a brass band parade, the reviser obeyed, and this gate then killed the
+      // board for obeying. The proposer now has to stay in-world, and this is
+      // the net beneath it: name the offending words to the board builder and
+      // re-run the stages that judged the old ones. Every other rejection in
+      // this pipeline gets bounded rounds of feedback; this one used to get a
+      // single strike, which threw away a whole attempt for a fixable word.
       if (stage.id === '08-style-guide' && ctx.revision?.parentBoard) {
-        enforceRevisionUnity(ctx);
+        const breaches = revisionUnityBreaches(ctx);
+        if (breaches.length > 0) {
+          if (unityRebuilds >= config.maxIntegrityRetries) throw unityFailure(breaches);
+
+          unityRebuilds += 1;
+          store.recordStageStatus(runId, attemptId, stage.id, {
+            status: 'rejected',
+            round: unityRebuilds,
+            errors: breaches.map((breach) => ({
+              path: `unity.${breach.word}`,
+              message: breach.note ?? 'outside the theme world',
+            })),
+          });
+
+          budget.beginStage(BOARD_STAGE);
+          budget.check();
+          await runAgentStage(ctx, stageById(BOARD_STAGE), { feedback: unityFeedback(breaches) });
+
+          // Back to the stage after the board builder: 05, 06 and 07 judged the
+          // words that just changed, so their verdicts are stale. Re-running
+          // them is the cost of the rebuild and the reason it is bounded.
+          i = stages.findIndex((s) => s.id === BOARD_STAGE);
+          continue;
+        }
       }
+
       store.recordStageStatus(runId, attemptId, stage.id, { status: 'complete' });
       persistProgress();
     }
@@ -386,18 +429,19 @@ function revisionOf(store, runId, attempt) {
 }
 
 /**
- * Fail a revision attempt whose NEW words break the theme's world.
+ * The words a revision INTRODUCED that 08 names as outside the theme's world.
  *
- * Deterministic join of two things the attempt already holds: the words the
- * revision introduced (current board minus parent board, case-insensitive) and
- * 08's unity outliers. A word in both is an import the revision was never
- * asked to make. Throws the same terminal failure shape as the integrity gate,
- * so the review card names it loudly and Max can re-request.
+ * A deterministic join of two things the attempt already holds: the words the
+ * revision added (current board minus parent board, case-insensitive) and 08's
+ * unity outliers. A word in both is an import the revision was never asked to
+ * make. Returns them rather than throwing, because since 2026-08-19 the first
+ * breach earns a bounded rebuild instead of a terminal failure — see the call
+ * site for why three boards died proving that necessary.
  */
-function enforceRevisionUnity(ctx) {
+function revisionUnityBreaches(ctx) {
   const board = boardOf(ctx.blackboard);
   const parent = ctx.revision?.parentBoard;
-  if (!board || !parent) return;
+  if (!board || !parent) return [];
 
   const parentWords = new Set(deriveWords(parent.sets ?? []).map((word) => word.toLowerCase()));
   const introduced = new Set(
@@ -405,13 +449,26 @@ function enforceRevisionUnity(ctx) {
       .map((word) => word.toLowerCase())
       .filter((word) => !parentWords.has(word)),
   );
-  if (introduced.size === 0) return;
+  if (introduced.size === 0) return [];
 
   const outliers = ctx.blackboard.get('08-style-guide')?.unity?.outliers ?? [];
-  const breaches = outliers.filter((outlier) => introduced.has(outlier.word?.toLowerCase()));
-  if (breaches.length === 0) return;
+  return outliers.filter((outlier) => introduced.has(outlier.word?.toLowerCase()));
+}
 
-  throw new StudioFailure(
+/** What the board builder is told, so the rebuild is aimed rather than a re-roll. */
+function unityFeedback(breaches) {
+  return (
+    `These words are outside this board's world and must be replaced: ${breaches
+      .map((breach) => `"${breach.word}" (${breach.note ?? 'unity outlier'})`)
+      .join('; ')}. ` +
+    'Replace each with a word belonging to the board\'s own subject, keeping the same relationship ' +
+    'and the same difficulty. Change nothing else — every other word and set stays exactly as it is.'
+  );
+}
+
+/** The terminal shape, thrown only once the bounded rebuilds are spent. */
+function unityFailure(breaches) {
+  return new StudioFailure(
     TERMINAL_CONTENT,
     `the revision introduced word(s) outside the theme's world: ${breaches
       .map((breach) => `"${breach.word}" (${breach.note ?? 'unity outlier'})`)

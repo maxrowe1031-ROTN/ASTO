@@ -148,6 +148,18 @@ export function createApi({
 
   // --- reads ---
 
+  /** The newest attempt that finished, or null — read lazily, only for failed runs. */
+  function completedAttemptOf(runId) {
+    try {
+      const complete = store
+        .listAttempts(runId)
+        .filter((id) => store.readAttempt(runId, id)?.status === 'complete');
+      return complete.length > 0 ? complete.at(-1) : null;
+    } catch {
+      return null; // an unreadable attempt must not blank the run list
+    }
+  }
+
   function listRuns() {
     const runs = store
       .listRuns()
@@ -162,6 +174,13 @@ export function createApi({
             currentAttemptId: m.currentAttemptId,
             attemptCount: m.attemptCount,
             revisionCount: m.revisionCount,
+            // A failed run can still hold a finished board from an earlier
+            // attempt — three did across batches five and six (2026-08-19),
+            // each reading `failed` in the list with a complete board
+            // underneath, so nobody opened them. The run's own status is left
+            // alone (it failed, and saying otherwise would be a lie); this
+            // names what is nonetheless reviewable.
+            reviewableAttemptId: m.status === 'failed' ? completedAttemptOf(m.runId) : null,
           };
         } catch {
           return null; // a corrupt manifest must not blank the whole list

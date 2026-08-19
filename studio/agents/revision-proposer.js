@@ -95,6 +95,18 @@ export function buildPrompt(input = {}, context) {
       'The automated evaluators (analogy validator, adversarial solver, test player, style guide) are EVIDENCE, not authority. Where they disagree with the editor, the editor is right. They have flagged sets he liked before.',
       'For each set that is actually blocking publication, state the problem in one line, say whose judgement it rests on, and give one to three concrete candidate fixes.',
       'A candidate fix is specific: name the word or pair to change and what to change it to, or name the constraint the replacement must satisfy. "Improve the relationship" is not a fix.',
+      // The rule that had to be written down (2026-08-19): three attempts died
+      // because this agent proposed a fix from another domain — "kickoff:final
+      // whistle (sports game)" to break a timeline collision on a BRASS BAND
+      // PARADE board — the reviser obeyed, and enforceRevisionUnity then failed
+      // the attempt for importing exactly those words. Structural repair and
+      // thematic unity were pulling opposite ways with nothing reconciling them.
+      'EVERY candidate must stay inside the board\'s own world. The board names a subject, and a '
+        + 'replacement word has to be something belonging to THAT subject — a repair that imports '
+        + 'vocabulary from another domain is not a repair, and will be rejected downstream. If a fix '
+        + 'needs an unrelated span or a second timeline, find one INSIDE the subject (a parade has a '
+        + 'tuning-up and a last note as surely as a football match has a kickoff) rather than reaching '
+        + 'out of it.',
       'If the editor supplied his own fix, treat it as the leading candidate and say so — he is the editor.',
       'List every set he praised in "doNotChange". A revision that repairs one set and spoils another is a worse board.',
       'Choose "fromStage": the earliest stage that can actually deliver the fix, and no earlier. Swapping one word is a board-builder problem; a pool with nothing groupable is a pair-author problem. Re-entering too early throws away work that was fine.',
@@ -150,6 +162,18 @@ function buildPreReviewPrompt(input, context) {
       'Fix ONLY what the allowlisted findings name. The full evaluator reports are attached as supporting evidence, but a defect only they mention is the editor\'s to judge, not yours — leave it alone.',
       'For each set an allowlisted finding touches, state the problem in one line and give one to three concrete candidate fixes.',
       'A candidate fix is specific: name the word or pair to change and what to change it to, or name the constraint the replacement must satisfy. "Improve the relationship" is not a fix.',
+      // The rule that had to be written down (2026-08-19): three attempts died
+      // because this agent proposed a fix from another domain — "kickoff:final
+      // whistle (sports game)" to break a timeline collision on a BRASS BAND
+      // PARADE board — the reviser obeyed, and enforceRevisionUnity then failed
+      // the attempt for importing exactly those words. Structural repair and
+      // thematic unity were pulling opposite ways with nothing reconciling them.
+      'EVERY candidate must stay inside the board\'s own world. The board names a subject, and a '
+        + 'replacement word has to be something belonging to THAT subject — a repair that imports '
+        + 'vocabulary from another domain is not a repair, and will be rejected downstream. If a fix '
+        + 'needs an unrelated span or a second timeline, find one INSIDE the subject (a parade has a '
+        + 'tuning-up and a last note as surely as a football match has a kickoff) rather than reaching '
+        + 'out of it.',
       'Every set with no allowlisted finding goes in "doNotChange". A revision that repairs one set and spoils another is a worse board.',
       'Choose "fromStage": the earliest stage that can actually deliver the fix, and no earlier. Swapping one word is a board-builder problem; a pool with nothing groupable is a pair-author problem. Re-entering too early throws away work that was fine.',
       'Be brief. This brief is audited by the editor after the fact, on the review card.',

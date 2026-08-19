@@ -116,6 +116,15 @@ async function renderList() {
             <a href="#/runs/${encodeURIComponent(run.runId)}">
               <strong>${escape(run.theme ?? 'surprise-me')}</strong>
               <span class="status status-${escape(run.status)}">${escape(run.status)}</span>
+              ${
+                // A failed run can still hold a finished board from an earlier
+                // attempt (2026-08-19): three did, and read as plain `failed`
+                // while a reviewable board sat underneath. The run really did
+                // fail, so that badge stays honest — this says what survived.
+                run.reviewableAttemptId
+                  ? `<span class="status status-awaiting-review">attempt ${escape(run.reviewableAttemptId)} is reviewable</span>`
+                  : ''
+              }
               <span class="studio-muted">${escape(run.runId)}</span>
               <span class="studio-muted">${run.attemptCount} attempt(s)</span>
             </a>
