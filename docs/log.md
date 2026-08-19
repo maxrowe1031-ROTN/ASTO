@@ -51,10 +51,20 @@ records the investigation and the three fixes.
   automated **passed**, Claude-verifiable **passed** (badge verified in the
   browser against real data). **Max acceptance passed** — he directed the
   investigation, chose both fixes plus the Studio change, and called the wrapup.
-- **Next:** **review the 5 recovered boards** hiding behind failed badges — free
-  boards already paid for (the spice bazaar and the last day of the fair remain
-  unreviewed repeats from batch five and can be skipped). Then: push to deploy
-  when Max says; the hard-launch trim on his keep-list; GDD version bump for
+- **Closed after the entry above was written:** Max reviewed the 5 recovered
+  boards and **declined all of them** — *"i'd rather stick with the latest
+  versions of what we're producing and fixing that."* The right call: each
+  attempt 0001 is the version that TRIGGERED a revision, so three carry the
+  live defect the repair was attempting (single-timeline cross-readings on the
+  parade and tannery boards, cross-set association on the puppets). The Studio
+  badge stays — it is worth having for future failures, which the bounded
+  rebuild should now make rarer. **Batch six finished review: 2 approved, 2
+  rejected, 2 failed — 2-in-6 usable against batch five's 1-in-6**, and Max
+  reviewed all six rather than three, because none were repeats. Run records
+  for both batches committed (47 files; the bulky prompt/response artifacts stay
+  ignored by `studio/runs/.gitignore`). Deployed and confirmed: live matches the
+  tree, 32 days of runway.
+- **Next:** the hard-launch trim on his keep-list; GDD version bump for
   screens 5/6 + daily cadence (his); the standing watches (`npm run ratings`,
   `npm run check-schedule`, D-20 bounce, D-22 editor test-drive) and the two
   overdue triggers (the rubric at 109 judged boards, the slim-down lap).
