@@ -2301,6 +2301,145 @@ seam. Parked in the backlog with the stats spec, where it belongs.
 **GDD drift to flag:** screens 5/6 (select list → Past Pours) and the daily cadence are
 not in GDD v0.13 — a version bump is Max's, not a working session's.
 
+### D-15 second amendment — the register rotation: assignment replaces instruction (2026-08-18)
+
+**How it surfaced:** Max, reading batch five: *"i'm noticing a repeat with some of
+our themes. We've seen puppeteer's before, we've seen spice bazaar before, we've
+done fair like things.... whats with the repeats?"*
+
+**What the investigation found** (measured over the run history, not inferred):
+
+- The Subject Scout has made **31 picks** (#93–#123). **74% open "the &lt;thing&gt;"**
+  against 7% in the era before it; **0 of 31 contain a proper noun** against 17%
+  before. Roughly **16 of 31** are one register — a small artisan/retail premises.
+  **The scout produces less variety than the humans and pool it replaced.**
+- **Both earlier fixes were prose, and both measurably failed.** The D-15
+  amendment (*"'the &lt;thing&gt;' must not be the reflex"*) was in the prompt for all
+  31 picks that came back 74%. The D-17 amendment (*"a tropical island, the
+  pyramids, mars… harry potter, the yankees"*) has been delivered **zero times**.
+- **The caller-assigned axis held.** `styleFor()` decides world/lens from outside
+  the model: **15/16** across the same 31 picks. Same file, same model, same call —
+  instruction drifts, assignment holds. That contrast is the whole case.
+- **Quality does not defend the rut:** cozy-premises boards approve at ~64% vs
+  ~69% elsewhere. The cost is variety alone.
+
+**The decision:** a **register axis**, assigned by the caller exactly as style is.
+`registerFor()` returns the least-used register; `studio/corpus/registers.js`
+holds the six as data (cozy premises · natural world · far places · history &
+myth · fiction & fandom · sports & pop culture). Rejected alternative: a semantic
+adjacency checker — it would reject "the spice bazaar" and receive "the pepper
+stall", policing collisions while the monoculture continued. **Distribution, not
+collision, was the failure.**
+
+**Equal weights, and cosiness reconsidered — Max's call.** Asked whether cozy
+should keep the plurality he said: *"the themes of the boards do not have to be
+'cozy' for the game to be cozy. We've already achieved that through the game
+rules, ui, and usability."* The scout's *"cozy everyday places are this game's
+HOME REGISTER"* line is retired on that sentence. Cosiness is the game's manner,
+not its subject matter.
+
+**Proper nouns are now permitted** in registers that trade in names
+(`allowProperNouns`). The old prompt demanded lowercase plain language, which
+quietly forbade the very subjects D-17 asked for — "Harry Potter" could not be
+typed under that rule. A contributing cause hiding in the style guide.
+
+**Six prompt-wording tests were replaced, not deleted** (`test/studio/agents/
+subject-scout.test.js`). They pinned the exact prose that failed; a test can hold
+a prompt's wording but could never catch that the wording was ignored. They now
+assert the mechanism instead.
+
+**The sampler:** `npm run studio:subjects -- --count 100` prints subjects without
+building boards — the rotation's claim is about variety, and variety is judged by
+eye, not by assertion. It writes nothing to `studio/runs/` (a sampled subject
+entering the avoid-list would poison the history it was drawn against), and
+samples avoid each other within a sampling so a hundred is a fair preview of a
+hundred boards. **Accepted consequence:** samples are invisible to later real
+runs, so a subject seen here can still come up, and one rejected here is not
+blocked.
+
+**Reconsider-when:** the sampler (or a later batch) shows near-duplicates *within*
+a register — then the adjacency checker rejected this round earns its call, since
+distribution would have been fixed and collision would be what remains.
+
+**The reconsider-when fired on its first run (same day).** The first 100-subject
+sampling cost $0.34 and returned a verdict in three parts:
+
+- **Distribution: fixed.** 16–17 per register, 0 fallbacks, 0 duplicate slugs,
+  world/lens 50/50. The map genuinely widened — marrakech, machu picchu,
+  timbuktu, delphi, hogwarts, narnia, roller derby — after 31 picks that
+  produced none of it. **D-17's ask was delivered for the first time.**
+- **Repetition: untouched, and now the dominant failure.** 29 within-register
+  clusters (salt ×3, oracle ×3, pinball ×3, roller ×3, frost ×4), plus a new
+  register-independent tic: **25 of 100 ended in a time-of-day tail** ("at
+  dawn", "by lamplight"). Not one cluster was a slug match.
+- **A self-inflicted regression:** shortening the shape instruction while adding
+  the register took "the ___" from 74% to **85%**. Changing two things at once
+  hid which one moved the number, and the weakened one moved it the wrong way.
+
+**Three fixes, all cheap, none needing a model:**
+1. **The echo guard** — `echoesRecent()` rejects a subject sharing a significant
+   word (≥4 letters, minus structural words) with any of the last
+   `RECENT_WINDOW` (25) subjects, and names the repeated word in the retry
+   feedback. Every one of the 29 clusters shares a literal word, so no semantic
+   model call is needed. A window rather than the whole history: "workshop"
+   must not be banned forever, only twice in a fortnight.
+2. **The shape ask restored as a proportion** — "AT MOST HALF should open with
+   'the'". The previous phrasing ("must not be the reflex") was a judgement the
+   model kept passing itself on; a number is not. Plus an explicit ban on the
+   time-of-day tail.
+3. **A metric corrected for honesty** — the sampler reported "proper nouns
+   0/100" over a list containing Machu Picchu, Hogwarts and Narnia. It was
+   counting CAPITALS, and the scout writes names lowercase (following 123
+   lowercase examples). Renamed `capitalised`, with `nameRegisters` and
+   `echoes` added. **A metric that reads zero against a list full of names is
+   worse than no metric** — it would have hidden the one thing that worked.
+
+**Standing lesson, third instance:** every failure in this axis has been a model
+asked to police itself — freshness, shape, register. Each was fixed by moving the
+judgement OUT of the prompt into code that cannot rationalise. Prefer a guard to
+an instruction.
+
+**The 18-register split and the family guard (same day, Max's call).** Reading the
+v2 sampling he named the remaining fault: *"why use two harry potter boards when
+one could be harry potter and the other could be iron man?"* — v2 carried four
+Potter subjects, two Narnias, two Gothams. **Proven blind spot:** those four share
+ZERO significant words, so the echo guard could never have seen them at any window
+size. Two changes, both assignment-over-instruction:
+
+- **6 registers → 18** (his instinct, and the arithmetic agrees: ~16 picks per
+  bucket let the scout mine one vein; ~5 caps it structurally).
+- **The family guard** — the scout must DECLARE the family each subject belongs
+  to, and code refuses any family seen in the last `FAMILY_WINDOW` (100) picks.
+  `studio/corpus/families.js` is the backstop alias table (hogwarts/gringotts/
+  diagon → harry potter; gotham → batman; shire/hobbit → lord of the rings),
+  scanned against BOTH the declared family and the subject text, because
+  self-reporting is the exact failure this axis keeps rediscovering.
+
+**Result (v3, 100 picks):** all 18 registers at 5–6; comics/film returned batman,
+superman, black panther, aquaman and sesame street — five picks, five properties;
+no Potter at all.
+
+**Two normalisation bugs found by sampling, each fixed after it was measured:**
+1. **Exact string comparison** let `brass bands` ≠ `brass band` through — and the
+   sampler's own `familyRepeats` metric compared the same way, so it reported
+   **0 repeats over a list containing 5**. `familiesMatch()` now normalises
+   (plurals, word order, subset: `egypt` ⊂ `ancient egypt`) and BOTH the guard and
+   the metric call it. *An instrument must never share its subject's blind spot.*
+2. **Naive plural stripping** turned `octopus` into `octopu` and `octopuses` into
+   `octopuse`, matching neither — English has many singulars ending in s (canvas,
+   atlas, compass). Replaced with candidate-form intersection rather than guessing
+   a root.
+
+**What the samplings cost and bought:** four runs, **$1.36 total**, each catching a
+distinct failure the previous one hid — against ~$0.80 per generated board. The
+sampler paid for itself on its first run.
+
+**A caveat on reading samplings, learned from v4:** fallbacks rose 5 → 14, which
+looked like a regression from the stricter guard. It was not — fallbacks were
+**0 in picks 1–25** and clustered in the back half, where the scout has exhausted
+nearby ideas. **A real batch is ~6 boards; the tail of a 100-sampling is an
+artificial stress condition and must not be read as production output.**
+
 ### D-25 — The statistics page: the calendar's record, read as numbers (2026-08-18)
 
 **Max's ask:** build the statistics page D-24 spun off. Full spec:

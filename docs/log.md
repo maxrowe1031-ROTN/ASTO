@@ -2,6 +2,77 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-18 — Subject variety: 18 registers, the family guard, and four samplings that each caught a different lie
+
+Max, reading batch five: *"i'm noticing a repeat with some of our themes...
+whats with the repeats?"* — which turned out to be the visible edge of a
+monoculture. **D-15 second amendment** records the whole investigation.
+
+- **The measurement that reframed it.** The Subject Scout had made **31 picks**
+  since D-15: **74% opened "the ___"** (7% in the era before it), **0 proper
+  nouns** (17% before), ~16 of 31 one register. **It produced less variety than
+  the humans and pool it replaced.** Both earlier fixes had been prose — the
+  D-15 amendment ("must not be the reflex") and D-17 ("a tropical island, mars,
+  egypt… harry potter, the yankees") — and both were in the prompt for all 31
+  picks. Meanwhile `styleFor`, the one axis the CALLER assigns, came out
+  **15/16**. Same file, same model: instruction drifts, assignment holds.
+- **Built:** `registerFor()` + `studio/corpus/registers.js` — **18 registers**
+  (Max tripled the initial 6, correctly: ~5 picks per bucket caps a vein that
+  ~16 lets the scout mine). `echoesRecent()` for reworded repeats.
+  `familyOf`/`familiesMatch` + `studio/corpus/families.js` — the scout now
+  DECLARES each subject's family and code refuses any seen in 100 picks, with an
+  alias table (hogwarts/gringotts/diagon → harry potter) as the backstop,
+  because self-reporting is the failure this axis keeps rediscovering.
+- **Max's creative call, recorded:** equal register weights, not cozy-weighted —
+  *"the themes of the boards do not have to be 'cozy' for the game to be cozy.
+  We've already achieved that through the game rules, ui, and usability."* The
+  scout's "cozy is this game's HOME REGISTER" line retired on that sentence.
+- **`npm run studio:subjects`** — a sampler that prints subjects without
+  building boards. Writes NOTHING to `studio/runs/` (a sampled subject entering
+  the avoid-list would poison the history it was drawn against) and samples
+  avoid each other, so 100 is a fair preview of 100 boards.
+- **Six prompt-wording tests replaced, not deleted.** They pinned the exact
+  prose that failed; a test can hold a prompt's wording but could never catch
+  that the wording was ignored. They assert the mechanism now.
+- **Three self-inflicted bugs, each found by measurement and fixed:**
+  shortening the shape ask while adding registers took "the ___" from 74% to
+  **85%** (restored as a proportion — "at most half"); **exact string matching**
+  let `brass bands` ≠ `brass band` through while the sampler's own metric,
+  comparing the same way, reported **0 repeats over a list containing 5**; and
+  naive plural stripping turned `octopus`/`octopuses` into `octopu`/`octopuse`.
+  **An instrument must never share its subject's blind spot** — that lesson
+  recurred three times and is now written into the amendment.
+- **Verified:** `npm test` **1546/0** (+8 from baseline 1538, itself +16 over
+  the session's start) · `check-board` 48 clean · four real samplings
+  (**$1.36 total**, vs ~$0.80 per generated board) with the arc
+  74% → 85% → 12% → 22% → **12%** on "the ___", time-of-day tails 25 → 1,
+  within-window word echoes 0, and comics/film returning batman, superman,
+  black panther, aquaman and sesame street — five picks, five properties, no
+  Harry Potter · Review Studio **restarted onto the new code** and verified live
+  (139 runs, 17 awaiting-review, register path serving).
+- **A caveat learned from v4 and worth keeping:** fallbacks rose 5 → 14 and
+  looked like a regression from the stricter guard. They were **0 in picks
+  1–25** and clustered in the exhausted tail. **A real batch is ~6 boards; the
+  back half of a 100-sampling is a stress condition, not production output.**
+- **Phase status:** Phases 1–5 complete and shipped; this is Studio pipeline
+  work. Gate: automated **passed** (tests, boards) and Claude-verifiable
+  **passed** (samplings, live Studio). **Max acceptance passed** — he read the
+  v3 and v4 lists, called it "looking a lot better", directed the plural fix and
+  the wrapup.
+- **Found and routed, not fixed:** `/api/player-ratings` **intermittently 500s**
+  (200/500/200 across three consecutive loads) — D-21's Supabase reader,
+  confirmed unrelated to this branch, self-heals on refresh. Backlogged with the
+  stale fallback pool, cross-sampling repeats, and the echo window's edge cases.
+- **Next:** **batch five review — the deadline item.** Five candidates await Max
+  in the Studio (spice market, shipwreck museum, ice cream stand, luthier's
+  workshop, fairground; the puppeteer's trunk has a reviewable attempt 0001
+  behind its `failed` badge). **The queue is dry after today** — each approval
+  takes the next free date and the first fills **Aug 19**. Then: the hard-launch
+  trim on his keep-list; GDD version bump for screens 5/6 + daily cadence (his);
+  the standing watches (`npm run ratings`, `npm run check-schedule`, D-20
+  bounce, D-22 editor test-drive) and the two overdue triggers (the rubric at
+  109 judged boards, the slim-down lap).
+
 ## 2026-08-18 — The statistics page, the four cups, and a bug Max caught in shipped code
 
 The stats page D-24 spun off, specced and built on `work/statistics-page`, plus a

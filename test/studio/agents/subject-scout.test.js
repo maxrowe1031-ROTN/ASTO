@@ -9,45 +9,56 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { buildPrompt } from '../../../studio/agents/subject-scout.js';
+import { REGISTERS } from '../../../studio/corpus/registers.js';
 
-test('the prompt asks for grammatical variety in the subject shape', () => {
-  const prompt = buildPrompt({ used: [], style: 'world' });
-  assert.match(prompt, /vary the grammatical shape/i);
-  assert.match(prompt, /"the \S+.*must not be the reflex/i);
-});
+// The five tests that stood here pinned the D-15 and D-17 amendment PROSE:
+// "'the <thing>' must not be the reflex", "cozy everyday places are this
+// game's HOME REGISTER", and the keyed-off-the-recent-list phrasing of both.
+//
+// They are replaced rather than deleted because the prose they guarded was
+// measured and did not work (design.md D-15 second amendment, 2026-08-18):
+// across the 31 scout picks made while every one of those lines was in the
+// prompt, 74% still opened "the <thing>" (7% in the era before the scout) and
+// proper nouns appeared ZERO times (17% before). A test can only hold a
+// prompt's WORDING; it could never have caught that the wording was ignored.
+// What replaces them asserts the mechanism that did hold under measurement —
+// the caller-assigned register — plus the shape ask that survives in short form.
 
-test('the variety ask names concrete alternative shapes, both styles', () => {
+test('the assigned register carries its own ask into the prompt, for both styles', () => {
   for (const style of ['world', 'lens']) {
-    const prompt = buildPrompt({ used: [], style });
-    assert.match(prompt, /gerund/i, `${style} prompt should name gerunds`);
-    assert.match(prompt, /bare noun/i, `${style} prompt should name bare noun phrases`);
+    for (const register of REGISTERS) {
+      const prompt = buildPrompt({ used: [], style, register: register.id });
+      assert.match(prompt, /Register for THIS pick/, `${register.id}/${style} lost its register ask`);
+      assert.ok(prompt.includes(register.ask), `${register.id}/${style} did not carry its own words`);
+    }
   }
 });
 
-test('the anti-rut rule points at the used list, where the rut is visible', () => {
-  const prompt = buildPrompt({ used: ['the harvest moon', 'the night train'], style: 'lens' });
-  assert.match(prompt, /most recent subjects.*already.*"the/i);
+test('the registers that exist to widen the map name what Max asked for', () => {
+  // His D-17 words: "a tropical island, or mars, or egypt... or harry potter,
+  // or the yankees". Prose asking for these produced none in 31 picks; now each
+  // is a register the rotation must eventually assign.
+  const all = REGISTERS.map((r) => `${r.id} ${r.label} ${r.ask}`).join(' ').toLowerCase();
+  assert.match(all, /marrakech|lisbon|desert|polar/, 'far places');
+  assert.match(all, /myth|folklore|ancient/, 'history and myth');
+  assert.match(all, /fantasy|wizard|superhero|sci-fi|science fiction/, 'fiction and fandom');
+  assert.match(all, /baseball|sport|climbing/, 'sport');
+  assert.match(all, /mars|starship|space/, 'space — the literal "or mars" of his ask');
 });
 
-// Territory variety (D-17 amendment, 2026-08-11). Grammar variety worked and
-// Max named the deeper rut on batch four: every subject was a cozy commonplace
-// place. His ask — "we haven't seen anything like a tropical island, or mars,
-// or egypt… or harry potter, or the yankees. a large variety and mix is key."
-test('the prompt names the territories beyond the cozy home register', () => {
-  const prompt = buildPrompt({ used: [], style: 'world' });
-  assert.match(prompt, /home register/i);
-  assert.match(prompt, /far places|history|myth/i);
-  assert.match(prompt, /fiction|fandom/i);
-  assert.match(prompt, /sport|pop culture/i);
+test('an unknown or missing register falls back to a real one rather than breaking the prompt', () => {
+  // A run created before this axis existed, or against a retired id, must still
+  // produce a usable prompt — run creation may never wedge on the scout.
+  for (const register of [undefined, null, 'a-register-that-was-retired']) {
+    const prompt = buildPrompt({ used: [], style: 'world', register });
+    assert.match(prompt, /Register for THIS pick/);
+  }
 });
 
-test('the territory rule is keyed off the recent register, like the shape rule', () => {
-  const prompt = buildPrompt({ used: ['mending nets', 'sunday morning market'], style: 'lens' });
-  assert.match(prompt, /recent subjects.*(one register|same register)/i);
-});
-
-test('both styles carry the territory ask', () => {
+test('the shape ask survives in short form, both styles', () => {
   for (const style of ['world', 'lens']) {
-    assert.match(buildPrompt({ used: [], style }), /home register/i, style);
+    const prompt = buildPrompt({ used: [], style, register: REGISTERS[0].id });
+    assert.match(prompt, /gerund/i, `${style} prompt should still name gerunds`);
+    assert.match(prompt, /bare noun/i, `${style} prompt should still name bare noun phrases`);
   }
 });
