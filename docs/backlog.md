@@ -516,3 +516,19 @@
   (#3) and `brass band parade instruments` (#29) 26 apart — one position past the
   25-pick word-echo window. Deliberately not chased: widening the window bans common
   words for longer, and the family guard covers the cases that matter at batch scale.
+- **Auto-revision keeps failing the same way (2026-08-19).** Three of twelve boards
+  across batches five and six died at `[terminal-content]` because the REVISION
+  introduced words outside the theme's world: the puppeteer's trunk got "backlit
+  silhouette"/"glove animation", marrakech tanneries got "Kneading"/"Baking", brass
+  band parade got "kickoff"/"final whistle". D-14's guard is working — it refuses a
+  board the reviser made worse — but the reviser reaching outside the theme is the
+  actual defect, and each failure costs a full board's spend (~$0.50–0.82). In every
+  case **attempt 0001 remains complete and reviewable**, though the run's status reads
+  `failed`, which hides a usable board behind a red badge in the Studio.
+- **Samplings do not reserve subjects, so they preview what the generator will pick
+  (2026-08-19).** Five of batch six's six subjects had already appeared in a sampler
+  run — vintage postcards, marrakech, the saddler's leather, limestone sinkholes,
+  brass band parade. Correct by design (`sample-subjects.js` persists nothing, so a
+  sampled subject cannot poison the avoid-list) but it means Max has effectively seen
+  a batch's themes before it runs. If that becomes annoying, the fix is an opt-in
+  `--reserve` flag writing sampled subjects to a side-file the guard also reads.

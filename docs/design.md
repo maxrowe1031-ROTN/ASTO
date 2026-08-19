@@ -2440,6 +2440,48 @@ looked like a regression from the stricter guard. It was not — fallbacks were
 nearby ideas. **A real batch is ~6 boards; the tail of a 100-sampling is an
 artificial stress condition and must not be read as production output.**
 
+### D-24 amendment — July becomes the queue; the calendar starts at August (2026-08-19)
+
+**Max's ask:** *"take all of the puzzles currently in july and backlog them and use
+that as the starting point for the daily publish... the calendar will start with
+August 1."*
+
+**Why it is not a rewrite of history:** July's dates were synthetic. D-24 backdated
+all 47 listed boards 2026-07-03 → 2026-08-18 to build an archive out of work that
+already existed, so no board was ever truly published on a July day. This re-dates
+boards whose dates were assigned retroactively in the first place.
+
+**What changed:** the 29 boards dated 2026-07 moved to **2026-08-20 → 2026-09-17**.
+Runway went from **1 day to 30**; the queue had reached zero twice. `puzzles/` files
+and slugs are untouched — only `date` moved, through `puzzle-store.reschedule`, the
+only door into `puzzles/`.
+
+**No view change was needed.** `calendar-month.js` bounds navigation by the earliest
+RELEASED entry, so future-dating July made August the first month by itself. Verified
+live: the `‹` arrow is disabled on August, 12 future squares carry no titles.
+
+**Max's decisions:** order is a **seeded shuffle** (not chronological), spread so no
+two consecutive days share a title word; **all 29 move**, including the 9 boards real
+players have already played and `warm-up`, the retired tutorial board with 4 players.
+
+**Accepted consequences, all three named before the write:**
+1. **Player stats shrink** — `totalReleased` 48 → 20, so every Played count falls.
+   This is **D-25's recorded accepted-risk firing**, by this route rather than the
+   hard-launch trim it was written for. Its reconsider-when is unchanged: a real
+   player reporting that finished puzzles vanished from their record.
+2. **A player who already played a moved board meets a pre-solved daily** when its
+   new date arrives. 1–2 players per board; the cup shows and it replays fine.
+3. **July deep links are inert until their new date** — `app.js` routes a
+   future-dated `?puzzle=` to the title screen.
+
+**New tool:** `tools/reschedule-forward.js`, modelled on `schedule-launch.js` — plan
+printed by default, writes only under `--commit`. One deliberate difference: that
+tool clears every date first because it backdates INTO occupied days; this one
+verifies its future targets are free and assigns directly, so boards are never
+transiently dateless. Shuffle reuses `fisherYates` + `mulberry32` from
+`src/engine/rng.js`; the title-spread pass reuses `significantWords` from the echo
+guard.
+
 ### D-25 — The statistics page: the calendar's record, read as numbers (2026-08-18)
 
 **Max's ask:** build the statistics page D-24 spun off. Full spec:

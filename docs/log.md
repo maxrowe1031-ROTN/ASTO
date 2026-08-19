@@ -2,6 +2,65 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-19 — The live site had no puzzle today; July becomes thirty days of runway
+
+Three units, in the order they mattered: today's board was missing from the live
+site, batch five's review returned a 1-in-6 yield, and July's archive became the
+publishing queue. **D-24 amendment** records the reschedule.
+
+- **The live site had no puzzle for 2026-08-19.** Max approved *Ships, Museums, and
+  the Sea* in the Studio and the store wrote it to `puzzles/` — but it was never
+  committed, so Pages kept serving a manifest ending 2026-08-18. **Found by comparing
+  the deployed manifest against the local one**, not by assuming the push had
+  happened. Committed, pushed, and confirmed live (`check-deploy` green, live
+  manifest now ends `2026-08-19 ships-museums-and-the-sea`). **A Studio approval is
+  not a publish** — the gap between them is a commit, and nothing warns about it.
+- **Batch five, reviewed by Max:** 1 published, 2 rejected on quality, **2 left
+  unreviewed because they repeated earlier themes** ("i'm not interested in playing
+  repeat boards"), 1 failed. **$4.40 for one usable board.** The two he would not
+  play were generated before the register rotation existed; the new pipeline would
+  have refused both.
+- **July → the queue (Max's call).** 29 boards moved 2026-07 → **2026-08-20 →
+  2026-09-17**. **Runway 1 day → 30.** The calendar now starts at August with **no
+  view change** — `calendar-month.js` already bounded navigation by the earliest
+  RELEASED entry. Order is a seeded shuffle spread so no two consecutive days share a
+  title word; all 29 moved including `warm-up` and the 9 boards real players have
+  already played, both his explicit calls.
+- **Built:** `tools/reschedule-forward.js` — plan-by-default, writes only under
+  `--commit`, every write through `puzzle-store.reschedule`. Unlike
+  `schedule-launch.js` it verifies its future targets are free and assigns directly
+  rather than clearing first, so no board is ever transiently dateless. Reuses
+  `fisherYates`/`mulberry32` (`src/engine/rng.js`) and `significantWords` (the echo
+  guard) rather than reimplementing either.
+- **Batch six — the register rotation's first production run.** Six boards, **six
+  different registers** (hobbies-collections, world-cities, workshops-trades,
+  landscapes, music-performance, kitchens-food), each recording its `subjectFamily`;
+  **no subject repeated another**. 3 awaiting review, 2 failed on auto-revision, 1
+  (`smokehouse curing`) **still generating at wrapup**. $3.63 so far.
+- **Verified:** `npm test` **1556/0** (+10) · `check-board` **49 clean** ·
+  `check-schedule` **30 days covered, 29 queued** · live in the preview at 800px:
+  calendar reads **August 2026** with the `‹` arrow disabled and unresponsive, 19
+  tappable days, **12 future squares carrying no titles**, today still *Ships,
+  Museums, and the Sea*, console clean · deployed site confirmed serving today's
+  board.
+- **Phase status:** Phases 1–5 complete and shipped. Gate: automated **passed** and
+  Claude-verifiable **passed** with the evidence above. **Max acceptance passed** for
+  the July move (he specified it and called the wrapup); **open** for the shuffled
+  ORDER, which is a taste call — a different `--seed` reshuffles all 29 in one
+  command.
+- **Not pushed at wrapup** — merged to `main` and left for Max's word, since
+  deploying changes what every visitor's calendar and statistics show.
+- **Next:** **push `main` to deploy the July schedule** (live still shows July and
+  one day of runway); **review batch six** — 3 candidates await, plus 2 whose
+  attempt 0001 is complete behind a `failed` badge, and board 6 lands shortly;
+  boards approved now take **Sep 18+** since publishing claims the next free date, so
+  use `reschedule-forward.js` if fresher boards should come sooner. Then: the
+  hard-launch trim on his keep-list; GDD version bump for screens 5/6 + daily
+  cadence (his); the standing watches (`npm run ratings`, `npm run check-schedule`,
+  D-20 bounce, D-22 editor test-drive) and the two overdue triggers (the rubric at
+  109 judged boards, the slim-down lap). Backlog gained the auto-revision
+  terminal-content pattern and the sampling-does-not-reserve-subjects note.
+
 ## 2026-08-18 — Subject variety: 18 registers, the family guard, and four samplings that each caught a different lie
 
 Max, reading batch five: *"i'm noticing a repeat with some of our themes...
