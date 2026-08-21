@@ -2,6 +2,52 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-21 — Polish, scoped: sound spec'd, illustrations sent to a mood board
+
+A planning session, deliberately ended early with a full context window: two
+polish ideas from Max's publishing class were scoped, captured, and queued for
+the next working session. No code changed.
+
+- **Sound is spec'd** — `docs/superpowers/specs/2026-08-19-sound-design.md`.
+  His three moments (tile select, solve, mistake); an **audition page comes
+  first** (`experiments/`, disposable, 3–4 synthesized palettes with a 16-tile
+  spam strip — a sound that charms once must not grate at tap fifteen); then
+  `src/view/sound.js` on the motion.js pattern. Web Audio synthesis: zero asset
+  files, zero dependencies, HR-1 intact. GDD checked: audio is **unspecified,
+  not forbidden** — every "sound" in it is the adjective — so shipping needs a
+  GDD version bump (his). Mute persists as `asto.muted`; autoplay-refused
+  degrades to silence.
+- **Illustrations are an open decision, not a spec** —
+  `docs/decisions/2026-08-19-illustrations-scope.md`. The scoping talk found
+  the fork (one mascot / 18 register pieces / per-board art with a locked-schema
+  field and a permanent art cost), **two GDD collisions** (ambient motion is
+  banned — the calendar steam is static for this exact reason — and flat-cream
+  backgrounds), an **IP note** (the pixel Claude avatar is Anthropic's; ASTO's
+  own carafe-and-cups vocabulary offers an original mascot), and the enabling
+  idea: **pixel art as data** — palette-index grids, no binary assets, plausibly
+  agent-generated. Max chose **mood board before committing** — a taste call
+  made with eyes, not prose.
+- **Also this session (before the polish talk):** the Review Studio was
+  restarted on request, and Max's assignment-5 feedback was translated — the
+  grader's "lint pass between repair attempts" is the integrity-gate pattern
+  ASTO already uses, the same move as this week's auto-revision fix.
+- **Verified:** `npm test` **1562/0** · `check-board` 51 clean · tree clean and
+  pushed at `6b33a28` · **the daily machine ran itself for two days** —
+  check-schedule shows Aug 20 (Gotham Connections) and Aug 21 (House Rules)
+  served from the July shuffle unattended, runway 30 days through Sep 19.
+- **Phase status:** Phases 1–5 complete and shipped. This unit is docs-only;
+  gate: automated **passed**, nothing player-visible changed. Max acceptance
+  **passed** for the captures (he directed both documents and the deferral).
+- **Next:** his pick of two queued starts — **the sound audition page** (spec
+  ready; he should be hearing palettes within the half hour) or **the
+  illustration mood board** (ticket lists exactly what it must show: pixel
+  styles on the real tokens, mascot sketches incl. the carafe, 375px
+  placements). Then the standing watches (`npm run ratings`,
+  `npm run check-schedule`, D-20 bounce, D-22 editor test-drive) and the two
+  overdue triggers (the rubric at 109 judged boards, the slim-down lap). The
+  hard-launch trim and GDD version bump (screens 5/6, daily cadence, audio)
+  remain his.
+
 ## 2026-08-19 — Why auto-revision kept failing: the pipeline was punishing the reviser for obeying it
 
 Max: *"lets look at why auto-revision keeps failing."* Three of twelve boards
