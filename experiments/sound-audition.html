@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASTO sound audition — DISPOSABLE</title>
+
+<!-- The real design tokens, not a copy. This page is judged on feel, and a
+     cozy sound heard on a page that is not ASTO's cream is a different sound. -->
+<link rel="stylesheet" href="../styles/tokens.css">
+
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-body);
+    padding: var(--page-pad);
+    padding-bottom: 64px;
+  }
+  main { max-width: var(--max-width); margin: 0 auto; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    margin: 8px 0 2px;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--tier-red-deep);
+    background: var(--tier-red-tint);
+    border-radius: var(--radius-pill);
+    padding: 3px 10px;
+    margin-bottom: 10px;
+  }
+  .lede { color: var(--soft-ink); font-size: 14px; line-height: 1.5; margin: 0 0 18px; }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    margin: 0 0 2px;
+  }
+  .desc { color: var(--soft-ink); font-size: 13px; margin: 0 0 10px; line-height: 1.45; }
+
+  .card {
+    background: var(--milk);
+    border: 1px solid var(--taupe);
+    border-radius: var(--radius-card);
+    padding: 14px;
+    margin-bottom: 12px;
+    background-image: var(--grain);
+    background-blend-mode: multiply;
+  }
+  .card[data-active="true"] { border-color: var(--honey); box-shadow: 0 0 0 3px var(--honey-glow); }
+
+  .row { display: flex; flex-wrap: wrap; gap: var(--gap); }
+
+  button {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--milk);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-pill);
+    padding: 9px 15px;
+    min-height: var(--tap-target);
+    cursor: pointer;
+    transition: transform var(--motion-fast) var(--ease);
+    touch-action: manipulation;
+  }
+  button:active { transform: translateY(1px); }
+  button.round { background: var(--ink); color: var(--cream); }
+
+  .chips { display: flex; gap: var(--gap); flex-wrap: wrap; margin-bottom: 12px; }
+  .chip {
+    border-width: 1px;
+    border-color: var(--taupe);
+    font-size: 13px;
+    padding: 7px 13px;
+    min-height: 0;
+  }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
+  .tile {
+    background: var(--milk);
+    border: 1px solid var(--taupe);
+    border-radius: var(--radius-tile);
+    min-height: 58px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px;
+    color: var(--ink);
+    background-image: var(--grain);
+    background-blend-mode: multiply;
+    transition: background-color 90ms var(--ease), transform var(--motion-fast) var(--ease);
+  }
+  .tile[data-picked="true"] { background-color: var(--oat); transform: translateY(-2px); }
+
+  .vol { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .vol label { font-size: 13px; font-weight: 700; color: var(--soft-ink); white-space: nowrap; }
+  input[type="range"] { flex: 1; accent-color: var(--ink); min-height: var(--tap-target); }
+
+  .note {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--soft-ink);
+    border-left: 3px solid var(--taupe);
+    padding-left: 12px;
+    margin: 22px 0 0;
+  }
+  .note strong { color: var(--ink); }
+  hr { border: 0; border-top: 1px solid var(--taupe); margin: 26px 0 18px; }
+</style>
+</head>
+<body>
+<main>
+  <span class="badge">DISPOSABLE EXPERIMENT</span>
+  <h1>Sound audition</h1>
+  <p class="lede">
+    Four palettes for the three moments: <strong>select</strong> a tile,
+    <strong>solve</strong> a set, make a <strong>mistake</strong>. All synthesized
+    live, no audio files. Listen on the cards, then use the board at the bottom to
+    feel what fifteen taps in a row actually sound like.
+  </p>
+
+  <div class="vol">
+    <label for="vol">Volume</label>
+    <input id="vol" type="range" min="0" max="100" value="45">
+  </div>
+
+  <div id="cards"></div>
+
+  <hr>
+
+  <h2>Tap test</h2>
+  <p class="desc">
+    Pick a palette, then tap freely. This is the question the cards cannot answer:
+    a sound that charms once has to survive a whole board.
+  </p>
+  <div class="chips" id="chips" role="group" aria-label="Palette for the tap test"></div>
+  <div class="board" id="board"></div>
+
+  <p class="note">
+    <strong>What to listen for.</strong> Select fires most often by far, so it has
+    to be nearly invisible. Solve is the reward and can afford to be the prettiest
+    thing here. Mistake is the one with a trap: none of these is a buzzer, on
+    purpose, because the GDD's mistake pips are coffee beans and never red. If a
+    mistake sound reads as punishment rather than a gentle "not that," say so and
+    it gets softened.
+  </p>
+</main>
+
+<script>
+// ---------------------------------------------------------------------------
+// A tiny synthesis kit. Everything below is disposable: this file exists to
+// make a taste decision, and src/view/sound.js gets written properly afterwards.
+// ---------------------------------------------------------------------------
+
+let ac = null;
+let master = null;
+
+/** Lazily built, because a context may not start before a user gesture. */
+function audio() {
+  if (!ac) {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) return null;
+    ac = new Ctor();
+    master = ac.createGain();
+    master.gain.value = 0.45;
+    master.connect(ac.destination);
+  }
+  if (ac.state === 'suspended') ac.resume();
+  return ac;
+}
+
+/**
+ * A struck body: additive partials, fast attack, exponential decay.
+ * `partials` are [ratio, amplitude, decayScale] against the fundamental —
+ * which ratios you choose is the whole difference between wood and ceramic.
+ */
+function struck(at, { freq, partials, dur, gain = 0.5, type = 'sine' }) {
+  for (const [ratio, amp, decayScale = 1] of partials) {
+    const osc = ac.createOscillator();
+    const env = ac.createGain();
+    const life = dur * decayScale;
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq * ratio, at);
+    env.gain.setValueAtTime(0.0001, at);
+    env.gain.exponentialRampToValueAtTime(Math.max(gain * amp, 0.0002), at + 0.004);
+    env.gain.exponentialRampToValueAtTime(0.0001, at + life);
+    osc.connect(env).connect(master);
+    osc.start(at);
+    osc.stop(at + life + 0.03);
+  }
+}
+
+/** A breathed tone: slow in, slow out. The opposite of struck. */
+function breathed(at, { freq, glide, dur, gain = 0.4, attack = 0.02 }) {
+  const osc = ac.createOscillator();
+  const env = ac.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, at);
+  if (glide) osc.frequency.exponentialRampToValueAtTime(glide, at + dur * 0.8);
+  env.gain.setValueAtTime(0.0001, at);
+  env.gain.exponentialRampToValueAtTime(gain, at + attack);
+  env.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+  osc.connect(env).connect(master);
+  osc.start(at);
+  osc.stop(at + dur + 0.03);
+}
+
+/** Filtered noise: the sound of a surface rather than a pitch. */
+function noise(at, { freq, sweep, q = 1, dur, gain = 0.4, type = 'bandpass' }) {
+  const len = Math.max(1, Math.ceil(ac.sampleRate * dur));
+  const buffer = ac.createBuffer(1, len, ac.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < len; i += 1) data[i] = Math.random() * 2 - 1;
+
+  const src = ac.createBufferSource();
+  src.buffer = buffer;
+
+  const filter = ac.createBiquadFilter();
+  filter.type = type;
+  filter.frequency.setValueAtTime(freq, at);
+  if (sweep) filter.frequency.exponentialRampToValueAtTime(sweep, at + dur);
+  filter.Q.value = q;
+
+  const env = ac.createGain();
+  env.gain.setValueAtTime(gain, at);
+  env.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+
+  src.connect(filter).connect(env).connect(master);
+  src.start(at);
+  src.stop(at + dur);
+}
+
+// ---------------------------------------------------------------------------
+// The four candidates.
+// ---------------------------------------------------------------------------
+
+const MARIMBA = [[1, 1], [3.9, 0.22], [9.2, 0.05]];   // real bar modes
+const BELL    = [[1, 1], [2.76, 0.42], [5.4, 0.16]];  // inharmonic, plate-like
+
+const PALETTES = [
+  {
+    id: 'woodblock',
+    name: 'Woodblock',
+    desc: 'Soft marimba ticks. Warm, wooden, and the closest to the coffee-shop register the rest of the game sits in.',
+    select: (t) => struck(t, { freq: 523.25, partials: MARIMBA, dur: 0.20, gain: 0.34 }),
+    solve: (t) => {
+      [523.25, 659.25, 783.99].forEach((f, i) =>
+        struck(t + i * 0.085, { freq: f, partials: MARIMBA, dur: i === 2 ? 0.55 : 0.24, gain: 0.32 }));
+    },
+    mistake: (t) => {
+      struck(t, { freq: 233.08, partials: [[1, 1], [3.9, 0.1]], dur: 0.26, gain: 0.30 });
+      struck(t + 0.11, { freq: 196.00, partials: [[1, 1], [3.9, 0.08]], dur: 0.38, gain: 0.26 });
+    }
+  },
+  {
+    id: 'ceramic',
+    name: 'Ceramic',
+    desc: 'Cup on saucer. Bright inharmonic clinks with a tick of contact in front of them. The most literal reading of cozy.',
+    select: (t) => {
+      noise(t, { freq: 3800, q: 0.8, dur: 0.012, gain: 0.13 });
+      struck(t, { freq: 1100, partials: BELL, dur: 0.16, gain: 0.20 });
+    },
+    solve: (t) => {
+      noise(t, { freq: 4200, q: 0.8, dur: 0.012, gain: 0.12 });
+      struck(t, { freq: 1108, partials: BELL, dur: 0.20, gain: 0.20 });
+      struck(t + 0.10, { freq: 1480, partials: BELL, dur: 0.24, gain: 0.19 });
+      struck(t + 0.21, { freq: 1760, partials: BELL, dur: 0.85, gain: 0.17 });
+    },
+    mistake: (t) => {
+      noise(t, { freq: 900, q: 0.7, dur: 0.02, gain: 0.10 });
+      struck(t, { freq: 520, partials: [[1, 1], [2.4, 0.18]], dur: 0.22, gain: 0.24 });
+    }
+  },
+  {
+    id: 'hum',
+    name: 'Hum',
+    desc: 'Warm sine blips, breathed rather than struck. The quietest option, and the one least likely to intrude at tap fifteen.',
+    select: (t) => breathed(t, { freq: 330, dur: 0.13, gain: 0.22, attack: 0.012 }),
+    solve: (t) => {
+      breathed(t, { freq: 392, glide: 523.25, dur: 0.42, gain: 0.24, attack: 0.03 });
+      breathed(t + 0.16, { freq: 659.25, dur: 0.55, gain: 0.14, attack: 0.06 });
+    },
+    mistake: (t) => breathed(t, { freq: 294, glide: 262, dur: 0.34, gain: 0.22, attack: 0.03 })
+  },
+  {
+    id: 'paper',
+    name: 'Paper',
+    desc: 'Filtered noise taps. No pitch at all, so it never argues with anything, but it is the least characterful of the four.',
+    select: (t) => noise(t, { freq: 2400, q: 1.4, dur: 0.05, gain: 0.30 }),
+    solve: (t) => {
+      noise(t, { freq: 1600, sweep: 3400, q: 1.1, dur: 0.22, gain: 0.26 });
+      breathed(t + 0.04, { freq: 523.25, dur: 0.40, gain: 0.10, attack: 0.05 });
+    },
+    mistake: (t) => noise(t, { freq: 520, q: 0.9, dur: 0.16, gain: 0.32, type: 'lowpass' })
+  }
+];
+
+const MOMENTS = [['select', 'Select'], ['solve', 'Solve'], ['mistake', 'Mistake']];
+
+/** Fire one moment now, guarding the whole thing on audio being available. */
+function play(palette, moment, offset = 0) {
+  if (!audio()) return;
+  palette[moment](ac.currentTime + offset);
+}
+
+/** Four taps and a solve, at the rhythm the real game produces. */
+function playRound(palette) {
+  if (!audio()) return;
+  const start = ac.currentTime + 0.02;
+  for (let i = 0; i < 4; i += 1) palette.select(start + i * 0.19);
+  palette.solve(start + 0.19 * 3 + 0.55);
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
+let active = PALETTES[0];
+
+const cards = document.getElementById('cards');
+for (const palette of PALETTES) {
+  const card = document.createElement('section');
+  card.className = 'card';
+  card.dataset.palette = palette.id;
+
+  const h2 = document.createElement('h2');
+  h2.textContent = palette.name;
+  const desc = document.createElement('p');
+  desc.className = 'desc';
+  desc.textContent = palette.desc;
+
+  const row = document.createElement('div');
+  row.className = 'row';
+  for (const [moment, label] of MOMENTS) {
+    const button = document.createElement('button');
+    button.textContent = label;
+    button.addEventListener('click', () => {
+      play(palette, moment);
+      setActive(palette);
+    });
+    row.append(button);
+  }
+  const round = document.createElement('button');
+  round.className = 'round';
+  round.textContent = 'A whole round';
+  round.addEventListener('click', () => {
+    playRound(palette);
+    setActive(palette);
+  });
+  row.append(round);
+
+  card.append(h2, desc, row);
+  cards.append(card);
+}
+
+const chips = document.getElementById('chips');
+for (const palette of PALETTES) {
+  const chip = document.createElement('button');
+  chip.className = 'chip';
+  chip.type = 'button';
+  chip.textContent = palette.name;
+  chip.dataset.palette = palette.id;
+  chip.setAttribute('aria-pressed', String(palette === active));
+  chip.addEventListener('click', () => {
+    setActive(palette);
+    play(palette, 'select');
+  });
+  chips.append(chip);
+}
+
+function setActive(palette) {
+  active = palette;
+  for (const chip of chips.children) {
+    chip.setAttribute('aria-pressed', String(chip.dataset.palette === palette.id));
+  }
+  for (const card of cards.children) {
+    card.dataset.active = String(card.dataset.palette === palette.id);
+  }
+}
+
+// Sixteen tiles, real ASTO words, so the spam test looks like the thing it is
+// standing in for. pointerdown rather than click: a select sound that lags the
+// finger reads as a different sound entirely.
+const WORDS = [
+  'seed', 'tree', 'spark', 'fire',
+  'teacher', 'chalkboard', 'coach', 'whistle',
+  'lantern', 'rice paper', 'tassel', 'silk',
+  'rough draft', 'polished essay', 'homeroom', 'dismissal'
+];
+
+const board = document.getElementById('board');
+for (const word of WORDS) {
+  const tile = document.createElement('button');
+  tile.className = 'tile';
+  tile.type = 'button';
+  tile.textContent = word;
+  tile.addEventListener('pointerdown', () => {
+    const picked = tile.dataset.picked === 'true';
+    tile.dataset.picked = String(!picked);
+    play(active, 'select');
+  });
+  board.append(tile);
+}
+
+document.getElementById('vol').addEventListener('input', (event) => {
+  if (!audio()) return;
+  master.gain.value = Number(event.target.value) / 100;
+});
+
+setActive(active);
+</script>
+</body>
+</html>
