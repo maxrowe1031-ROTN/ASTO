@@ -215,16 +215,17 @@ async function main() {
 
   new TitleView(document.getElementById('screen-title'), {
     onPlay: playDoor,
-    onTutorial: () => startGame(null, TUTORIAL_RULES, true).catch(fail),
-    onSettings: showSettings
+    onTutorial: () => startGame(null, TUTORIAL_RULES, true).catch(fail)
   });
 
-  // Settings are app-wide, so their door is the front door and Back returns to
-  // it — unlike statistics, which summarise the calendar and sit behind it.
-  // The volume slider previews as it moves: a level is chosen by ear.
+  // The settings door sits beside statistics in the calendar's header (Max's
+  // call, 2026-08-25 — the front door stays two buttons), so Back returns to
+  // the CALENDAR: back means the door you came through, the same rule the
+  // statistics screen follows. The volume slider previews as it moves: a level
+  // is chosen by ear.
   const settingsView = new SettingsView(document.getElementById('screen-settings'), {
     onHome: () => showDoor('title'),
-    onBack: () => showDoor('title'),
+    onBack: showPours,
     onMute: () => {
       sound.toggleMuted();
       paintSettings();
@@ -239,7 +240,8 @@ async function main() {
   const calendarView = new CalendarView(document.getElementById('screen-pours'), {
     onPick: play,
     onBack: () => showDoor('title'),
-    onStats: showStats
+    onStats: showStats,
+    onSettings: showSettings
   });
 
   // Back returns to the calendar, not the title screen: back means the door you

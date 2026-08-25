@@ -20,17 +20,33 @@ import { iconFor } from './result-icons.js';
 const TIERS = ['green', 'yellow', 'red', 'black'];
 
 export class CalendarView {
-  constructor(root, { onPick, onBack, onStats }) {
+  constructor(root, { onPick, onBack, onStats, onSettings }) {
     root.innerHTML = `
       <div class="select-head">
         <h1>
           <button class="wordmark" data-action="home"
                   aria-label="ASTO — back to the title screen">ASTO</button>
         </h1>
-        <!-- The statistics door. It lives here rather than on the title screen
-             because these numbers summarise THIS screen — and the front door
-             stays two buttons (D-24's review call). -->
-        <button class="text-action select-head-action" data-action="stats">Statistics</button>
+        <!-- The statistics and settings doors, as icons (Max's call,
+             2026-08-25). Statistics lives here rather than on the title screen
+             because its numbers summarise THIS screen (D-24's review call);
+             settings sits beside it so the front door stays two buttons. Icon
+             buttons carry aria-labels because they have no visible text. -->
+        <span class="select-head-action select-head-icons">
+          <button class="icon-action" data-action="stats" aria-label="Statistics">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+              <rect x="3"  y="11" width="3.2" height="6" rx="1"/>
+              <rect x="8.4" y="7"  width="3.2" height="10" rx="1"/>
+              <rect x="13.8" y="3" width="3.2" height="14" rx="1"/>
+            </svg>
+          </button>
+          <button class="icon-action" data-action="settings" aria-label="Settings">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+              <path d="M10 1.6l1.2 2.3a6.4 6.4 0 0 1 2 .8l2.5-.7 1.4 2.4-1.7 1.9a6.5 6.5 0 0 1 0 2.2l1.7 1.9-1.4 2.4-2.5-.7a6.4 6.4 0 0 1-2 .8L10 18.4l-1.2-2.3a6.4 6.4 0 0 1-2-.8l-2.5.7-1.4-2.4 1.7-1.9a6.5 6.5 0 0 1 0-2.2L2.9 7.6l1.4-2.4 2.5.7a6.4 6.4 0 0 1 2-.8L10 1.6z"/>
+              <circle cx="10" cy="10" r="2.6" fill="var(--cream)"/>
+            </svg>
+          </button>
+        </span>
       </div>
       <div class="pours-nav">
         <button class="pours-nav-arrow" data-action="prev" aria-label="Earlier month">‹</button>
@@ -61,6 +77,7 @@ export class CalendarView {
     root.querySelector('[data-action="home"]').addEventListener('click', onBack);
     root.querySelector('[data-action="back-to-title"]').addEventListener('click', onBack);
     root.querySelector('[data-action="stats"]').addEventListener('click', onStats);
+    root.querySelector('[data-action="settings"]').addEventListener('click', onSettings);
 
     this.prevEl.addEventListener('click', () => this.shiftMonth('prev'));
     this.nextEl.addEventListener('click', () => this.shiftMonth('next'));

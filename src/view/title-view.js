@@ -1,6 +1,6 @@
-// The title screen. READ-ONLY — emits play/tutorial/settings intents and
-// nothing else. (The one exception is a static anchor to about.html:
-// navigation, not an intent, so it carries no callback.)
+// The title screen. READ-ONLY — emits play/tutorial intents and nothing else.
+// (The one exception is a static anchor to about.html: navigation, not an intent,
+// so it carries no callback.)
 //
 // Unlike the other views it is not state-driven, so it has no update(state): it is a
 // front door, shown before any game exists. It is what makes the tutorial replayable
@@ -11,7 +11,7 @@
 // them. Two buttons on purpose: the simpler front door was his call.
 
 export class TitleView {
-  constructor(root, { onPlay, onTutorial, onSettings }) {
+  constructor(root, { onPlay, onTutorial }) {
     root.innerHTML = `
       <div class="title-block">
         <h1 class="title-wordmark">ASTO</h1>
@@ -20,12 +20,10 @@ export class TitleView {
           <button class="pill" data-action="tutorial">How to play</button>
           <button class="pill primary" data-action="play">Play</button>
         </div>
-        <button class="text-action" data-action="settings">Settings</button>
-        <a class="text-action" href="about.html">About this project</a>
+        <a class="text-action" href="about.html">About this game</a>
       </div>`;
 
     root.querySelector('[data-action="play"]').addEventListener('click', onPlay);
     root.querySelector('[data-action="tutorial"]').addEventListener('click', onTutorial);
-    root.querySelector('[data-action="settings"]').addEventListener('click', onSettings);
   }
 }

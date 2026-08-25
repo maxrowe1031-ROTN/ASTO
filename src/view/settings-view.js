@@ -6,9 +6,10 @@
 // a second setting to exist. One section today: Sound — mute, and a volume
 // slider that previews as it moves so a level is chosen by ear, not by number.
 //
-// Back returns to the TITLE screen — settings are app-wide, so their door is
-// the front door, unlike statistics, which summarise the calendar and sit
-// behind it. The wordmark still goes home, as it does on every screen.
+// The door is a gear icon beside the statistics icon in the calendar's header
+// (Max's call, 2026-08-25 — the front door stays two buttons), so Back returns
+// to the CALENDAR: back means the door you came through, the same rule the
+// statistics screen follows. The wordmark still goes home, as everywhere.
 
 export class SettingsView {
   constructor(root, { onHome, onBack, onMute, onVolume }) {
