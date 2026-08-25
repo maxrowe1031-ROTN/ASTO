@@ -20,10 +20,11 @@ import {
 } from '../src/view/sound.js';
 import { Storage } from '../src/storage.js';
 
-/** The smallest state the module reads: a puzzle id and a selection. */
-const state = (terms, puzzleId = 'asto-test') => ({
+/** The smallest state the module reads: a puzzle id, a selection, a status. */
+const state = (terms, puzzleId = 'asto-test', status = 'playing') => ({
   puzzle: { id: puzzleId },
-  selectedTerms: Object.freeze([...terms])
+  selectedTerms: Object.freeze([...terms]),
+  status
 });
 
 /** Run a sequence of renders through cue(), returning the kinds it decided. */
@@ -148,6 +149,33 @@ test('each select carries the rung for its new count', () => {
     rungs.push(decision.rung);
   }
   assert.deepEqual(rungs, [rungShift(1), rungShift(2), rungShift(3)]);
+});
+
+test('the fourth solve is a win, and only the fourth — the fanfare fires once', () => {
+  let snapshot = cue(null, state(['a', 'b', 'c', 'd']), null).snapshot;
+  // An ordinary solve mid-game stays a solve.
+  const mid = cue(snapshot, state([]), { type: 'solved', setId: 's1' });
+  assert.equal(mid.kind, 'solve');
+  // The solve that ends the game — status is already 'won' on this render.
+  snapshot = cue(mid.snapshot, state(['e', 'f', 'g', 'h']), null).snapshot;
+  const last = cue(snapshot, state([], 'asto-test', 'won'), { type: 'solved', setId: 's4' });
+  assert.equal(last.kind, 'win');
+  // The end screen repainting afterwards plays nothing more.
+  const after = cue(last.snapshot, state([], 'asto-test', 'won'), null);
+  assert.equal(after.kind, null);
+});
+
+test('the fanfare recipe is a rising triad on a filtered saw, frozen', () => {
+  assert.ok(Object.isFrozen(SOUND.win));
+  assert.ok(Object.isFrozen(SOUND.win.notes));
+  const freqs = SOUND.win.notes.map((n) => n.freq);
+  assert.deepEqual(freqs, [523.25, 659.25, 783.99]); // C5, E5, G5
+  // Rising delays, the last note held longest — "ta-da-daa", not a chord.
+  const delays = SOUND.win.notes.map((n) => n.delay);
+  assert.ok(delays[0] < delays[1] && delays[1] < delays[2]);
+  assert.ok(SOUND.win.notes[2].dur > SOUND.win.notes[1].dur * 3);
+  // It answers the solve chime rather than talking over it.
+  assert.ok(SOUND.win.after >= 0.5);
 });
 
 test('all three shaking outcomes thud, including the free already-tried', () => {

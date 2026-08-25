@@ -2704,6 +2704,33 @@ fresh profile — **and the GDD version bump adding an audio section and the
 settings screen, which is his edit, not a working session's.** The audition page
 in `experiments/` stays until that gate passes, then may be deleted.
 
+### D-28 — A so-close keeps the frame, and a win earns a fanfare (2026-08-25)
+
+**Two calls Max made while playing the sound build**, both landed the same session.
+
+**1. The so-close no longer clears the selection.** The original GDD §8.3 bet cleared
+the frame on every failure; playing it shipped showed the flaw in Max's words: the
+status line says *"right four words, wrong order"* and then the game made the player
+*"go hunting for the words again."* The revision is a principle, not a special case:
+**a failure whose words are right never clears** — the player's next move is
+reordering exactly those tiles. A miss (wrong words) still clears. The principle
+extends to `already-tried`: after a kept so-close, the free identical resubmit also
+keeps the frame, because clearing there would reintroduce the hunting mid-thought.
+Implemented as `clearsSelection(rules, rightWordsWrongOrder)` in the engine;
+`clearSelectionOnFail: false` still means what it always meant (nothing clears —
+the tutorial's rule). The shake still fires: wrong is still wrong, it just stops
+being punished twice. **This revises GDD §8 and joins the pending GDD version bump.**
+
+**2. The whole-puzzle win gets its own sound** — Max: *"something that I have or
+play plays a little trumpet sound upon successful completion."* A soft-brass
+"ta-da-daa": C5–E5–G5 on a lowpassed sawtooth (the 1.9 kHz cutoff and low gain are
+what keep it cozy rather than arena), firing once, 0.6 s after the fourth set's
+cup chime so it answers the chime rather than talking over it. In the sound
+module's cue logic a solve that lands with `status === 'won'` is kind `win`;
+the end-screen repaint afterwards is pinned silent. **Not yet auditioned by ear**
+— it ships as the candidate, and the same tune-by-ear loop that produced the cup
+applies if it misses.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

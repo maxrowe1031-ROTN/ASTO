@@ -172,8 +172,10 @@ makes the Studio double as proof the architecture is clean.
 - The four accepted orders derive from pairs at runtime: `[A,B,C,D] [C,D,A,B] [B,A,D,C]
   [D,C,B,A]`. Cross-pair (`A:C::B:D`) is **not** accepted.
 - The **4th tap fills the frame without submitting**; Confirm submits.
-- **"So close!"** (right four words, wrong order) **costs a mistake** and clears the
-  selection — a deliberate playtest bet, tunable via `rules`, not a bug.
+- **"So close!"** (right four words, wrong order) **costs a mistake** and **keeps the
+  selection in the frame** for reordering (revised 2026-08-25, D-28 — the original bet
+  cleared it). A **miss** still clears; a failure whose words are right never does,
+  including the free identical resubmit. Tunable via `rules`.
 - **Repeating an identical failed submission is free** — same four words, same order →
   `already-tried` outcome, no mistake, selection clears (2026-08-01 playtest rule). The
   same words in a *different* order is a new claim and charges normally.

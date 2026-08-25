@@ -49,6 +49,23 @@ export const SOUND = Object.freeze({
   solve: Object.freeze({ body: 0.3, damping: 0.86 }),
 
   /**
+   * The win fanfare: a small soft-brass "ta-da-daa" — three rising triad notes
+   * (C5, E5, G5) played on a filtered sawtooth, the closest a cozy game gets to
+   * a trumpet. Fires ONCE, after the fourth set's chime, on Max's ask
+   * (2026-08-25): the whole-puzzle victory deserved its own sound. `after` is
+   * the gap between the solve chime and the fanfare's first note.
+   */
+  win: Object.freeze({
+    after: 0.6,
+    lowpass: 1900,
+    notes: Object.freeze([
+      Object.freeze({ freq: 523.25, delay: 0, dur: 0.14, gain: 0.16 }),
+      Object.freeze({ freq: 659.25, delay: 0.14, dur: 0.14, gain: 0.16 }),
+      Object.freeze({ freq: 783.99, delay: 0.28, dur: 0.65, gain: 0.18 })
+    ])
+  }),
+
+  /**
    * Woodblock: two low strikes, a gentle "not that" — never a buzzer. Each
    * strike carries its own partials, exactly as audited: darker than the full
    * marimba set (one faint overtone, no ninth mode).
@@ -147,7 +164,11 @@ export function cue(snapshot, state, outcome) {
   if (snapshot === null || snapshot.puzzleId !== next.puzzleId) {
     return { kind: null, rung: 1, snapshot: next };
   }
-  if (outcome?.type === 'solved') return { kind: 'solve', rung: 1, snapshot: next };
+  if (outcome?.type === 'solved') {
+    // The fourth set winning the game earns the fanfare on top of its chime.
+    const kind = state.status === 'won' ? 'win' : 'solve';
+    return { kind, rung: 1, snapshot: next };
+  }
   if (MISTAKES.has(outcome?.type)) return { kind: 'mistake', rung: 1, snapshot: next };
 
   const transition = classifyTransition(snapshot.terms, next.terms, outcome ?? null);
@@ -230,7 +251,11 @@ export function update(state, outcome) {
     const at = ac.currentTime + 0.005;
     if (decision.kind === 'select') playSelect(at, decision.rung);
     else if (decision.kind === 'solve') playSolve(at);
-    else playMistake(at);
+    else if (decision.kind === 'win') {
+      // The last set's chime plays as usual; the fanfare answers it.
+      playSolve(at);
+      playWin(at + SOUND.win.after);
+    } else playMistake(at);
   } catch {
     // A synthesis failure is a skipped beat, never a broken game.
   }
@@ -334,6 +359,39 @@ function playSolve(at) {
       gain: strike.gain,
       lowpass
     });
+  }
+}
+
+/**
+ * One soft-brass note: a sawtooth (the buzzy, harmonic-rich wave brass lives
+ * on) tamed by a lowpass, with a breathed envelope rather than a strike. The
+ * fifth-ish overtone of the filter is what reads "trumpet"; the low gain and
+ * the 1.9kHz cutoff are what keep it cozy instead of triumphant-arena.
+ */
+function brass(at, { freq, dur, gain }, lowpass) {
+  const osc = context.createOscillator();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(freq, at);
+
+  const filter = context.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(lowpass, at);
+  filter.Q.value = 0.9;
+
+  const env = context.createGain();
+  env.gain.setValueAtTime(0.0001, at);
+  env.gain.exponentialRampToValueAtTime(gain, at + 0.025);
+  env.gain.setValueAtTime(gain, at + Math.max(0.03, dur * 0.55));
+  env.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+
+  osc.connect(filter).connect(env).connect(masterGain);
+  osc.start(at);
+  osc.stop(at + dur + 0.03);
+}
+
+function playWin(at) {
+  for (const note of SOUND.win.notes) {
+    brass(at + note.delay, note, SOUND.win.lowpass);
   }
 }
 
