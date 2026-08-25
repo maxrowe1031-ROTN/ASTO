@@ -2741,6 +2741,36 @@ sound module keeps exactly two entry points. Known quirk, accepted: Clear with a
 single tile plays the button tap plus a deselect tap 5 ms apart, because a 1→0
 delta is indistinguishable from tapping that tile.
 
+### D-29 — Confetti on the win screen: the no-list's first sanctioned deviation (2026-08-25)
+
+**What happened:** Max asked what a confetti drop on the solved screen would take.
+The honest answer had two halves — technically ~100 lines, but "no confetti, no
+particles" is the first line of the GDD's own no-list, which this repo treats as
+spec and which Phase 3's gate explicitly verified. Claude surfaced the conflict
+and offered in-register alternatives (a bean drop; falling tier squares).
+
+**Max's ruling, verbatim reasoning:** *"well, i wrote the gdd, we can change it
+or deviate from it however we want. the gdd represented a great starting place
+for this game, but now its time to explore other polishing finishes and i think
+the confetti could be a nice touch."* The GDD is his document; the no-list was a
+starting posture, not a treaty. This entry exists so the deviation is recorded
+as a decision rather than discovered as drift.
+
+**What was built, and the narrowness that keeps the no-list's spirit:**
+`src/view/confetti.js` — canvas overlay, ~140 pieces, fire-and-forget from the
+end view when a WON game first renders (the `renderedFor` guard makes it once
+per finished game; a loss gets nothing). It falls in **ASTO's own colors** — the
+four tier mains plus honey, read live from tokens.css with fallbacks, the
+motion.js pattern — so the celebration stays in the game's palette. It no-ops
+under `prefers-reduced-motion`, ignores pointer events, removes its canvas when
+the last piece exits, and nothing awaits it. **The board itself keeps the
+no-list's calm: confetti exists on the win screen and nowhere else.**
+
+**Scope of the deviation:** confetti on the win screen only. The rest of the
+no-list — no particles on the board, no timers, beans never red — stands, and
+CLAUDE.md §8 was updated to say exactly that. Joins the pending GDD version bump
+(audio, settings, the so-close revision) as the fourth item on Max's edit list.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

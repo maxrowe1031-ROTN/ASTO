@@ -9,6 +9,7 @@
 
 import { canonicalOrder } from '../engine/arrangements.js';
 import { difficultyToTier } from '../engine/tiers.js';
+import { drop } from './confetti.js';
 import { settleIn, staggerStep } from './motion.js';
 
 export class EndView {
@@ -34,7 +35,7 @@ export class EndView {
       <p class="share-feedback" role="status" aria-live="polite"></p>
       <!-- Deep-linked visitors never see the title screen (D-20 routing), so this is
            the one surface where a stranger can learn how the puzzles are made. -->
-      <a class="text-action" href="about.html">About this project</a>`;
+      <a class="text-action" href="about.html">About this game</a>`;
 
     this.titleEl = root.querySelector('.end-title');
     this.scoreEl = root.querySelector('.end-score');
@@ -60,6 +61,11 @@ export class EndView {
     this.renderedFor = state;
 
     const won = state.status === 'won';
+    // Confetti on a win, once per finished game — the renderedFor guard above is
+    // what keeps a later repaint from dropping it twice. Fire and forget, like
+    // the tutorial card's entrance: ambient celebration, not a beat anything
+    // waits on. Sanctioned GDD deviation, D-29.
+    if (won) drop();
     this.titleEl.textContent = won ? 'Puzzle solved!' : 'Out of beans';
     this.scoreEl.textContent = won
       ? `All four sets, ${beans(state.mistakes)} used.`
