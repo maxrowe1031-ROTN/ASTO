@@ -141,16 +141,16 @@
 <body>
 <main>
   <span class="badge">DISPOSABLE SPIKE</span>
-  <h1>Scene spike — four registers</h1>
+  <h1>Scene spike — round 2: the coffee cat</h1>
   <p class="lede">
-    Phase 0 answered whether a band this short can read as a place at all —
-    First Light's dawn horizon did, once the source grid doubled so a circle
-    and a canopy had room to round out. Phase 1's question is different:
-    <strong>can one format carry different places?</strong> The same six-token
-    palette and the same silhouette grammar, drawing a bakery, a harbor, and a
-    mountain alongside First Light. If any of the three reads as noise rather
-    than its register, that is real information about the grammar's limits —
-    not something to quietly redraw away.
+    Round 1 proved the band reads as a place (3 of 4 registers) and found the
+    grammar's limit (a shopfront has no horizon). Round 2 tests the brainstorm's
+    answer: <strong>a character anchors what a horizon can't.</strong> The cat
+    is drawn into every scene — including the failed bakery, which it is
+    supposed to rescue. New here: the <strong>Sunlit Days</strong> palette
+    (per-scene subsets of one shared 22-colour pool), a third, taller band
+    candidate, white vs black cat, and the three states — idle · correct ·
+    miss.
   </p>
 
   <h2>Scene</h2>
@@ -158,8 +158,16 @@
   <div class="chips" id="scene-chips" role="group" aria-label="Scene"></div>
 
   <h2>Grid size</h2>
-  <p class="desc">Two candidates from the plan. Same drawing, two pixel counts.</p>
+  <p class="desc">The round-1 candidates plus a taller third — judged on whether the cat can emote.</p>
   <div class="chips" id="size-chips" role="group" aria-label="Grid size"></div>
+
+  <h2>Cat</h2>
+  <p class="desc">White vs black, same sprite. The grammar puts dark ground underfoot — watch which one survives everywhere.</p>
+  <div class="chips" id="cat-chips" role="group" aria-label="Cat colour"></div>
+
+  <h2>State</h2>
+  <p class="desc">Correct and Miss are one-shot reactions; the cat returns to idle on its own.</p>
+  <div class="chips" id="state-chips" role="group" aria-label="State"></div>
 
   <h2>Motion</h2>
   <p class="desc">Ambient motion is the GDD deviation under discussion — judge it on, then off.</p>
@@ -208,6 +216,23 @@
     given a token that contrasts with its LOCAL background, not merely one
     that is in the six-token set.
   </p>
+
+  <p class="note">
+    <strong>What round 2 found.</strong> The cat renders and reads in all 24
+    combinations (4 scenes × 3 sizes × 2 colours), verified by decoding canvas
+    pixels — including the bakery, where a character in front of the counter
+    visibly anchors what the horizon grammar couldn't. White survives every
+    scene; black sinks into the mountain's slopes and the harbor's dark water,
+    exactly as the dark-ground-underfoot argument predicted. The three states
+    read at sprite scale: a hop with one gold sparkle, a flattened
+    ears-down miss, an auto-return to idle. Two honest corrections from
+    pixel-decoding the palette claims: the harbor's ember is the WATER band
+    (sunset-lit, rows 11–13), not the sail; and the mountain's cream is the
+    sky glow band — round 1's abandoned snow cap is still not drawn, the new
+    palette merely makes one possible. Round 1's rAF lesson held and was
+    instrumented this time: <code>window.__spikeTest</code> renders single
+    frames synchronously so a hidden pane can still be verified.
+  </p>
 </main>
 
 <script type="module">
@@ -216,7 +241,36 @@
 // silhouette shapes are geometrically clean, then baked here as plain data —
 // exactly the shape a real scene file would take: { w, h, palette, grid }.
 // ---------------------------------------------------------------------------
-const SCENE_PALETTE = ["--oat", "--tier-yellow-tint", "--honey", "--tier-yellow-main", "--taupe", "--ink"];
+// Round 2: the palette decision (2026-08-25) — the band gets its OWN palette,
+// broader than the UI's six tokens: "Sunlit Days" by Doph (lospec.com), 22
+// colours, plus one reserved near-white for the cat. Coherence now comes from
+// the shared POOL, not shared tokens: each scene picks a six-colour subset,
+// keeping the round-1 grids (indices 0–5) untouched. Index semantics per
+// scene stay what round 1 drew: 0 sky base · 1 pale high · 2 light source ·
+// 3 mid accent · 4 secondary/smoke · 5 silhouette ink.
+const SUNLIT = {
+  cream:'#f2e9d3', sand:'#baab99', stone:'#95827f', plum:'#806873',
+  dusk:'#635463', night:'#3f3645', olive:'#ada33d', moss:'#7c7f55',
+  ember:'#e16d50', rust:'#a75d59', seaglass:'#94b5a3', slate:'#799098',
+  bluedusk:'#6d738d', gold:'#e8b85c', amber:'#d98d49', orchid:'#c381a7',
+  violet:'#84648a', coral:'#e68a85', wine:'#9e606d', pale:'#eed09b',
+  clay:'#dc9a72', brick:'#ba7364',
+};
+const CAT_WHITE = '#fdfdff';       // the reserved cat colour (not in Sunlit Days)
+const CAT_BLACK = '#2a2430';       // TEMP dark for the black-cat test only
+const SCENE_PALETTES = {
+  // dawn: warm golds — the register round 1 proved
+  'first-light': [SUNLIT.pale, SUNLIT.cream, SUNLIT.gold, SUNLIT.clay, SUNLIT.brick, SUNLIT.night],
+  // bakery: pre-dawn warmth, brick awning, lit window
+  'bakery':      [SUNLIT.pale, SUNLIT.cream, SUNLIT.gold, SUNLIT.rust, SUNLIT.plum, SUNLIT.night],
+  // harbor: sea-glass sky; index 3 turns out to be the WATER band, which
+  // ember renders as sunset-lit water (verified by row-decoding, rows 11–13)
+  'harbor':      [SUNLIT.seaglass, SUNLIT.cream, SUNLIT.gold, SUNLIT.ember, SUNLIT.dusk, SUNLIT.night],
+  // mountain: dusty-blue sky. NOTE: round 1's abandoned snow cap is NOT back —
+  // the grid never had it redrawn; this palette merely makes one possible
+  // (cream contrasts with slate where it vanished against itself)
+  'mountain':    [SUNLIT.slate, SUNLIT.cream, SUNLIT.pale, SUNLIT.plum, SUNLIT.dusk, SUNLIT.night],
+};
 
 // Four registers, ALL sharing the same six-token palette and the same
 // silhouette-band grammar — that shared constraint is what this phase is
@@ -251,6 +305,116 @@ const SCENES = {
     }
   },
 };
+
+// Round 2: the third, taller candidate — 150×24 @2.5× = 375×60, inside the
+// measured 74px of slack. Derived, not redrawn: four sky rows padded on top
+// of the 150×20 grids. The added headroom is exactly what it exists to test —
+// whether the cat gets room to emote.
+for (const s of Object.values(SCENES)) {
+  const base = s.sizes['150x20'];
+  s.sizes['150x24'] = {
+    w: 150, h: 24, scale: 2.5,
+    grid: [0, 1, 2, 3].map(() => new Array(150).fill(0)).concat(base.grid),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// The cat. Sprite frames as strings ('.' transparent · '1' body · '2' eye),
+// exactly the palette-index-grid shape everything else here uses. Rough on
+// purpose: this cat answers size and colour questions, it is not the
+// character design (the agent owns that, per the spec).
+// ---------------------------------------------------------------------------
+const CAT_FRAMES = {
+  // sitting, facing left, tail settled
+  idleA: [
+    '.1...1......',
+    '.11111......',
+    '.12121......',
+    '.11111......',
+    '..111111....',
+    '..11111111.1',
+    '.111111111.1',
+    '.1111111111.',
+    '.11..11.11..',
+  ],
+  // tail tip flicked up one row
+  idleB: [
+    '.1...1......',
+    '.11111......',
+    '.12121......',
+    '.11111......',
+    '..111111...1',
+    '..11111111.1',
+    '.111111111..',
+    '.1111111111.',
+    '.11..11.11..',
+  ],
+  // ears flat, posture low, tail drooped — the miss
+  miss: [
+    '............',
+    '.11..11.....',
+    '.111111.....',
+    '.121121.....',
+    '..111111....',
+    '.111111111..',
+    '.1111111111.',
+    '.11..11.11..',
+  ],
+};
+
+// Where the cat sits in each scene: x as a fraction of width, standing on the
+// bottom edge. Chosen to keep it off round 1's focal points (lighthouse, sun).
+const CAT_ANCHORS = {
+  'first-light': 0.70,
+  'bakery': 0.52,
+  'harbor': 0.28,
+  'mountain': 0.16,
+};
+
+let catColour = 'white';                  // 'white' | 'black'
+let catState = 'idle';                    // 'idle' | 'correct' | 'miss'
+let stateStarted = 0;                     // seconds timestamp of the reaction
+const REACT_SECONDS = 0.9;
+
+function paintCat(ctx, w, h, t) {
+  const body = catColour === 'white' ? CAT_WHITE : CAT_BLACK;
+  const eye = catColour === 'white' ? SUNLIT.night : SUNLIT.cream;
+
+  let frame;
+  let yOffset = 0;
+  const elapsed = t - stateStarted;
+  if (catState !== 'idle' && elapsed > REACT_SECONDS) catState = 'idle';
+
+  if (catState === 'miss') {
+    frame = CAT_FRAMES.miss;
+  } else if (catState === 'correct') {
+    // a hop: up and back down over the reaction window, ears stay tall
+    frame = CAT_FRAMES.idleB;
+    yOffset = -Math.round(Math.sin(Math.min(elapsed / REACT_SECONDS, 1) * Math.PI) * 3);
+  } else {
+    // idle: slow tail flick, occasional blink
+    frame = (Math.floor(t / 1.4) % 2 === 0) ? CAT_FRAMES.idleA : CAT_FRAMES.idleB;
+  }
+  const blinking = catState === 'idle' && (t % 3.7) < 0.18;
+
+  const cw = frame[0].length, ch = frame.length;
+  const cx = Math.round(w * CAT_ANCHORS[sceneId]) - Math.floor(cw / 2);
+  const cy = h - ch + yOffset;
+  for (let y = 0; y < ch; y += 1) {
+    for (let x = 0; x < cw; x += 1) {
+      const cell = frame[y][x];
+      if (cell === '.') continue;
+      ctx.fillStyle = (cell === '2' && !blinking) ? eye : body;
+      ctx.fillRect(cx + x, cy + y, 1, 1);
+    }
+  }
+
+  if (catState === 'correct') {
+    // one gold sparkle over the head while the hop lasts
+    ctx.fillStyle = SUNLIT.gold;
+    ctx.fillRect(cx + 3, cy - 2, 1, 1);
+  }
+}
 
 // The sun and the bird are the only pixels that move: a slow rise and a slow
 // drift, both far too subtle to read as looping "confetti"-grade motion. Named
@@ -331,11 +495,13 @@ const mount = document.getElementById('scene-mount');
 const canvas = document.createElement('canvas');
 mount.appendChild(canvas);
 const ctx = canvas.getContext('2d');
-const style = getComputedStyle(document.documentElement);
-const colors = SCENE_PALETTE.map((tok) => style.getPropertyValue(tok).trim());
 
 function currentGeom() {
   return SCENES[sceneId].sizes[size];
+}
+
+function currentColors() {
+  return SCENE_PALETTES[sceneId];
 }
 
 function setup() {
@@ -352,9 +518,34 @@ function setup() {
 function loop(now) {
   const t = now / 1000;
   const { w, h, grid } = currentGeom();
+  const colors = currentColors();
   paintStatic(ctx, w, h, colors, grid);
-  if (motion) paintMotion(ctx, w, h, colors, sceneId, t);
+  if (motion) {
+    paintMotion(ctx, w, h, colors, sceneId, t);
+    paintCat(ctx, w, h, t);
+  } else {
+    // motion off = the reduced-motion story: everything freezes, including
+    // the cat, which still has to READ as a cat as a single still frame
+    catState = 'idle';
+    ctxStillCat(w, h);
+  }
   raf = requestAnimationFrame(loop);
+}
+
+function ctxStillCat(w, h) {
+  const body = catColour === 'white' ? CAT_WHITE : CAT_BLACK;
+  const eye = catColour === 'white' ? SUNLIT.night : SUNLIT.cream;
+  const frame = CAT_FRAMES.idleA;
+  const cw = frame[0].length, ch = frame.length;
+  const cx = Math.round(w * CAT_ANCHORS[sceneId]) - Math.floor(cw / 2);
+  const cy = h - ch;
+  for (let y = 0; y < ch; y += 1) {
+    for (let x = 0; x < cw; x += 1) {
+      if (frame[y][x] === '.') continue;
+      ctx.fillStyle = frame[y][x] === '2' ? eye : body;
+      ctx.fillRect(cx + x, cy + y, 1, 1);
+    }
+  }
 }
 
 function restart() {
@@ -382,10 +573,51 @@ function chipGroup(id, options, current, onPick) {
 }
 
 chipGroup('scene-chips', Object.entries(SCENES).map(([id, s]) => [id, s.label]), () => sceneId, (v) => { sceneId = v; });
-chipGroup('size-chips', [['150x20', '150×20 @2.5x (full-bleed)'], ['168x24', '168×24 @2x (inset)']], () => size, (v) => { size = v; });
+chipGroup('size-chips', [['150x20', '150×20 @2.5x (full-bleed)'], ['168x24', '168×24 @2x (inset)'], ['150x24', '150×24 @2.5x (taller)']], () => size, (v) => { size = v; });
+chipGroup('cat-chips', [['white', 'White cat'], ['black', 'Black cat']], () => catColour, (v) => { catColour = v; });
+chipGroup('state-chips', [['idle', 'Idle'], ['correct', 'Correct!'], ['miss', 'Miss']], () => catState, (v) => {
+  catState = v;
+  stateStarted = performance.now() / 1000;
+});
 chipGroup('motion-chips', [[true, 'On'], [false, 'Off']], () => motion, (v) => { motion = v; });
 
 restart();
+
+// ---------------------------------------------------------------------------
+// Test hook (round 1's verification lesson, made into an instrument): the
+// preview browser only advances rAF around a screenshot, so the loop above
+// never runs while the pane is hidden. This renders ONE frame synchronously
+// at an explicit t so a harness can decode canvas pixels combination by
+// combination. Disposable-file rules: no production code sees this.
+// ---------------------------------------------------------------------------
+window.__spikeTest = {
+  set({ scene, sizeKey, colour, state, started }) {
+    if (scene) sceneId = scene;
+    if (sizeKey) size = sizeKey;
+    if (colour) catColour = colour;
+    if (state) { catState = state; stateStarted = started ?? 0; }
+    setup();
+  },
+  render(t) {
+    const { w, h, grid } = currentGeom();
+    const colors = currentColors();
+    paintStatic(ctx, w, h, colors, grid);
+    if (motion) {
+      paintMotion(ctx, w, h, colors, sceneId, t);
+      paintCat(ctx, w, h, t);
+    } else {
+      catState = 'idle';
+      ctxStillCat(w, h);
+    }
+    return { w, h, state: catState };
+  },
+  pixels() {
+    return ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  },
+  snapshot() {
+    return canvas.toDataURL();
+  },
+};
 </script>
 </body>
 </html>
