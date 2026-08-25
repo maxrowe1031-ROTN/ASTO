@@ -1,9 +1,11 @@
 # Open: illustrations in the play screen — scope settled, execution open
 
-**Status:** open, and further along than it was. The 2026-08-25 session settled
-the four scope questions this ticket was originally opened for, then ran a
-disposable spike that produced real findings and **five new open questions**
-(bottom of this file). Nothing is approved to ship; nothing is in `main`.
+**Status:** open — execution only. A second 2026-08-25 session (the coffee-cat
+brainstorm) answered all five open questions below, or gave each a deciding
+mechanism; the answers are recorded beneath each question. The design lives in
+`docs/superpowers/specs/2026-08-25-register-scenes-cat-design.md`. What remains
+open is craft (band size and cat colour, settled by spike round 2 + Max's eye)
+and then the pipeline build. Nothing is approved to ship; nothing is in `main`.
 
 **The ask (Max, 2026-08-19):** a small illustration or animation in the space
 between the header and the analogy frame — "low spec, pixelated or something",
@@ -51,17 +53,35 @@ grammar. **3 of 4 registers read convincingly; the fourth found a real limit.**
   The palest token is invisible against the sky band that is already that
   colour — this bit twice, independently (a snow cap, then chimney smoke).
 
-## The five open questions (Max, 2026-08-25) — the next session's agenda
+## The five questions (Max, 2026-08-25) — answered in the coffee-cat brainstorm (same day)
+
+**The reframing that answered most of them:** ASTO's recurring character is a
+**coffee-loving cat**, present in every scene. A character anchors a composition
+where a horizon cannot, which dissolves the bakery grammar limit (and the ~6
+street-level/interior registers behind it); it replaces the carafe mascot idea;
+and it ties to the coffee-bean mistake pips. Composition is **layered**: one
+background + one cat idle per register, **reaction animations shared across all
+registers** (~18 + 18 + 2 ≈ 38 pieces).
 
 1. **What is the right pixel count inside the grid space?** Two candidates are
    live (`150×20 @2.5×`, `168×24 @2×`) and both render legibly; nothing has
    chosen between them, and neither has been checked on a real iPhone. Relevant
    input: the spike proved resolution, not footprint, is what buys legibility.
+   **Answered:** spike round 2 decides, **taller allowed** — the two candidates
+   plus a ~375×60 option inside the 74px slack, judged on whether the cat can
+   visibly emote, on Max's phone.
 2. **What is the reusable colour palette?** The spike locked six tokens from
    `styles/tokens.css` as a coherence device, and that lock is what made four
    scenes look related. But it cost a snow cap, and it forces the local-contrast
    rule above. Open: is six right, which six, and does the palette need one
    token that exists purely to contrast with sky?
+   **Answered:** the band gets its **own palette, broader than the UI's six
+   tokens** — one shared palette all 18 scenes draw from. Max chose **"Sunlit
+   Days"** by Doph (lospec.com/palette-list/sunlit-days, 22 colours) from seven
+   Lospec candidates off his Pinterest mood board (https://pin.it/2soYC9BHG),
+   **plus one reserved near-white for the cat**. Its base ≈ `--cream`, its
+   `e8b85c` ≈ honey, its darkest ≈ ink, so the band reads as native ASTO.
+   Runner-up: Tachycardia. The local-contrast rule stands.
 3. **Is this the moment to look at ASTO branding more broadly — including the
    recurring character?** The original fork's Option A (an event-reactive
    mascot, the carafe from ASTO's own icon vocabulary) was set aside in favour
@@ -69,6 +89,12 @@ grammar. **3 of 4 registers read convincingly; the fourth found a real limit.**
    it is a bigger question than the scene band, it touches the wordmark, the
    About page and the itch listing, and the IP note still stands — the pixel
    Claude avatar is Anthropic's and is not usable in a published game.
+   **Answered:** the character question is settled *here* — the coffee cat — and
+   designed once, to logo standard, in this effort. The **brand rollout**
+   (wordmark, About page, favicon, itch listing) is its own follow-up ticket.
+   Logo direction recorded for that ticket: **the cat in the coffee cup** (Max's
+   pick off the mood board). The logo pins are black cats while the in-scene
+   character leans white; character and logo should end up the same cat.
 4. **How should the agent pipeline be designed?** Architecture is sketched (an
    off-pipeline `scene-artist` on the standard pure agent contract, a third
    write seam `art-store.js` owning `art/`, JSON-shaped output because the
@@ -77,11 +103,25 @@ grammar. **3 of 4 registers read convincingly; the fourth found a real limit.**
    unvalidated.** The open half is the *prompt*: what grammar, what constraints,
    how coherence is enforced across 18 pieces, and whether architectural
    registers need a second grammar or get excluded.
+   **Answered (structure):** the **agent authors everything** — cat and
+   backgrounds — with the cat as its own pipeline stage: cat design → Max
+   approves → backgrounds generate against the approved cat. The character-anchor
+   grammar replaces the need for a second grammar. Schema v1.0 gains an
+   **optional `register` field** (locked-decision amendment, Max-approved
+   2026-08-25): the Studio stamps it at publish, the 51 existing boards get a
+   one-time hand backfill, and a board without one shows a default scene. The
+   prompt itself remains open until the spike settles craft parameters.
 5. **What states should the banner have?** The spike only has ambient. Max names
    three: **ambient · correct answer · miss**. This is a real scope increase —
    it turns the band from decoration into a **feedback surface**, which puts it
    alongside sound and motion, and it multiplies the art (18 scenes × states).
    It also revisits the D-28/D-29 territory the session already touched.
+   **Answered:** **three states — idle · correct · miss**, expressed by the cat
+   (reactions shared across registers, so states do NOT multiply per-scene art).
+   So-close and already-tried read as misses, consistent with sound (they thud).
+   Win and loss belong to their own screens. Backgrounds stay single-state and
+   may carry **at most one** slow ambient element; the cat's idle loop is the
+   primary ambient life.
 
 ## Still true from the original scoping
 
@@ -90,7 +130,8 @@ grammar. **3 of 4 registers read convincingly; the fourth found a real limit.**
   shipping any of this needs a **GDD version bump (Max's)**, which is already
   owed for audio, the settings screen, the so-close revision and confetti.
 - **IP:** the pixel Claude avatar is Anthropic's — not usable in a published
-  game. ASTO's own carafe-and-cups vocabulary offers an original mascot.
+  game. The original mascot is now the **coffee cat** (2026-08-25), retiring
+  the carafe-and-cups idea.
 - **Pixel art as data** — palette-index grids, no binary assets — is not merely
   elegant here; the Studio's existing seams make it the only shape that fits.
 
