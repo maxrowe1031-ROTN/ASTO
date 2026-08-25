@@ -2682,9 +2682,11 @@ settings screen now**, with mute and a volume slider. Consequences: the header
 stays untouched (GDD-sensitive real estate), `asto.volume` joins `asto.muted` in
 storage (both string values through `storage.js`, defaults unmuted at 25 — a
 broken store must not silence the game), the slider previews a select tap while
-dragged so a level is chosen by ear, and the door is a "Settings" text-action on
-the title screen, since settings are app-wide (statistics stays behind the
-calendar it summarises, per D-24). **Reconsider-when:** if the page still holds
+dragged so a level is chosen by ear, and the door is a **gear icon beside the
+statistics icon in the calendar's header** (revised from a title-screen
+text-action the same day, Max's call: the front door stays two buttons per
+D-24, both doors became icons — bar-graph and gear — and Back from settings
+returns to the calendar, the door you came through). **Reconsider-when:** if the page still holds
 only the Sound section after the next two shipped features, the recommendation
 was right and the page was premature — nothing needs undoing, but the next
 setting should be pulled forward or the door demoted.
