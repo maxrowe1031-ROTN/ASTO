@@ -37,6 +37,27 @@ Three ways to listen, in increasing order of how much they tell you:
 3. **The tap test** at the bottom: pick a palette, then spam a 4x4 board of real
    ASTO words. The card cannot answer the question this one answers.
 
+## Max's mix (2026-08-25)
+
+He picked across palettes rather than one of them: **paper select, ceramic solve,
+woodblock mistake.** That reads as coherent rather than scattered, because the
+three are materials off one cafe table, and because the moments are maximally
+distinguishable that way: a dry unpitched tap for the frequent thing, a bright
+ringing reward, a low wooden thud for the negative.
+
+The page now opens on a **Your mix** card carrying that combination, because a
+cross-palette mix raises a question the four cards cannot answer. Each palette
+was levelled against **itself**, so a bandpassed noise burst is now sitting next
+to a bell at gains that were never compared. The card therefore adds:
+
+- **per-moment trim**, to balance them by ear before any of it reaches code;
+- **dropdowns**, so the mix stays A/B-able (swapping solve to hum is one tap);
+- **two sequences** that are the only combinations the game actually produces:
+  four selects then a solve, and four selects then a mistake.
+
+Whatever the trims end up at is real design data, not a scratch setting: it
+becomes the relative levels in `sound.js`'s exported parameter table.
+
 ## The decision this is asking for
 
 **Pick a palette, or redirect.** "None of these, but warmer" is a perfectly good

@@ -102,6 +102,25 @@
   }
   .tile[data-picked="true"] { background-color: var(--oat); transform: translateY(-2px); }
 
+  .mix { border-color: var(--honey); box-shadow: 0 0 0 3px var(--honey-glow); }
+  .mix-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .mix-row .moment {
+    font-size: 13px; font-weight: 800; width: 56px; flex: none;
+  }
+  .mix-row select {
+    font-family: var(--font-body); font-weight: 700; font-size: 13px;
+    color: var(--ink); background: var(--cream);
+    border: 1px solid var(--taupe); border-radius: var(--radius-pill);
+    padding: 8px 8px; flex: none; width: 100px;
+  }
+  /* min-width:0 or the range refuses to shrink past its intrinsic size and
+     shoves the Hear button off the edge at 375px. */
+  .mix-row input[type="range"] { min-height: 32px; min-width: 0; }
+  .mix-row .hear {
+    border-width: 1px; border-color: var(--taupe);
+    font-size: 12px; padding: 7px 12px; min-height: 0; flex: none;
+  }
+
   .vol { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
   .vol label { font-size: 13px; font-weight: 700; color: var(--soft-ink); white-space: nowrap; }
   input[type="range"] { flex: 1; accent-color: var(--ink); min-height: var(--tap-target); }
@@ -134,6 +153,28 @@
     <input id="vol" type="range" min="0" max="100" value="45">
   </div>
 
+  <section class="card mix" id="mix">
+    <h2>Your mix</h2>
+    <p class="desc">
+      Paper select, ceramic solve, woodblock mistake. Three materials off one
+      cafe table, which is why it hangs together, but each palette was balanced
+      against <em>itself</em> and never against the others. Trim them until the
+      select disappears under the solve, then play the two sequences: those are
+      the only combinations the game will ever actually produce.
+    </p>
+
+    <div id="mix-rows"></div>
+
+    <div class="row" style="margin-top: 12px;">
+      <button class="round" id="mix-round">A whole round</button>
+      <button class="round" id="mix-miss">A miss</button>
+    </div>
+  </section>
+
+  <hr>
+
+  <h2>The palettes</h2>
+  <p class="desc">The four candidates on their own, each balanced internally.</p>
   <div id="cards"></div>
 
   <hr>
@@ -164,6 +205,8 @@
 
 let ac = null;
 let master = null;
+let bus = null;      // where voices land right now: master, or a moment's trim
+let trims = null;    // per-moment gain, so a mix can be balanced across palettes
 
 /** Lazily built, because a context may not start before a user gesture. */
 function audio() {
@@ -174,6 +217,17 @@ function audio() {
     master = ac.createGain();
     master.gain.value = 0.45;
     master.connect(ac.destination);
+    // Each palette was balanced against ITSELF. Mixing across palettes puts a
+    // bandpassed noise burst next to a sine, which are not the same loudness at
+    // the same gain, so a mix needs its own trim before it can be judged.
+    trims = {};
+    for (const moment of ['select', 'solve', 'mistake']) {
+      const gain = ac.createGain();
+      gain.gain.value = 1;
+      gain.connect(master);
+      trims[moment] = gain;
+    }
+    bus = master;
   }
   if (ac.state === 'suspended') ac.resume();
   return ac;
@@ -194,7 +248,7 @@ function struck(at, { freq, partials, dur, gain = 0.5, type = 'sine' }) {
     env.gain.setValueAtTime(0.0001, at);
     env.gain.exponentialRampToValueAtTime(Math.max(gain * amp, 0.0002), at + 0.004);
     env.gain.exponentialRampToValueAtTime(0.0001, at + life);
-    osc.connect(env).connect(master);
+    osc.connect(env).connect(bus);
     osc.start(at);
     osc.stop(at + life + 0.03);
   }
@@ -210,7 +264,7 @@ function breathed(at, { freq, glide, dur, gain = 0.4, attack = 0.02 }) {
   env.gain.setValueAtTime(0.0001, at);
   env.gain.exponentialRampToValueAtTime(gain, at + attack);
   env.gain.exponentialRampToValueAtTime(0.0001, at + dur);
-  osc.connect(env).connect(master);
+  osc.connect(env).connect(bus);
   osc.start(at);
   osc.stop(at + dur + 0.03);
 }
@@ -235,7 +289,7 @@ function noise(at, { freq, sweep, q = 1, dur, gain = 0.4, type = 'bandpass' }) {
   env.gain.setValueAtTime(gain, at);
   env.gain.exponentialRampToValueAtTime(0.0001, at + dur);
 
-  src.connect(filter).connect(env).connect(master);
+  src.connect(filter).connect(env).connect(bus);
   src.start(at);
   src.stop(at + dur);
 }
@@ -307,18 +361,34 @@ const PALETTES = [
 
 const MOMENTS = [['select', 'Select'], ['solve', 'Solve'], ['mistake', 'Mistake']];
 
+/**
+ * Fire one moment, routed through that moment's trim so a cross-palette mix can
+ * be balanced. `bus` is read synchronously by the synthesis helpers, so setting
+ * it around the call is safe and keeps the helpers ignorant of moments.
+ */
+function fire(palette, moment, at) {
+  bus = trims[moment];
+  palette[moment](at);
+  bus = master;
+}
+
 /** Fire one moment now, guarding the whole thing on audio being available. */
 function play(palette, moment, offset = 0) {
   if (!audio()) return;
-  palette[moment](ac.currentTime + offset);
+  fire(palette, moment, ac.currentTime + offset);
 }
 
-/** Four taps and a solve, at the rhythm the real game produces. */
-function playRound(palette) {
+/** Four taps at the real tap rhythm, then whatever the fourth tap earned. */
+function playSequence(selectFrom, endWith, endMoment) {
   if (!audio()) return;
   const start = ac.currentTime + 0.02;
-  for (let i = 0; i < 4; i += 1) palette.select(start + i * 0.19);
-  palette.solve(start + 0.19 * 3 + 0.55);
+  for (let i = 0; i < 4; i += 1) fire(selectFrom, 'select', start + i * 0.19);
+  fire(endWith, endMoment, start + 0.19 * 3 + 0.55);
+}
+
+/** A palette against itself, which is how each one was designed to be heard. */
+function playRound(palette) {
+  playSequence(palette, palette, 'solve');
 }
 
 // ---------------------------------------------------------------------------
@@ -326,6 +396,60 @@ function playRound(palette) {
 // ---------------------------------------------------------------------------
 
 let active = PALETTES[0];
+
+const byId = (id) => PALETTES.find((p) => p.id === id);
+
+// Max's picks, 2026-08-25, after hearing the four palettes.
+const mix = { select: 'paper', solve: 'ceramic', mistake: 'woodblock' };
+
+const mixRows = document.getElementById('mix-rows');
+for (const [moment, label] of MOMENTS) {
+  const row = document.createElement('div');
+  row.className = 'mix-row';
+
+  const name = document.createElement('span');
+  name.className = 'moment';
+  name.textContent = label;
+
+  const choose = document.createElement('select');
+  choose.setAttribute('aria-label', `Palette for ${label.toLowerCase()}`);
+  for (const palette of PALETTES) {
+    const option = document.createElement('option');
+    option.value = palette.id;
+    option.textContent = palette.name;
+    option.selected = palette.id === mix[moment];
+    choose.append(option);
+  }
+  choose.addEventListener('change', () => {
+    mix[moment] = choose.value;
+    play(byId(mix[moment]), moment);
+  });
+
+  const trim = document.createElement('input');
+  trim.type = 'range';
+  trim.min = '0';
+  trim.max = '150';
+  trim.value = '100';
+  trim.setAttribute('aria-label', `Level for ${label.toLowerCase()}`);
+  trim.addEventListener('input', () => {
+    if (!audio()) return;
+    trims[moment].gain.value = Number(trim.value) / 100;
+  });
+
+  const hear = document.createElement('button');
+  hear.className = 'hear';
+  hear.type = 'button';
+  hear.textContent = 'Hear';
+  hear.addEventListener('click', () => play(byId(mix[moment]), moment));
+
+  row.append(name, choose, trim, hear);
+  mixRows.append(row);
+}
+
+document.getElementById('mix-round').addEventListener('click', () =>
+  playSequence(byId(mix.select), byId(mix.solve), 'solve'));
+document.getElementById('mix-miss').addEventListener('click', () =>
+  playSequence(byId(mix.select), byId(mix.mistake), 'mistake'));
 
 const cards = document.getElementById('cards');
 for (const palette of PALETTES) {
