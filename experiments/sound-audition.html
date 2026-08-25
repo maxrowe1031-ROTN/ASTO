@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ASTO sound audition — DISPOSABLE</title>
+<title>ASTO sound audition (disposable)</title>
 
 <!-- The real design tokens, not a copy. This page is judged on feel, and a
      cozy sound heard on a page that is not ASTO's cream is a different sound. -->
@@ -185,6 +185,24 @@
 
     <div id="mix-rows"></div>
 
+    <div class="tone">
+      <p class="tone-head">
+        Select variation <span class="tone-sub">so tap forty is not tap one</span>
+      </p>
+      <div class="chips" id="var-modes" role="group" aria-label="Variation strategy"></div>
+      <div class="mix-row">
+        <span class="moment">Amount</span>
+        <input id="var-amount" type="range" min="0" max="100" value="55"
+               aria-label="How far the variation moves">
+        <span class="readout" id="var-readout">55</span>
+      </div>
+      <p class="desc" id="var-note" style="margin: 6px 0 8px;"></p>
+      <div class="row">
+        <button class="hear" id="var-four">Hear four taps</button>
+        <button class="hear" id="var-twelve">Hear twelve</button>
+      </div>
+    </div>
+
     <div id="tone" class="tone">
       <p class="tone-head">
         Shaping the chime <span class="tone-sub">less metal, more cup</span>
@@ -229,6 +247,10 @@
   </p>
   <div class="chips" id="chips" role="group" aria-label="Palette for the tap test"></div>
   <div class="board" id="board"></div>
+  <div class="row" style="margin-top: 10px;">
+    <button class="hear" id="board-clear">Clear the frame</button>
+    <span class="desc" id="board-note" style="margin: 0; align-self: center;"></span>
+  </div>
 
   <p class="note">
     <strong>What to listen for.</strong> Select fires most often by far, so it has
@@ -402,7 +424,7 @@ const PALETTES = [
     id: 'woodblock',
     name: 'Woodblock',
     desc: 'Soft marimba ticks. Warm, wooden, and the closest to the coffee-shop register the rest of the game sits in.',
-    select: (t) => struck(t, { freq: 523.25, partials: MARIMBA, dur: 0.20, gain: 0.34 }),
+    select: (t, shift = 1) => struck(t, { freq: 523.25 * shift, partials: MARIMBA, dur: 0.20, gain: 0.34 }),
     solve: (t) => {
       [523.25, 659.25, 783.99].forEach((f, i) =>
         struck(t + i * 0.085, { freq: f, partials: MARIMBA, dur: i === 2 ? 0.55 : 0.24, gain: 0.32 }));
@@ -416,9 +438,9 @@ const PALETTES = [
     id: 'ceramic',
     name: 'Ceramic',
     desc: 'Cup on saucer, with a tick of contact in front of it. The solve is retuned warmer and is now live-tunable from the mix card above.',
-    select: (t) => {
-      noise(t, { freq: 3800, q: 0.8, dur: 0.012, gain: 0.13 });
-      struck(t, { freq: 1100, partials: BELL, dur: 0.16, gain: 0.20 });
+    select: (t, shift = 1) => {
+      noise(t, { freq: 3800 * shift, q: 0.8, dur: 0.012, gain: 0.13 });
+      struck(t, { freq: 1100 * shift, partials: BELL, dur: 0.16, gain: 0.20 });
     },
     solve: ceramicSolve,
     mistake: (t) => {
@@ -430,7 +452,7 @@ const PALETTES = [
     id: 'hum',
     name: 'Hum',
     desc: 'Warm sine blips, breathed rather than struck. The quietest option, and the one least likely to intrude at tap fifteen.',
-    select: (t) => breathed(t, { freq: 330, dur: 0.13, gain: 0.22, attack: 0.012 }),
+    select: (t, shift = 1) => breathed(t, { freq: 330 * shift, dur: 0.13, gain: 0.22, attack: 0.012 }),
     solve: (t) => {
       breathed(t, { freq: 392, glide: 523.25, dur: 0.42, gain: 0.24, attack: 0.03 });
       breathed(t + 0.16, { freq: 659.25, dur: 0.55, gain: 0.14, attack: 0.06 });
@@ -441,7 +463,7 @@ const PALETTES = [
     id: 'paper',
     name: 'Paper',
     desc: 'Filtered noise taps. No pitch at all, so it never argues with anything, but it is the least characterful of the four.',
-    select: (t) => noise(t, { freq: 2400, q: 1.4, dur: 0.05, gain: 0.30 }),
+    select: (t, shift = 1) => noise(t, { freq: 2400 * shift, q: 1.4, dur: 0.05, gain: 0.30 }),
     solve: (t) => {
       noise(t, { freq: 1600, sweep: 3400, q: 1.1, dur: 0.22, gain: 0.26 });
       breathed(t + 0.04, { freq: 523.25, dur: 0.40, gain: 0.10, attack: 0.05 });
@@ -543,25 +565,88 @@ const TUNABLE_SOLVES = new Set(['cup', 'chord', 'bloom']);
  * be balanced. `bus` is read synchronously by the synthesis helpers, so setting
  * it around the call is safe and keeps the helpers ignorant of moments.
  */
-function fire(voice, moment, at) {
+// ---------------------------------------------------------------------------
+// Select variation.
+//
+// Max, 2026-08-25: a sound repeated identically gets annoying. That is real and
+// it has a name — round-robin, standard practice in game audio — and select is
+// exactly where it matters, since it fires forty-odd times a board against the
+// solve's four.
+//
+// Four strategies, because they are not equally good ideas here:
+//
+//   none    — the control.
+//   random  — the textbook fix. Jitter every tap. Never repeats, and carries no
+//             meaning; at high amounts it reads as an instrument out of tune.
+//   robin   — a fixed cycle of four. Varied but predictable, so it stays musical
+//             where random goes woozy.
+//   ladder  — pitch RISES with the slot being filled, resetting when the frame
+//             clears. This is the one worth arguing for: ASTO's frame holds
+//             exactly four, so the variation stops being decoration and starts
+//             telling the player how full the frame is without them looking,
+//             building toward the fourth tap that completes it.
+//
+// A caveat the page states out loud: paper select is unpitched noise, so a
+// ladder moves its BRIGHTNESS rather than its pitch. Less legible than it would
+// be on a pitched select, which is why switching select to Hum or Woodblock
+// while auditioning the ladder is worth doing.
+// ---------------------------------------------------------------------------
+
+const variation = { mode: 'ladder', amount: 0.55 };
+
+const LADDER = [0, 2, 4, 7];      // a major arpeggio; the fourth tap lands on the fifth
+const ROBIN  = [0, 1.5, -1, 2.5]; // no tonal centre, just four distinguishable taps
+
+let ladderStep = 0;
+let robinStep = 0;
+
+const semitones = (n) => Math.pow(2, n / 12);
+
+/** The multiplier for the NEXT select, advancing whatever state the mode keeps. */
+function nextSelectShift() {
+  const { mode, amount } = variation;
+  if (mode === 'none') return 1;
+  if (mode === 'random') return semitones((Math.random() * 2 - 1) * 1.5 * amount);
+  if (mode === 'robin') {
+    const step = ROBIN[robinStep % ROBIN.length];
+    robinStep += 1;
+    return semitones(step * amount);
+  }
+  const step = LADDER[ladderStep % LADDER.length];
+  ladderStep += 1;
+  return semitones(step * amount);
+}
+
+/** A frame emptying: submit, clear, or the fourth tap resolving. */
+function resetVariation() {
+  ladderStep = 0;
+  robinStep = 0;
+}
+
+function fire(voice, moment, at, shift) {
   bus = trims[moment];
   // A palette exposes its moments by name; a solve candidate is just a play().
-  (voice.play ?? voice[moment])(at);
+  (voice.play ?? voice[moment])(at, shift);
   bus = master;
 }
 
 /** Fire one moment now, guarding the whole thing on audio being available. */
 function play(voice, moment, offset = 0) {
   if (!audio()) return;
-  fire(voice, moment, ac.currentTime + offset);
+  fire(voice, moment, ac.currentTime + offset, moment === 'select' ? nextSelectShift() : 1);
 }
 
 /** Four taps at the real tap rhythm, then whatever the fourth tap earned. */
 function playSequence(selectFrom, endWith, endMoment) {
   if (!audio()) return;
   const start = ac.currentTime + 0.02;
-  for (let i = 0; i < 4; i += 1) fire(selectFrom, 'select', start + i * 0.19);
-  fire(endWith, endMoment, start + 0.19 * 3 + 0.55);
+  // A round starts on an empty frame, so the ladder starts at its first rung.
+  resetVariation();
+  for (let i = 0; i < 4; i += 1) {
+    fire(selectFrom, 'select', start + i * 0.19, nextSelectShift());
+  }
+  fire(endWith, endMoment, start + 0.19 * 3 + 0.55, 1);
+  resetVariation();
 }
 
 /** A palette against itself, which is how each one was designed to be heard. */
@@ -612,6 +697,7 @@ for (const [moment, label] of MOMENTS) {
       syncTonePanel();
       syncSolveCards();
     }
+    if (moment === 'select') syncVariation();  // the paper caveat depends on this
     play(voiceFor(moment), moment);
   });
 
@@ -640,6 +726,77 @@ document.getElementById('mix-round').addEventListener('click', () =>
   playSequence(byId(mix.select), solveById(mix.solve), 'solve'));
 document.getElementById('mix-miss').addEventListener('click', () =>
   playSequence(byId(mix.select), byId(mix.mistake), 'mistake'));
+
+// --- Select variation ------------------------------------------------------
+
+const VAR_MODES = [
+  ['none', 'None', 'Every tap identical. The control, and what you have been hearing.'],
+  ['random', 'Random', 'Jitter on every tap. Never repeats, means nothing. Push the amount up and it reads as out of tune.'],
+  ['robin', 'Round robin', 'A fixed cycle of four. Varied but predictable, so it stays musical where random goes woozy.'],
+  ['ladder', 'Frame ladder', 'Rises with the slot being filled, resets when the frame clears. The variation stops being decoration and tells you how full the frame is.']
+];
+
+const varModesEl = document.getElementById('var-modes');
+const varNote = document.getElementById('var-note');
+
+for (const [id, label] of VAR_MODES) {
+  const chip = document.createElement('button');
+  chip.className = 'chip';
+  chip.type = 'button';
+  chip.textContent = label;
+  chip.dataset.mode = id;
+  chip.addEventListener('click', () => {
+    variation.mode = id;
+    syncVariation();
+    resetVariation();
+    hearTaps(4);
+  });
+  varModesEl.append(chip);
+}
+
+const varAmount = document.getElementById('var-amount');
+const varReadout = document.getElementById('var-readout');
+varAmount.addEventListener('input', () => {
+  variation.amount = Number(varAmount.value) / 100;
+  varReadout.textContent = varAmount.value;
+});
+for (const event of ['change', 'pointerup']) {
+  varAmount.addEventListener(event, () => { resetVariation(); hearTaps(4); });
+}
+
+function syncVariation() {
+  for (const chip of varModesEl.children) {
+    chip.setAttribute('aria-pressed', String(chip.dataset.mode === variation.mode));
+  }
+  const entry = VAR_MODES.find(([id]) => id === variation.mode);
+  let note = entry[2];
+  // Said out loud rather than buried: a ladder on unpitched noise moves
+  // brightness, not pitch, and is much harder to hear as a rise.
+  if (variation.mode === 'ladder' && mix.select === 'paper') {
+    note += ' Paper is unpitched, so this moves brightness rather than pitch. Switch select to Hum or Woodblock to hear the idea at its clearest.';
+  }
+  varNote.textContent = note;
+  varAmount.disabled = variation.mode === 'none';
+  // The slot readout is a ladder concept; leaving it up under Random said
+  // something the mode does not mean.
+  syncBoardNote();
+}
+
+/** N taps at the real rhythm, on one frame's worth of ladder before it resets. */
+function hearTaps(count) {
+  if (!audio()) return;
+  const start = ac.currentTime + 0.02;
+  resetVariation();
+  for (let i = 0; i < count; i += 1) {
+    // A frame holds four, so every fourth tap is a fresh frame.
+    if (i > 0 && i % 4 === 0) resetVariation();
+    fire(byId(mix.select), 'select', start + i * 0.19, nextSelectShift());
+  }
+  resetVariation();
+}
+
+document.getElementById('var-four').addEventListener('click', () => hearTaps(4));
+document.getElementById('var-twelve').addEventListener('click', () => hearTaps(12));
 
 // --- Shaping the chime -----------------------------------------------------
 
@@ -843,10 +1000,30 @@ for (const word of WORDS) {
   tile.addEventListener('pointerdown', () => {
     const picked = tile.dataset.picked === 'true';
     tile.dataset.picked = String(!picked);
-    play(active, 'select');
+    // Deselecting steps the ladder back rather than onward, which is what the
+    // real frame does: the slot it was filling is empty again.
+    if (picked && variation.mode === 'ladder') ladderStep = Math.max(0, ladderStep - 1);
+    else play(active, 'select');
+    syncBoardNote();
   });
   board.append(tile);
 }
+
+const boardNote = document.getElementById('board-note');
+
+function syncBoardNote() {
+  if (variation.mode !== 'ladder') {
+    boardNote.textContent = '';
+    return;
+  }
+  boardNote.textContent = `frame slot ${(ladderStep % 4) + 1} of 4`;
+}
+
+document.getElementById('board-clear').addEventListener('click', () => {
+  for (const tile of board.children) tile.dataset.picked = 'false';
+  resetVariation();
+  syncBoardNote();
+});
 
 document.getElementById('vol').addEventListener('input', (event) => {
   if (!audio()) return;
@@ -856,6 +1033,8 @@ document.getElementById('vol').addEventListener('input', (event) => {
 setActive(active);
 syncTonePanel();
 syncSolveCards();
+syncVariation();
+syncBoardNote();
 </script>
 </body>
 </html>

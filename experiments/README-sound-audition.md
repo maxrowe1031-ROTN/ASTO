@@ -116,6 +116,38 @@ selects first, because a solve heard cold is not the solve the player hears. The
 Body/Damping dials stay live for the three ceramic-derived candidates and hide
 themselves for the others.
 
+### Select variation (same day)
+
+Max: *"i read somewhere that sometimes its good for sounds to have tone
+variations so that it doesn't sound annoyingly repetative."* He is right, it is
+standard practice (round-robin), and select is exactly where it pays: it fires
+forty-odd times a board against the solve's four.
+
+Four strategies on the mix card, because they are not equally good ideas here:
+
+- **None** the control.
+- **Random** the textbook fix. Jitter every tap, never repeats, carries no
+  meaning. Push the amount up and it reads as an instrument out of tune.
+- **Round robin** a fixed cycle of four. Varied but predictable, so it stays
+  musical where random goes woozy.
+- **Frame ladder** pitch **rises with the slot being filled** and resets when the
+  frame clears. Default, and the one worth arguing for.
+
+The ladder is the interesting one because ASTO's frame holds exactly four. The
+variation stops being decoration and starts carrying information: how full the
+frame is, without looking, building toward the fourth tap that completes it. A
+deselect steps the ladder **back**, because the slot it filled is empty again.
+At the default amount of 55 the four rungs are 0 / 1.1 / 2.2 / 3.85 semitones.
+
+**The honest caveat, stated on the page too:** paper select is unpitched noise,
+so a ladder moves its *brightness* rather than its pitch, which is much less
+legible than it would be on a pitched select. Switching select to Hum or
+Woodblock is worth doing while judging this, because **the ladder may be a
+reason to reconsider the select**, not just a setting to turn on.
+
+The tap-test board honours all of this, with a **Clear the frame** button and a
+slot readout while the ladder is on.
+
 ## The decision this is asking for
 
 **Pick a palette, or redirect.** "None of these, but warmer" is a perfectly good
