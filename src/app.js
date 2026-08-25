@@ -19,7 +19,7 @@ import { LocalJsonSource } from './source/local-json-source.js';
 import { dateKeyFor, isReleased } from './source/release.js';
 import { summarize } from './stats.js';
 import { Storage } from './storage.js';
-import { hrefFor } from './url-state.js';
+import { rememberInUrl as writeUrl } from './url-state.js';
 import { BoardView } from './view/board-view.js';
 import { VocabView } from './view/vocab-view.js';
 import { ControlsView } from './view/controls-view.js';
@@ -336,12 +336,11 @@ async function main() {
 /**
  * Keep `?puzzle=<slug>` pointing at the board on screen, so a reload comes back to it.
  *
- * replaceState, never pushState: this is bookkeeping, not navigation. Pushing would build
- * a history stack where Back means "the previous board" — a second, invisible router
- * competing with the real one.
+ * The rule and the failure handling both live in url-state.js, which owns no globals
+ * of its own; this is the line that hands them over.
  */
 function rememberInUrl(slug) {
-  globalThis.history?.replaceState?.(null, '', hrefFor(globalThis.location.href, slug));
+  writeUrl(globalThis.history, globalThis.location.href, slug);
 }
 
 /**

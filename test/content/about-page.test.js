@@ -41,8 +41,23 @@ test('the copy carries no em dashes', () => {
 test('both the deck and the GDD are linked', () => {
   // Two files, not one: the deck documents the build, the GDD is the game
   // spec. The deck links the GDD as a companion read; it does not contain it.
-  assert.ok(about.includes('href="docs/presentation/"'), 'deck link missing');
-  assert.ok(about.includes('href="docs/asto-gdd.html"'), 'GDD link missing');
+  //
+  // Matched loosely on purpose. These went absolute on 2026-08-25 so the
+  // packaged itch.io build (game only, no docs/, inside a cross-origin iframe)
+  // reaches the same two documents the live site does. What is load-bearing is
+  // that both stay REACHABLE, not which form the href takes, so a later move
+  // back to relative paths must not read as a regression.
+  assert.match(about, /href="[^"]*docs\/presentation\/"/, 'deck link missing');
+  assert.match(about, /href="[^"]*docs\/asto-gdd\.html"/, 'GDD link missing');
+});
+
+test('an offsite link opens in a new tab', () => {
+  // Inside itch's iframe an in-frame navigation to playasto.com replaces the
+  // game with a document that has no way back to it.
+  for (const [, tag] of about.matchAll(/(<a\b[^>]*href="https?:\/\/[^"]*"[^>]*>)/g)) {
+    assert.match(tag, /target="_blank"/, `offsite link must open in a new tab: ${tag}`);
+    assert.match(tag, /rel="noopener"/, `offsite link must carry rel=noopener: ${tag}`);
+  }
 });
 
 test('the page dresses in the real tokens and hardcodes none of its own', () => {
@@ -70,9 +85,13 @@ test('both standalone pages carry the wordmark home', () => {
   // The game's own screens already do this (header-view.js, calendar-view.js): the
   // logo is the way back. These two pages sit outside the SPA, so they need their
   // own — a visitor who lands on either must never be stranded there.
+  // `index.html`, not `./`: the packaged build is served from a directory on a
+  // CDN whose index resolution is not ours to assume, and naming the file costs
+  // nothing. Either form satisfies the rule that matters, which is that the
+  // wordmark goes home.
   assert.match(
     about,
-    /<h1[^>]*class="title-wordmark"[^>]*>\s*<a[^>]*href="\.\/"/,
+    /<h1[^>]*class="title-wordmark"[^>]*>\s*<a[^>]*href="(\.\/|index\.html)"/,
     'the About page wordmark must link to the homepage',
   );
   const deck = read('docs', 'presentation', 'index.html');

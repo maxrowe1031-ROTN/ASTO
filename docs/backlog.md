@@ -4,6 +4,37 @@
 > work only when Max pulls them into `design.md`'s plan. Mid-session ideas
 > land here so the session stays on task.
 
+- **The itch.io build is a frozen snapshot, and the calendar is not (2026-08-25).**
+  `npm run itch` packages the game as it stands; the calendar is keyed to real
+  dates and the schedule ends **2026-09-19**. After that an itch player opens to
+  an empty current month and has to page back to reach the 51 boards. **Accepted
+  by Max** when the tool was built — the fix is re-running `npm run itch` and
+  re-uploading whenever the schedule is extended, not a code change. Revisit only
+  if the itch build outlives his attention: the smallest change would be opening
+  the calendar on the most recent released month when nothing matches today,
+  which touches shipped game code and needs its own gate.
+- **Third-party-iframe storage may not persist on itch (2026-08-25).** Safari and
+  Firefox partition or block `localStorage` in a cross-origin iframe, which is
+  exactly what an itch HTML5 build is. `storage.js` degrades silently and
+  correctly, so nothing breaks — but **results, streaks and the statistics screen
+  may reset between sessions** for some itch players, and the same player's
+  history on playasto.com and on itch are two separate stores that can never
+  merge. Nothing to fix; worth knowing before it arrives as a bug report.
+- **Two itch iframe unknowns worth one look on the live build (2026-08-25).**
+  Neither is verifiable locally. (a) `navigator.share` and the async clipboard
+  are usually absent from itch's iframe `allow` list, so sharing should fall
+  through to the `execCommand` path in `share.js` — degrades rather than fails,
+  but untested there. (b) `src/ratings.js` posts to Supabase from a new origin;
+  if the project ever gains a CORS allowlist those posts stop **silently** (the
+  failure is swallowed at `ratings.js:62`), so check the network tab rather than
+  waiting for rows to appear in `npm run ratings`.
+- **Nothing links the itch build back to playasto.com (2026-08-25).**
+  `buildShareText` emits title, score and tier squares and **no URL at all**, so
+  a result shared from itch gives a reader no way to find the game. Harmless
+  today and deliberate on the web (where the sharer's own URL travels with the
+  paste); if itch becomes a real traffic source, the fix is a URL line in the
+  share text, which is a taste call about clutter as much as a code change.
+
 - ~~**`valid-but-unfair` is three tags wearing one name.**~~ **Split 2026-08-05 with Max — see
   design.md D-7.** `second-valid-reading` added for the meaning that had no chip; the other two
   went back to `not-always-true` and `not-evocative`, which already covered them. The old tag is
