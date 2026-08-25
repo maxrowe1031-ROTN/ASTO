@@ -87,6 +87,35 @@ only while ceramic is the chosen solve.
 **The dial positions are the deliverable.** Whatever Body and Damping read when it
 sounds right are the numbers that go into `sound.js`.
 
+**Max settled on Body 30, Damping 86** the same day. That is now the page default
+and the incumbent recipe.
+
+### A shortlist for the solve (same day)
+
+He asked to hear more options for the solve specifically, which is the right
+moment to spend choice on: it fires four times a board rather than forty, and it
+is the only one the player is meant to actively enjoy. Six candidates, chosen to
+be different *ideas* rather than shades of one:
+
+| | what it is |
+|---|---|
+| **Cup (yours)** | the tuned ceramic at 30/86, rising. The incumbent. |
+| **Cup, as a chord** | same cup, same three notes, struck together over a 14ms roll instead of in sequence |
+| **Settle** | marimba, **falling**. A piece landing where it belongs. |
+| **Bloom** | one strike plus a slow warm swell. Five voices, no melody. |
+| **Harp** | plucked: a full harmonic series with the highs dying fastest |
+| **Thumb piano** | a small damped tine rising a minor third. Handheld cozy rather than tableware cozy. |
+
+The axis worth attention is **rise versus fall**. Every candidate before this one
+rose, and a rising figure reads as *well done*. ASTO's solve animation is a snap
+into canonical order, which is arguably *that is where it goes* — which is what
+**Settle** is testing. It may be wrong for the game, but it had never been asked.
+
+Each card has **Hear** and **Use in the mix**; the latter also plays four real
+selects first, because a solve heard cold is not the solve the player hears. The
+Body/Damping dials stay live for the three ceramic-derived candidates and hide
+themselves for the others.
+
 ## The decision this is asking for
 
 **Pick a palette, or redirect.** "None of these, but warmer" is a perfectly good

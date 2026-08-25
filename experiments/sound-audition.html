@@ -56,6 +56,10 @@
     background-blend-mode: multiply;
   }
   .card[data-active="true"] { border-color: var(--honey); box-shadow: 0 0 0 3px var(--honey-glow); }
+  .solve-card { margin-bottom: 10px; padding: 12px 14px; }
+  .solve-card h2 { font-size: 14px; }
+  .solve-card .desc { margin-bottom: 8px; }
+  .solve-card button { font-size: 13px; padding: 8px 14px; min-height: 0; }
 
   .row { display: flex; flex-wrap: wrap; gap: var(--gap); }
 
@@ -197,6 +201,18 @@
       <button class="round" id="mix-miss">A miss</button>
     </div>
   </section>
+
+  <hr>
+
+  <h2>Solve candidates</h2>
+  <p class="desc">
+    Six ideas for what a set coming home should sound like, not six shades of one.
+    Tap a name to hear it; <strong>Use</strong> puts it into the mix above so it can
+    be heard after four real taps. Some rise and some fall, which is the biggest
+    difference here: rising reads as <em>well done</em>, falling as
+    <em>that is where it goes</em>.
+  </p>
+  <div id="solves"></div>
 
   <hr>
 
@@ -358,7 +374,7 @@ const BELL    = [[1, 1], [2.76, 0.42], [5.4, 0.16]];  // inharmonic, plate-like
  *
  * Whatever these end up at is the recipe, so the numbers are the deliverable.
  */
-const ceramicTone = { body: 0.30, damping: 0.62 };
+const ceramicTone = { body: 0.30, damping: 0.86 };
 
 function ceramicPartials(d) {
   return [
@@ -436,21 +452,108 @@ const PALETTES = [
 
 const MOMENTS = [['select', 'Select'], ['solve', 'Solve'], ['mistake', 'Mistake']];
 
+// ---------------------------------------------------------------------------
+// Solve candidates.
+//
+// The solve is the only moment worth this much choice: it fires four times a
+// board instead of forty, and it is the one the player is meant to enjoy. These
+// are not ceramic variants — that axis is already a dial. They are different
+// ideas about what "a set comes home" should sound like.
+//
+// Worth noticing that only some of them RISE. A rising figure reads as "well
+// done"; a falling one reads as "that is where it goes." ASTO's solve animation
+// is a snap into canonical order, which is arguably the second thing.
+// ---------------------------------------------------------------------------
+
+const HARP    = [[1, 1, 1], [2, 0.50, 0.70], [3, 0.28, 0.50], [4, 0.16, 0.38], [5, 0.09, 0.30]];
+const KALIMBA = [[1, 1, 1], [2.0, 0.30, 0.45], [3.1, 0.12, 0.30]];
+
+const SOLVES = [
+  {
+    id: 'cup',
+    name: 'Cup (yours)',
+    desc: 'The tuned ceramic, rising. Your current pick, and the one to beat.',
+    play: ceramicSolve
+  },
+  {
+    id: 'chord',
+    name: 'Cup, as a chord',
+    desc: 'The same cup and the same three notes, struck together instead of in sequence. One event rather than three.',
+    play: (at) => {
+      const { body, damping: d } = ceramicTone;
+      const root = 1108 * (0.55 + body * 0.60);
+      const partials = ceramicPartials(d);
+      const lowpass = 9000 - d * 7000;
+      noise(at, { freq: 4200 - d * 2400, q: 0.8, dur: 0.012, gain: 0.12 - d * 0.06 });
+      // A 14ms roll, not a machine-perfect stack: three fingers are never simultaneous.
+      [[1, 0.20, 0], [1.335, 0.17, 0.014], [1.588, 0.15, 0.028]].forEach(([r, g, o]) =>
+        struck(at + o, { freq: root * r, partials, dur: 0.95 - d * 0.35, gain: g, lowpass }));
+    }
+  },
+  {
+    id: 'settle',
+    name: 'Settle',
+    desc: 'Marimba, falling instead of rising. Reads as a piece landing where it belongs rather than as a reward for cleverness.',
+    play: (at) => {
+      [[783.99, 0.26], [659.25, 0.28], [523.25, 0.75]].forEach(([f, dur], i) =>
+        struck(at + i * 0.095, { freq: f, partials: MARIMBA, dur, gain: 0.30 }));
+    }
+  },
+  {
+    id: 'bloom',
+    name: 'Bloom',
+    desc: 'One strike, then a warm swell underneath it. The quietest candidate and the least eventful: no melody to get tired of.',
+    play: (at) => {
+      const partials = ceramicPartials(ceramicTone.damping);
+      struck(at, { freq: 659.25, partials, dur: 0.5, gain: 0.20, lowpass: 3200 });
+      breathed(at + 0.02, { freq: 659.25, dur: 0.72, gain: 0.13, attack: 0.16 });
+      breathed(at + 0.06, { freq: 987.77, dur: 0.66, gain: 0.07, attack: 0.22 });
+    }
+  },
+  {
+    id: 'harp',
+    name: 'Harp',
+    desc: 'Plucked rather than struck: a full harmonic series with the highs dying fastest. Brighter than the cup but wooden, not glassy.',
+    play: (at) => {
+      [523.25, 783.99, 1046.50].forEach((f, i) =>
+        struck(at + i * 0.075, {
+          freq: f, partials: HARP, dur: i === 2 ? 0.70 : 0.34, gain: 0.17, lowpass: 5200
+        }));
+    }
+  },
+  {
+    id: 'kalimba',
+    name: 'Thumb piano',
+    desc: 'A small damped tine, rising a minor third. Handheld and homemade, which is a different flavour of cozy than tableware.',
+    play: (at) => {
+      struck(at, { freq: 698.46, partials: KALIMBA, dur: 0.42, gain: 0.24, lowpass: 3400 });
+      struck(at + 0.115, { freq: 830.61, partials: KALIMBA, dur: 0.80, gain: 0.22, lowpass: 3400 });
+      breathed(at + 0.02, { freq: 349.23, dur: 0.5, gain: 0.06, attack: 0.05 });
+    }
+  }
+];
+
+const solveById = (id) => SOLVES.find((s) => s.id === id) ?? SOLVES[0];
+
+/** Ceramic-derived solves are the ones the Body/Damping dials actually reach. */
+const TUNABLE_SOLVES = new Set(['cup', 'chord', 'bloom']);
+
 /**
  * Fire one moment, routed through that moment's trim so a cross-palette mix can
  * be balanced. `bus` is read synchronously by the synthesis helpers, so setting
  * it around the call is safe and keeps the helpers ignorant of moments.
  */
-function fire(palette, moment, at) {
+function fire(voice, moment, at) {
   bus = trims[moment];
-  palette[moment](at);
+  // A palette exposes its moments by name; a solve candidate is just a play().
+  (voice.play ?? voice[moment])(at);
   bus = master;
 }
 
 /** Fire one moment now, guarding the whole thing on audio being available. */
-function play(palette, moment, offset = 0) {
+function play(voice, moment, offset = 0) {
   if (!audio()) return;
-  fire(palette, moment, ac.currentTime + offset);
+  fire(voice, moment, ac.currentTime + offset);
 }
 
 /** Four taps at the real tap rhythm, then whatever the fourth tap earned. */
@@ -474,8 +577,15 @@ let active = PALETTES[0];
 
 const byId = (id) => PALETTES.find((p) => p.id === id);
 
-// Max's picks, 2026-08-25, after hearing the four palettes.
-const mix = { select: 'paper', solve: 'ceramic', mistake: 'woodblock' };
+// Max's picks, 2026-08-25. Solve now names a candidate from SOLVES rather than
+// a palette: it is the one moment with its own shortlist.
+const mix = { select: 'paper', solve: 'cup', mistake: 'woodblock' };
+
+/** Whatever currently owns a moment: a palette for select/mistake, a candidate for solve. */
+const voiceFor = (moment) =>
+  moment === 'solve' ? solveById(mix.solve) : byId(mix[moment]);
+
+let solveChooser = null;   // the solve dropdown, so the cards below can drive it
 
 const mixRows = document.getElementById('mix-rows');
 for (const [moment, label] of MOMENTS) {
@@ -487,18 +597,22 @@ for (const [moment, label] of MOMENTS) {
   name.textContent = label;
 
   const choose = document.createElement('select');
-  choose.setAttribute('aria-label', `Palette for ${label.toLowerCase()}`);
-  for (const palette of PALETTES) {
-    const option = document.createElement('option');
-    option.value = palette.id;
-    option.textContent = palette.name;
-    option.selected = palette.id === mix[moment];
-    choose.append(option);
+  choose.setAttribute('aria-label', `Sound for ${label.toLowerCase()}`);
+  for (const option of moment === 'solve' ? SOLVES : PALETTES) {
+    const el = document.createElement('option');
+    el.value = option.id;
+    el.textContent = option.name;
+    el.selected = option.id === mix[moment];
+    choose.append(el);
   }
+  if (moment === 'solve') solveChooser = choose;
   choose.addEventListener('change', () => {
     mix[moment] = choose.value;
-    if (moment === 'solve') syncTonePanel();
-    play(byId(mix[moment]), moment);
+    if (moment === 'solve') {
+      syncTonePanel();
+      syncSolveCards();
+    }
+    play(voiceFor(moment), moment);
   });
 
   const trim = document.createElement('input');
@@ -516,14 +630,14 @@ for (const [moment, label] of MOMENTS) {
   hear.className = 'hear';
   hear.type = 'button';
   hear.textContent = 'Hear';
-  hear.addEventListener('click', () => play(byId(mix[moment]), moment));
+  hear.addEventListener('click', () => play(voiceFor(moment), moment));
 
   row.append(name, choose, trim, hear);
   mixRows.append(row);
 }
 
 document.getElementById('mix-round').addEventListener('click', () =>
-  playSequence(byId(mix.select), byId(mix.solve), 'solve'));
+  playSequence(byId(mix.select), solveById(mix.solve), 'solve'));
 document.getElementById('mix-miss').addEventListener('click', () =>
   playSequence(byId(mix.select), byId(mix.mistake), 'mistake'));
 
@@ -565,7 +679,7 @@ for (const [key, label, hint] of TONE_DIALS) {
   });
   // Hear the change on release rather than on every pixel of the drag.
   for (const event of ['change', 'pointerup']) {
-    slider.addEventListener(event, () => play(byId('ceramic'), 'solve'));
+    slider.addEventListener(event, () => play(voiceFor('solve'), 'solve'));
   }
 
   row.append(name, slider, readout);
@@ -582,13 +696,13 @@ function syncTone() {
 
 /** The dials only mean anything while ceramic is the one being solved with. */
 function syncTonePanel() {
-  tonePanel.hidden = mix.solve !== 'ceramic';
+  tonePanel.hidden = !TUNABLE_SOLVES.has(mix.solve);
 }
 
 document.getElementById('tone-reset').addEventListener('click', () => {
   Object.assign(ceramicTone, DEFAULT_TONE);
   syncTone();
-  play(byId('ceramic'), 'solve');
+  play(voiceFor('solve'), 'solve');
 });
 
 // The exact recipe Max called too bright and metallic, kept playable so the new
@@ -603,6 +717,51 @@ document.getElementById('tone-before').addEventListener('click', () => {
   struck(at + 0.21, { freq: 1760, partials: BELL, dur: 0.85, gain: 0.17 });
   bus = master;
 });
+
+// --- The solve shortlist ---------------------------------------------------
+
+const solvesEl = document.getElementById('solves');
+for (const candidate of SOLVES) {
+  const card = document.createElement('section');
+  card.className = 'card solve-card';
+  card.dataset.solve = candidate.id;
+
+  const h2 = document.createElement('h2');
+  h2.textContent = candidate.name;
+  const desc = document.createElement('p');
+  desc.className = 'desc';
+  desc.textContent = candidate.desc;
+
+  const row = document.createElement('div');
+  row.className = 'row';
+
+  const hear = document.createElement('button');
+  hear.type = 'button';
+  hear.textContent = 'Hear';
+  hear.addEventListener('click', () => play(candidate, 'solve'));
+
+  const use = document.createElement('button');
+  use.type = 'button';
+  use.className = 'round';
+  use.textContent = 'Use in the mix';
+  use.addEventListener('click', () => {
+    mix.solve = candidate.id;
+    solveChooser.value = candidate.id;
+    syncTonePanel();
+    syncSolveCards();
+    playSequence(byId(mix.select), candidate, 'solve');
+  });
+
+  row.append(hear, use);
+  card.append(h2, desc, row);
+  solvesEl.append(card);
+}
+
+function syncSolveCards() {
+  for (const card of solvesEl.children) {
+    card.dataset.active = String(card.dataset.solve === mix.solve);
+  }
+}
 
 const cards = document.getElementById('cards');
 for (const palette of PALETTES) {
@@ -696,6 +855,7 @@ document.getElementById('vol').addEventListener('input', (event) => {
 
 setActive(active);
 syncTonePanel();
+syncSolveCards();
 </script>
 </body>
 </html>
