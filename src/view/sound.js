@@ -42,6 +42,13 @@ export const SOUND = Object.freeze({
   /** Paper: a bandpassed noise tap. Unpitched, so the ladder moves its brightness. */
   select: Object.freeze({ freq: 2400, q: 1.4, dur: 0.05, gain: 0.3 }),
 
+  /**
+   * Deselect: the select's duller cousin (Max's ask, 2026-08-25 — an undo
+   * should be audible too). Lower, softer, shorter; it plays at the rung the
+   * frame RETURNS to, so removing tiles audibly steps back down the ladder.
+   */
+  deselect: Object.freeze({ freq: 2000, q: 1.4, dur: 0.04, gain: 0.17 }),
+
   /** The frame ladder: semitones per slot, scaled by amount. Max chose both. */
   ladder: Object.freeze({ steps: Object.freeze([0, 2, 4, 7]), amount: 0.55 }),
 
@@ -53,10 +60,12 @@ export const SOUND = Object.freeze({
    * (C5, E5, G5) played on a filtered sawtooth, the closest a cozy game gets to
    * a trumpet. Fires ONCE, after the fourth set's chime, on Max's ask
    * (2026-08-25): the whole-puzzle victory deserved its own sound. `after` is
-   * the gap between the solve chime and the fanfare's first note.
+   * the gap between the solve chime and the fanfare's first note — sized so the
+   * horn lands as the END SCREEN arrives (the solve beat runs ~1.2s of frame
+   * pulse, board close and card settle), with a breath after the chime.
    */
   win: Object.freeze({
-    after: 0.6,
+    after: 1.4,
     lowpass: 1900,
     notes: Object.freeze([
       Object.freeze({ freq: 523.25, delay: 0, dur: 0.14, gain: 0.16 }),
@@ -175,8 +184,13 @@ export function cue(snapshot, state, outcome) {
   if (transition === 'select') {
     return { kind: 'select', rung: rungShift(next.terms.length), snapshot: next };
   }
-  // deselect and reset are silent (the audition's rule), and everything else —
-  // hint, vocab, invalid, a bare repaint — plays nothing.
+  if (transition === 'deselect') {
+    // The rung the frame RETURNS to — removing a tile steps back down the
+    // ladder audibly (2026-08-25; the audition's silent deselect was revised).
+    return { kind: 'deselect', rung: rungShift(next.terms.length), snapshot: next };
+  }
+  // reset is silent (the Clear button speaks through its own press sound), and
+  // everything else — hint, vocab, invalid, a bare repaint — plays nothing.
   return { kind: null, rung: 1, snapshot: next };
 }
 
@@ -250,6 +264,7 @@ export function update(state, outcome) {
   try {
     const at = ac.currentTime + 0.005;
     if (decision.kind === 'select') playSelect(at, decision.rung);
+    else if (decision.kind === 'deselect') playDeselect(at, decision.rung);
     else if (decision.kind === 'solve') playSolve(at);
     else if (decision.kind === 'win') {
       // The last set's chime plays as usual; the fanfare answers it.
@@ -271,7 +286,7 @@ export function toggleMuted() {
   return muted;
 }
 
-/** The settings slider, 0–100. Applied live so dragging is audible via preview(). */
+/** The settings slider, 0–100. Applied live so dragging is audible via buttonTap(). */
 export function setVolume(next) {
   volume = Math.min(100, Math.max(0, Math.round(Number(next) || 0)));
   storage?.setVolume(volume);
@@ -282,15 +297,20 @@ export function getVolume() {
   return volume;
 }
 
-/** One select tap at rung 1 — what the settings slider plays so a level is audible. */
-export function preview() {
+/**
+ * One select tap at rung 1, outside the render flow. Two callers: the settings
+ * slider previews the level it is being dragged to, and app.js wires it to the
+ * control pills (Vocab, Hint, Shuffle, Clear, Confirm — Max's ask, 2026-08-25)
+ * so every press answers with the same paper tap a tile gives.
+ */
+export function buttonTap() {
   if (muted) return;
   const ac = ensureContext();
   if (!ac || ac.state !== 'running') return;
   try {
     playSelect(ac.currentTime + 0.005, 1);
   } catch {
-    // Same rule as update(): a skipped preview breaks nothing.
+    // Same rule as update(): a skipped tap breaks nothing.
   }
 }
 
@@ -345,6 +365,11 @@ function noise(at, { freq, q, dur, gain }) {
 
 function playSelect(at, rung) {
   const { freq, q, dur, gain } = SOUND.select;
+  noise(at, { freq: freq * rung, q, dur, gain });
+}
+
+function playDeselect(at, rung) {
+  const { freq, q, dur, gain } = SOUND.deselect;
   noise(at, { freq: freq * rung, q, dur, gain });
 }
 

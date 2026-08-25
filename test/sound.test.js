@@ -16,7 +16,7 @@ import assert from 'node:assert/strict';
 
 import {
   SOUND, classifyTransition, cue, cupRecipe, getVolume, init, isMuted,
-  preview, rungShift, setVolume, toggleMuted, update
+  buttonTap, rungShift, setVolume, toggleMuted, update
 } from '../src/view/sound.js';
 import { Storage } from '../src/storage.js';
 
@@ -174,8 +174,9 @@ test('the fanfare recipe is a rising triad on a filtered saw, frozen', () => {
   const delays = SOUND.win.notes.map((n) => n.delay);
   assert.ok(delays[0] < delays[1] && delays[1] < delays[2]);
   assert.ok(SOUND.win.notes[2].dur > SOUND.win.notes[1].dur * 3);
-  // It answers the solve chime rather than talking over it.
-  assert.ok(SOUND.win.after >= 0.5);
+  // It waits for the end screen (the solve beat runs ~1.2s of motion) plus a
+  // breath — the horn belongs to the final page, not to the fourth chime.
+  assert.ok(SOUND.win.after >= 1.2);
 });
 
 test('all three shaking outcomes thud, including the free already-tried', () => {
@@ -198,22 +199,37 @@ test('hint, vocab, and invalid are explicitly silent', () => {
   }
 });
 
-test('deselect and clear are silent, and the ladder restarts by construction', () => {
+test('deselect sounds at the rung the frame returns to; clear stays silent', () => {
+  // Revised 2026-08-25: the audition shipped deselect silent and Max asked for
+  // a sound — the duller cousin, stepping back DOWN the ladder.
   let snapshot = cue(null, state([]), null).snapshot; // first render: silent resync
   const script = [
-    [['a'], null, 'select'],
-    [['a', 'b'], null, 'select'],
-    [['a'], null, null],        // deselect: silent
-    [[], null, null],           // clear (via single removal path): silent
-    [['x'], null, 'select']     // fresh frame: back at rung 1
+    [['a'], null, 'select', rungShift(1)],
+    [['a', 'b'], null, 'select', rungShift(2)],
+    [['a'], null, 'deselect', rungShift(1)], // back down to rung 1
+    [[], null, 'deselect', rungShift(1)],    // the last removal, clamped low
+    [['x'], null, 'select', rungShift(1)]    // fresh frame: back at rung 1
   ];
-  for (const [terms, outcome, expected] of script) {
+  for (const [terms, outcome, expected, rung] of script) {
     const decision = cue(snapshot, state(terms), outcome);
     snapshot = decision.snapshot;
     assert.equal(decision.kind, expected);
+    if (expected !== null) assert.equal(decision.rung, rung);
   }
-  const last = cue(snapshot, state(['x', 'y']), null);
-  assert.equal(last.rung, rungShift(2));
+  // The Clear button empties 4 → 0 in one render: a reset, and silent — the
+  // button itself speaks through app.js's buttonTap wiring.
+  let full = cue(null, state([]), null).snapshot;
+  for (const terms of [['a'], ['a', 'b'], ['a', 'b', 'c'], ['a', 'b', 'c', 'd']]) {
+    full = cue(full, state(terms), null).snapshot;
+  }
+  assert.equal(cue(full, state([]), null).kind, null);
+});
+
+test('the deselect recipe is the select made duller, and frozen', () => {
+  assert.ok(Object.isFrozen(SOUND.deselect));
+  assert.ok(SOUND.deselect.freq < SOUND.select.freq, 'lower');
+  assert.ok(SOUND.deselect.gain < SOUND.select.gain, 'softer');
+  assert.ok(SOUND.deselect.dur < SOUND.select.dur, 'shorter');
 });
 
 test('crossing into a new board resyncs silently, whatever the selection', () => {
@@ -232,7 +248,7 @@ test('update() with no AudioContext returns undefined and never throws', () => {
   init(new Storage({ store: fakeStore() }));
   assert.equal(update(state(['a']), null), undefined);
   assert.equal(update(state([]), { type: 'solved' }), undefined);
-  assert.doesNotThrow(() => preview());
+  assert.doesNotThrow(() => buttonTap());
 });
 
 test('mute round-trips through storage and survives a re-init', () => {

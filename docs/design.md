@@ -2731,6 +2731,16 @@ the end-screen repaint afterwards is pinned silent. **Not yet auditioned by ear*
 — it ships as the candidate, and the same tune-by-ear loop that produced the cup
 applies if it misses.
 
+**Same-day tuning, from Max's first listen:** the fanfare gap grew 0.6 s → 1.4 s
+so the horn lands on the end screen (the solve beat runs ~1.2 s of motion) with a
+breath after the chime; **deselect gained a sound** — the select's duller cousin
+(2000 Hz, softer, shorter), played at the rung the frame returns to, revising the
+audition's silent-deselect rule; and **all five control pills** (Vocab, Hint,
+Shuffle, Clear, Confirm) answer with the tile's own tap, wired in app.js so the
+sound module keeps exactly two entry points. Known quirk, accepted: Clear with a
+single tile plays the button tap plus a deselect tap 5 ms apart, because a 1→0
+delta is indistinguishable from tapping that tile.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

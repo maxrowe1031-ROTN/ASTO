@@ -232,7 +232,7 @@ async function main() {
     },
     onVolume: (volume) => {
       sound.setVolume(volume);
-      sound.preview();
+      sound.buttonTap();
       paintSettings();
     }
   });
@@ -322,12 +322,15 @@ async function main() {
     new HeaderView(document.getElementById('header'), {
       onHome: () => showDoor('title')
     }),
+    // Every pill answers with the tile's own tap before its intent runs (Max's
+    // call, 2026-08-25). Wired here rather than inside ControlsView so the
+    // sound module keeps exactly two entry points: the render flow and this.
     new ControlsView(document.getElementById('controls'), {
-      onConfirm: () => controller.confirmPressed(),
-      onClear: () => controller.clearPressed(),
-      onShuffle: () => controller.shufflePressed(),
-      onHint: () => controller.hintPressed(),
-      onVocab: () => controller.vocabPressed()
+      onConfirm: () => { sound.buttonTap(); controller.confirmPressed(); },
+      onClear: () => { sound.buttonTap(); controller.clearPressed(); },
+      onShuffle: () => { sound.buttonTap(); controller.shufflePressed(); },
+      onHint: () => { sound.buttonTap(); controller.hintPressed(); },
+      onVocab: () => { sound.buttonTap(); controller.vocabPressed(); }
     }),
     new StatusView(document.getElementById('status')),
     // The coach speaks in the same breath as the status strip, and BEFORE the two views
