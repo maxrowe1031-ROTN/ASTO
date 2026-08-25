@@ -2,6 +2,81 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-25 — PAUSED: register scenes, spiked and scoped — three of four registers read
+
+Max reopened the illustrations idea. The four scope questions the ticket was
+opened for are **settled in conversation**; a disposable spike then produced
+real findings and **five new open questions**, which are the next session's
+agenda. **Nothing shipped. `main` untouched.** All work is on
+`work/scene-spike`.
+
+- **Settled before any code** (recorded in
+  `docs/decisions/2026-08-19-illustrations-scope.md`): the art's job is **a
+  sense of place**, scope is **option B — one scene per register (18), not per
+  board**, **a Studio agent generates them** under Max's review, and it carries
+  **ambient motion**, deliberately breaking the GDD no-list (his call, the
+  second sanctioned deviation after D-29's confetti).
+- **Max's separation requirement**, which the design satisfies by construction:
+  the art pipeline stays **separate from the puzzle pipeline** and art exists
+  only for boards approved for publishing. `scene-artist` would be an
+  **off-pipeline agent** — registered but absent from `STAGES`, like
+  `revision-proposer` and `subject-scout` — triggered by hand, and art keyed to
+  *registers* so no board, approved or rejected, ever causes art work.
+- **`experiments/scene-spike.html` (disposable, ~1 file):** four hand-authored
+  scenes — First Light, a bakery, a harbor, a mountain — on one locked
+  six-token palette and one silhouette-band grammar, switchable in place inside
+  mock play-screen chrome at 375px, at both candidate grid sizes, motion on/off.
+- **What it found, which is the actual deliverable:**
+  - The band **fits**: 375×50px in the existing gap, inside the measured 74px
+    of slack, coexisting with a populated "So close!" strip.
+  - **Source resolution, not footprint, buys legibility** — at 10 source rows a
+    circle rasterizes to stair-steps (the sun read as a hill); doubling the
+    source grid at the same on-screen size fixed it.
+  - **3 of 4 registers read convincingly.** First Light, harbor and mountain
+    all organise around a **horizon line**. **The bakery does not** — two
+    structural attempts, both grid sizes. Recorded as a **grammar limit**
+    (a street-level building has no horizon), deliberately *not* iterated away.
+  - **A palette rule the future agent needs:** contrast against the **local
+    background**, not mere palette membership. The palest token is invisible
+    against the sky band that is already that colour — this bit twice
+    independently (a snow cap, then chimney smoke).
+- **Two real bugs found and fixed** in the spike: a sail coloured the same as
+  the sky behind it, and a mountain peak tall enough to clip its own summit
+  off-canvas while both peaks spanned edge to edge as one mass.
+- **A verification lesson worth keeping:** the preview browser only advances
+  `requestAnimationFrame` around an actual screenshot, so a rAF-driven canvas
+  reads blank to `getImageData` between screenshots. Cost a real debugging
+  detour before being identified as a tool property rather than a code bug;
+  applied deliberately afterwards (the smoke fix was confirmed by decoding raw
+  canvas pixels, since one moving pixel is invisible by eye at this scale).
+- **Verified:** `npm test` **1613/0** and `check-board` **51 clean** — both
+  unchanged, because the spike touches **no production code**; it adds no tests
+  and is not expected to. All four scenes verified in the browser at both grid
+  sizes with no console errors.
+- **Why the gate has not passed:** this is a **spike**, and Max's verdict was
+  *"fine as an initial attempt"* — an acceptance of the experiment, not of a
+  design. The five questions below are open, `art/` does not exist, no
+  validator, store, agent or register map is built, and no production file has
+  been touched.
+- **Resume point:** `docs/decisions/2026-08-19-illustrations-scope.md`, the
+  section **"The five open questions"** — they are Max's, in his order:
+  **(1)** the right pixel count in the grid space · **(2)** the reusable colour
+  palette · **(3)** whether to open up ASTO branding more broadly, including
+  the recurring character (flagged in the ticket as probably deserving **its
+  own ticket**, since it touches the wordmark, About page and itch listing, and
+  the pixel-Claude IP note still stands) · **(4)** how the agent pipeline
+  should be designed · **(5)** what states the banner should have — **ambient ·
+  correct answer · miss**, which is a real scope increase turning the band from
+  decoration into a **feedback surface** beside sound and motion.
+- **Next:** Max picks which of the five to take first. The cheapest with the
+  highest leverage is **(5) banner states**, because it decides whether this is
+  decoration or a feedback channel and therefore reframes (1), (2) and (4);
+  **(3) branding** is the one most likely to want its own ticket and its own
+  session. Unchanged and still owed elsewhere: the **GDD version bump** (now
+  five items — audio, settings, so-close, confetti, and any of this), a fresh
+  board batch before the calendar runs dry **2026-09-19**, and `npm run itch` +
+  re-upload whenever the itch build should carry sound.
+
 ## 2026-08-25 — The game gains a voice: sound, settings, confetti, and a kinder so-close
 
 The sound spec's step 2, built and tuned in one long session with Max's ears in
