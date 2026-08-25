@@ -58,3 +58,26 @@ From the log's "Next:" line + the current phase's remaining tasks, propose 2–4
 tasks, name the **gate that would make this session complete** and its kind (automated /
 Claude-verifiable / Max acceptance), and confirm with Max before starting. If a phase
 gate was just passed, remind him a playtest is the gate — offer the preview browser.
+
+## 8. Name the session (once the work is agreed, before starting it)
+
+The sidebar otherwise lists every session as **"warmup"** — the command that
+opened it rather than what it was for, which makes the session history
+unsearchable. Now that the work is agreed, spend that answer on a title.
+
+Call `mcp__ccd_session_mgmt__set_session_title` with `session_id: "self"`.
+
+**Title rules:** activity-first, **2–4 words**, no date (the sidebar already
+timestamps), and never the word "warmup". Name what the session is *for*.
+
+Good: `Sound audition` · `Statistics page` · `Batch seven review` · `Pages deploy fix`.
+Bad: `warmup` · `Session` · `Working on the project` · a date-stamped sentence.
+
+**Do it after the work is agreed, not at the top of the warmup.** Before Max
+answers, nobody knows what kind of session this is, and a title set early is a
+guess.
+
+**Set once.** Do **not** re-title when the session changes direction, and do not
+rewrite it at wrapup — Max's explicit call, made knowing that a session which
+pivots keeps its original name. The only exception is Max asking directly for a
+rename; then use the same tool. Never re-title on your own initiative.
