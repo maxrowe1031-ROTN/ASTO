@@ -58,6 +58,35 @@ to a bell at gains that were never compared. The card therefore adds:
 Whatever the trims end up at is real design data, not a scratch setting: it
 becomes the relative levels in `sound.js`'s exported parameter table.
 
+### The chime, retuned (same day)
+
+Max on the first ceramic solve: *"a little too bright and metallic."* Correct, and
+it named a mistake in the recipe rather than a matter of taste. `BELL`'s ratios
+**are** metal (1, 2.76, 5.4 are struck-bronze modes), and worse, every partial was
+given the **same decay as the fundamental** — upper partials that sustain as long
+as the body is the definition of a ringing metal object. A glazed cup damps its
+highs fast and keeps its body.
+
+So the solve became two physical dials on the mix card, defaulting to a warmer
+recipe rather than to a guess that cannot be argued with:
+
+| | old | new default |
+|---|---|---|
+| root | 1108 Hz | **809 Hz**, a fourth lower |
+| 2nd partial | 2.76 at 0.42, full decay | **2.35 at 0.27, 63% decay** |
+| 3rd partial | 5.40 at 0.16, full decay | **4.28 at 0.09, 54% decay** |
+| lowpass | none | **4.7 kHz** |
+| contact tick | 4200 Hz | **2712 Hz, half as loud** |
+
+**Body** moves the fundamental; **Damping** controls how fast the highs die
+relative to it, plus the lowpass and the tail length together. The old bright
+version stays playable on its own button, because a retune should be judged
+against the thing it replaced and not against a memory of it. The panel appears
+only while ceramic is the chosen solve.
+
+**The dial positions are the deliverable.** Whatever Body and Damping read when it
+sounds right are the numbers that go into `sound.js`.
+
 ## The decision this is asking for
 
 **Pick a palette, or redirect.** "None of these, but warmer" is a perfectly good

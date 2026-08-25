@@ -121,6 +121,22 @@
     font-size: 12px; padding: 7px 12px; min-height: 0; flex: none;
   }
 
+  .tone {
+    margin-top: 12px; padding: 12px;
+    background: var(--cream); border-radius: var(--radius-tile);
+  }
+  .tone[hidden] { display: none; }
+  .tone-head {
+    margin: 0 0 8px; font-size: 13px; font-weight: 800;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  }
+  .tone-sub { font-weight: 600; font-size: 12px; color: var(--faint-ink); font-style: italic; }
+  .tone .mix-row .moment { width: 68px; }
+  .tone .readout {
+    font-size: 12px; font-weight: 700; color: var(--soft-ink);
+    width: 34px; flex: none; text-align: right; font-variant-numeric: tabular-nums;
+  }
+
   .vol { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
   .vol label { font-size: 13px; font-weight: 700; color: var(--soft-ink); white-space: nowrap; }
   input[type="range"] { flex: 1; accent-color: var(--ink); min-height: var(--tap-target); }
@@ -164,6 +180,17 @@
     </p>
 
     <div id="mix-rows"></div>
+
+    <div id="tone" class="tone">
+      <p class="tone-head">
+        Shaping the chime <span class="tone-sub">less metal, more cup</span>
+      </p>
+      <div id="tone-rows"></div>
+      <div class="row">
+        <button class="hear" id="tone-before">Hear the old bright one</button>
+        <button class="hear" id="tone-reset">Reset</button>
+      </div>
+    </div>
 
     <div class="row" style="margin-top: 12px;">
       <button class="round" id="mix-round">A whole round</button>
@@ -238,7 +265,20 @@ function audio() {
  * `partials` are [ratio, amplitude, decayScale] against the fundamental —
  * which ratios you choose is the whole difference between wood and ceramic.
  */
-function struck(at, { freq, partials, dur, gain = 0.5, type = 'sine' }) {
+function struck(at, { freq, partials, dur, gain = 0.5, type = 'sine', lowpass }) {
+  // One filter for the whole body when asked for: a struck object radiates
+  // through its own material, and rolling the top off is most of what separates
+  // a glazed cup from a struck bell.
+  let sink = bus;
+  if (lowpass) {
+    const filter = ac.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(lowpass, at);
+    filter.Q.value = 0.7;
+    filter.connect(bus);
+    sink = filter;
+  }
+
   for (const [ratio, amp, decayScale = 1] of partials) {
     const osc = ac.createOscillator();
     const env = ac.createGain();
@@ -248,7 +288,7 @@ function struck(at, { freq, partials, dur, gain = 0.5, type = 'sine' }) {
     env.gain.setValueAtTime(0.0001, at);
     env.gain.exponentialRampToValueAtTime(Math.max(gain * amp, 0.0002), at + 0.004);
     env.gain.exponentialRampToValueAtTime(0.0001, at + life);
-    osc.connect(env).connect(bus);
+    osc.connect(env).connect(sink);
     osc.start(at);
     osc.stop(at + life + 0.03);
   }
@@ -301,6 +341,46 @@ function noise(at, { freq, sweep, q = 1, dur, gain = 0.4, type = 'bandpass' }) {
 const MARIMBA = [[1, 1], [3.9, 0.22], [9.2, 0.05]];   // real bar modes
 const BELL    = [[1, 1], [2.76, 0.42], [5.4, 0.16]];  // inharmonic, plate-like
 
+/**
+ * The ceramic solve, live-tunable — because "a little too bright and metallic"
+ * (Max, 2026-08-25) names two separate physical properties, and guessing at both
+ * at once is what an audition page exists to avoid.
+ *
+ * BELL's ratios ARE metal: struck bronze rings inharmonically and its upper
+ * partials sustain as long as the fundamental. A glazed cup differs in exactly
+ * two ways, and each gets a dial:
+ *
+ *   body    — where the fundamental sits. A cup is lower than a bell.
+ *   damping — how fast the highs die relative to the body. This is the big one,
+ *             and it is what the original recipe got wrong: it gave the upper
+ *             partials the same decay as the fundamental, which is the
+ *             definition of a ringing metal object.
+ *
+ * Whatever these end up at is the recipe, so the numbers are the deliverable.
+ */
+const ceramicTone = { body: 0.30, damping: 0.62 };
+
+function ceramicPartials(d) {
+  return [
+    [1, 1, 1],
+    [2.76 - d * 0.66, 0.42 - d * 0.24, 1 - d * 0.60],
+    [5.40 - d * 1.80, 0.16 - d * 0.11, 1 - d * 0.75]
+  ];
+}
+
+function ceramicSolve(at) {
+  const { body, damping: d } = ceramicTone;
+  const root = 1108 * (0.55 + body * 0.60);
+  const partials = ceramicPartials(d);
+  const lowpass = 9000 - d * 7000;
+
+  // The contact tick, dulled alongside everything else.
+  noise(at, { freq: 4200 - d * 2400, q: 0.8, dur: 0.012, gain: 0.12 - d * 0.06 });
+  struck(at,        { freq: root,         partials, dur: 0.20, gain: 0.20, lowpass });
+  struck(at + 0.10, { freq: root * 1.335, partials, dur: 0.24, gain: 0.19, lowpass });
+  struck(at + 0.21, { freq: root * 1.588, partials, dur: 0.85 - d * 0.35, gain: 0.17, lowpass });
+}
+
 const PALETTES = [
   {
     id: 'woodblock',
@@ -319,17 +399,12 @@ const PALETTES = [
   {
     id: 'ceramic',
     name: 'Ceramic',
-    desc: 'Cup on saucer. Bright inharmonic clinks with a tick of contact in front of them. The most literal reading of cozy.',
+    desc: 'Cup on saucer, with a tick of contact in front of it. The solve is retuned warmer and is now live-tunable from the mix card above.',
     select: (t) => {
       noise(t, { freq: 3800, q: 0.8, dur: 0.012, gain: 0.13 });
       struck(t, { freq: 1100, partials: BELL, dur: 0.16, gain: 0.20 });
     },
-    solve: (t) => {
-      noise(t, { freq: 4200, q: 0.8, dur: 0.012, gain: 0.12 });
-      struck(t, { freq: 1108, partials: BELL, dur: 0.20, gain: 0.20 });
-      struck(t + 0.10, { freq: 1480, partials: BELL, dur: 0.24, gain: 0.19 });
-      struck(t + 0.21, { freq: 1760, partials: BELL, dur: 0.85, gain: 0.17 });
-    },
+    solve: ceramicSolve,
     mistake: (t) => {
       noise(t, { freq: 900, q: 0.7, dur: 0.02, gain: 0.10 });
       struck(t, { freq: 520, partials: [[1, 1], [2.4, 0.18]], dur: 0.22, gain: 0.24 });
@@ -422,6 +497,7 @@ for (const [moment, label] of MOMENTS) {
   }
   choose.addEventListener('change', () => {
     mix[moment] = choose.value;
+    if (moment === 'solve') syncTonePanel();
     play(byId(mix[moment]), moment);
   });
 
@@ -450,6 +526,83 @@ document.getElementById('mix-round').addEventListener('click', () =>
   playSequence(byId(mix.select), byId(mix.solve), 'solve'));
 document.getElementById('mix-miss').addEventListener('click', () =>
   playSequence(byId(mix.select), byId(mix.mistake), 'mistake'));
+
+// --- Shaping the chime -----------------------------------------------------
+
+const DEFAULT_TONE = { ...ceramicTone };
+const tonePanel = document.getElementById('tone');
+const toneRows = document.getElementById('tone-rows');
+const toneInputs = {};
+
+const TONE_DIALS = [
+  ['body', 'Body', 'how low the cup sits'],
+  ['damping', 'Damping', 'how fast the highs die']
+];
+
+for (const [key, label, hint] of TONE_DIALS) {
+  const row = document.createElement('div');
+  row.className = 'mix-row';
+
+  const name = document.createElement('span');
+  name.className = 'moment';
+  name.textContent = label;
+  name.title = hint;
+
+  const slider = document.createElement('input');
+  slider.type = 'range';
+  slider.min = '0';
+  slider.max = '100';
+  slider.value = String(Math.round(ceramicTone[key] * 100));
+  slider.setAttribute('aria-label', `${label}: ${hint}`);
+
+  const readout = document.createElement('span');
+  readout.className = 'readout';
+  readout.textContent = slider.value;
+
+  slider.addEventListener('input', () => {
+    ceramicTone[key] = Number(slider.value) / 100;
+    readout.textContent = slider.value;
+  });
+  // Hear the change on release rather than on every pixel of the drag.
+  for (const event of ['change', 'pointerup']) {
+    slider.addEventListener(event, () => play(byId('ceramic'), 'solve'));
+  }
+
+  row.append(name, slider, readout);
+  toneRows.append(row);
+  toneInputs[key] = { slider, readout };
+}
+
+function syncTone() {
+  for (const [key] of TONE_DIALS) {
+    toneInputs[key].slider.value = String(Math.round(ceramicTone[key] * 100));
+    toneInputs[key].readout.textContent = toneInputs[key].slider.value;
+  }
+}
+
+/** The dials only mean anything while ceramic is the one being solved with. */
+function syncTonePanel() {
+  tonePanel.hidden = mix.solve !== 'ceramic';
+}
+
+document.getElementById('tone-reset').addEventListener('click', () => {
+  Object.assign(ceramicTone, DEFAULT_TONE);
+  syncTone();
+  play(byId('ceramic'), 'solve');
+});
+
+// The exact recipe Max called too bright and metallic, kept playable so the new
+// one is judged against it rather than against a memory of it.
+document.getElementById('tone-before').addEventListener('click', () => {
+  if (!audio()) return;
+  const at = ac.currentTime + 0.02;
+  bus = trims.solve;
+  noise(at, { freq: 4200, q: 0.8, dur: 0.012, gain: 0.12 });
+  struck(at, { freq: 1108, partials: BELL, dur: 0.20, gain: 0.20 });
+  struck(at + 0.10, { freq: 1480, partials: BELL, dur: 0.24, gain: 0.19 });
+  struck(at + 0.21, { freq: 1760, partials: BELL, dur: 0.85, gain: 0.17 });
+  bus = master;
+});
 
 const cards = document.getElementById('cards');
 for (const palette of PALETTES) {
@@ -542,6 +695,7 @@ document.getElementById('vol').addEventListener('input', (event) => {
 });
 
 setActive(active);
+syncTonePanel();
 </script>
 </body>
 </html>
