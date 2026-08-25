@@ -9,7 +9,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { hrefFor } from '../src/url-state.js';
+import { hrefFor, rememberInUrl } from '../src/url-state.js';
 
 const HOME = 'https://www.playasto.com/';
 
@@ -42,4 +42,48 @@ test('the path and origin are never rewritten', () => {
   const deep = 'http://localhost:8080/index.html?puzzle=a-board';
   assert.equal(new URL(hrefFor(deep, null)).pathname, '/index.html');
   assert.equal(new URL(hrefFor(deep, 'other')).origin, 'http://localhost:8080');
+});
+
+// Writing the address, and the one thing that must never happen when it fails.
+//
+// The caller is startGame, whose rejection lands the player on the error screen.
+// So a throw from replaceState does not cost the address bar, it costs the board —
+// which is why these four cases exist rather than a comment saying "should be safe".
+
+test('the address is written through replaceState, never pushState', () => {
+  const calls = [];
+  const history = {
+    replaceState: (...args) => calls.push(args),
+    pushState: () => assert.fail('pushState would build a second, invisible router')
+  };
+
+  assert.equal(rememberInUrl(history, 'https://www.playasto.com/', 'first-light'), true);
+  assert.deepEqual(calls, [[null, '', 'https://www.playasto.com/?puzzle=first-light']]);
+});
+
+test('a history that throws costs the address, never the board', () => {
+  // What a cross-origin iframe does: the method is right there and refuses.
+  const history = {
+    replaceState() {
+      const error = new Error('Failed to execute replaceState: the document is sandboxed');
+      error.name = 'SecurityError';
+      throw error;
+    }
+  };
+
+  assert.doesNotThrow(() => rememberInUrl(history, 'https://example.com/', 'first-light'));
+  assert.equal(rememberInUrl(history, 'https://example.com/', 'first-light'), false);
+});
+
+test('no history at all is not an error either', () => {
+  assert.equal(rememberInUrl(undefined, 'https://www.playasto.com/', 'first-light'), false);
+  assert.equal(rememberInUrl({}, 'https://www.playasto.com/', 'first-light'), false);
+});
+
+test('a door clears the query through the same door as a board', () => {
+  const calls = [];
+  const history = { replaceState: (...args) => calls.push(args) };
+
+  rememberInUrl(history, 'https://www.playasto.com/?puzzle=first-light', null);
+  assert.equal(calls[0][2], 'https://www.playasto.com/');
 });

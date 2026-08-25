@@ -2,6 +2,67 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-25 — ASTO ships to a second storefront, and the iframe finds a real bug
+
+Max: *"i want to create a zip file of the game in its current state that i can
+upload to itch.io."* It is **uploaded and live on itch** — his words: *"that was
+pretty easy!"* **D-26** records the decision and its accepted risk.
+
+- **`npm run itch` (`tools/build-itch.js`, new).** ASTO has no build step, so
+  nothing produced a distributable, and "zip the folder" would have shipped
+  `.env`, the Studio and the tests. It copies an **allowlist** (a denylist fails
+  open, and what it eventually fails open on is a secret), **verifies**, then
+  zips with `index.html` at the root — itch's one hard rule. The verifier is pure
+  and refuses to write a zip it cannot vouch for: index at root · every manifest
+  slug backed by a file · no root-absolute path · **no local link to a file that
+  was not packaged** · nothing from the exclusion list. **91 files, 318 KB,
+  129 KB zipped.**
+- **A live bug, found by porting rather than by playing.** `rememberInUrl` called
+  `history?.replaceState?.(…)` — and **an optional call guards a method's
+  existence, not its behaviour**. In a cross-origin iframe it exists and throws
+  `SecurityError`. Its only caller is `startGame`, whose rejection lands on the
+  error screen, so the cost of a failed *address* update was the player's
+  *board*. Moved into `src/url-state.js` and made to swallow the throw; it is
+  **handed** the history object rather than reaching for a global, which is what
+  makes the throw testable with the view off.
+- **About page links went absolute** (`playasto.com`, `target="_blank"`) so the
+  packaged build reaches the deck and GDD without carrying 4.4 MB of `docs/` and
+  without an in-frame navigation stranding the player. Both guarding tests kept
+  their intent and loosened their match. The two `href="./"` home links now name
+  `index.html`.
+- **Also written for him:** the itch short description, page description, and ten
+  tags — with `puzzle`/`browser` deliberately left off (genre and platform are
+  their own fields) and `vocabulary` deliberately rejected, since D-8 was
+  precisely about ASTO's difficulty *not* coming from rare words.
+- **Verified:** `npm test` **1577/0** (+15) · `check-board` **51 clean** ·
+  `check-schedule` 26 days, 25 queued · and the load-bearing one — the staged
+  build **played at `http://localhost:8080/dist/itch/`, a nested path**, which is
+  what proves nothing depended on being at the root: title screen, calendar
+  showing today's *School Days*, green set solved (`teacher : chalkboard ::
+  coach : whistle`), tier card revealed, About page rendering on the build's own
+  tokens with all four links correct. No console errors, no 404s, and the address
+  kept its nested path through the deep-link rewrite.
+- **Phase status:** Phases 1–5 complete and shipped. Gate: automated **passed**,
+  Claude-verifiable **passed** (browser evidence above), **Max acceptance
+  passed** — he asked for it, received it, and uploaded it successfully. *Honest
+  remainder:* he confirmed the upload, not a full play-through on the itch page.
+  Two things can only be checked there and are in the backlog — whether sharing
+  degrades to copy, and whether Supabase ratings actually arrive from the new
+  origin (that failure is swallowed by design, so it needs a network tab, not
+  patience).
+- **Four known limits recorded in `docs/backlog.md`,** the load-bearing one being
+  that **the build is a frozen snapshot and the calendar is not**: the schedule
+  ends 2026-09-19, and re-uploading is the fix. Accepted by Max rather than
+  changing shipped game code for a secondary channel.
+- **Next:** the queue is unchanged and untouched by this session — his pick of
+  the **sound audition page** (spec ready, palettes within the half hour) or the
+  **illustration mood board** (ticket lists what it must show). Then the standing
+  watches (`npm run ratings`, `npm run check-schedule`, D-20 bounce, D-22 editor
+  test-drive) and the two overdue triggers (the rubric at 109 judged boards, the
+  slim-down lap). The hard-launch trim and the GDD version bump remain his. **New
+  and dated:** the schedule runs out 2026-09-19, which is now two deadlines rather
+  than one — the live site goes quiet and the itch build goes stale together.
+
 ## 2026-08-21 — Polish, scoped: sound spec'd, illustrations sent to a mood board
 
 A planning session, deliberately ended early with a full context window: two

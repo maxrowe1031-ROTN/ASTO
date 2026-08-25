@@ -81,7 +81,7 @@
   <main class="screen">
     <div class="about">
       <header class="about-header">
-        <h1 class="title-wordmark"><a class="about-home" href="./"
+        <h1 class="title-wordmark"><a class="about-home" href="index.html"
           aria-label="ASTO, back to the homepage">ASTO</a></h1>
         <p class="title-tagline">A word game by Max Rowe</p>
       </header>
@@ -112,17 +112,25 @@
         </p>
       </section>
 
+      <!-- Absolute, and opening in a new tab, so this section reads the same
+           wherever the game is running. A packaged build (itch.io) ships the
+           game only, without docs/, and lives inside an iframe on someone
+           else's origin: a relative link would 404 there, and an in-frame one
+           would strand the player on a page with no way back. One canonical
+           copy of each document, always the current one. -->
       <section>
         <h2>The process</h2>
         <p>
           Learn more about the creation of ASTO by viewing
-          <a href="docs/presentation/">the process deck</a>, which documents
+          <a href="https://www.playasto.com/docs/presentation/"
+             target="_blank" rel="noopener">the process deck</a>, which documents
           the build and how it evolved, along with
-          <a href="docs/asto-gdd.html">the game design document</a>.
+          <a href="https://www.playasto.com/docs/asto-gdd.html"
+             target="_blank" rel="noopener">the game design document</a>.
         </p>
       </section>
 
-      <a class="text-action" href="./">Play ASTO</a>
+      <a class="text-action" href="index.html">Play ASTO</a>
     </div>
   </main>
 </body>

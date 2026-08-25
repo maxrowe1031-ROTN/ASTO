@@ -9,6 +9,7 @@
     "serve": "node tools/serve.js",
     "check-board": "node tools/check-board.js",
     "check-deploy": "node tools/check-deploy.js",
+    "itch": "node tools/build-itch.js",
     "manifest": "node tools/build-manifest.js",
     "studio": "node studio/run.js",
     "studio:review": "node studio/review/server.js",

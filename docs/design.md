@@ -2599,6 +2599,58 @@ clear — a pasted link to a future-dated board must survive until its release d
 **Provenance:** a pre-existing bug in shipped code, unrelated to the statistics work. It
 has been live since deep links met the title screen.
 
+### D-26 — A second distribution channel: itch.io, and the iframe it taught us about (2026-08-25)
+
+**Max asked for a zip he could upload to itch.io.** Distribution is one of the areas
+`CLAUDE.md` names as propose-don't-assume, so it is recorded here rather than treated as
+a build detail. It is **additive**: playasto.com on GitHub Pages remains the primary and
+canonical home, the itch build is a copy, and no cost is incurred (itch hosting is free).
+
+**Why a tool and not a zip.** ASTO has no build step — Pages serves the repository
+verbatim, which is the fact `check-deploy.js` is built on. So nothing produced a
+distributable, and the repo root holds `.env`, the Studio, the tests and the Pages-only
+`CNAME`. `tools/build-itch.js` copies an **allowlist**, never a denylist: a denylist
+fails open, and the thing it would eventually fail open on is a secret. `EXCLUDED` exists
+as a second, redundant assertion over the result rather than as the mechanism.
+
+**What itch actually changed, and the bug it exposed.** itch serves a build from a nested
+path on its own origin inside an iframe. Every path in the game was already
+document-relative, so the port was nearly free — with one exception that was a live
+defect, not an itch defect:
+
+> `rememberInUrl` called `globalThis.history?.replaceState?.(…)`. **An optional call
+> guards a method's existence, not its behaviour.** In a cross-origin iframe
+> `replaceState` exists and throws `SecurityError`. Its only caller is `startGame`, whose
+> rejection routes to `.catch(fail)` — so the cost of a failed *address* update was the
+> player's *board*, replaced by the error screen.
+
+Fixed by moving the function into `src/url-state.js` and swallowing the throw. It is
+**handed** the history object rather than reaching for a global, which is what makes the
+throw testable with the view off — the boundary law paying for itself in a file whose
+header had previously promised it touched no `history` at all. The header now states the
+narrower truth: `hrefFor` is pure, `rememberInUrl` owns no globals of its own.
+
+**The About page's deck and GDD links went absolute** (`playasto.com`, `target="_blank"`).
+The alternative was bundling 4.4 MB of `docs/` into every upload and freezing the deck at
+upload time. One canonical copy, always current, and no in-frame navigation stranding a
+player on a page with no way back. Both guarding tests kept their intent and loosened
+their match, so a later move back to relative paths does not read as a regression.
+
+**The accepted risk, and it is a real one: the build is a frozen snapshot and the
+calendar is not.** D-24 made the game daily; the schedule ends 2026-09-19. After that an
+itch visitor opens to an empty current month and must page back to reach the boards. Max
+accepted this knowingly rather than change shipped game code for a secondary channel. The
+mitigation is procedural: `npm run itch` re-runs in seconds, so re-uploading rides along
+with extending the schedule.
+
+**Reconsider-when:** the itch build outlives Max's attention and a visitor lands on an
+empty month — at which point the fix is opening the calendar on the most recent released
+month when nothing matches today, which touches shipped game code and needs its own gate.
+**Or** itch becomes a real traffic source, at which point three things currently recorded
+in the backlog stop being curiosities and become work: share text carrying no URL back to
+the game, `localStorage` partitioning in a third-party iframe, and whether Supabase
+ratings are actually arriving from the new origin.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
