@@ -67,9 +67,8 @@ registers** (~18 + 18 + 2 ≈ 38 pieces).
    live (`150×20 @2.5×`, `168×24 @2×`) and both render legibly; nothing has
    chosen between them, and neither has been checked on a real iPhone. Relevant
    input: the spike proved resolution, not footprint, is what buys legibility.
-   **Answered:** spike round 2 decides, **taller allowed** — the two candidates
-   plus a ~375×60 option inside the 74px slack, judged on whether the cat can
-   visibly emote, on Max's phone.
+   **Answered, and now DECIDED (Max, 2026-08-25, spike round 2 by eye):**
+   **150×24 @2.5× = 375×60, the taller candidate.** The cat gets the headroom.
 2. **What is the reusable colour palette?** The spike locked six tokens from
    `styles/tokens.css` as a coherence device, and that lock is what made four
    scenes look related. But it cost a snow cap, and it forces the local-contrast
@@ -81,7 +80,9 @@ registers** (~18 + 18 + 2 ≈ 38 pieces).
    Lospec candidates off his Pinterest mood board (https://pin.it/2soYC9BHG),
    **plus one reserved near-white for the cat**. Its base ≈ `--cream`, its
    `e8b85c` ≈ honey, its darkest ≈ ink, so the band reads as native ASTO.
-   Runner-up: Tachycardia. The local-contrast rule stands.
+   Runner-up: Tachycardia. The local-contrast rule stands. **The cat is WHITE
+   (Max, 2026-08-25, spike round 2 by eye)** — black sank into the mountain
+   slopes and harbor water, as the dark-ground-underfoot argument predicted.
 3. **Is this the moment to look at ASTO branding more broadly — including the
    recurring character?** The original fork's Option A (an event-reactive
    mascot, the carafe from ASTO's own icon vocabulary) was set aside in favour

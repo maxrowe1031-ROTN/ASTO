@@ -25,9 +25,9 @@ the pixel-Claude idea (Anthropic's, unusable) and the carafe mascot idea.
   bakery, and by extension roughly six of the 18) have no horizon to organise
   around; the cat dissolves that limit ("cat on the counter, warm light
   behind" needs no horizon).
-- **Colour:** leaning **white** (the grammar puts dark silhouettes underfoot,
-  so white pops where black vanishes); white vs. black tested side by side in
-  spike round 2. One near-white is **reserved for the cat** in the palette.
+- **Colour: WHITE — decided** (Max, 2026-08-25, spike round 2 by eye; black
+  sank into the mountain slopes and harbor water). One near-white is
+  **reserved for the cat** in the palette.
 - **Ties that already exist:** mistake pips are coffee beans — the cat's miss
   reaction is reacting to losing a bean.
 - **Brand:** the cat is designed once, to logo standard, in this effort. The
@@ -90,10 +90,9 @@ against the cream page is the constraint, token membership is not.
 
 ## Band footprint
 
-Spike round 2 decides, **taller allowed**: `150×20 @2.5×`, `168×24 @2×`, and
-a ~`375×60` candidate — all inside the first spike's measured 74px of slack,
-coexisting with a populated status strip. Judged on one question: **can the
-cat visibly emote?** Max picks by eye, ideally on his phone.
+**Decided (Max, 2026-08-25, spike round 2 by eye): `150×24 @2.5× = 375×60`,
+the taller candidate** — inside the first spike's measured 74px of slack;
+re-verify status-strip coexistence when the band enters the real play screen.
 
 ## Pipeline (structure settled, details deferred)
 
