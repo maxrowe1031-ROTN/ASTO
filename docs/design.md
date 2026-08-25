@@ -2651,6 +2651,126 @@ in the backlog stop being curiosities and become work: share text carrying no UR
 the game, `localStorage` partitioning in a third-party iframe, and whether Supabase
 ratings are actually arriving from the new origin.
 
+### D-27 — Sound ships, and it brings a settings screen with it (2026-08-25)
+
+**The audition ran its course exactly as the spec designed** (three sessions of
+`experiments/sound-audition.html`): Max picked a cross-palette mix (paper select,
+ceramic solve, woodblock mistake), called the first chime *"a little too bright
+and metallic"* — a correct diagnosis of a real defect, since the recipe used
+undamped bell partials — tuned the repaired cup to **Body 30 / Damping 86** on
+live dials, and chose the **frame ladder** for select variation: pitch rises with
+the slot being filled and resets when the frame clears, so the variation carries
+information instead of decoration. Every number in `src/view/sound.js` traces to
+a choice he made by ear; the cup stores his dials and derives the recipe, so the
+settled positions stay the deliverable.
+
+**The module** follows motion.js exactly: presentation-only, import-safe with no
+audio platform, every path no-ops when audio is unavailable or muted, and
+`update()` returns undefined so the render chain can never wait on an audio node.
+It rides the views array as a read-only participant (the ResultsRecorder
+precedent), first in the array, deriving select/deselect from the selection delta
+because the engine emits no select outcome — BoardView's own trick. The ladder
+rung is derived from `selectedTerms.length`, never stored, so shuffle, clear,
+solve and board changes reset it by construction. `already-tried` thuds because
+it shakes; hint/vocab/invalid are silent. The tutorial sounds like the game — the
+same no-suppression stance motion set.
+
+**The override to record: the settings screen.** I recommended the spec's header
+mute toggle alone, deferring a settings page until two or three settings exist —
+a page holding one toggle is a room with one chair. **Max chose to build the
+settings screen now**, with mute and a volume slider. Consequences: the header
+stays untouched (GDD-sensitive real estate), `asto.volume` joins `asto.muted` in
+storage (both string values through `storage.js`, defaults unmuted at 25 — a
+broken store must not silence the game), the slider previews a select tap while
+dragged so a level is chosen by ear, and the door is a **gear icon beside the
+statistics icon in the calendar's header** (revised from a title-screen
+text-action the same day, Max's call: the front door stays two buttons per
+D-24, both doors became icons — bar-graph and gear — and Back from settings
+returns to the calendar, the door you came through). **Reconsider-when:** if the page still holds
+only the Sound section after the next two shipped features, the recommendation
+was right and the page was premature — nothing needs undoing, but the next
+setting should be pulled forward or the door demoted.
+
+**Two accepted trade-offs, named:** taps are `click` events and renders are
+queue-serialized, so a tap landing during an in-flight solve animation sounds
+late (reconsider if it bothers Max in play); and the iOS autoplay unlock is
+twice-guarded (a capture-phase pointerdown listener plus a resume retry per
+render) because renders ride a microtask queue and can miss the
+transient-activation window.
+
+**Gate status:** automated and Claude-verifiable passed (1603/0; browser evidence
+in the log). **Max acceptance open**: his playtest with ears — sound on, muted,
+fresh profile — **and the GDD version bump adding an audio section and the
+settings screen, which is his edit, not a working session's.** The audition page
+in `experiments/` stays until that gate passes, then may be deleted.
+
+### D-28 — A so-close keeps the frame, and a win earns a fanfare (2026-08-25)
+
+**Two calls Max made while playing the sound build**, both landed the same session.
+
+**1. The so-close no longer clears the selection.** The original GDD §8.3 bet cleared
+the frame on every failure; playing it shipped showed the flaw in Max's words: the
+status line says *"right four words, wrong order"* and then the game made the player
+*"go hunting for the words again."* The revision is a principle, not a special case:
+**a failure whose words are right never clears** — the player's next move is
+reordering exactly those tiles. A miss (wrong words) still clears. The principle
+extends to `already-tried`: after a kept so-close, the free identical resubmit also
+keeps the frame, because clearing there would reintroduce the hunting mid-thought.
+Implemented as `clearsSelection(rules, rightWordsWrongOrder)` in the engine;
+`clearSelectionOnFail: false` still means what it always meant (nothing clears —
+the tutorial's rule). The shake still fires: wrong is still wrong, it just stops
+being punished twice. **This revises GDD §8 and joins the pending GDD version bump.**
+
+**2. The whole-puzzle win gets its own sound** — Max: *"something that I have or
+play plays a little trumpet sound upon successful completion."* A soft-brass
+"ta-da-daa": C5–E5–G5 on a lowpassed sawtooth (the 1.9 kHz cutoff and low gain are
+what keep it cozy rather than arena), firing once, 0.6 s after the fourth set's
+cup chime so it answers the chime rather than talking over it. In the sound
+module's cue logic a solve that lands with `status === 'won'` is kind `win`;
+the end-screen repaint afterwards is pinned silent. **Not yet auditioned by ear**
+— it ships as the candidate, and the same tune-by-ear loop that produced the cup
+applies if it misses.
+
+**Same-day tuning, from Max's first listen:** the fanfare gap grew 0.6 s → 1.4 s
+so the horn lands on the end screen (the solve beat runs ~1.2 s of motion) with a
+breath after the chime; **deselect gained a sound** — the select's duller cousin
+(2000 Hz, softer, shorter), played at the rung the frame returns to, revising the
+audition's silent-deselect rule; and **all five control pills** (Vocab, Hint,
+Shuffle, Clear, Confirm) answer with the tile's own tap, wired in app.js so the
+sound module keeps exactly two entry points. Known quirk, accepted: Clear with a
+single tile plays the button tap plus a deselect tap 5 ms apart, because a 1→0
+delta is indistinguishable from tapping that tile.
+
+### D-29 — Confetti on the win screen: the no-list's first sanctioned deviation (2026-08-25)
+
+**What happened:** Max asked what a confetti drop on the solved screen would take.
+The honest answer had two halves — technically ~100 lines, but "no confetti, no
+particles" is the first line of the GDD's own no-list, which this repo treats as
+spec and which Phase 3's gate explicitly verified. Claude surfaced the conflict
+and offered in-register alternatives (a bean drop; falling tier squares).
+
+**Max's ruling, verbatim reasoning:** *"well, i wrote the gdd, we can change it
+or deviate from it however we want. the gdd represented a great starting place
+for this game, but now its time to explore other polishing finishes and i think
+the confetti could be a nice touch."* The GDD is his document; the no-list was a
+starting posture, not a treaty. This entry exists so the deviation is recorded
+as a decision rather than discovered as drift.
+
+**What was built, and the narrowness that keeps the no-list's spirit:**
+`src/view/confetti.js` — canvas overlay, ~140 pieces, fire-and-forget from the
+end view when a WON game first renders (the `renderedFor` guard makes it once
+per finished game; a loss gets nothing). It falls in **ASTO's own colors** — the
+four tier mains plus honey, read live from tokens.css with fallbacks, the
+motion.js pattern — so the celebration stays in the game's palette. It no-ops
+under `prefers-reduced-motion`, ignores pointer events, removes its canvas when
+the last piece exits, and nothing awaits it. **The board itself keeps the
+no-list's calm: confetti exists on the win screen and nowhere else.**
+
+**Scope of the deviation:** confetti on the win screen only. The rest of the
+no-list — no particles on the board, no timers, beans never red — stands, and
+CLAUDE.md §8 was updated to say exactly that. Joins the pending GDD version bump
+(audio, settings, the so-close revision) as the fourth item on Max's edit list.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

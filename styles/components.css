@@ -1163,3 +1163,119 @@ button.pours-day:active {
   text-align: center;
   text-wrap: balance;
 }
+
+/* --- The settings screen ------------------------------------------------ */
+
+.settings-title {
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-size: 24px;
+  margin: 14px 2px 10px;
+}
+
+/* One card per group of settings, wearing the same paper as every other card. */
+.settings-group {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid var(--taupe);
+  border-radius: var(--radius-card);
+  background: var(--milk);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.settings-group::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: var(--grain);
+  opacity: var(--grain-strength);
+  pointer-events: none;
+}
+
+.settings-group-title {
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--tap-target);
+}
+
+.settings-row + .settings-row {
+  margin-top: 6px;
+}
+
+.settings-label {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 15px;
+  width: 72px;
+  flex: none;
+}
+
+.settings-mute {
+  min-width: 96px;
+}
+
+/* min-width:0 so the range can shrink inside the flex row at 375px. */
+.settings-volume {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap-target);
+  accent-color: var(--ink);
+}
+
+.settings-volume:disabled {
+  opacity: 0.4;
+}
+
+.settings-volume-value {
+  font-weight: 800;
+  color: var(--soft-ink);
+  font-variant-numeric: tabular-nums;
+  width: 30px;
+  flex: none;
+  text-align: right;
+}
+
+/* Icon doors in the calendar header: statistics and settings. Sized to the
+   44px tap target with the glyph drawn smaller inside it; ink strokes so they
+   read as quiet text-actions, not pills. */
+.select-head-icons {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.icon-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--soft-ink);
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  transition: opacity var(--motion-fast) var(--ease);
+}
+
+.icon-action svg {
+  width: 21px;
+  height: 21px;
+  fill: currentColor;
+}
+
+.icon-action:active {
+  opacity: 0.6;
+}

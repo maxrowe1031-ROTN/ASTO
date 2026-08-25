@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { RATED_BOARDS_KEY, RESULTS_KEY, Storage, TUTORIAL_SEEN_KEY , HISTORY_KEY } from '../src/storage.js';
+import {
+  DEFAULT_VOLUME, HISTORY_KEY, RATED_BOARDS_KEY, RESULTS_KEY, Storage,
+  TUTORIAL_SEEN_KEY, VOLUME_KEY
+} from '../src/storage.js';
 
 /** A stand-in for localStorage: same three methods, no browser. */
 function fakeStore(initial = {}) {
@@ -273,4 +276,58 @@ test('a hostile store keeps no history and never throws', () => {
   const storage = new Storage({ store: hostileStore() });
   assert.doesNotThrow(() => storage.appendHistory({ slug: 'a', dateKey: '2026-08-18' }));
   assert.deepEqual(storage.history(), []);
+});
+
+// --- sound preferences ---
+
+test('a fresh player is unmuted at the default volume', () => {
+  const storage = new Storage({ store: fakeStore() });
+  assert.equal(storage.isMuted(), false);
+  assert.equal(storage.volume(), DEFAULT_VOLUME);
+});
+
+test('mute and volume round-trip, and survive a reload', () => {
+  const store = fakeStore();
+  const storage = new Storage({ store });
+  storage.setMuted(true);
+  storage.setVolume(60);
+  const reloaded = new Storage({ store });
+  assert.equal(reloaded.isMuted(), true);
+  assert.equal(reloaded.volume(), 60);
+});
+
+test('unmuting restores the chosen volume — the two keys are independent', () => {
+  const storage = new Storage({ store: fakeStore() });
+  storage.setVolume(70);
+  storage.setMuted(true);
+  storage.setMuted(false);
+  assert.equal(storage.volume(), 70);
+});
+
+test('garbage in the volume key reads as the default; out-of-range clamps', () => {
+  const storage = new Storage({ store: fakeStore({ [VOLUME_KEY]: 'loud' }) });
+  assert.equal(storage.volume(), DEFAULT_VOLUME);
+  storage.setVolume(999);
+  assert.equal(storage.volume(), 100);
+  storage.setVolume(-5);
+  assert.equal(storage.volume(), 0);
+  storage.setVolume(33.6);
+  assert.equal(storage.volume(), 34);
+});
+
+test('a hostile store means unmuted at the default — a broken store must not silence the game', () => {
+  const storage = new Storage({ store: hostileStore() });
+  assert.equal(storage.isMuted(), false);
+  assert.equal(storage.volume(), DEFAULT_VOLUME);
+  assert.doesNotThrow(() => storage.setMuted(true));
+  assert.doesNotThrow(() => storage.setVolume(50));
+});
+
+test('clear() forgets the sound preferences too', () => {
+  const storage = new Storage({ store: fakeStore() });
+  storage.setMuted(true);
+  storage.setVolume(80);
+  storage.clear();
+  assert.equal(storage.isMuted(), false);
+  assert.equal(storage.volume(), DEFAULT_VOLUME);
 });

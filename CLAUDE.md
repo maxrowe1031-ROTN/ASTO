@@ -172,8 +172,10 @@ makes the Studio double as proof the architecture is clean.
 - The four accepted orders derive from pairs at runtime: `[A,B,C,D] [C,D,A,B] [B,A,D,C]
   [D,C,B,A]`. Cross-pair (`A:C::B:D`) is **not** accepted.
 - The **4th tap fills the frame without submitting**; Confirm submits.
-- **"So close!"** (right four words, wrong order) **costs a mistake** and clears the
-  selection — a deliberate playtest bet, tunable via `rules`, not a bug.
+- **"So close!"** (right four words, wrong order) **costs a mistake** and **keeps the
+  selection in the frame** for reordering (revised 2026-08-25, D-28 — the original bet
+  cleared it). A **miss** still clears; a failure whose words are right never does,
+  including the free identical resubmit. Tunable via `rules`.
 - **Repeating an identical failed submission is free** — same four words, same order →
   `already-tried` outcome, no mistake, selection clears (2026-08-01 playtest rule). The
   same words in a *different* order is a new claim and charges normally.
@@ -209,8 +211,11 @@ interrupted work ends with `/pause`. The command files own their step-by-step pr
   never silently diverge.
 - **Open questions** live as decision tickets in `docs/decisions/` (format in its
   README). Only the decisions that block the next phase must be resolved before it starts.
-- **The GDD's no-list is spec:** no confetti, no particles, no timers; mistake pips are
-  coffee beans and **never red**; motion is 120–180ms ease-out.
+- **The GDD's no-list is spec, with one sanctioned deviation (D-29, 2026-08-25):**
+  confetti falls on the WIN screen only, in the game's own tier colors — Max's explicit
+  call ("we can change it or deviate from it however we want"). Everywhere else the
+  no-list holds: no particles on the board, no timers; mistake pips are coffee beans and
+  **never red**; motion is 120–180ms ease-out.
 - Prefer taps working everywhere — drag-to-reorder is *additive*; the game must be fully
   completable without it (iOS drag is fragile).
 - Keep files focused. If a module grows past its one job, split it.

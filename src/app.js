@@ -28,6 +28,8 @@ import { FrameView } from './view/frame-view.js';
 import { HeaderView } from './view/header-view.js';
 import { CalendarView } from './view/calendar-view.js';
 import { SolvedSetsView } from './view/solved-sets-view.js';
+import { SettingsView } from './view/settings-view.js';
+import * as sound from './view/sound.js';
 import { StatsView } from './view/stats-view.js';
 import { StatusView } from './view/status-view.js';
 import { SurveyView } from './view/survey-view.js';
@@ -66,6 +68,9 @@ async function main() {
 
   const source = new LocalJsonSource();
   const storage = new Storage();
+  // Sound adopts the storage seam here and installs its one-time gesture unlock;
+  // from now on it is driven entirely by renders, like any other view.
+  sound.init(storage);
   const router = new ScreenRouter();
   const boards = new Map(); // path → puzzle; a re-run of the tutorial refetches nothing
 
@@ -187,6 +192,18 @@ async function main() {
     showDoor('stats');
   };
 
+  /**
+   * The settings screen, repainted on every showing — sound state lives in
+   * sound.js, not in game state, so the screen asks for it fresh each time.
+   */
+  const paintSettings = () =>
+    settingsView.render({ muted: sound.isMuted(), volume: sound.getVolume() });
+
+  const showSettings = () => {
+    paintSettings();
+    showDoor('settings');
+  };
+
   const leaveTutorial = () => {
     storage.markTutorialSeen();
     // The tutorial IS First Light now, so handing off to DEFAULT_PUZZLE would replay
@@ -201,10 +218,30 @@ async function main() {
     onTutorial: () => startGame(null, TUTORIAL_RULES, true).catch(fail)
   });
 
+  // The settings door sits beside statistics in the calendar's header (Max's
+  // call, 2026-08-25 — the front door stays two buttons), so Back returns to
+  // the CALENDAR: back means the door you came through, the same rule the
+  // statistics screen follows. The volume slider previews as it moves: a level
+  // is chosen by ear.
+  const settingsView = new SettingsView(document.getElementById('screen-settings'), {
+    onHome: () => showDoor('title'),
+    onBack: showPours,
+    onMute: () => {
+      sound.toggleMuted();
+      paintSettings();
+    },
+    onVolume: (volume) => {
+      sound.setVolume(volume);
+      sound.buttonTap();
+      paintSettings();
+    }
+  });
+
   const calendarView = new CalendarView(document.getElementById('screen-pours'), {
     onPick: play,
     onBack: () => showDoor('title'),
-    onStats: showStats
+    onStats: showStats,
+    onSettings: showSettings
   });
 
   // Back returns to the calendar, not the title screen: back means the door you
@@ -277,15 +314,23 @@ async function main() {
   // Order matters: the controller awaits each view in turn, so the solve beat plays out
   // frame → board → card, and the screen only swaps once the motion has finished.
   const views = [
+    // Not a view: a listener that plays the moment. Like the ResultsRecorder,
+    // something that only READS state cannot break the boundary law. First in
+    // the array so a select sounds as close to the finger as possible, and
+    // returning undefined so the render chain never waits on audio.
+    { update: (state, outcome) => sound.update(state, outcome) },
     new HeaderView(document.getElementById('header'), {
       onHome: () => showDoor('title')
     }),
+    // Every pill answers with the tile's own tap before its intent runs (Max's
+    // call, 2026-08-25). Wired here rather than inside ControlsView so the
+    // sound module keeps exactly two entry points: the render flow and this.
     new ControlsView(document.getElementById('controls'), {
-      onConfirm: () => controller.confirmPressed(),
-      onClear: () => controller.clearPressed(),
-      onShuffle: () => controller.shufflePressed(),
-      onHint: () => controller.hintPressed(),
-      onVocab: () => controller.vocabPressed()
+      onConfirm: () => { sound.buttonTap(); controller.confirmPressed(); },
+      onClear: () => { sound.buttonTap(); controller.clearPressed(); },
+      onShuffle: () => { sound.buttonTap(); controller.shufflePressed(); },
+      onHint: () => { sound.buttonTap(); controller.hintPressed(); },
+      onVocab: () => { sound.buttonTap(); controller.vocabPressed(); }
     }),
     new StatusView(document.getElementById('status')),
     // The coach speaks in the same breath as the status strip, and BEFORE the two views
@@ -351,13 +396,14 @@ function rememberInUrl(slug) {
 class ScreenRouter {
   // The doors. Standing on one means the game underneath keeps its state and is simply
   // not on screen; only `game` defers to the status.
-  static DOORS = ['title', 'pours', 'stats'];
+  static DOORS = ['title', 'pours', 'stats', 'settings'];
 
   constructor() {
     this.sections = {
       title: document.getElementById('screen-title'),
       pours: document.getElementById('screen-pours'),
       stats: document.getElementById('screen-stats'),
+      settings: document.getElementById('screen-settings'),
       play: document.getElementById('screen-play'),
       end: document.getElementById('screen-end')
     };

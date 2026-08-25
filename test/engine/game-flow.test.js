@@ -56,6 +56,9 @@ test('headless full loss', () => {
     ['Nest', 'Bear', 'Den', 'Bird'] // so close on the fourth — game over
   ];
   for (const terms of attempts) {
+    // A so-close KEEPS the frame (2026-08-25 revision), so a player moving on
+    // to different words clears it first — exactly what this play-through does.
+    if (state.selectedTerms.length > 0) state = clearSelection(state);
     const result = play(state, terms);
     outcomes.push(result.outcome);
     state = result.state;
@@ -79,7 +82,11 @@ test('headless mixed run — mistakes and solves interleaved', () => {
   state = play(state, MISS.filter((t) => t !== 'Seed').concat('Brush')).state;
   state = clearSelection(state);
   state = play(state, ['Brush', 'Painter', 'Chisel', 'Sculptor']).state;
-  state = play(state, ['Nest', 'Bear', 'Den', 'Bird']).state; // so close
+  state = play(state, ['Nest', 'Bear', 'Den', 'Bird']).state; // so close — frame kept
+  // The kept frame is the point of the 2026-08-25 revision: the same four words
+  // go again in a corrected order. clearSelection stands in for the reorder,
+  // since play() re-taps from an empty frame.
+  state = clearSelection(state);
   state = play(state, ['Nest', 'Bird', 'Den', 'Bear']).state;
   state = play(state, ['Clay', 'Pottery', 'Dough', 'Bread']).state;
 

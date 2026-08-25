@@ -23,7 +23,8 @@ export const MAX_MISTAKES = 4;
  *
  * `soCloseCostsMistake` and `clearSelectionOnFail` are the two GDD §8.3 playtest
  * hypotheses. They default to the shipped behaviour and exist so revisiting them is a
- * config change, not an engine change.
+ * config change, not an engine change. Revised 2026-08-25 (Max): a failure whose
+ * WORDS are right no longer clears — see clearsSelection() below.
  */
 export const DEFAULT_RULES = Object.freeze({
   maxMistakes: MAX_MISTAKES,
@@ -172,18 +173,26 @@ export function submit(state, orderedTerms) {
   const reason = guard(state, orderedTerms);
   if (reason) return { state, outcome: { type: 'invalid', reason } };
 
+  const unsolved = state.puzzle.sets.filter((set) => !state.solvedSetIds.includes(set.id));
+  // Right words, wrong order — computed before the history check because BOTH
+  // failure paths need it: a selection whose words are right survives every
+  // failure (Max's 2026-08-25 revision of the GDD §8.3 bet), and that must
+  // include the free identical resubmit, or the frame the player is reordering
+  // would vanish under them mid-thought.
+  const rightWordsWrongOrder = unsolved.some((set) => sameMembers(set.pairs.flat(), orderedTerms));
+
   // Accepted orders can never be in the history — they would have solved — so this
   // check can safely come before the set comparison.
   if (state.failedAttempts.some((attempt) => sameOrder(attempt, orderedTerms))) {
     return {
       state: nextState(state, {
-        selectedTerms: state.rules.clearSelectionOnFail ? [] : state.selectedTerms
+        selectedTerms: clearsSelection(state.rules, rightWordsWrongOrder)
+          ? []
+          : state.selectedTerms
       }),
       outcome: { type: 'already-tried' }
     };
   }
-
-  const unsolved = state.puzzle.sets.filter((set) => !state.solvedSetIds.includes(set.id));
 
   for (const set of unsolved) {
     // Ordered comparison against each derived accepted order. Never sorted — order is
@@ -193,8 +202,20 @@ export function submit(state, orderedTerms) {
     }
   }
 
-  const rightWordsWrongOrder = unsolved.some((set) => sameMembers(set.pairs.flat(), orderedTerms));
   return resolveFailure(state, rightWordsWrongOrder ? 'so-close' : 'miss', orderedTerms);
+}
+
+/**
+ * Does this failure clear the frame? Only when the WORDS are wrong. A so-close
+ * has the right four words in the wrong order, so the player's next move is
+ * reordering exactly these tiles — clearing would send them hunting for words
+ * the game just told them were right (Max, 2026-08-25, revising the original
+ * §8.3 playtest bet that cleared on every failure). `clearSelectionOnFail:
+ * false` still means what it always meant: nothing clears, ever — the
+ * tutorial's wrong answer stays in the frame.
+ */
+function clearsSelection(rules, rightWordsWrongOrder) {
+  return rules.clearSelectionOnFail && !rightWordsWrongOrder;
 }
 
 function guard(state, terms) {
@@ -225,7 +246,7 @@ function resolveFailure(state, type, orderedTerms) {
   return {
     state: nextState(state, {
       mistakes,
-      selectedTerms: state.rules.clearSelectionOnFail ? [] : state.selectedTerms,
+      selectedTerms: clearsSelection(state.rules, type === 'so-close') ? [] : state.selectedTerms,
       // Detached copy: the history must not alias an array the caller can still mutate.
       failedAttempts: [...state.failedAttempts, Object.freeze([...orderedTerms])],
       status: mistakes >= state.rules.maxMistakes ? 'lost' : state.status

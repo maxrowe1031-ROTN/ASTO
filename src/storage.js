@@ -15,8 +15,13 @@ export const TUTORIAL_SEEN_KEY = 'asto.tutorialSeen';
 export const RESULTS_KEY = 'asto.results';
 export const RATED_BOARDS_KEY = 'asto.ratedBoards';
 export const HISTORY_KEY = 'asto.history';
+export const MUTED_KEY = 'asto.muted';
+export const VOLUME_KEY = 'asto.volume';
 
 const SEEN = 'true';
+
+/** Where the volume slider starts: audible but quiet, per the sound spec. */
+export const DEFAULT_VOLUME = 25;
 
 export class Storage {
   constructor({ store } = {}) {
@@ -30,6 +35,35 @@ export class Storage {
 
   markTutorialSeen() {
     this.write(TUTORIAL_SEEN_KEY, SEEN);
+  }
+
+  // --- sound preferences ---
+  //
+  // Muted and volume are SEPARATE keys, not one, so unmuting restores the level
+  // the player chose rather than a default. Both follow the tutorial flag's
+  // doctrine: when the store cannot be read, the answer is the shipping default
+  // (unmuted, quiet) — a lost preference must never silence the game.
+
+  /** False whenever we cannot know — the game ships with sound on at low volume. */
+  isMuted() {
+    return this.read(MUTED_KEY) === 'true';
+  }
+
+  setMuted(muted) {
+    this.write(MUTED_KEY, String(Boolean(muted)));
+  }
+
+  /** The chosen volume, 0–100. Garbage in the store reads as the default. */
+  volume() {
+    const raw = this.read(VOLUME_KEY);
+    const parsed = Number(raw);
+    if (raw === null || !Number.isFinite(parsed)) return DEFAULT_VOLUME;
+    return Math.min(100, Math.max(0, Math.round(parsed)));
+  }
+
+  setVolume(volume) {
+    const clamped = Math.min(100, Math.max(0, Math.round(Number(volume) || 0)));
+    this.write(VOLUME_KEY, String(clamped));
   }
 
   // --- per-puzzle results, keyed by slug ---
@@ -134,6 +168,8 @@ export class Storage {
     this.remove(RESULTS_KEY);
     this.remove(RATED_BOARDS_KEY);
     this.remove(HISTORY_KEY);
+    this.remove(MUTED_KEY);
+    this.remove(VOLUME_KEY);
   }
 
   // --- the guarded primitives; nothing above this line touches the store directly ---

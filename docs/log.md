@@ -2,6 +2,61 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-25 — The game gains a voice: sound, settings, confetti, and a kinder so-close
+
+The sound spec's step 2, built and tuned in one long session with Max's ears in
+the loop the whole way. Three decisions recorded (**D-27, D-28, D-29**), one
+game rule revised, and the GDD's no-list deliberately breached for the first
+time — by its author.
+
+- **`src/view/sound.js`** — motion.js's sibling: paper select climbing the
+  **frame ladder** (pitch rises with the slot being filled, rung derived from
+  `selectedTerms.length` so nothing can desynchronize), Max's cup at **Body 30 /
+  Damping 86** (dials stored, recipe derived — his settled positions stay the
+  deliverable), woodblock mistake (already-tried included: it shakes, so it
+  thuds), and a soft-brass **C5–E5–G5 fanfare** landing 1.4 s after the fourth
+  chime, timed to greet the end screen. A read-only views-array participant,
+  first in the array; `update()` returns undefined so the render chain can
+  never wait on audio. Deselect got a duller tap at the rung the frame returns
+  to; all five control pills answer with the tile's own tap.
+- **The settings screen (D-27)** — Max's call over a header-toggle-only
+  recommendation, recorded with its reconsider-when. Mute + volume slider
+  (previews by ear), persisted as `asto.muted` / `asto.volume` through
+  storage.js, defaults unmuted at 25. The door: a **gear icon beside a new
+  bar-graph statistics icon** in the calendar header (revised same day from a
+  title-screen link); Back returns to the calendar. Title and end screens now
+  say "About this game".
+- **A so-close keeps the frame (D-28)** — the principle: a failure whose WORDS
+  are right never clears; the player's next move is reordering exactly those
+  tiles. A miss still clears; the free identical resubmit keeps too. Engine
+  change (`clearsSelection`), tests rewritten to pin the new rule, CLAUDE.md §7
+  updated. Revises GDD §8.
+- **Confetti on the win screen (D-29)** — the no-list conflict was surfaced;
+  Max's ruling: *"i wrote the gdd, we can change it or deviate from it however
+  we want."* ~140 canvas pieces in the game's own tier colors + honey, once per
+  won game, reduced-motion-aware, self-removing. The board keeps the no-list's
+  calm; CLAUDE.md §8 records the narrow exception.
+- **Verified:** `npm test` **1613/0** (+51 this session: sound 24, storage 8,
+  confetti 4, engine/settings/others 15) · `check-board` 51 clean · in the
+  browser at mobile viewport: selects scheduled bandpass 2400/2557/2725/2998 Hz
+  (exactly the four rungs), solve 10 voices, miss 4, fanfare 3 saws at
+  +1.40/+1.54/+1.68 s, muted play 0; mute+volume survived reload; a so-close
+  left all four words framed with Confirm live; confetti frozen mid-fall for
+  the screenshot. **Max approved by ear and eye throughout** — the mix, the
+  retuned cup, the ladder, and finally *"the confetti looks awesome!"*
+- **Phase status:** Phases 1–5 complete and shipped; this is post-ship polish.
+  Gate: automated **passed**, Claude-verifiable **passed**, **Max acceptance
+  passed** (his tuning session WAS the playtest, ending in explicit approval).
+- **Next:** deploy rides this push — run `npm run check-deploy` after. **The
+  GDD version bump is now four items and remains his:** audio + settings
+  screen + the so-close revision + the confetti exception (plus the earlier
+  screens 5/6 and daily-cadence notes). **Re-run `npm run itch`** and re-upload
+  when he wants the itch build to carry sound — it currently predates today.
+  The audition page in `experiments/` is now deletable (its decisions are all
+  taken); left in place for reference until he says clear it. Then the queue:
+  the illustration mood board, the standing watches, the two overdue triggers
+  (rubric at 109 boards, slim-down lap).
+
 ## 2026-08-25 — ASTO ships to a second storefront, and the iframe finds a real bug
 
 Max: *"i want to create a zip file of the game in its current state that i can

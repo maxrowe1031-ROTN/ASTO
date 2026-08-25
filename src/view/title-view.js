@@ -20,7 +20,7 @@ export class TitleView {
           <button class="pill" data-action="tutorial">How to play</button>
           <button class="pill primary" data-action="play">Play</button>
         </div>
-        <a class="text-action" href="about.html">About this project</a>
+        <a class="text-action" href="about.html">About this game</a>
       </div>`;
 
     root.querySelector('[data-action="play"]').addEventListener('click', onPlay);

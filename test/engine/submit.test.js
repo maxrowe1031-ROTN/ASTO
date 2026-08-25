@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { initGame, select, submit } from '../../src/engine/engine.js';
+import { initGame, reorderSelected, select, submit } from '../../src/engine/engine.js';
 import { board, distinctMisses, MISS } from '../fixtures/board.js';
 
 const GROWTH = ['Seed', 'Tree', 'Spark', 'Fire'];
@@ -44,13 +44,45 @@ test('other rearrangements of the right four words are also "so close"', () => {
   }
 });
 
-test('"so close" costs a mistake and clears the selection', () => {
+test('"so close" costs a mistake and KEEPS the selection — the words are right', () => {
+  // Revised 2026-08-25 (Max): the original bet cleared on every failure, and
+  // playing it shipped showed why that was wrong here — the game has just said
+  // "right four words", so clearing sends the player hunting for words they
+  // already found. The frame stays put for reordering; the shake still fires.
   let state = initGame(board);
   for (const term of ['Seed', 'Spark', 'Tree', 'Fire']) state = select(state, term);
   const result = submit(state, state.selectedTerms);
   assert.equal(result.outcome.type, 'so-close');
   assert.equal(result.state.mistakes, 1);
+  assert.deepEqual(result.state.selectedTerms, ['Seed', 'Spark', 'Tree', 'Fire']);
+});
+
+test('a kept so-close can be reordered into the solve without reselecting', () => {
+  let state = initGame(board);
+  for (const term of ['Seed', 'Spark', 'Tree', 'Fire']) state = select(state, term);
+  state = submit(state, state.selectedTerms).state; // so-close, frame kept
+  // Reorder the same four tiles into an accepted order and confirm.
+  state = reorderSelected(state, 1, 2); // Seed, Tree, Spark, Fire
+  const result = submit(state, state.selectedTerms);
+  assert.equal(result.outcome.type, 'solved');
+});
+
+test('a miss still clears the selection — those words are wrong', () => {
+  let state = initGame(board);
+  for (const term of MISS) state = select(state, term);
+  const result = submit(state, state.selectedTerms);
+  assert.equal(result.outcome.type, 'miss');
   assert.deepEqual(result.state.selectedTerms, []);
+});
+
+test('repeating an identical so-close keeps the frame too — a free resubmit must not undo the point', () => {
+  let state = initGame(board);
+  for (const term of ['Seed', 'Spark', 'Tree', 'Fire']) state = select(state, term);
+  state = submit(state, state.selectedTerms).state; // so-close, frame kept, 1 mistake
+  const result = submit(state, state.selectedTerms); // identical order again
+  assert.equal(result.outcome.type, 'already-tried');
+  assert.equal(result.state.mistakes, 1);
+  assert.deepEqual(result.state.selectedTerms, ['Seed', 'Spark', 'Tree', 'Fire']);
 });
 
 test('the "so close" outcome leaks nothing about which set it was', () => {
