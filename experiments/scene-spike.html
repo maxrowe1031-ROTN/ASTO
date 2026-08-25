@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASTO scene spike (disposable)</title>
+
+<!-- The real design tokens, not a copy — the whole question is whether this
+     reads as ASTO's own place, not as generic pixel art. -->
+<link rel="stylesheet" href="../styles/tokens.css">
+
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-body);
+    padding: var(--page-pad);
+    padding-bottom: 48px;
+  }
+  main { max-width: var(--max-width); margin: 0 auto; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--tier-red-deep);
+    background: var(--tier-red-tint);
+    border-radius: var(--radius-pill);
+    padding: 3px 10px;
+    margin-bottom: 10px;
+  }
+  h1 { font-family: var(--font-display); font-size: 21px; margin: 6px 0 2px; }
+  .lede { color: var(--soft-ink); font-size: 13px; line-height: 1.5; margin: 0 0 16px; }
+  h2 { font-family: var(--font-display); font-size: 14px; margin: 20px 0 6px; }
+  .desc { color: var(--soft-ink); font-size: 12px; line-height: 1.4; margin: 0 0 10px; }
+
+  .chips { display: flex; gap: var(--gap); flex-wrap: wrap; margin-bottom: 14px; }
+  .chip {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--milk);
+    border: 1px solid var(--taupe);
+    border-radius: var(--radius-pill);
+    padding: 8px 13px;
+    min-height: 0;
+    cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  /* --- The mock play screen: real chrome, borrowed component classes,
+     so the scene is judged in the space it would actually occupy. --- */
+  .phone {
+    width: 375px;
+    max-width: 100%;
+    margin: 0 auto;
+    background: var(--cream);
+    border: 1px solid var(--taupe);
+    border-radius: var(--radius-card);
+    padding: var(--page-pad);
+    position: relative;
+  }
+  .phone .header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+  .phone .wordmark { font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+  .phone .puzzle-title { font-family: var(--font-body); font-weight: 700; font-size: 13px; color: var(--soft-ink); }
+
+  .scene-mount {
+    margin: 6px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--oat);
+  }
+  .scene-mount canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+
+  .status {
+    height: 24px;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--tier-yellow-deep);
+    margin-bottom: 4px;
+  }
+  .status.empty { visibility: hidden; }
+
+  .frame {
+    display: flex;
+    gap: 6px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    background: var(--milk);
+    border: 1px solid var(--taupe);
+    border-radius: var(--radius-tile);
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--faint-ink);
+    margin-bottom: 10px;
+  }
+
+  .mini-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+  .mini-tile {
+    background: var(--milk);
+    border: 1px solid var(--taupe);
+    border-radius: var(--radius-tile);
+    min-height: 48px;
+  }
+
+  .mini-controls { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .mini-pill {
+    flex: 1;
+    min-width: 60px;
+    height: 34px;
+    background: var(--milk);
+    border: 1px solid var(--ink);
+    border-radius: var(--radius-pill);
+  }
+
+  .measure {
+    font-size: 11px;
+    color: var(--faint-ink);
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  .note {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--soft-ink);
+    border-left: 3px solid var(--taupe);
+    padding-left: 11px;
+    margin: 22px 0 0;
+  }
+  .note strong { color: var(--ink); }
+</style>
+</head>
+<body>
+<main>
+  <span class="badge">DISPOSABLE SPIKE</span>
+  <h1>Scene spike — First Light</h1>
+  <p class="lede">
+    Phase 0 of the register-scene idea: <strong>one hand-authored scene</strong>
+    for the tutorial board, "First Light" — a dawn horizon, its own title's
+    idea, with one tree for the board's own Seed : Tree. Shown inside the real
+    play-screen chrome at 375px so the question is answerable in place: does a
+    ten-row strip of pixels actually read as somewhere?
+  </p>
+
+  <h2>Grid size</h2>
+  <p class="desc">Two candidates from the plan. Same drawing, two pixel counts.</p>
+  <div class="chips" id="size-chips" role="group" aria-label="Grid size"></div>
+
+  <h2>Motion</h2>
+  <p class="desc">Ambient motion is the GDD deviation under discussion — judge it on, then off.</p>
+  <div class="chips" id="motion-chips" role="group" aria-label="Motion"></div>
+
+  <div class="phone" id="phone">
+    <div class="header">
+      <span class="wordmark">ASTO</span>
+      <span class="puzzle-title">First Light</span>
+    </div>
+    <div class="scene-mount" id="scene-mount"></div>
+    <div class="status empty">So close!</div>
+    <div class="frame">: :: :</div>
+    <div class="mini-board">
+      <div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div>
+      <div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div>
+      <div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div>
+      <div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div>
+    </div>
+    <div class="mini-controls">
+      <div class="mini-pill"></div><div class="mini-pill"></div><div class="mini-pill"></div><div class="mini-pill"></div><div class="mini-pill"></div>
+    </div>
+  </div>
+  <p class="measure" id="measure"></p>
+
+  <p class="note">
+    <strong>What this spike deliberately skips.</strong> No agent, no store, no
+    validator, no register map, no tests — the grid below is inline data and the
+    painter is ~40 lines. If a ten-row strip does not read as a place, the rest
+    of the register-scene plan is discarded having cost this one file.
+  </p>
+</main>
+
+<script type="module">
+// ---------------------------------------------------------------------------
+// The two candidate grids, procedurally generated once (not hand-typed) so the
+// silhouette shapes are geometrically clean, then baked here as plain data —
+// exactly the shape a real scene file would take: { w, h, palette, grid }.
+// ---------------------------------------------------------------------------
+const SCENE_PALETTE = ["--oat", "--tier-yellow-tint", "--honey", "--tier-yellow-main", "--taupe", "--ink"];
+const grid75x10 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,5,5,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,5,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,5,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[3,3,3,3,3,3,3,3,5,5,5,3,3,3,3,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,3,3,3,3,5,4,4,4,4,4,5,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],[4,4,4,4,4,4,4,4,4,5,4,4,4,4,4,5,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3],[4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]];
+const grid84x12 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,5,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,5,5,5,0,0,0,0,5,5,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,1,5,5,5,1,1,1,1,5,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,5,5,5,1,1,1,1,5,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[3,3,3,3,3,3,3,3,3,5,5,5,3,3,3,3,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,3,3,3,3,3,5,4,4,4,4,4,4,5,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],[4,4,4,4,4,4,4,4,4,4,5,4,4,4,4,4,4,5,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3],[4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],[4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]];
+
+const scenes = {
+  '75x10': { w: 75, h: 10, palette: SCENE_PALETTE, grid: grid75x10 },
+  '84x12': { w: 84, h: 12, palette: SCENE_PALETTE, grid: grid84x12 }
+};
+
+// The sun and the bird are the only pixels that move: a slow rise and a slow
+// drift, both far too subtle to read as looping "confetti"-grade motion. Named
+// recipes (Phase 3's vocabulary) would replace this ad hoc pair.
+function paint(ctx, scene, t, motionOn) {
+  const { w, h, palette, grid } = scene;
+  const style = getComputedStyle(document.documentElement);
+  const colors = palette.map((tok) => style.getPropertyValue(tok).trim());
+
+  const riseOffset = motionOn ? Math.sin(t * 0.5) * 0.4 : 0;
+  const birdDrift = motionOn ? Math.floor((t * 3) % (w * 0.3)) : 0;
+
+  for (let y = 0; y < h; y += 1) {
+    for (let x = 0; x < w; x += 1) {
+      const idx = grid[y][x];
+      let sx = x;
+      let sy = y;
+      // Sun pixels (index 2) breathe up/down very slightly.
+      if (idx === 2) sy = Math.round(y + riseOffset);
+      ctx.fillStyle = colors[idx] || colors[0];
+      ctx.fillRect(sx, Math.max(0, Math.min(h - 1, sy)), 1, 1);
+    }
+  }
+
+  // The bird (a lone ink pixel pair in the pale band) drifts sideways and
+  // wraps — the one moving foreground element, deliberately tiny.
+  if (motionOn) {
+    const by = Math.round(h * 0.14);
+    const bx = (Math.round(w * 0.42) + birdDrift) % (w - 2) + 1;
+    ctx.fillStyle = colors[5];
+    ctx.fillRect(bx - 1, by, 1, 1);
+    ctx.fillRect(bx + 1, by, 1, 1);
+  }
+}
+
+let size = '75x10';
+let motion = true;
+let scale = 1;
+let raf = null;
+
+const mount = document.getElementById('scene-mount');
+const canvas = document.createElement('canvas');
+mount.appendChild(canvas);
+const ctx = canvas.getContext('2d');
+
+function setup() {
+  const scene = scenes[size];
+  scale = size === '75x10' ? 5 : 4;
+  canvas.width = scene.w;
+  canvas.height = scene.h;
+  canvas.style.width = `${scene.w * scale}px`;
+  canvas.style.height = `${scene.h * scale}px`;
+  document.getElementById('measure').textContent =
+    `${scene.w}×${scene.h} grid at ${scale}× = ${scene.w * scale}×${scene.h * scale}px rendered`;
+}
+
+function loop(now) {
+  const t = now / 1000;
+  paint(ctx, scenes[size], t, motion);
+  raf = requestAnimationFrame(loop);
+}
+
+function restart() {
+  if (raf) cancelAnimationFrame(raf);
+  setup();
+  raf = requestAnimationFrame(loop);
+}
+
+function chipGroup(id, options, current, onPick) {
+  const el = document.getElementById(id);
+  for (const [value, label] of options) {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.type = 'button';
+    btn.textContent = label;
+    btn.setAttribute('aria-pressed', String(value === current()));
+    btn.addEventListener('click', () => {
+      onPick(value);
+      for (const c of el.children) c.setAttribute('aria-pressed', 'false');
+      btn.setAttribute('aria-pressed', 'true');
+      restart();
+    });
+    el.appendChild(btn);
+  }
+}
+
+chipGroup('size-chips', [['75x10', '75×10 @5x (full-bleed)'], ['84x12', '84×12 @4x (inset)']], () => size, (v) => { size = v; });
+chipGroup('motion-chips', [[true, 'On'], [false, 'Off']], () => motion, (v) => { motion = v; });
+
+restart();
+</script>
+</body>
+</html>
