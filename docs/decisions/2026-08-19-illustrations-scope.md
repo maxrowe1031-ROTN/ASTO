@@ -18,12 +18,17 @@ Miss · Solved** — which match D-30 exactly and are drawn
 1. **Format.** The sheets are raster AI images. Shipping means PNG/WebP, not
    SVG or grids. This finally retires "art as text data" — which was never a
    locked decision, only a rationalisation (already corrected once above).
-   Normal for a web game; it does add the repo's first binary assets.
-2. **The band may not survive.** 375×60 is **6.25:1**. Max's scene panels are
-   roughly **4:3**. A Cozy Library at 6.25:1 shows a strip of shelf. Either
-   the art gets a larger placement (real play-screen layout work), or scenes
-   are composed band-shaped from the start, or the art lives somewhere else
-   (end screen, calendar, loading).
+   **Reference art is now committed** (Max, 2026-08-25): seven sheets at
+   1100px / JPEG-88 in `docs/art/reference/`, 12MB → 1.9MB — the repo's first
+   binary assets. The *shipped* asset format is still open.
+2. **The band survives — scenes change instead. DECIDED (Max, 2026-08-25).**
+   375×60 is **6.25:1** against 4:3 scene panels. Rather than rework a
+   shipped, live play screen, **future scenes are composed band-shaped from
+   the start**. Composition becomes a hard constraint on every scene prompt
+   (wide panorama, one horizontal organising line, Mochi as subject, detail
+   budget set by the 60px height, empty space on one side for the status
+   strip and the Solved hop). Rules written up in `docs/art/README.md`.
+   Accepted cost: the richness of the 4:3 scene tests does not transfer.
 3. **How art is produced at scale.** An LLM agent cannot draw these. Options:
    the Studio agent authors *prompts* and Max generates by hand; or an
    image-generation API joins the pipeline (**a new external service with
