@@ -1,6 +1,40 @@
 # Open: illustrations in the play screen — scope settled, execution open
 
-**Status:** open — **format DECIDED (flat vector, not pixel art); character
+**Status:** open — **ART DIRECTION SETTLED by Max (2026-08-25). Production
+questions now open.** Max authored a full character brief and generated six
+reference sheets: the character is **Mochi**, a white cat with a red scarf,
+coffee-obsessed. Source of truth lives in `docs/art/` (his two prompts +
+README). Claude's pixel and flat-vector spikes are **superseded** and remain
+only in `experiments/` as history.
+
+**What Mochi settles:** character, personality, visual style (clean 2D mascot
+illustration), palette (three of six colours are exact matches to
+`styles/tokens.css`), the logo direction, and the three states — **Idle ·
+Miss · Solved** — which match D-30 exactly and are drawn
+**register-independent**, vindicating D-30's layered composition.
+
+**The four production questions Mochi opens** — none blocking, all Max's:
+
+1. **Format.** The sheets are raster AI images. Shipping means PNG/WebP, not
+   SVG or grids. This finally retires "art as text data" — which was never a
+   locked decision, only a rationalisation (already corrected once above).
+   Normal for a web game; it does add the repo's first binary assets.
+2. **The band may not survive.** 375×60 is **6.25:1**. Max's scene panels are
+   roughly **4:3**. A Cozy Library at 6.25:1 shows a strip of shelf. Either
+   the art gets a larger placement (real play-screen layout work), or scenes
+   are composed band-shaped from the start, or the art lives somewhere else
+   (end screen, calendar, loading).
+3. **How art is produced at scale.** An LLM agent cannot draw these. Options:
+   the Studio agent authors *prompts* and Max generates by hand; or an
+   image-generation API joins the pipeline (**a new external service with
+   real recurring cost — Max's call, not a detail**); or everything is
+   hand-made, which the volume forbids.
+4. **Animation weight.** The reaction sheets are 8 frames per state. Because
+   reactions are register-independent, that is **24 shared frames**, not
+   24 × 18 — the layered decision paying for itself. Backgrounds are the
+   variable cost.
+
+Previously: **format DECIDED (flat vector, not pixel art); character
 design and art direction still open (Max, 2026-08-25).** After the flat-vector
 style spike Max's verdict: *"that's definitely better... we'll need a better
 cat design and art direction but this is def better."* So the rendering format
