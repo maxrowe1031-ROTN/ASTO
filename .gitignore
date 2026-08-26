@@ -14,3 +14,6 @@ Thumbs.db
 
 # Local-only files
 *.local
+
+# Art pipeline: the manual-render handoff is scratch, never content (D-31)
+art/pending/

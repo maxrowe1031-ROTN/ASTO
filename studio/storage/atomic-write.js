@@ -19,11 +19,25 @@ export function writeJsonAtomic(filePath, value) {
 // Prompts and responses are stored as the text they actually are, so a
 // reviewer reads a prompt rather than a JSON-escaped one-liner.
 export function writeTextAtomic(filePath, text) {
+  writeAtomic(filePath, text);
+}
+
+// Image bytes (D-31: art is PNGs). The JSON writer rejects binary by
+// construction — JSON.stringify of a Uint8Array is an object dump, not the
+// image — so bytes get their own front door onto the same mechanics.
+export function writeBytesAtomic(filePath, bytes) {
+  if (!(bytes instanceof Uint8Array) || bytes.length === 0) {
+    throw new Error('writeBytesAtomic needs a non-empty Uint8Array');
+  }
+  writeAtomic(filePath, bytes);
+}
+
+function writeAtomic(filePath, data) {
   const tempPath = join(dirname(filePath), `.tmp-${process.pid}-${(counter += 1)}`);
   let fd;
   try {
     fd = openSync(tempPath, 'wx');
-    writeSync(fd, text);
+    writeSync(fd, data);
     fsyncSync(fd);
     closeSync(fd);
     fd = undefined;
