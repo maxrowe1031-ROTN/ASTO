@@ -1,6 +1,16 @@
 # Open: illustrations in the play screen — scope settled, execution open
 
-**Status:** open — execution only. A second 2026-08-25 session (the coffee-cat
+**Status:** open — **art direction itself is now the open question (Max,
+2026-08-25, end of the art-quality session).** After the gold-standard First
+Light iteration, Max's verdict: the pixel-art style is not doing what he
+hoped — he will come up with a clearer art style and direction before
+execution continues. The craft loop is HALTED, not failed: what survives any
+style change is the structure (the coffee cat as character, layered
+composition, three states, register keying, the off-pipeline agent design,
+the optional `register` schema field). What is style-bound and therefore
+provisional until direction lands: the silhouette-band grammar, the Sunlit
+Days palette, the sprite work, and possibly the band footprint. Previously:
+execution only. A second 2026-08-25 session (the coffee-cat
 brainstorm) answered all five open questions below, or gave each a deciding
 mechanism; the answers are recorded beneath each question. The design lives in
 `docs/superpowers/specs/2026-08-25-register-scenes-cat-design.md`. What remains
