@@ -229,6 +229,47 @@ export function createArtStore({
       return path;
     },
 
+    /**
+     * Stages one full handoff: the human half (prompt text, ready to paste
+     * into an image tool) and the machine half (the validated scene object,
+     * kept so publish-time meta records what was actually asked for).
+     */
+    writePendingScene({ register, state, scene, model = null }) {
+      const promptPath = store.writePendingPrompt({ register, state, prompt: scene?.prompt });
+      const scenePath = `${pendingBase(register, state)}.json`;
+      writeJsonAtomic(scenePath, { register, state, scene, model, stagedAt: clock() });
+      return { promptPath, scenePath };
+    },
+
+    /** The machine half back, or null when nothing is staged. */
+    readPendingScene(register, state) {
+      assertRegister(register);
+      assertState(state);
+      const path = `${pendingBase(register, state)}.json`;
+      if (!existsSync(path)) return null;
+      return JSON.parse(readFileSync(path, 'utf8'));
+    },
+
+    /** Every staged handoff, and whether its render has arrived yet. */
+    listPending() {
+      const dir = pendingDir();
+      if (!existsSync(dir)) return [];
+      const entries = [];
+      for (const name of readdirSync(dir).sort()) {
+        if (!name.endsWith('.json')) continue;
+        const record = JSON.parse(readFileSync(join(dir, name), 'utf8'));
+        const { register, state } = record;
+        if (!knownRegisters.has(register) || !ART_STATES.includes(state)) continue;
+        entries.push({
+          register,
+          state,
+          stagedAt: record.stagedAt ?? null,
+          hasImage: store.findPendingImage(register, state) !== null,
+        });
+      }
+      return entries;
+    },
+
     /** The dropped render, if the human has delivered one yet. */
     findPendingImage(register, state) {
       assertRegister(register);
@@ -237,11 +278,17 @@ export function createArtStore({
       return existsSync(path) ? path : null;
     },
 
+    /** The dropped render's bytes — reads stay inside the seam too. */
+    readPendingImage(register, state) {
+      const path = store.findPendingImage(register, state);
+      return path === null ? null : readFileSync(path);
+    },
+
     /** Removes both halves of one handoff once the render is published. */
     clearPending(register, state) {
       assertRegister(register);
       assertState(state);
-      for (const extension of ['txt', 'png']) {
+      for (const extension of ['txt', 'json', 'png']) {
         rmSync(`${pendingBase(register, state)}.${extension}`, { force: true });
       }
     },

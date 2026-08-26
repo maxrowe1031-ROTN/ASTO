@@ -274,6 +274,63 @@ test('pending helpers refuse an unknown register too — same gate, same seam', 
   }
 });
 
+test('a pending scene carries the machine half beside the human half', () => {
+  const root = tempDir();
+  try {
+    const store = makeStore(root);
+    const scene = {
+      register: 'kitchens-food',
+      state: 'idle',
+      prompt: 'a bakery at dawn, band composition',
+      composition: 'content confined to the middle band',
+      clearSide: 'right',
+      mochiPose: 'sitting',
+    };
+    const { promptPath, scenePath } = store.writePendingScene({
+      register: 'kitchens-food',
+      state: 'idle',
+      scene,
+      model: 'test-model',
+    });
+
+    // The human half is the prompt text, ready to paste.
+    assert.match(readFileSync(promptPath, 'utf8'), /bakery at dawn/);
+    // The machine half survives the round trip for publish-time meta.
+    const rehydrated = store.readPendingScene('kitchens-food', 'idle');
+    assert.deepEqual(rehydrated.scene, scene);
+    assert.equal(rehydrated.model, 'test-model');
+
+    // clearPending removes all three halves: txt, json, and any dropped png.
+    store.clearPending('kitchens-food', 'idle');
+    assert.equal(existsSync(promptPath), false);
+    assert.equal(existsSync(scenePath), false);
+    assert.equal(store.readPendingScene('kitchens-food', 'idle'), null);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('listPending reports every staged handoff and whether its render arrived', () => {
+  const root = tempDir();
+  try {
+    const store = makeStore(root);
+    const scene = (state) => ({
+      register: 'kitchens-food', state, prompt: 'p'.repeat(10), composition: 'c', clearSide: 'left', mochiPose: 'x',
+    });
+    store.writePendingScene({ register: 'kitchens-food', state: 'idle', scene: scene('idle') });
+    store.writePendingScene({ register: 'kitchens-food', state: 'miss', scene: scene('miss') });
+    require_write(join(root, 'pending', 'kitchens-food-idle.png'), pngBytes(750, 120));
+
+    const pending = store.listPending();
+    assert.deepEqual(
+      pending.map((p) => [p.register, p.state, p.hasImage]),
+      [['kitchens-food', 'idle', true], ['kitchens-food', 'miss', false]],
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 // Small helper: tests write the "dropped" file directly, as Max would.
 import { writeFileSync, mkdirSync } from 'node:fs';
 function require_write(path, bytes) {
