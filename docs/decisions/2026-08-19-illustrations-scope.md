@@ -1,6 +1,61 @@
 # Open: illustrations in the play screen — scope settled, execution open
 
-**Status:** open — **art direction itself is now the open question (Max,
+**Status:** open — **ART DIRECTION SETTLED by Max (2026-08-25). Production
+questions now open.** Max authored a full character brief and generated six
+reference sheets: the character is **Mochi**, a white cat with a red scarf,
+coffee-obsessed. Source of truth lives in `docs/art/` (his two prompts +
+README). Claude's pixel and flat-vector spikes are **superseded** and remain
+only in `experiments/` as history.
+
+**What Mochi settles:** character, personality, visual style (clean 2D mascot
+illustration), palette (three of six colours are exact matches to
+`styles/tokens.css`), the logo direction, and the three states — **Idle ·
+Miss · Solved** — which match D-30 exactly and are drawn
+**register-independent**, vindicating D-30's layered composition.
+
+**The four production questions Mochi opens** — none blocking, all Max's:
+
+1. **Format.** The sheets are raster AI images. Shipping means PNG/WebP, not
+   SVG or grids. This finally retires "art as text data" — which was never a
+   locked decision, only a rationalisation (already corrected once above).
+   **Reference art is now committed** (Max, 2026-08-25): seven sheets at
+   1100px / JPEG-88 in `docs/art/reference/`, 12MB → 1.9MB — the repo's first
+   binary assets. The *shipped* asset format is still open.
+2. **The band survives — scenes change instead. DECIDED (Max, 2026-08-25).**
+   375×60 is **6.25:1** against 4:3 scene panels. Rather than rework a
+   shipped, live play screen, **future scenes are composed band-shaped from
+   the start**. Composition becomes a hard constraint on every scene prompt
+   (wide panorama, one horizontal organising line, Mochi as subject, detail
+   budget set by the 60px height, empty space on one side for the status
+   strip and the Solved hop). Rules written up in `docs/art/README.md`.
+   Accepted cost: the richness of the 4:3 scene tests does not transfer.
+3. **How art is produced at scale.** An LLM agent cannot draw these. Options:
+   the Studio agent authors *prompts* and Max generates by hand; or an
+   image-generation API joins the pipeline (**a new external service with
+   real recurring cost — Max's call, not a detail**); or everything is
+   hand-made, which the volume forbids.
+4. **Animation weight.** The reaction sheets are 8 frames per state. Because
+   reactions are register-independent, that is **24 shared frames**, not
+   24 × 18 — the layered decision paying for itself. Backgrounds are the
+   variable cost.
+
+Previously: **format DECIDED (flat vector, not pixel art); character
+design and art direction still open (Max, 2026-08-25).** After the flat-vector
+style spike Max's verdict: *"that's definitely better... we'll need a better
+cat design and art direction but this is def better."* So the rendering format
+is settled and the pixel-art assumption is retired; what remains open is the
+**character design** and the **art direction** around it.
+
+**The retired assumption, and why it lasted:** pixel art traced to one phrase
+in the original 2026-08-19 ask (*"low spec, pixelated or something"*) and was
+never re-examined across two spikes. This ticket also claimed palette-index
+grids were "the only shape that fits" the Studio's seams — **that was
+overstated**. The real constraint is *text, not binaries*; SVG satisfies it,
+scales crisply from one source, and is a format an LLM can actually author
+(a 3,600-cell index grid is not). The crude output of the pixel rounds was
+plausibly as much a format problem as a style one.
+
+Previously: **art direction itself is the open question (Max,
 2026-08-25, end of the art-quality session).** After the gold-standard First
 Light iteration, Max's verdict: the pixel-art style is not doing what he
 hoped — he will come up with a clearer art style and direction before
@@ -143,8 +198,12 @@ registers** (~18 + 18 + 2 ≈ 38 pieces).
 - **IP:** the pixel Claude avatar is Anthropic's — not usable in a published
   game. The original mascot is now the **coffee cat** (2026-08-25), retiring
   the carafe-and-cups idea.
-- **Pixel art as data** — palette-index grids, no binary assets — is not merely
-  elegant here; the Studio's existing seams make it the only shape that fits.
+- ~~**Pixel art as data** — palette-index grids, no binary assets — is not merely
+  elegant here; the Studio's existing seams make it the only shape that fits.~~
+  **Retired 2026-08-25.** Twice overstated and now fully superseded: the real
+  constraint was text-not-binaries, not pixel grids — and Mochi's raster
+  reference art retires even that for reference (HR-3 in `docs/design.md`).
+  The *shipped* asset format remains open.
 
 **Blocked on:** nothing. Sequencing is Max's. The spike is committed on
 `work/scene-spike` and `main` is untouched.
