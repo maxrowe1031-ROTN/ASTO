@@ -2849,6 +2849,68 @@ external service with real recurring cost), and the shipped asset format.
 was wrong (then a larger placement returns to the table), or the production
 question forces an image API, which is its own decision.
 
+### D-31 — The art pipeline: Mochi in the scene, and a transport that starts manual (2026-08-26)
+
+**What happened:** Max, on the day after the art direction landed: *"I'm
+definitely not going to produce all these by hand. The goal is to have the
+process automated similarly to the puzzle agent pipeline."* Design spec:
+`docs/superpowers/specs/2026-08-26-art-pipeline-design.md`. Unbuilt.
+
+**Decision 1 — Mochi is generated INTO each scene**, not composited as a fixed
+sprite over generated backgrounds. Claude recommended the sprite (it makes
+character consistency structurally unbreakable, because the model never draws
+Mochi); Max chose generation, and the reason is sound — his scene tests work
+*because* Mochi is holding the magnifying glass and sitting on the cloud, which
+compositing cannot produce.
+
+**Accepted risk and consequences, recorded because they revise D-30:**
+
+- Character consistency becomes the pipeline's **central risk** rather than a
+  solved problem. Every render is conditioned on reference art, and the critic
+  checks character fidelity as a first-class criterion.
+- **Frame-by-frame animation is off the table** — 8 frames × 3 states × 18
+  registers is 432 images that could never stay on-model. The three states
+  become **three stills per register, cross-faded**; ambient life is CSS, not
+  frames. D-30's "24 shared frames" saving is gone, replaced by **54 whole
+  images** (18 × 3).
+- What survives D-30 unchanged: three states, register keying, the 375×60
+  band, and the optional `register` schema field.
+
+**Decision 2 — the render step ships as a manual transport first.** `llm.js`
+already proves the pattern: the transport is injected, which is why `--mock` is
+a swap and not a branch. The manual transport writes a prompt and waits for a
+PNG Max renders in ChatGPT; the API transport is a drop-in later. Everything
+except one `fetch` is exercised either way, and **adopting an image API — a new
+external service with real cost — stays a separate conversation**, deliberately
+deferred rather than bundled into this decision.
+
+**Architecture:** four new modules, all inside the boundary law — pure agents
+(`scene-prompter`, `scene-critic`), one network module per medium (`image.js`
+beside `llm.js`), one write seam (`art-store.js` owning `art/`, beside
+`run-store.js` and `puzzle-store.js`). `budget.js` already carries `costUsd`,
+so per-image cost has somewhere to be charged with no new taxonomy.
+
+**TABLED 2026-08-26**, the day after it was recorded. The pipeline was built
+through step 3 and run end to end on one register; Max's verdict on the result
+was *"this is terrible. this flow will not work."* Two things broken, both
+named by him: **the flow** (the manual transport is ~380 manual operations for
+54 images — Claude optimised its own risk of spending money over Max's time,
+and that was the wrong trade) and **the art itself** (rules written for
+surviving a crop produced sparse, repetitive, low-contrast scenes). He did
+**not** fault the 375×60 band or the per-register unit. Full findings, including
+what worked, are in the decision ticket under *"What the trial run taught"*.
+
+**What is committed and safe:** `scene-prompter`, `art-stage-registry`,
+`art-store`, `png.js`, `render-transport`, `art-pipeline`, `art-run` — all
+tested (suite 1671/0), all additive, none reachable from the game. Nothing
+ships; nothing is wired into the play screen.
+
+**Reconsider-when:** Max returns to scene art — at which point **start from the
+API transport with reference-image conditioning, not the manual loop**, and
+rewrite the scene rules for density and character presence before automating
+anything. Or, if two months pass without a return (2026-10-26), ask whether the
+scene band is still wanted at all.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

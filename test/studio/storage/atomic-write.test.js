@@ -7,7 +7,7 @@ import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'n
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { writeJsonAtomic } from '../../../studio/storage/atomic-write.js';
+import { writeBytesAtomic, writeJsonAtomic } from '../../../studio/storage/atomic-write.js';
 
 const dir = () => {
   const d = mkdtempSync(join(tmpdir(), 'asto-atomic-'));
@@ -80,6 +80,31 @@ test('writing into a missing directory throws rather than silently creating it',
   const { d } = dir();
   try {
     assert.throws(() => writeJsonAtomic(join(d, 'nowhere', 'a.json'), { a: 1 }));
+  } finally {
+    rmSync(d, { recursive: true, force: true });
+  }
+});
+
+// D-31: art is PNGs, and bytes need the same temp+fsync+rename guarantees.
+test('writeBytesAtomic lands the exact bytes', () => {
+  const { d } = dir();
+  try {
+    const bytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0, 1, 2, 3]);
+    const target = join(d, 'a.png');
+    writeBytesAtomic(target, bytes);
+    assert.deepEqual(new Uint8Array(readFileSync(target)), bytes);
+    assert.deepEqual(readdirSync(d), ['a.png']);
+  } finally {
+    rmSync(d, { recursive: true, force: true });
+  }
+});
+
+test('writeBytesAtomic refuses empty or non-byte input before touching disk', () => {
+  const { d } = dir();
+  try {
+    assert.throws(() => writeBytesAtomic(join(d, 'a.png'), new Uint8Array(0)));
+    assert.throws(() => writeBytesAtomic(join(d, 'a.png'), 'not bytes'));
+    assert.deepEqual(readdirSync(d), []);
   } finally {
     rmSync(d, { recursive: true, force: true });
   }

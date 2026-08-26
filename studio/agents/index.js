@@ -20,6 +20,11 @@ import * as revisionProposer from './revision-proposer.js';
 // Also not a pipeline stage — it runs at run CREATION, inventing a fresh
 // surprise-me subject (design.md D-15). Same contract as the rest.
 import * as subjectScout from './subject-scout.js';
+// Also not a board-pipeline stage — it belongs to the ART pipeline (D-31),
+// which has its own ordered registry. Registered here because the agent
+// contract and its purity law are the same, and one registry of agents is
+// easier to keep honest than two.
+import * as scenePrompter from './scene-prompter.js';
 
 export const AGENTS = Object.freeze({
   'pair-author': pairAuthor,
@@ -33,6 +38,7 @@ export const AGENTS = Object.freeze({
   'glossary-author': glossaryAuthor,
   'revision-proposer': revisionProposer,
   'subject-scout': subjectScout,
+  'scene-prompter': scenePrompter,
 });
 
 export function loadAgent(agentId) {

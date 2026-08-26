@@ -1,6 +1,14 @@
 # Open: illustrations in the play screen — scope settled, execution open
 
-**Status:** open — **ART DIRECTION SETTLED by Max (2026-08-25). Production
+**Status: TABLED by Max (2026-08-26)** — after the pipeline ran end to end and
+he saw the result: *"this is terrible. this flow will not work."* The work is
+not lost: the character, the reference art, and a tested pipeline are all
+committed. What is parked is the decision to ship any of it. See **"What the
+trial run taught"** below before restarting — the two things Max named as
+broken were **the flow** (too much manual work) and **the art itself**;
+notably he did NOT fault the 375×60 band or the per-register idea.
+
+Previously: **ART DIRECTION SETTLED by Max (2026-08-25). Production
 questions now open.** Max authored a full character brief and generated six
 reference sheets: the character is **Mochi**, a white cat with a red scarf,
 coffee-obsessed. Source of truth lives in `docs/art/` (his two prompts +
@@ -207,3 +215,69 @@ registers** (~18 + 18 + 2 ≈ 38 pieces).
 
 **Blocked on:** nothing. Sequencing is Max's. The spike is committed on
 `work/scene-spike` and `main` is untouched.
+
+
+---
+
+## What the trial run taught (2026-08-26) — read this first if restarting
+
+One register (`kitchens-food`) went through the whole pipeline: three prompts
+authored by `scene-prompter`, rendered by Max in ChatGPT, cropped and published
+by `art-store`. Findings, in the order they matter.
+
+### 1. The manual transport was the wrong de-risking choice — Claude's error
+
+Max's brief was *"I'm definitely not going to produce all these by hand."*
+Claude then built a flow in which he produces them by hand with extra steps:
+per image, open a text file, copy, paste, wait, download, rename exactly, move.
+Roughly **380 manual operations for 54 images**, and the renaming is
+error-prone — Claude itself mis-mapped two of the first three files.
+
+The reasoning was "defer the cost conversation until the prompts are proven."
+That optimised **Claude's risk (spending Max's money) over Max's time**, which
+is backwards. The puzzle pipeline is *one command → a board*; nothing shaped
+like this manual loop was ever going to feel comparable. **If this restarts,
+start with the API transport, not the manual one.**
+
+### 2. The band rules produced compliant but lifeless art
+
+The prompt rules optimised for *surviving a 6.25:1 crop* — one horizontal
+organising line, one large prop, one visually quiet side — and said nothing
+about charm, density, warmth, or character presence. The result: three
+near-identical compositions (cat on a counter beside a thing), large dead areas
+of flat cream, Mochi at ~15% of frame width, and cream-on-cream with no punch.
+Max's own scene-tests sheet is dense and warm; these are sparse and polite.
+**The rules were mechanical and the art came out mechanical.**
+
+### 3. Reference-image conditioning is the missing fix for style drift
+
+The renders read as *nearly* Mochi — proportions, line weight and eyes drifting
+from `docs/art/reference/`. Pasting text into a chat window cannot anchor
+that. An image API accepting `4-core-pose-sheet.jpg` and `5-reactions.jpg` as
+reference inputs on **every** generation can. This is a second, independent
+reason the API transport should have come first.
+
+### 4. What actually worked, and is worth keeping
+
+- **Character consistency held** across three independent generations — the
+  risk D-31 accepted when Max chose generated-Mochi over a composited sprite.
+  It did not bite.
+- **A prop arc emerged unasked**: proofing dough → collapsed loaf → risen
+  golden loaf. Giving all three states one register and one character bible
+  produced narrative continuity nobody requested.
+- **All three prompts validated on the first pass** — no retries. The agent's
+  semantic checks (Mochi named, scarf kept, real clearSide) held.
+- **The crop worked** and found real content every time.
+
+### 5. Two concrete defects, unfixed
+
+- **`clearSide` flips between states** (`right / left / right`), so Mochi
+  teleports across the banner on a miss. The agent asks each state
+  independently with nothing forcing agreement — decide it once per register
+  and *tell* each state.
+- **The crop cuts Mochi's feet.** Renders place content in the lower-middle;
+  `cropBand` takes the centre. Either prompt for vertically-centred content or
+  default `focusY` nearer 0.6.
+
+Trial renders kept at `docs/art/trial-renders/` as evidence of what the
+pipeline actually produced.
