@@ -563,4 +563,9 @@
   sampled subject cannot poison the avoid-list) but it means Max has effectively seen
   a batch's themes before it runs. If that becomes annoying, the fix is an opt-in
   `--reserve` flag writing sampled subjects to a side-file the guard also reads.
-- **Brand rollout ticket (2026-08-25).** When the cat's design settles: wordmark, About page, favicon, itch listing, using the cat-in-the-coffee-cup logo direction (D-30). Its own ticket and session; waits on art direction.
+- **Brand rollout ticket (2026-08-25, now unblocked).** Mochi's design is settled and
+  **two logo variants already exist** — `docs/art/reference/6-logo-colour.jpg` and
+  `7-logo-monochrome.jpg`. The rollout itself is untouched: wordmark lockup, About page,
+  favicon (use the monochrome variant — it is the one that survives 16px), and the itch
+  listing. Its own ticket and session; no longer waits on art direction, only on Max
+  pulling it into the plan.

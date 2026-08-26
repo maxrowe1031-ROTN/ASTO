@@ -198,8 +198,12 @@ registers** (~18 + 18 + 2 ≈ 38 pieces).
 - **IP:** the pixel Claude avatar is Anthropic's — not usable in a published
   game. The original mascot is now the **coffee cat** (2026-08-25), retiring
   the carafe-and-cups idea.
-- **Pixel art as data** — palette-index grids, no binary assets — is not merely
-  elegant here; the Studio's existing seams make it the only shape that fits.
+- ~~**Pixel art as data** — palette-index grids, no binary assets — is not merely
+  elegant here; the Studio's existing seams make it the only shape that fits.~~
+  **Retired 2026-08-25.** Twice overstated and now fully superseded: the real
+  constraint was text-not-binaries, not pixel grids — and Mochi's raster
+  reference art retires even that for reference (HR-3 in `docs/design.md`).
+  The *shipped* asset format remains open.
 
 **Blocked on:** nothing. Sequencing is Max's. The spike is committed on
 `work/scene-spike` and `main` is untouched.

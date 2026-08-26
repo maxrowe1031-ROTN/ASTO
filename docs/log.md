@@ -2,6 +2,77 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-25 — Mochi: the art direction lands, and it is Max's
+
+A second session the same day, and the one that actually solved the problem.
+Two Claude spikes moved the format question forward and were then **superseded
+by Max's own work**: he wrote a character brief, generated six reference
+sheets, and named the character. **Mochi** — a white cat with a red scarf,
+coffee-obsessed — is ASTO's recurring character. No production code touched;
+`npm test` 1613/0 and `check-board` 51 clean throughout.
+
+- **The format decision (Claude spike, Max's call):** the pixel-art
+  assumption traced to one phrase in the 2026-08-19 ask (*"low spec,
+  pixelated or something"*) and had never been re-examined across two rounds.
+  Max named Duolingo as the inspiration — which is emphatically **not** pixel
+  art. `experiments/scene-style-vector.html` put the same band and cat in
+  three flat-vector styles; his verdict: *"that's definitely better."*
+  **Correction recorded:** the ticket's claim that palette-index grids were
+  "the only shape that fits" the Studio's seams was **overstated** — the real
+  constraint is text-not-binaries. The crude pixel output was plausibly as
+  much a format problem as a style one (an LLM cannot author a 3,600-cell
+  index grid; it can author SVG).
+- **A methodological miss, named:** the style sheet varied *rendering*
+  (colour, outline) while holding the *design* constant — one mediocre cat
+  shown three ways, which is why it still read as generic.
+  `experiments/cat-designs.html` corrected it with six genuinely different
+  characters (Loaf, Chunky Sit, Big Head, Geometric, Tall & Elegant, Sleepy
+  Curl) in one palette. Both spikes had defects found and fixed before review
+  — a detached tail, miss-ears reading as wings, a snowman head/body ratio, a
+  white cat losing contrast against its own pale sky, incoherent Curl ears, a
+  pear-shaped Tall.
+- **Then Max solved it.** `docs/art/` is now the source of truth: his two
+  prompts (`mochi-concept-prompt.md`, `mochi-character-sheet-prompt.md`) plus
+  **seven reference sheets** in `docs/art/reference/` — concept exploration,
+  personality variations, scene tests, core pose sheet, the 8-frame reaction
+  sequences, and **two logo variants** (colour + monochrome, the right shape
+  for a brand). Committed downscaled to 1100px / JPEG-88: **12MB → 1.9MB**,
+  the repo's **first binary assets**, Max's call.
+- **Two observations worth keeping.** (1) His "ASTO core palette" is derived
+  from the game's own tokens — **three of six are exact matches**
+  (`#4F6B47` = `--tier-green-deep`, `#8F4227` = `--tier-red-deep`,
+  `#40342A` = `--ink`); only the scarf red `#D94B3D` is new, which is good
+  brand practice rather than a defect. (2) His reaction sheets are drawn
+  **register-independent**, which vindicates D-30's layered composition:
+  3 states × 8 frames = **24 shared frames**, not 24 × 18.
+- **The band-shaped decision (Max):** his scene panels are ~4:3; the slot is
+  375×60 = **6.25:1**. Rather than rework a shipped, live play screen, future
+  scenes are **composed band-shaped from the start**. Composition rules are
+  written up in `docs/art/README.md` (wide panorama, one horizontal
+  organising line, Mochi as subject, detail budget set by the 60px height,
+  empty space for the status strip and the Solved hop). **Accepted cost,
+  stated plainly:** the richness of the 4:3 scene tests does not transfer.
+- **Verified:** `npm test` **1613/0** · `check-board` **51 clean** · both
+  spikes loaded in the preview browser with **zero console errors** and all
+  SVG defs resolving (cat-designs: 6 cards, 6 bands, 24 `use` refs, no
+  missing defs; style-vector: 3 bands, 16 `use` refs, no missing defs).
+- **Phase status:** post-Phase-5 enhancement work, not a phase gate. The
+  scene band is **not shipped and not started in production code**. What is
+  settled: character, palette, style, logo, three states, layered
+  composition, band-shaped scenes, reference art committed. Superseded and
+  retired: pixel art, the Sunlit Days palette, both Claude cat designs.
+- **Next:** the one genuinely open question is **how scenes get produced at
+  scale** — either the Studio agent authors *prompts* and Max generates by
+  hand (no new cost), or an image-generation API joins the pipeline (**a new
+  external service with real recurring cost — Max's call, not a detail**).
+  Cheapest next step when he wants to move: **one band-shaped scene generated
+  from the new rules, dropped into the real play screen beside Mochi's idle**,
+  which tests whether the 4:3→6.25:1 trade was right before anything is built
+  around it. Also open: the shipped asset format. Unchanged and still owed
+  elsewhere: the **GDD version bump** (six items), a fresh board batch before
+  the calendar runs dry **2026-09-19**, and `npm run itch` + re-upload
+  whenever the itch build should carry sound.
+
 ## 2026-08-25 — The coffee cat: five questions answered, spike round 2 passed its gate, art direction reopened
 
 The register-scene work moved a long way and then stopped in exactly the right

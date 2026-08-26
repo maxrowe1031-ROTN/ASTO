@@ -2807,6 +2807,48 @@ in the coffee cup**, off his Pinterest mood board.
 or two months pass without direction (2026-10-25 — ask whether the scene band
 is still wanted at all).
 
+### D-30 amendment — Mochi supersedes the spike's palette and cat (2026-08-25)
+
+**What changed:** later the same day, Max authored a character brief and
+generated seven reference sheets. The character is **Mochi** — a white cat
+with a red scarf, coffee-obsessed. `docs/art/` is the source of truth (his two
+prompts, the sheets, and the composition rules). Claude's pixel and
+flat-vector spikes are **superseded**, surviving only in `experiments/`.
+
+**What D-30 said that no longer holds:**
+
+- **Palette.** "Sunlit Days" (22 colours + cat-white) is **out**. The palette
+  is Max's **ASTO core palette** — and it is already native: three of its six
+  colours are exact matches to `styles/tokens.css` (`#4F6B47` =
+  `--tier-green-deep`, `#8F4227` = `--tier-red-deep`, `#40342A` = `--ink`).
+  Only the scarf red `#D94B3D` is new, which is deliberate — a mascot's one
+  signature colour.
+- **Rendering format.** Pixel art is retired. So is the ticket's claim that
+  palette-index grids were "the only shape that fits" — the real constraint
+  was always text-not-binaries, and even that now yields: the shipped art will
+  be raster.
+- **The cat.** Neither Claude cat design survives; Mochi is the character.
+
+**What D-30 said that survives, and is now confirmed by Max's own sheets:**
+
+- **Band footprint 375×60** — kept. Max chose to compose scenes band-shaped
+  from the start rather than rework a shipped, live play screen. The rules
+  live in `docs/art/README.md`; the accepted cost is that the 4:3 scene
+  tests' richness does not transfer.
+- **A white cat** — Mochi is white.
+- **Three states, idle · miss · solved** — Max's reaction sheets name exactly
+  these.
+- **Layered composition** — vindicated. His reactions are drawn
+  register-independent, so the states cost **24 shared frames**, not 24 × 18.
+
+**Still open, and Max's:** how scenes are produced at scale (the Studio agent
+authoring prompts, versus an image-generation API joining the pipeline — a new
+external service with real recurring cost), and the shipped asset format.
+
+**Reconsider-when:** the first band-shaped scene shows the 4:3→6.25:1 trade
+was wrong (then a larger placement returns to the table), or the production
+question forces an image API, which is its own decision.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
@@ -2902,3 +2944,25 @@ routing into the Studio.
 **Reconsider-when:** approval-into-`puzzles/` or hand-editing is still missing when Phase
 5b needs the Studio to author content, or the Core grows a capability neither the CLI nor
 R1 can exercise.
+
+### HR-3 — Binary assets in the repo, for reference art only (2026-08-25)
+
+**The house default this departs from:** ASTO had, until now, shipped no
+binary assets at all — an unwritten habit reinforced by the illustrations
+ticket's "pixel art as data, no binary assets" line. That line was a
+rationalisation, not a rule, and is corrected in D-30's amendment.
+
+**The exception, and its bounds:** `docs/art/reference/` holds **seven JPEG
+reference sheets, 1.9MB total** (downscaled from 12MB at 1100px / JPEG-88).
+They are Max's art direction and the source of truth for every future scene
+prompt; the reproducible prompts sit beside them as text. **This exception
+covers reference art only.** Shipped game art is a separate, still-open
+decision, and its weight lands on players rather than on clones.
+
+**Why it is worth it:** the visual source of truth stays versioned with the
+prompts that produced it. A brief in `docs/art/` that points at images living
+in someone's Downloads folder is not a source of truth.
+
+**Reconsider-when:** `docs/art/` passes ~10MB, or shipped art is approved and
+needs its own home — at which point asset weight, delivery, and whether the
+repo is the right store all get decided together rather than by drift.
