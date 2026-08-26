@@ -1,6 +1,22 @@
 # Open: illustrations in the play screen — scope settled, execution open
 
-**Status:** open — **art direction itself is now the open question (Max,
+**Status:** open — **format DECIDED (flat vector, not pixel art); character
+design and art direction still open (Max, 2026-08-25).** After the flat-vector
+style spike Max's verdict: *"that's definitely better... we'll need a better
+cat design and art direction but this is def better."* So the rendering format
+is settled and the pixel-art assumption is retired; what remains open is the
+**character design** and the **art direction** around it.
+
+**The retired assumption, and why it lasted:** pixel art traced to one phrase
+in the original 2026-08-19 ask (*"low spec, pixelated or something"*) and was
+never re-examined across two spikes. This ticket also claimed palette-index
+grids were "the only shape that fits" the Studio's seams — **that was
+overstated**. The real constraint is *text, not binaries*; SVG satisfies it,
+scales crisply from one source, and is a format an LLM can actually author
+(a 3,600-cell index grid is not). The crude output of the pixel rounds was
+plausibly as much a format problem as a style one.
+
+Previously: **art direction itself is the open question (Max,
 2026-08-25, end of the art-quality session).** After the gold-standard First
 Light iteration, Max's verdict: the pixel-art style is not doing what he
 hoped — he will come up with a clearer art style and direction before
