@@ -18,10 +18,6 @@ export class EndView {
       <h1 class="end-title"></h1>
       <p class="end-score"></p>
       <div class="end-sets"></div>
-      <!-- The survey mount (D-21): below all the set reveals, above the actions — Max's
-           placement call. This view only provides the slot; whether a survey lives in it
-           is decided in app.js, and the SurveyView renders it. -->
-      <div class="survey" hidden></div>
       <div class="controls end-actions">
         <button class="pill" data-action="share">Share</button>
         <button class="pill" data-action="play-again">Play again</button>
@@ -33,6 +29,11 @@ export class EndView {
         <button class="pill primary" data-action="pours">Puzzles</button>
       </div>
       <p class="share-feedback" role="status" aria-live="polite"></p>
+      <!-- The survey mount: below the actions since the 2026-08-26 polish brief moved
+           Share up to the moment of peak satisfaction (revising D-21's placement call).
+           This view only provides the slot; whether a survey lives in it is decided in
+           app.js, and the SurveyView renders it. -->
+      <div class="survey" hidden></div>
       <!-- Deep-linked visitors never see the title screen (D-20 routing), so this is
            the one surface where a stranger can learn how the puzzles are made. -->
       <a class="text-action" href="about.html">About this game</a>`;

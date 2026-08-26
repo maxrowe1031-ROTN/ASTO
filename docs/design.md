@@ -2106,6 +2106,8 @@ host in `app.js` decides whether an end screen asks: board finished, slug non-nu
 (the tutorial never asks), not already in `ratedBoards` (storage; asks once per device,
 first tap counts). Placement is Max's call at warmup: **below all the set reveals,
 above the action pills** — it must never read as a gate to "Next puzzle".
+*(Amended 2026-08-26, polish brief: the survey now sits BELOW the action pills —
+Share moved up to the moment of peak satisfaction. The never-a-gate rule stands.)*
 
 **Accepted risks, stated:** an open anon insert can be spammed — the check constraints
 bound the values, the free tier bounds the cost, and the fix if it happens is a
