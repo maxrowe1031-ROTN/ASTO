@@ -2,6 +2,55 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-26 — The art pipeline: built, run once, and tabled
+
+The automated scene pipeline was designed, built through three of six steps,
+run end to end on one register — and then **tabled by Max** when he saw what it
+actually produced. Recorded as **D-31 + its TABLED note**; the full post-mortem
+lives in the decision ticket under *"What the trial run taught"*. No production
+code was touched and nothing is wired into the game.
+
+- **Built and tested (all on `work/art-pipeline`):** `scene-prompter` (pure
+  agent, fits the existing contract with zero changes), `art-stage-registry`
+  (sibling of `stage-registry`, home of `ART_STATES` and `BAND`), `art-store`
+  (the third write seam, under puzzle-store's law — gate in the store, refusals
+  write nothing, traversal impossible by construction), `png.js` (a
+  zero-dependency PNG codec on `node:zlib`, because no image API emits 6.25:1
+  and the crop must not be Max with a pixel ruler), `render-transport`,
+  `art-pipeline`, and the `art-run` CLI (`npm run studio:art`).
+- **Verified:** 58 new tests across the four modules; **suite 1671/0** (from
+  1613 at session start). End-to-end smoke in a scratch root, then a real run:
+  three prompts authored, rendered by Max in ChatGPT, cropped and published.
+- **What worked, and is worth keeping.** Character consistency held across
+  three independent generations — the risk D-31 accepted when Max chose
+  generated-Mochi over a composited sprite did not bite. A prop arc emerged
+  unasked (proofing dough → collapsed loaf → risen loaf) purely from giving all
+  three states one register and one character bible. All three prompts
+  validated first pass, no retries.
+- **Why it was tabled — two failures, both named by Max.** (1) **The flow.**
+  His brief was "I'm definitely not going to produce all these by hand"; the
+  manual transport made him produce them by hand with extra steps — ~380 manual
+  operations for 54 images, and Claude itself mis-mapped two of the first three
+  files. Claude deferred the API to avoid a cost conversation, **optimising its
+  own risk over Max's time, which is backwards.** (2) **The art.** Rules written
+  to survive a 6.25:1 crop produced sparse, repetitive, cream-on-cream scenes
+  with Mochi at ~15% of frame. Mechanical rules, mechanical art. Notably he did
+  **not** fault the band footprint or the per-register unit.
+- **Two unfixed defects recorded:** `clearSide` flips between states so Mochi
+  teleports on a miss (decide it once per register, don't ask per state), and
+  the centre crop cuts Mochi's feet (renders put content lower-middle).
+- **Kept as evidence:** `docs/art/trial-renders/` — the three published bands at
+  68KB total. The working `art/` output was removed; nothing half-built ships.
+- **Phase status:** post-Phase-5 enhancement work, not a phase gate. Tabled, not
+  failed — the code is tested and additive, reachable from nothing.
+- **Next:** nothing on scene art until Max returns to it. When he does:
+  **start from the API transport with reference-image conditioning, not the
+  manual loop**, and rewrite the scene rules for density and character presence
+  before automating anything. D-31's reconsider-when fires 2026-10-26 if he
+  hasn't. Unchanged and still owed elsewhere: the **GDD version bump** (six
+  items), a fresh board batch before the calendar runs dry **2026-09-19**, and
+  `npm run itch` + re-upload whenever the itch build should carry sound.
+
 ## 2026-08-25 — Mochi: the art direction lands, and it is Max's
 
 A second session the same day, and the one that actually solved the problem.

@@ -2890,10 +2890,26 @@ beside `llm.js`), one write seam (`art-store.js` owning `art/`, beside
 `run-store.js` and `puzzle-store.js`). `budget.js` already carries `costUsd`,
 so per-image cost has somewhere to be charged with no new taxonomy.
 
-**Reconsider-when:** character consistency proves unmanageable across the first
-handful of scenes (the composited-sprite path returns, and with it frame
-animation), or the manual transport proves the prompts good enough that the API
-transport is worth its cost conversation.
+**TABLED 2026-08-26**, the day after it was recorded. The pipeline was built
+through step 3 and run end to end on one register; Max's verdict on the result
+was *"this is terrible. this flow will not work."* Two things broken, both
+named by him: **the flow** (the manual transport is ~380 manual operations for
+54 images — Claude optimised its own risk of spending money over Max's time,
+and that was the wrong trade) and **the art itself** (rules written for
+surviving a crop produced sparse, repetitive, low-contrast scenes). He did
+**not** fault the 375×60 band or the per-register unit. Full findings, including
+what worked, are in the decision ticket under *"What the trial run taught"*.
+
+**What is committed and safe:** `scene-prompter`, `art-stage-registry`,
+`art-store`, `png.js`, `render-transport`, `art-pipeline`, `art-run` — all
+tested (suite 1671/0), all additive, none reachable from the game. Nothing
+ships; nothing is wired into the play screen.
+
+**Reconsider-when:** Max returns to scene art — at which point **start from the
+API transport with reference-image conditioning, not the manual loop**, and
+rewrite the scene rules for density and character presence before automating
+anything. Or, if two months pass without a return (2026-10-26), ask whether the
+scene band is still wanted at all.
 
 ## House-rule exceptions
 
