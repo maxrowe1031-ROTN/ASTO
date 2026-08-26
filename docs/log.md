@@ -51,6 +51,58 @@ code was touched and nothing is wired into the game.
   items), a fresh board batch before the calendar runs dry **2026-09-19**, and
   `npm run itch` + re-upload whenever the itch build should carry sound.
 
+## 2026-08-26 — Interaction polish: three tasks tried, one survives Max's eye
+
+Max brought a written polish brief (three interaction tasks, ordered by effort).
+All three were built, tested, and verified against the brief's acceptance
+criteria with Playwright at mobile widths — and then Max reviewed them in the
+preview at 4x slow motion and **cut two**: *"lose the staggered entrance and
+the assemble."* The branch was rebuilt to carry only the survivor. This is the
+session working as designed: acceptance criteria are Claude's gate, feel is
+Max's, and feel said no.
+
+- **Shipped — Share above the survey (task 1):** the end screen's action row
+  (Share / Play again / Puzzles) now follows the reveal cards directly, with
+  the feedback survey below it — the moment of peak satisfaction spends itself
+  on sharing, not feedback collection. Two files, document order only, no
+  behavior change (`end-view.js`, `components.css`). **This revises D-21's
+  placement call** ("below the reveals, above the pills"), sanctioned by the
+  brief; D-21 carries the amendment.
+- **Built and cut — the staggered board entrance (task 2):** 16 tiles fading
+  in reading order, finishing at exactly 400ms, with a pure `isFreshBoard`
+  detector (played on fresh loads/swaps/post-win restarts, correctly skipped
+  on resume). Verified end to end, including reduced motion. Cut at review.
+- **Built and cut — the solve assemble (task 3):** the four correct tiles
+  pulsed, lifted off as fixed clones, and travelled into the answer card while
+  the grid FLIPped closed — a `SolveFlight` object split the moment along the
+  paint chain's seam (BoardView launches, SolvedSetsView lands), and the 4th
+  solve got *faster* (confirm→end screen 798ms vs ~1040ms). Verified end to
+  end. Cut at review.
+- **The cut work is recoverable, not lost:** tag
+  `archive/2026-08-26-entrance-assemble` (commit `359dfe7`) holds both
+  features complete with their 10 headless tests, should
+  either idea return (a subtler assemble was floated). Nothing of them remains
+  in the tree — no `SolveFlight`, no `.tile-flight` CSS, no motion additions;
+  play behavior is byte-identical to before.
+- **Verified (the surviving change):** `npm test` **1671/0** (same as main —
+  the cut features took their tests with them) · Playwright at 375×812: action
+  row precedes survey in DOM and on screen (Share top 714 < survey 806), Share
+  visible without scrolling past the survey, survey dots + clipboard share
+  still work, a full game plays clean with zero entrance animations and zero
+  flight clones · zero console errors.
+- **Process notes:** work ran in a git worktree (`../ASTO-polish`) because a
+  peer session held the main checkout mid-wrapup at session start — first use
+  of worktree isolation in this repo, and it earned its keep. A temporary
+  `asto-polish` entry in `.claude/launch.json` served the worktree on :8090;
+  removed at wrapup.
+- **Phase status:** post-Phase-5 polish, not a phase gate. Max reviewed all
+  three tasks in the preview and directed the outcome — his acceptance is the
+  recorded cut-two-keep-one.
+- **Next:** unchanged and still owed — a fresh board batch before the calendar
+  runs dry **2026-09-19** (24 days), the **GDD version bump** (six items,
+  Max's), and `npm run itch` + re-upload whenever the itch build should carry
+  sound. The art pipeline stays tabled per D-31.
+
 ## 2026-08-25 — Mochi: the art direction lands, and it is Max's
 
 A second session the same day, and the one that actually solved the problem.
