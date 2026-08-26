@@ -418,8 +418,9 @@
 }
 
 /* ---------- The end-screen survey (D-21) ---------- */
-/* Quiet by design: it sits after the reveal cards and must never read as a gate to the
-   pills below it. One answer per row; a tapped dot fills with ink like the primary pill. */
+/* Quiet by design: it sits BELOW the action pills since the 2026-08-26 polish brief —
+   the share moment comes first, and the survey is the epilogue, never a gate. One
+   answer per row; a tapped dot fills with ink like the primary pill. */
 
 .survey {
   display: flex;
