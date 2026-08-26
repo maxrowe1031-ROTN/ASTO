@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASTO style spike — flat vector (disposable)</title>
+
+<!-- Real tokens: the question is whether these bands sit on ASTO's cream. -->
+<link rel="stylesheet" href="../styles/tokens.css">
+
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--cream); color: var(--ink);
+    font-family: var(--font-body); padding: var(--page-pad); padding-bottom: 60px;
+  }
+  main { max-width: 900px; margin: 0 auto; }
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em;
+    color: var(--tier-red-deep); background: var(--tier-red-tint);
+    border-radius: var(--radius-pill); padding: 3px 10px; margin-bottom: 10px;
+  }
+  h1 { font-family: var(--font-display); font-size: 21px; margin: 6px 0 2px; }
+  h2 { font-family: var(--font-display); font-size: 15px; margin: 26px 0 4px; }
+  h3 { font-family: var(--font-body); font-size: 12px; text-transform: uppercase;
+       letter-spacing: .07em; color: var(--soft-ink); margin: 16px 0 6px; }
+  .lede, .desc { color: var(--soft-ink); font-size: 13px; line-height: 1.5; margin: 0 0 14px; }
+  .desc { font-size: 12px; margin-bottom: 8px; }
+
+  /* Mock play screen — same chrome as the pixel spike, so the two are comparable. */
+  .phone {
+    width: 375px; max-width: 100%; margin: 0 0 18px;
+    background: var(--cream); border: 1px solid var(--taupe);
+    border-radius: var(--radius-card); padding: var(--page-pad);
+  }
+  .phone .header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+  .phone .wordmark { font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+  .phone .puzzle-title { font-family: var(--font-body); font-weight: 700; font-size: 13px; color: var(--soft-ink); }
+  .band { margin: 6px 0; border-radius: 8px; overflow: hidden; display: block; }
+  .band svg { display: block; width: 100%; height: auto; }
+  .status { height: 24px; display: flex; align-items: center; font-size: 13px;
+            font-weight: 700; color: var(--soft-ink); }
+  .frame { background: var(--oat); border-radius: var(--radius-card); padding: 12px;
+           text-align: center; font-weight: 700; color: var(--soft-ink); letter-spacing: .3em; }
+  .mini-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); margin-top: 8px; }
+  .mini-tile { aspect-ratio: 1.25; background: var(--milk); border: 1px solid var(--taupe); border-radius: 10px; }
+
+  .row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 6px; }
+  .cell { text-align: center; }
+  .cell span { display: block; font-size: 11px; color: var(--soft-ink); margin-top: 4px; font-family: var(--font-body); }
+  .sheet { display: flex; gap: 14px; flex-wrap: wrap; }
+  .note { font-size: 12px; line-height: 1.55; color: var(--soft-ink);
+          border-left: 3px solid var(--taupe); padding-left: 11px; margin: 26px 0 0; }
+  .note strong { color: var(--ink); }
+  .swatches { display: flex; height: 22px; border-radius: 4px; overflow: hidden; width: 375px; max-width: 100%; }
+  .swatches i { flex: 1; }
+</style>
+</head>
+<body>
+<main>
+  <span class="badge">DISPOSABLE SPIKE</span>
+  <h1>Style spike — flat vector, not pixels</h1>
+  <p class="lede">
+    The pixel constraint traces to one phrase in the original ask
+    (<em>"low spec, pixelated or something"</em>, 2026-08-19) and was never
+    re-examined. Duolingo — the stated inspiration — is emphatically
+    <strong>not</strong> pixel art: it's flat vector, bold simple shapes,
+    expression through pose rather than resolution. This sheet asks one
+    question: <strong>is flat vector closer?</strong> Same band footprint
+    (375×60), same cat, same three states — three rendering styles.
+  </p>
+
+  <!-- ============================== BAND STYLES ============================== -->
+  <h2>1 · The band, three styles</h2>
+  <p class="desc">Each in real play-screen chrome at 375px. Judge them against the cream.</p>
+
+  <div class="row" style="align-items:flex-start">
+
+    <!-- ---------- STYLE A: BOLD ---------- -->
+    <div>
+      <h3>A · Bold &amp; saturated (closest to Duolingo)</h3>
+      <div class="phone">
+        <div class="header"><span class="wordmark">ASTO</span><span class="puzzle-title">First Light</span></div>
+        <div class="band">
+          <svg viewBox="0 0 375 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dawn scene, bold">
+            <rect width="375" height="60" fill="#F9C846"/>
+            <circle cx="286" cy="40" r="21" fill="#FF8C42"/>
+            <path d="M0 42 Q 60 28 120 38 T 250 34 T 375 40 L375 60 L0 60 Z" fill="#E8735A"/>
+            <path d="M0 48 Q 80 38 170 46 T 375 44 L375 60 L0 60 Z" fill="#A84E63"/>
+            <rect y="53" width="375" height="7" fill="#5C3350"/>
+            <!-- trees -->
+            <g fill="#5C3350">
+              <rect x="46" y="36" width="4" height="18" rx="2"/><circle cx="48" cy="34" r="10"/>
+              <rect x="70" y="40" width="3" height="14" rx="1.5"/><circle cx="71.5" cy="38" r="7"/>
+              <rect x="332" y="40" width="3" height="14" rx="1.5"/><circle cx="333.5" cy="38" r="7"/>
+            </g>
+            <use href="#cat" x="144" y="12" width="60" height="45" fill="#FFFFFF"
+                 style="--ear:#F4A6B8; --eye:#4A2B3D; --tail:#FFFFFF"/>
+            <use href="#cup" x="198" y="37" width="26" height="21" fill="#5C3350" style="--steam:#5C3350"/>
+          </svg>
+        </div>
+        <div class="status">So close!</div>
+        <div class="frame">: :: :</div>
+        <div class="mini-board">
+          <div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div>
+          <div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- STYLE B: SOFT COZY ---------- -->
+    <div>
+      <h3>B · Soft &amp; cozy (native to ASTO's palette)</h3>
+      <div class="phone">
+        <div class="header"><span class="wordmark">ASTO</span><span class="puzzle-title">First Light</span></div>
+        <div class="band">
+          <svg viewBox="0 0 375 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dawn scene, soft">
+            <rect width="375" height="60" fill="#F7E3C0"/>
+            <circle cx="286" cy="41" r="19" fill="#E8B85C"/>
+            <path d="M0 43 Q 60 31 120 39 T 250 36 T 375 41 L375 60 L0 60 Z" fill="#DDB79E"/>
+            <path d="M0 49 Q 80 40 170 47 T 375 45 L375 60 L0 60 Z" fill="#B08D8E"/>
+            <rect y="54" width="375" height="6" fill="#806873"/>
+            <g fill="#806873">
+              <rect x="46" y="37" width="4" height="18" rx="2"/><circle cx="48" cy="35" r="9.5"/>
+              <rect x="70" y="41" width="3" height="14" rx="1.5"/><circle cx="71.5" cy="39" r="6.5"/>
+              <rect x="332" y="41" width="3" height="14" rx="1.5"/><circle cx="333.5" cy="39" r="6.5"/>
+            </g>
+            <use href="#cat" x="144" y="13" width="60" height="45" fill="#FDFDFF"
+                 stroke="#B08D8E" stroke-width="1.2" stroke-linejoin="round"
+                 style="--ear:#E8C4C0; --eye:#635463; --tail:#FDFDFF"/>
+            <use href="#cup" x="198" y="38" width="26" height="21" fill="#806873" style="--steam:#806873"/>
+          </svg>
+        </div>
+        <div class="status">So close!</div>
+        <div class="frame">: :: :</div>
+        <div class="mini-board">
+          <div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div>
+          <div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- STYLE C: OUTLINED ---------- -->
+    <div>
+      <h3>C · Outlined storybook</h3>
+      <div class="phone">
+        <div class="header"><span class="wordmark">ASTO</span><span class="puzzle-title">First Light</span></div>
+        <div class="band">
+          <svg viewBox="0 0 375 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dawn scene, outlined">
+            <rect width="375" height="60" fill="#F8DFAE"/>
+            <g stroke="#3F3645" stroke-width="2" stroke-linejoin="round">
+              <circle cx="286" cy="41" r="19" fill="#F0A868"/>
+              <path d="M0 43 Q 60 31 120 39 T 250 36 T 375 41 L375 60 L0 60 Z" fill="#D9A08C"/>
+              <path d="M0 49 Q 80 40 170 47 T 375 45 L375 60 L0 60 Z" fill="#A8737F"/>
+            </g>
+            <rect y="54" width="375" height="6" fill="#3F3645"/>
+            <g fill="#7C5A66" stroke="#3F3645" stroke-width="2" stroke-linejoin="round">
+              <circle cx="48" cy="35" r="9.5"/><circle cx="71.5" cy="39" r="6.5"/><circle cx="333.5" cy="39" r="6.5"/>
+            </g>
+            <use href="#cat" x="144" y="13" width="60" height="45" fill="#FFFFFF"
+                 stroke="#3F3645" stroke-width="2.2" stroke-linejoin="round"
+                 style="--ear:#F0B8B4; --eye:#3F3645; --tail:#FFFFFF"/>
+            <use href="#cup" x="198" y="38" width="26" height="21" fill="#FFFFFF"
+                 stroke="#3F3645" stroke-width="2" style="--steam:#3F3645"/>
+          </svg>
+        </div>
+        <div class="status">So close!</div>
+        <div class="frame">: :: :</div>
+        <div class="mini-board">
+          <div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div>
+          <div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div><div class="mini-tile"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== THE CAT ============================== -->
+  <h2>2 · The cat, large</h2>
+  <p class="desc">The character carries the brand — judge it on its own before judging the scene.</p>
+  <div class="sheet">
+    <div class="cell">
+      <svg viewBox="0 0 56 54" width="150" height="145" xmlns="http://www.w3.org/2000/svg">
+        <use href="#cat" fill="#FFFFFF" style="--ear:#F4A6B8; --eye:#4A2B3D; --tail:#FFFFFF"/>
+      </svg>
+      <span>A · bold</span>
+    </div>
+    <div class="cell">
+      <svg viewBox="0 0 56 54" width="150" height="145" xmlns="http://www.w3.org/2000/svg">
+        <use href="#cat" fill="#FDFDFF" stroke="#B08D8E" stroke-width="1.2" stroke-linejoin="round"
+             style="--ear:#E8C4C0; --eye:#635463; --tail:#FDFDFF"/>
+      </svg>
+      <span>B · soft</span>
+    </div>
+    <div class="cell">
+      <svg viewBox="0 0 56 54" width="150" height="145" xmlns="http://www.w3.org/2000/svg">
+        <use href="#cat" fill="#FFFFFF" stroke="#3F3645" stroke-width="2.4" stroke-linejoin="round"
+             style="--ear:#F0B8B4; --eye:#3F3645; --tail:#FFFFFF"/>
+      </svg>
+      <span>C · outlined</span>
+    </div>
+  </div>
+
+  <h3>The three states (style B)</h3>
+  <div class="sheet">
+    <div class="cell">
+      <svg viewBox="0 0 56 54" width="110" height="106" xmlns="http://www.w3.org/2000/svg">
+        <use href="#cat" fill="#FDFDFF" style="--ear:#E8C4C0; --eye:#635463; --tail:#FDFDFF"/>
+      </svg><span>idle</span>
+    </div>
+    <div class="cell">
+      <svg viewBox="0 0 56 54" width="110" height="106" xmlns="http://www.w3.org/2000/svg">
+        <use href="#cat-happy" fill="#FDFDFF" style="--ear:#E8C4C0; --eye:#635463; --tail:#FDFDFF"/>
+      </svg><span>correct</span>
+    </div>
+    <div class="cell">
+      <svg viewBox="0 0 56 54" width="110" height="106" xmlns="http://www.w3.org/2000/svg">
+        <use href="#cat-sad" fill="#FDFDFF" style="--ear:#E8C4C0; --eye:#635463; --tail:#FDFDFF"/>
+      </svg><span>miss</span>
+    </div>
+  </div>
+
+  <!-- ============================== THE LOGO ============================== -->
+  <h2>3 · The logo mark — cat in the coffee cup</h2>
+  <p class="desc">Your pick off the mood board. Shown at real icon sizes: does it survive a favicon?</p>
+  <div class="sheet" style="align-items:flex-end">
+    <div class="cell">
+      <svg viewBox="0 0 64 64" width="128" height="128" xmlns="http://www.w3.org/2000/svg"><use href="#catcup"/></svg>
+      <span>128px</span>
+    </div>
+    <div class="cell">
+      <svg viewBox="0 0 64 64" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><use href="#catcup"/></svg>
+      <span>64px</span>
+    </div>
+    <div class="cell">
+      <svg viewBox="0 0 64 64" width="32" height="32" xmlns="http://www.w3.org/2000/svg"><use href="#catcup"/></svg>
+      <span>32px</span>
+    </div>
+    <div class="cell">
+      <svg viewBox="0 0 64 64" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><use href="#catcup"/></svg>
+      <span>16px · favicon</span>
+    </div>
+  </div>
+
+  <h2>4 · Palettes</h2>
+  <p class="desc">A · bold, B · soft, C · outlined — against the game's cream page.</p>
+  <div class="swatches" style="margin-bottom:6px">
+    <i style="background:#F9C846"></i><i style="background:#FF8C42"></i><i style="background:#E8735A"></i><i style="background:#A84E63"></i><i style="background:#5C3350"></i><i style="background:#F4A6B8"></i>
+  </div>
+  <div class="swatches" style="margin-bottom:6px">
+    <i style="background:#F7E3C0"></i><i style="background:#E8B85C"></i><i style="background:#DDB79E"></i><i style="background:#B08D8E"></i><i style="background:#806873"></i><i style="background:#E8C4C0"></i>
+  </div>
+  <div class="swatches">
+    <i style="background:#F8DFAE"></i><i style="background:#F0A868"></i><i style="background:#D9A08C"></i><i style="background:#A8737F"></i><i style="background:#3F3645"></i><i style="background:#F0B8B4"></i>
+  </div>
+
+  <p class="note">
+    <strong>Why this is architecturally fine.</strong> The old ticket claimed
+    palette-index pixel grids were "the only shape that fits" the Studio's
+    seams. That was overstated — the real constraint is <strong>text, not
+    binaries</strong>, and SVG satisfies it just as well: it is data, it goes
+    through a store like anything else, it needs no dependency, and it scales
+    to any size crisply (see the logo row — one source, four sizes). It also
+    plausibly raises the <em>agent's</em> ceiling: an LLM asked for a 3,600-cell
+    index grid produces noise, while SVG shapes are a format it can actually
+    reason about. Motion becomes CSS/SMIL on named parts (an ear, a tail)
+    rather than repainting frames.
+  </p>
+  <p class="note">
+    <strong>What this spike is not.</strong> Not production art, not a
+    character design signed off, not 18 scenes. One register, three styles,
+    one question: is this direction closer than pixels? If none of the three
+    lands, that is a useful answer too — and cheap.
+  </p>
+</main>
+
+<!-- ===================== SVG DEFINITIONS =====================
+     Written as plain shapes on purpose: this is the shape a scene-artist
+     agent would emit — named parts, flat fills, no filters, no rasters.
+     CSS custom properties carry the per-style accents (ear, eye, tail).
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- The cat: sitting, facing right. Body-first so the head overlaps it. -->
+    <g id="cat">
+      <path d="M28 48 C 46 51, 52 39, 45 31" fill="none" stroke="var(--tail, currentColor)"
+            stroke-width="7" stroke-linecap="round"/>
+      <path d="M7 50 C 7 35, 14 29, 23 29 C 32 29, 39 35, 39 50 Z"/>
+      <path d="M13 14 L 11 3 L 22 9 Z"/>
+      <path d="M33 14 L 35 3 L 24 9 Z"/>
+      <path d="M15.5 12 L 14.5 6.5 L 20.5 10 Z" fill="var(--ear, #F4A6B8)" stroke="none"/>
+      <path d="M30.5 12 L 31.5 6.5 L 25.5 10 Z" fill="var(--ear, #F4A6B8)" stroke="none"/>
+      <circle cx="23" cy="21" r="12"/>
+      <circle cx="18.4" cy="20" r="2.1" fill="var(--eye, #4A2B3D)" stroke="none"/>
+      <circle cx="27.6" cy="20" r="2.1" fill="var(--eye, #4A2B3D)" stroke="none"/>
+      <path d="M21.4 24.6 L 24.6 24.6 L 23 26.9 Z" fill="var(--eye, #4A2B3D)" stroke="none"/>
+    </g>
+
+    <!-- correct: ears up, eyes closed-happy, tail raised -->
+    <g id="cat-happy">
+      <path d="M28 47 C 47 47, 53 33, 44 25" fill="none" stroke="var(--tail, currentColor)"
+            stroke-width="7" stroke-linecap="round"/>
+      <path d="M7 50 C 7 35, 14 29, 23 29 C 32 29, 39 35, 39 50 Z"/>
+      <path d="M12 13 L 9 2 L 21 8 Z"/>
+      <path d="M34 13 L 37 2 L 25 8 Z"/>
+      <path d="M14.5 11 L 13 5.5 L 19.5 9 Z" fill="var(--ear, #F4A6B8)" stroke="none"/>
+      <path d="M31.5 11 L 33 5.5 L 26.5 9 Z" fill="var(--ear, #F4A6B8)" stroke="none"/>
+      <circle cx="23" cy="21" r="12"/>
+      <path d="M15.4 21 Q 18.4 17.4 21.4 21" fill="none" stroke="var(--eye, #4A2B3D)"
+            stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M24.6 21 Q 27.6 17.4 30.6 21" fill="none" stroke="var(--eye, #4A2B3D)"
+            stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M21.4 24.6 L 24.6 24.6 L 23 26.9 Z" fill="var(--eye, #4A2B3D)" stroke="none"/>
+    </g>
+
+    <!-- miss: ears flattened outward, head lowered, tail down -->
+    <g id="cat-sad">
+      <path d="M28 50 C 44 53, 50 49, 49 44" fill="none" stroke="var(--tail, currentColor)"
+            stroke-width="7" stroke-linecap="round"/>
+      <path d="M7 50 C 7 37, 14 32, 23 32 C 32 32, 39 37, 39 50 Z"/>
+      <path d="M13 19 L 6 14 L 15 11 Z"/>
+      <path d="M33 19 L 40 14 L 31 11 Z"/>
+      <path d="M13.8 17.2 L 9.6 14.4 L 14.6 12.8 Z" fill="var(--ear, #F4A6B8)" stroke="none"/>
+      <path d="M32.2 17.2 L 36.4 14.4 L 31.4 12.8 Z" fill="var(--ear, #F4A6B8)" stroke="none"/>
+      <circle cx="23" cy="24" r="12"/>
+      <path d="M15.4 24.4 Q 18.4 27.8 21.4 24.4" fill="none" stroke="var(--eye, #4A2B3D)"
+            stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M24.6 24.4 Q 27.6 27.8 30.6 24.4" fill="none" stroke="var(--eye, #4A2B3D)"
+            stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M21.4 28 L 24.6 28 L 23 30.3 Z" fill="var(--eye, #4A2B3D)" stroke="none"/>
+    </g>
+
+    <!-- a coffee cup for the band -->
+    <g id="cup">
+      <path d="M3 3 L 5 15 C 5 16.5, 6.5 17, 8 17 L 14 17 C 15.5 17, 17 16.5, 17 15 L 19 3 Z"/>
+      <path d="M17.6 6 C 21.5 6, 21.5 12, 17 12" fill="none" stroke="var(--steam, currentColor)" stroke-width="1.8"/>
+      <path d="M8 0 C 6.5 -2, 9.5 -3.5, 8 -6" fill="none" stroke="var(--steam, currentColor)"
+            stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+      <path d="M13 0 C 11.5 -2, 14.5 -3.5, 13 -6" fill="none" stroke="var(--steam, currentColor)"
+            stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+    </g>
+
+    <!-- the logo mark: cat in the coffee cup -->
+    <g id="catcup">
+      <circle cx="32" cy="23" r="13" fill="#FDFDFF" stroke="#3F3645" stroke-width="2.6"/>
+      <path d="M21 15 L 19 4 L 30 10 Z" fill="#FDFDFF" stroke="#3F3645" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M43 15 L 45 4 L 34 10 Z" fill="#FDFDFF" stroke="#3F3645" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M23.5 13 L 22.5 7.5 L 28.5 11 Z" fill="#E8C4C0"/>
+      <path d="M40.5 13 L 41.5 7.5 L 35.5 11 Z" fill="#E8C4C0"/>
+      <circle cx="27" cy="22" r="2.3" fill="#3F3645"/>
+      <circle cx="37" cy="22" r="2.3" fill="#3F3645"/>
+      <path d="M30.2 27 L 33.8 27 L 32 29.5 Z" fill="#3F3645"/>
+      <path d="M13 31 L 17 55 C 17.4 57.6, 19.6 59, 22 59 L 42 59 C 44.4 59, 46.6 57.6, 47 55 L 51 31 Z"
+            fill="#E8B85C" stroke="#3F3645" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M50 37 C 59 37, 59 50, 48.6 50" fill="none" stroke="#3F3645" stroke-width="2.6"/>
+      <ellipse cx="23" cy="33" rx="4.6" ry="3.4" fill="#FDFDFF" stroke="#3F3645" stroke-width="2.2"/>
+      <ellipse cx="41" cy="33" rx="4.6" ry="3.4" fill="#FDFDFF" stroke="#3F3645" stroke-width="2.2"/>
+    </g>
+  </defs>
+</svg>
+</body>
+</html>
