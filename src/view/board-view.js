@@ -7,15 +7,30 @@
 // Importing a pure derivation is the same move SolvedSetsView makes: difficultyToTier
 // decides no rules, it just names the colour a difficulty maps to.
 import { difficultyToTier } from '../engine/tiers.js';
-import { fadeOut, flip, pulse, shake } from './motion.js';
+import { fadeOut, flip, pulse, shake, staggerIn } from './motion.js';
 
 const SHAKES = new Set(['miss', 'so-close', 'already-tried']);
 
+/**
+ * "Every tile on this board was born this pass" — the entrance detector, pure so the
+ * timing promise is testable headlessly.
+ *
+ * True on first load, on a loadPuzzle swap, and on post-win Play again (the fourth
+ * solve emptied the Map). False on a resume-repaint (the nodes persisted) — returning
+ * to an in-progress board must not replay the entrance — and false after a loss's Play
+ * again, where only the solved sets' tiles are recreated: a partial stagger would read
+ * as broken, so a partially-recreated board simply appears, the accepted degrade.
+ */
+export function isFreshBoard(createdCount, boardCount) {
+  return boardCount > 0 && createdCount === boardCount;
+}
+
 export class BoardView {
-  constructor(root, { onTileTap }) {
+  constructor(root, { onTileTap, flight }) {
     this.root = root;
     this.tiles = new Map(); // term → <button>, for the life of the game
     this.onTileTap = onTileTap;
+    this.flight = flight ?? null; // the solve transit — presentation state, no rules
   }
 
   async update(state, outcome) {
@@ -26,8 +41,11 @@ export class BoardView {
       await shake(chosen);
     }
 
+    let created = 0;
     for (const term of state.boardTerms) {
-      if (!this.tiles.has(term)) this.tiles.set(term, this.createTile(term));
+      if (this.tiles.has(term)) continue;
+      this.tiles.set(term, this.createTile(term));
+      created += 1;
     }
 
     // Words whose set was just solved leave the board: fade them, then FLIP the survivors
@@ -35,16 +53,52 @@ export class BoardView {
     const onBoard = new Set(state.boardTerms);
     const departing = [...this.tiles].filter(([term]) => !onBoard.has(term));
 
-    if (departing.length > 0) {
-      await fadeOut(departing.map(([, tile]) => tile));
+    if (isFreshBoard(created, state.boardTerms.length)) {
+      // A brand-new board (2026-08-26 polish brief): any old tiles leave, then the
+      // sixteen newcomers stagger in — an entrance, not a FLIP, because nothing on
+      // screen has a "before". Disabled until the entrance settles; the paint loop
+      // below runs after the await and restores the real disabled state, so the gate
+      // costs no bookkeeping. Under reduced motion staggerIn resolves at once and the
+      // board is simply there, interactive immediately.
+      if (departing.length > 0) await fadeOut(departing.map(([, tile]) => tile));
+      for (const [term, tile] of departing) {
+        tile.remove();
+        this.tiles.delete(term);
+      }
+      const tiles = state.boardTerms.map((term) => this.tiles.get(term));
+      for (const tile of tiles) tile.disabled = true;
+      this.appendInOrder(state.boardTerms);
+      await staggerIn(tiles);
+    } else if (departing.length > 0) {
+      // A solved set's four tiles LAUNCH — clones lift off and hover while the grid
+      // closes, then SolvedSetsView lands them on the card (2026-08-26 polish brief).
+      // Every other departure (a board swap's sixteen) fades as before. In canonical
+      // order, so the clones fan onto the card the way the analogy reads.
+      const flying = outcome?.type === 'solved' && this.flight
+        ? outcome.canonicalOrder.map((term) => this.tiles.get(term)).filter(Boolean)
+        : [];
       const survivors = state.boardTerms.map((term) => this.tiles.get(term));
-      await flip(survivors, () => {
-        for (const [term, tile] of departing) {
-          tile.remove();
-          this.tiles.delete(term);
-        }
-        this.appendInOrder(state.boardTerms);
-      });
+      const close = () =>
+        flip(survivors, () => {
+          for (const [term, tile] of departing) {
+            tile.remove();
+            this.tiles.delete(term);
+          }
+          this.appendInOrder(state.boardTerms);
+        });
+
+      if (flying.length === departing.length) {
+        await this.flight.launch(flying);
+        // NOT awaited: flip mutates the DOM synchronously, so the layout — and the
+        // card's landing spot — is final the moment it starts. The grid then closes
+        // WHILE the clones travel; the render chain waits on the landing instead
+        // (SolvedSetsView runs next), which takes exactly as long. Awaiting both in
+        // turn read as the clones hovering dead for the whole reflow.
+        close().catch((error) => console.error('board reflow failed', error));
+      } else {
+        await fadeOut(departing.map(([, tile]) => tile));
+        await close();
+      }
     } else {
       await flip([...this.tiles.values()], () => this.appendInOrder(state.boardTerms));
     }

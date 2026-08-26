@@ -10,9 +10,10 @@ import { difficultyToTier } from '../engine/tiers.js';
 import { settleIn } from './motion.js';
 
 export class SolvedSetsView {
-  constructor(root) {
+  constructor(root, flight = null) {
     this.root = root;
     this.cards = new Map(); // setId → card element, persistent like board tiles
+    this.flight = flight; // the solve transit's landing half — presentation only
   }
 
   async update(state) {
@@ -47,8 +48,21 @@ export class SolvedSetsView {
 
       card.append(badge, analogy, relationship);
       this.cards.set(setId, card);
-      this.root.appendChild(card);
-      await settleIn(card);
+
+      // When a flight is mid-air (2026-08-26 polish brief), the card enters hidden so
+      // it can be measured, the clones travel onto it, and the unhide IS the reveal —
+      // the tiles become the card, not a card appearing beside a vanish. With nothing
+      // pending (miss repaints, reduced motion, no flight wired) land() resolves
+      // instantly and the card settles in exactly as before.
+      if (this.flight?.pending) {
+        card.style.visibility = 'hidden';
+        this.root.appendChild(card);
+        await this.flight.land(card);
+        card.style.visibility = '';
+      } else {
+        this.root.appendChild(card);
+        await settleIn(card);
+      }
     }
   }
 }

@@ -28,6 +28,7 @@ import { FrameView } from './view/frame-view.js';
 import { HeaderView } from './view/header-view.js';
 import { CalendarView } from './view/calendar-view.js';
 import { SolvedSetsView } from './view/solved-sets-view.js';
+import { SolveFlight } from './view/solve-flight.js';
 import { SettingsView } from './view/settings-view.js';
 import * as sound from './view/sound.js';
 import { StatsView } from './view/stats-view.js';
@@ -72,6 +73,7 @@ async function main() {
   // from now on it is driven entirely by renders, like any other view.
   sound.init(storage);
   const router = new ScreenRouter();
+  const flight = new SolveFlight();
   const boards = new Map(); // path → puzzle; a re-run of the tutorial refetches nothing
 
   // The list of boards, loaded once. A missing or broken manifest must not cost the player
@@ -342,11 +344,16 @@ async function main() {
       onSlotTap: (index) => controller.slotTapped(index),
       onReorder: (from, to) => controller.reorderRequested(from, to)
     }),
+    // The solve transit (2026-08-26 polish brief): one SolveFlight carries the four
+    // correct tiles across the gap between the two views that own its ends — the board
+    // launches, the solved-set list lands. Presentation state only; view order still
+    // does the choreography.
     new BoardView(document.getElementById('board'), {
-      onTileTap: (term) => controller.tileTapped(term)
+      onTileTap: (term) => controller.tileTapped(term),
+      flight
     }),
     new VocabView(document.getElementById('vocab')),
-    new SolvedSetsView(document.getElementById('solved-sets')),
+    new SolvedSetsView(document.getElementById('solved-sets'), flight),
     // Not a view: a reader that saves the result of a finished game. It sits here for the
     // same reason the router does — update(state) is the hook the controller offers, and
     // something that only READS state cannot break the boundary law. Before the end view,

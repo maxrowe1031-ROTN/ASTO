@@ -197,6 +197,29 @@
   transform: translateY(1px); /* 1px press, per Appendix E */
 }
 
+/* A solved set's tiles in transit (2026-08-26 polish brief): fixed-position likenesses
+   of the four correct tiles, travelling from the board into their answer card. Not a
+   particle system — the same tile, briefly airborne. Inert to the finger by design. */
+.tile-flight {
+  position: fixed;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: var(--radius-tile);
+  background: var(--milk);
+  border: 1px solid var(--taupe);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  text-align: center;
+  padding: 4px 2px;
+  overflow-wrap: anywhere;
+  will-change: transform, opacity;
+}
+
 /* A hinted set wears its solved-card colours early — the same three tokens the reveal
    cards use, so the tint IS the reveal colouring (sanctioned tier reveal, 2026-08-11). */
 .tile.hinted[data-tier='green']  { --card-main: var(--tier-green-main);  --card-tint: var(--tier-green-tint);  --card-deep: var(--tier-green-deep); }
@@ -418,8 +441,9 @@
 }
 
 /* ---------- The end-screen survey (D-21) ---------- */
-/* Quiet by design: it sits after the reveal cards and must never read as a gate to the
-   pills below it. One answer per row; a tapped dot fills with ink like the primary pill. */
+/* Quiet by design: it sits BELOW the action pills since the 2026-08-26 polish brief —
+   the share moment comes first, and the survey is the epilogue, never a gate. One
+   answer per row; a tapped dot fills with ink like the primary pill. */
 
 .survey {
   display: flex;
