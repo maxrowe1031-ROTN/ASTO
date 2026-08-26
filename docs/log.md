@@ -2,6 +2,74 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-25 — The coffee cat: five questions answered, spike round 2 passed its gate, art direction reopened
+
+The register-scene work moved a long way and then stopped in exactly the right
+place. A brainstorm answered all five open questions from the 2026-08-19
+ticket; spike round 2 was built and passed its craft gate on Max's eye; a
+gold-standard art iteration followed; and Max then made the call that matters
+most: **the pixel-art style isn't doing what he hoped — he owns defining a
+clearer art direction before execution continues.** All of it is recorded as
+**D-30**. `main` receives docs + the disposable spike only; no production code
+changed.
+
+- **The load-bearing idea (Max's):** ASTO's recurring character is a
+  **coffee-loving cat**, in every scene. It dissolves the round-1 grammar
+  limit — a character anchors what a horizon can't, which is why the bakery
+  failed as a shopfront and reads with a cat in front of the counter. It
+  retires the carafe-mascot idea and ties to the coffee-bean pips. Logo
+  direction for the future brand ticket: **the cat in the coffee cup**, from
+  his Pinterest mood board (first 20 pins read; the rest are behind a login
+  wall his Chrome wouldn't open for me).
+- **Decisions, all Max's, recorded in the ticket + spec + D-30:** layered
+  composition (18 backgrounds + 18 idles + 2 shared reactions ≈ 38 pieces);
+  three states — idle · correct · miss (so-close and already-tried read as
+  misses, matching sound); backgrounds may carry at most one ambient element,
+  the cat's idle is the primary life; agent authors everything, cat as its own
+  approved-first stage; brand rollout is its own ticket (backlogged);
+  **schema v1.0 amendment approved — optional `register` field** (Studio
+  stamps at publish, one-time backfill of 51 boards, default scene fallback).
+- **The palette:** the band gets its own, broader than the UI's six tokens —
+  **"Sunlit Days"** (Lospec, 22 colours) + one reserved cat-white, chosen by
+  Max from seven candidates he dropped into browser tabs, compared against the
+  game's cream in a rendered strip. Runner-up: Tachycardia.
+- **Spike round 2, built and verified:** per-scene Sunlit subsets over the
+  round-1 grids; a third taller size (150×24 @2.5× = 375×60, derived by sky
+  padding); the cat in white and black with three states. Verified by canvas
+  pixel decoding — all 24 scene×size×colour combinations render the cat with
+  live idle animation; states differ (71/25 px) and auto-return; motion-off
+  freezes clean. Round 1's rAF lesson became an instrument:
+  `window.__spikeTest` renders single frames synchronously so a hidden pane
+  can still be verified. Two honest corrections from decoding: the harbor's
+  ember is the water (not the sail), and the snow cap is still not drawn —
+  the palette merely permits one.
+- **The gate (Max acceptance) PASSED for its two questions:** band size
+  **150×24 @2.5×** (the taller candidate — the cat gets headroom) and a
+  **white cat** (black demonstrably sank into mountain slopes and harbor
+  water, as the dark-ground argument predicted). Judged from labelled contact
+  sheets + the live page.
+- **The gold-standard loop, one iteration:** Max's critique of round 2 —
+  blocky crude shapes, and the cat itself. First Light's 150×24 was drawn for
+  real (ramps, ordered dither, three depth layers, designed cat with a shade
+  tone), composed outside the browser by a scratchpad compositor so
+  iterations could be self-judged before costing Max's attention (three
+  private rounds: noise-scatter killed, a zipper seam fixed, the halo
+  cleaned).
+- **The direction reset (Max, end of session):** the style still isn't it.
+  Craft loop halted, not failed. Structure survives (character, layers,
+  states, pipeline, schema); everything style-bound is provisional — grammar,
+  palette, sprites, possibly the footprint. Reconsider-when in D-30.
+- **Verified:** `npm test` **1613/0** · `check-board` **51 clean** — both
+  unchanged all session, because nothing production was touched. Spike
+  verified in-browser by pixel decoding as above.
+- **Next:** Max defines the art style and direction — reference pins, other
+  games, or a hunch to test; Claude can run style-exploration sheets against
+  one scene when he's ready. Until then the scene work waits. Unchanged and
+  still owed elsewhere: the **GDD version bump** (six items now — audio,
+  settings, so-close, confetti, ambient-motion deviation, and the cat when it
+  ships), a fresh board batch before the calendar runs dry **2026-09-19**,
+  and `npm run itch` + re-upload whenever the itch build should carry sound.
+
 ## 2026-08-25 — PAUSED: register scenes, spiked and scoped — three of four registers read
 
 Max reopened the illustrations idea. The four scope questions the ticket was

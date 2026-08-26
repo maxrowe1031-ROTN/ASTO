@@ -2771,6 +2771,42 @@ no-list — no particles on the board, no timers, beans never red — stands, an
 CLAUDE.md §8 was updated to say exactly that. Joins the pending GDD version bump
 (audio, settings, the so-close revision) as the fourth item on Max's edit list.
 
+### D-30 — The coffee cat, the scene band's shape, and a schema amendment (2026-08-25)
+
+**What happened:** the register-scene work (ticket
+`docs/decisions/2026-08-19-illustrations-scope.md`) went through a brainstorm
+that answered its five open questions. The load-bearing idea is Max's: ASTO's
+recurring character is **a coffee-loving cat**, present in every scene — which
+dissolves the first spike's grammar limit (a character anchors a composition
+where a horizon cannot), retires the carafe-mascot idea, and ties into the
+coffee-bean mistake pips. Full design:
+`docs/superpowers/specs/2026-08-25-register-scenes-cat-design.md`.
+
+**Decisions (all Max's):** layered composition (18 backgrounds + 18 cat idles
++ 2 shared reactions); three states (idle · correct · miss — so-close and
+already-tried read as misses, matching sound); the agent authors everything
+with the cat as its own approved-first pipeline stage; the band's own palette,
+broader than the UI's six tokens ("Sunlit Days", 22 colours + one reserved
+cat-white); band footprint **150×24 @2.5× = 375×60** and a **white** cat, both
+picked by eye from spike round 2's evidence sheets.
+
+**The locked-decision amendment, explicitly approved:** schema v1.0 gains an
+**optional `register` field**. The Studio stamps it at publish; the 51
+existing boards get a one-time hand backfill; a board without one shows a
+default scene. Nothing is implemented yet — the amendment is recorded here so
+the schema lock in CLAUDE.md §4 and this file never silently diverge.
+
+**Where it stands:** at session end Max halted the craft loop — the pixel-art
+style "isn't doing what I hoped"; he owns defining a clearer art style and
+direction before execution continues. Structure survives that reset
+(character, layers, states, pipeline, schema); everything style-bound is
+provisional. Also recorded for a future ticket: logo direction is **the cat
+in the coffee cup**, off his Pinterest mood board.
+
+**Reconsider-when:** Max's art direction lands (execution resumes against it),
+or two months pass without direction (2026-10-25 — ask whether the scene band
+is still wanted at all).
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
