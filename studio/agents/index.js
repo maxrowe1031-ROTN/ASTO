@@ -1,4 +1,4 @@
-// The agent registry — the one place the eight modules are named.
+// The agent registry — the one place the twelve modules are named.
 //
 // pipeline.js resolves agents through here rather than importing them
 // individually, so adding or renaming an agent is a change in exactly two
@@ -15,7 +15,7 @@ import * as styleGuide from './style-guide.js';
 import * as glossaryAuthor from './glossary-author.js';
 // Not a pipeline stage — it runs at review time, when Max rejects a board —
 // but it is an agent by every other measure, so it is registered here and
-// held to the same contract as the eight.
+// held to the same contract as the nine pipeline stages.
 import * as revisionProposer from './revision-proposer.js';
 // Also not a pipeline stage — it runs at run CREATION, inventing a fresh
 // surprise-me subject (design.md D-15). Same contract as the rest.
