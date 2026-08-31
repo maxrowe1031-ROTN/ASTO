@@ -1,4 +1,4 @@
-// Shared helpers for the eight agent modules. PURE — no I/O, no transport.
+// Shared helpers for the twelve agent modules. PURE — no I/O, no transport.
 //
 // Every agent is one job with one output shape, so the repeated parts live
 // here: extracting JSON from a model reply, rendering the learning package
