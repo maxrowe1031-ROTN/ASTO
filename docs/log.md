@@ -2,6 +2,93 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-08-31 — Assignment 10: the account, compiled from the record
+
+MAIGD Assignment 10 (due Sept 1) is the shipping assignment — playable link,
+pipeline source, one-page audit — and two of its three deliverables were
+**already facts about the project** rather than things to build: playasto.com
+has been live since 2026-08-13 and the repo is public. So this session wrote
+the *account*, measured the pipeline for the first time end to end, and fixed
+the one document a grader actually lands on. **No behavior changed** — the only
+code edits were three header comments.
+
+- **The submission bundle** —
+  `../maigd-course-handbook/projects/asto/asto-assignment10-submission.zip`
+  (143K, 77 files), matching the assignment 4–7 pattern. `SUBMISSION.md` covers
+  all three deliverables in Max's voice; the bundle carries the refreshed
+  `studio/README.md`, the audit with its runnable script, `pipeline-config.js`,
+  `budget.js`, and **one complete run directory end to end** — every stage's
+  prompt, raw reply and validated output, the board, six feedback events, and
+  `approve → publish`. That run became `from-farm-to-market.json`.
+- **`docs/audit-2026-08-31.md` — the pipeline measured, not estimated.** Read
+  off `studio/runs/` with the zero-dependency aggregation script embedded in
+  the doc, so every figure is re-derivable from disk: **$123.02 · 12,156,910
+  tokens · 141 runs · 197 attempts · 1,699 API calls**; **$0.87 per attempt,
+  $2.41 per published board** (51 publishes of 145 runs); 743 recorded human
+  judgements across 116 runs; 66 approved · 44 rejected · 19 failed.
+- **The two findings worth keeping.** (1) **`01-pair-author` is 45% of every
+  dollar the pipeline has ever spent** — $55.52 of $123.02, against $0.67 for
+  the cheapest evaluator. It is the only `high`-effort stage, carries the most
+  context of any stage, and is the only stage that has ever truncated itself
+  out of a run (D-12). It is the submission's "architecture decision I'd
+  change", and it now has cost evidence as well as failure evidence.
+  (2) **The effort-profile series is not a cost-reduction curve** and is
+  written up as such: lean-2 cut the mean attempt **22% ($0.358 → $0.279)**
+  from measurement, then spend rose to $0.707 *on purpose* when 03/08 moved to
+  Sonnet and 06 gained the cross-reading checklist. Cost rose because the
+  pipeline started doing work it had not been doing.
+- **`studio/README.md` refreshed — it was stale in ways that mattered.** Its
+  Refine section still said the loop was *"not closed automatically"* and that
+  D-5's graduation trigger was pending; it fired at 9 verdicts and shipped as
+  **D-14**, now described with its allowlist, its one-per-board bound, and its
+  32 firings / 27 outcomes / 5 failures. Stage **09-glossary-author** and
+  **00-subject-scout** were missing from the tables and the diagram, and
+  `publish → puzzles/` was missing from the diagram entirely. Also
+  D-1…D-13 → D-1…D-31, 1160 → 1671 tests, HR-2 recorded as discharged, and a
+  `current as of 2026-08-31` stamp.
+- **New README section: "How a board reaches the game."** Deliverable 2 asks
+  for engine integration and nothing in the repo documented the seam:
+  `puzzle-store.js` is the only writer into `puzzles/`, it validates with the
+  **game's own** `validate-puzzle.js` and `board-integrity.js` (not copies),
+  assigns the release date and regenerates the manifest, and the game reads the
+  result through `local-json-source.js` — the `PuzzleSource` seam.
+- **The evaluator measurements re-run live, and one of them moved.** The
+  README's numbers were a 66-attempt snapshot; `tools/evaluator-report.js` now
+  reads **126 judged attempts across 109 runs**. **05 held at ~64% across a
+  corpus that more than doubled** (65% at 144 sets, 64% at 332) — the most
+  reassuring number on the page. **08 FELL, 58% → 52%, and flipped strict:**
+  41 unhappy-where-Max-was-happy against 20 the other way. A binary verdict at
+  52% carries almost no information, which is now the sharpest argument on
+  record for why 08 is shown and never gates, and why **taste findings are
+  barred from the auto-revise allowlist**.
+- **The submission's position on full automation is a claim, stated as one:**
+  this pipeline refuses it, and the evidence is the 44 rejections an automatic
+  pipeline would have shipped plus a taste evaluator at coin-flip agreement.
+  What *is* automated is the half the machine can prove (D-14's allowlist).
+- **Three header comments fixed:** `agents/index.js` and `agent-kit.js` said
+  "the eight agent modules"; the registry holds **twelve** (9 pipeline stages +
+  subject-scout + revision-proposer + scene-prompter). Comment-only.
+- **Verified:** `npm test` **1671/0** (unchanged — no behavior touched) ·
+  `tools/check-board.js` **51 boards clean** · `check-schedule` 19 days queued ·
+  `npm run check-deploy` **the live site matches this tree** · every `D-` number
+  cited in the README and the submission checked to exist in `design.md` ·
+  the exemplar run scanned for credential patterns before bundling (clean) ·
+  and the load-bearing one — **played `from-farm-to-market` through to a clean
+  win on the live site** via its `?puzzle=` deep link: all four sets, no beans
+  used, tier reveals and explanations correct, confetti on the win screen.
+- **Phase status:** post-Phase-5 documentation work, **not a phase gate**. The
+  automated and Claude-verifiable halves passed. The one open item is Max
+  acceptance — his read of `SUBMISSION.md`, specifically the "we refuse full
+  automation" position, which is a claim about the project's thesis and not
+  Claude's to settle. **Submitting it is his.**
+- **Next:** submit before Sept 1. Then the standing queue, unchanged: a fresh
+  board batch before the calendar runs dry **2026-09-19** (19 days queued) —
+  now the most time-boxed item on the list; the **GDD version bump** (six
+  items, Max's); `npm run itch` + re-upload whenever the itch build should
+  carry sound; and the **capstone due Sept 8**, for which Class 13's advice
+  names a 90-second gameplay video as the highest-leverage remaining artifact.
+  The art pipeline stays tabled per D-31.
+
 ## 2026-08-26 — The art pipeline: built, run once, and tabled
 
 The automated scene pipeline was designed, built through three of six steps,

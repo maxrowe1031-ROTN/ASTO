@@ -4,6 +4,36 @@
 > work only when Max pulls them into `design.md`'s plan. Mid-session ideas
 > land here so the session stays on task.
 
+- **08's agreement with Max is FALLING, and it has drifted strict (2026-08-31).**
+  Re-running `tools/evaluator-report.js` over 126 judged attempts (up from 66) put
+  08's board-verdict agreement at **65 of 126 (52%)**, down from **58%** — and the
+  asymmetry flipped: it is now unhappy where Max is happy **41** times against 20 the
+  other way. A binary verdict at 52% is barely distinguishable from a coin flip, which
+  is the strongest evidence yet for the entry below asking whether an evaluator should
+  return severities rather than a boolean — except that entry is about **05**, and this
+  is **08**. Harmless while 08 is shown and never gates (and it is why taste findings
+  are barred from D-14's auto-revise allowlist), but if 08's prose is going to be read
+  at all, a verdict drifting strict will start costing boards Max would have kept.
+  Worth a look at what changed: 08's prompt gained `contentConcerns` and the
+  evocativeness axis across the same window, so the drift may be a *new* strictness
+  rather than a decaying one. Nothing measures which.
+- **The cost aggregation is a script inside a markdown file, not a tested tool
+  (2026-08-31).** `docs/audit-2026-08-31.md` embeds its own zero-dependency
+  aggregation so every figure is re-derivable, but it is a fenced code block —
+  nothing runs it, nothing tests it, and it will drift from `pipeline-config.js`'s
+  rates the moment those change (it hard-codes them, with a comment saying so). Fine
+  for a one-off audit. If cost reporting becomes routine — a slim-down lap, a second
+  audit, a monthly check — it should become `tools/cost-report.js` beside
+  `evaluator-report.js`, importing the real rates instead of copying them, with tests.
+- **`studio/README.md` went three weeks stale in ways that mattered, and nothing
+  noticed (2026-08-31).** It claimed eight agents (twelve), 1160 tests (1671),
+  D-1…D-13 (D-31), and — the load-bearing one — that D-5's graduation trigger was
+  still pending, three weeks after it fired and shipped as D-14. Same family as the
+  deck's-claimed-counts entry below, and the same cheap guard would cover both: a test
+  comparing the numbers a document claims against the real ones. The dated
+  measurement sections are fine as snapshots; the present-tense architectural claims
+  are what rot. It is now stamped `current as of 2026-08-31`, which makes the next
+  drift visible but does not prevent it.
 - **The itch.io build is a frozen snapshot, and the calendar is not (2026-08-25).**
   `npm run itch` packages the game as it stands; the calendar is keyed to real
   dates and the schedule ends **2026-09-19**. After that an itch player opens to
