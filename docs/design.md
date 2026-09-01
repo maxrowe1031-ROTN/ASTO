@@ -4,7 +4,7 @@
 Work the phases in order; each phase gate is a stop-and-playtest point. The GDD this
 plan implements is committed alongside at **`docs/asto-gdd.html`** (v0.13, standalone —
 open it in a browser). Deeper background (tech spec, architecture doc, design system
-sources) lives in the handbook repo: `maigd-course-handbook/projects/asto/`.
+sources) lives in the Brain: `Brain/projects/asto/`.
 
 ## Context
 

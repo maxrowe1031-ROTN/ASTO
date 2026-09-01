@@ -1,7 +1,7 @@
 {
   "permissions": {
     "additionalDirectories": [
-      "../maigd-course-handbook",
+      "../Brain",
       "../project-template"
     ],
     "deny": [

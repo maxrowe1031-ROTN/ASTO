@@ -16,7 +16,7 @@ A 4×4 board of 16 word tiles hides four analogy sets (`A : B :: C : D`). This r
 pipeline that generates candidate boards for human editorial review. The Studio lives
 here because it imports the game's validators directly (one schema, no drift); its
 design is `docs/superpowers/specs/2026-08-02-asto-studio-design.md`. Course notes and
-the retired Python crew stay in `../maigd-course-handbook`.
+the retired Python crew stay in `../Brain`.
 
 **Read these first:**
 
@@ -72,7 +72,7 @@ that something works.
 
 ## 3. The knowledge loop (Development Brain)
 
-The Brain lives at `../maigd-course-handbook` (access granted in
+The Brain lives at `../Brain` (access granted in
 `.claude/settings.json`). The Brain stores **generalizable learning**; this repo stores
 **project truth**. Everything needed to build, test, and recover ASTO lives here — it
 must remain fully operable without Brain access.

@@ -61,7 +61,7 @@ test('the shipped rules file is valid and every rule names an adopted source', (
 });
 
 test('the prototype crew\'s three surviving content rules are carried forward', () => {
-  // maigd-course-handbook/projects/asto/crew/lessons-learned.md section 2:
+  // Brain/projects/asto/crew/lessons-learned.md section 2:
   // each of these exists because a live run produced the bad case. Adopted
   // 2026-08-03 with Max, rather than rediscovering them over thirty boards.
   // The fourth — "directional and transformative" — was retired 2026-08-04;
