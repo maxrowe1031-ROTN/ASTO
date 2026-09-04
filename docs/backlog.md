@@ -593,9 +593,11 @@
   sampled subject cannot poison the avoid-list) but it means Max has effectively seen
   a batch's themes before it runs. If that becomes annoying, the fix is an opt-in
   `--reserve` flag writing sampled subjects to a side-file the guard also reads.
-- **Brand rollout ticket (2026-08-25, now unblocked).** Mochi's design is settled and
-  **two logo variants already exist** — `docs/art/reference/6-logo-colour.jpg` and
-  `7-logo-monochrome.jpg`. The rollout itself is untouched: wordmark lockup, About page,
-  favicon (use the monochrome variant — it is the one that survives 16px), and the itch
-  listing. Its own ticket and session; no longer waits on art direction, only on Max
+- **Brand rollout ticket (2026-08-25, rewritten 2026-09-04 after D-32).** The rollout
+  itself is untouched and still real: wordmark lockup, About page, favicon, and the
+  itch listing. What changed is that it **has no art to roll out** — the two Mochi logo
+  variants it was going to use were deleted with the rest of the art line (D-32), and
+  Max's decision there was that the game needs no illustrations. So this is now a
+  typographic/mark question rather than a character question, and it starts from
+  `styles/tokens.css` and the existing type. Its own ticket and session; waits on Max
   pulling it into the plan.

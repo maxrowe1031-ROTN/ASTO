@@ -2775,6 +2775,11 @@ CLAUDE.md §8 was updated to say exactly that. Joins the pending GDD version bum
 
 ### D-30 — The coffee cat, the scene band's shape, and a schema amendment (2026-08-25)
 
+> **CUT 2026-09-04 — superseded by [D-32](#d-32--the-art-line-is-cut-2026-09-04).**
+> Max: *"we're gonna drop all the cat stuff. i'm deciding the game does not need
+> any illustrations or animations."* Kept below as the record of how the line was
+> reasoned, not as live design. Nothing in it is in force.
+
 **What happened:** the register-scene work (ticket
 `docs/decisions/2026-08-19-illustrations-scope.md`) went through a brainstorm
 that answered its five open questions. The load-bearing idea is Max's: ASTO's
@@ -2798,6 +2803,13 @@ existing boards get a one-time hand backfill; a board without one shows a
 default scene. Nothing is implemented yet — the amendment is recorded here so
 the schema lock in CLAUDE.md §4 and this file never silently diverge.
 
+> **WITHDRAWN 2026-09-04 (D-32).** The amendment is off the books and schema
+> v1.0 is locked exactly as `CLAUDE.md` §4 states it — **no optional `register`
+> field**. It was only ever recorded, never implemented: no validator knew it
+> and no board carried it, so nothing migrates and the hand backfill never
+> happens. Not to be confused with D-15's **subject register rotation**, which
+> is live pipeline behaviour and untouched.
+
 **Where it stands:** at session end Max halted the craft loop — the pixel-art
 style "isn't doing what I hoped"; he owns defining a clearer art style and
 direction before execution continues. Structure survives that reset
@@ -2810,6 +2822,11 @@ or two months pass without direction (2026-10-25 — ask whether the scene band
 is still wanted at all).
 
 ### D-30 amendment — Mochi supersedes the spike's palette and cat (2026-08-25)
+
+> **CUT 2026-09-04 — superseded by [D-32](#d-32--the-art-line-is-cut-2026-09-04).**
+> Max: *"we're gonna drop all the cat stuff. i'm deciding the game does not need
+> any illustrations or animations."* Kept below as the record of how the line was
+> reasoned, not as live design. Nothing in it is in force.
 
 **What changed:** later the same day, Max authored a character brief and
 generated seven reference sheets. The character is **Mochi** — a white cat
@@ -2852,6 +2869,11 @@ was wrong (then a larger placement returns to the table), or the production
 question forces an image API, which is its own decision.
 
 ### D-31 — The art pipeline: Mochi in the scene, and a transport that starts manual (2026-08-26)
+
+> **CUT 2026-09-04 — superseded by [D-32](#d-32--the-art-line-is-cut-2026-09-04).**
+> Max: *"we're gonna drop all the cat stuff. i'm deciding the game does not need
+> any illustrations or animations."* Kept below as the record of how the line was
+> reasoned, not as live design. Nothing in it is in force.
 
 **What happened:** Max, on the day after the art direction landed: *"I'm
 definitely not going to produce all these by hand. The goal is to have the
@@ -2912,6 +2934,69 @@ API transport with reference-image conditioning, not the manual loop**, and
 rewrite the scene rules for density and character presence before automating
 anything. Or, if two months pass without a return (2026-10-26), ask whether the
 scene band is still wanted at all.
+
+### D-32 — The art line is cut (2026-09-04)
+
+**What happened:** Max, unprompted, mid-session: *"we're gonna drop all the cat
+stuff. i'm deciding the game does not need any illustrations or animations."*
+That closes the line opened by the illustrations ticket on 2026-08-19 and
+tabled on 2026-08-26. **Tabled becomes cut** — not deferred, not parked. It
+supersedes **D-30**, **D-30's amendment**, and **D-31**, and it withdraws the
+`register` schema amendment those decisions introduced.
+
+**Why it is the right call, and why the tabling was not enough.** D-31 was
+already tabled on its own evidence: the flow made Max produce 54 images by hand
+with extra steps, and the art the rules produced was sparse and repetitive.
+What tabling left behind was a cost with no benefit — **seven modules and 56
+tests exercising a pipeline that would never run again**, an `npm run
+studio:art` entry point pointing at it, and a **loosened lock on schema v1.0**
+for a field no board would ever carry. A tabled decision that keeps drawing
+maintenance is a decision that has not been made. This one is now made.
+
+**What was removed** — the full inventory, so this is auditable:
+
+- **Seven studio modules:** `art-pipeline.js`, `art-run.js`,
+  `art-stage-registry.js`, `png.js`, `render-transport.js`,
+  `storage/art-store.js`, `agents/scene-prompter.js`.
+- **Six test files, 56 tests.** Suite 1671 → 1615.
+- **The registry coupling** — `scene-prompter`'s import and map entry in
+  `studio/agents/index.js`, the only place the art line reached live code. The
+  registry is back to **eleven** agents (9 pipeline stages + subject-scout +
+  revision-proposer).
+- **`npm run studio:art`**, and the `art/pending/` `.gitignore` rule.
+- **`docs/art/` entirely** — 1.9MB: seven Mochi reference sheets, three trial
+  renders, Max's two authored prompts, and the composition README. Max's
+  explicit call this session: cut entirely, not kept as brand art.
+- **Four experiments:** `cat-designs.html`, `cat-states.html` (never committed),
+  `scene-spike.html`, `scene-style-vector.html`.
+- **Two specs:** `2026-08-25-register-scenes-cat-design.md` and
+  `2026-08-26-art-pipeline-design.md`.
+- **The `register` schema field amendment** — see the WITHDRAWN note in D-30.
+
+**What was NOT touched, and this is the point:** the game. `src/`, `styles/`,
+and `index.html` never contained a single reference to the art line. No
+published board carried a `register`. `npm run itch` never bundled `docs/art/`.
+Verified by grep sweep and by playing a board to a win after the cut — nothing
+about the play experience changed, because nothing about it ever depended on
+this.
+
+**HR-3 survives the cut, rewritten** — see below. Its stated subject
+(`docs/art/reference/`) is gone, but the repo still holds the process-deck
+screenshots, and deleting the exception outright would have left those with no
+record. Its original premise was also wrong on the day it was written; that is
+corrected there.
+
+**Recoverable, not lost.** Everything above is in git history and reachable by
+path — `git log --diff-filter=D --stat` finds the removing commit. The
+character brief and the reference sheets are Max's own prompts and generations;
+he can reproduce them outside the repo at any time.
+
+**Reconsider-when:** Max decides the game wants visual character after all — at
+which point this starts from a blank page, not from the tabled pipeline. D-31's
+own reconsider-note is the useful inheritance: **start from an API transport
+with reference-image conditioning, never the manual loop**, and settle the art
+before automating its production. The 2026-10-26 "is the band still wanted"
+prompt from D-31 is answered and retired: it is not.
 
 ## House-rule exceptions
 
@@ -3009,24 +3094,35 @@ routing into the Studio.
 5b needs the Studio to author content, or the Core grows a capability neither the CLI nor
 R1 can exercise.
 
-### HR-3 — Binary assets in the repo, for reference art only (2026-08-25)
+### HR-3 — Binary assets in the repo, for process screenshots only (2026-08-25, rewritten 2026-09-04)
 
-**The house default this departs from:** ASTO had, until now, shipped no
-binary assets at all — an unwritten habit reinforced by the illustrations
-ticket's "pixel art as data, no binary assets" line. That line was a
-rationalisation, not a rule, and is corrected in D-30's amendment.
+**The house default this departs from:** ASTO's habit — never a written rule —
+was to keep the repo text-only. The illustrations ticket's "pixel art as data,
+no binary assets" line dressed that habit up as a principle; D-30's amendment
+already corrected it as a rationalisation.
 
-**The exception, and its bounds:** `docs/art/reference/` holds **seven JPEG
-reference sheets, 1.9MB total** (downscaled from 12MB at 1100px / JPEG-88).
-They are Max's art direction and the source of truth for every future scene
-prompt; the reproducible prompts sit beside them as text. **This exception
-covers reference art only.** Shipped game art is a separate, still-open
-decision, and its weight lands on players rather than on clones.
+**The exception, and its bounds:** `docs/presentation/assets/` holds **ten PNG
+screenshots** of the game and the Studio — the board, a filled frame, the win
+screen, the vocabulary and about panes, the survey and feedback form, and three
+Studio surfaces. They are the process deck's evidence: the deck's claims about
+what was built are checkable because the screenshots are versioned beside them.
+**This exception covers screenshots of ASTO's own surfaces only.** Shipped game
+art is not a live question — see **D-32**, which cut it.
 
-**Why it is worth it:** the visual source of truth stays versioned with the
-prompts that produced it. A brief in `docs/art/` that points at images living
-in someone's Downloads folder is not a source of truth.
+**Correcting the original:** this exception was written on 2026-08-25 to cover
+`docs/art/reference/` (seven JPEG reference sheets, 1.9MB), and it opened by
+claiming ASTO "had, until now, shipped no binary assets at all." That was
+already false: the presentation PNGs landed **2026-08-05**, three weeks
+earlier, and were never covered by anything. **D-32 deleted `docs/art/`**, so
+the exception has been rewritten around what the repo actually carries rather
+than retired — retiring it would have left the screenshots undocumented and
+swapped one drift for another.
 
-**Reconsider-when:** `docs/art/` passes ~10MB, or shipped art is approved and
-needs its own home — at which point asset weight, delivery, and whether the
-repo is the right store all get decided together rather than by drift.
+**Why it is worth it:** a deck whose screenshots live in someone's Downloads
+folder stops being checkable the moment the folder is tidied. Ten PNGs is a
+small, bounded, slow-growing cost for a document that has to stay true.
+
+**Reconsider-when:** `docs/presentation/assets/` passes ~10MB or roughly
+thirty files, or a second consumer of binary assets appears — at which point
+asset weight, delivery, and whether the repo is the right store all get decided
+together rather than by drift.
