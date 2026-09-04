@@ -382,20 +382,21 @@ judgement were already on disk, just never joined.
 ## Provenance
 
 - **GDD §12** — the pipeline's specification · `docs/asto-gdd.html`
-- **`docs/design.md`** — the authority: decisions **D-1 … D-31**, and House-rule
+- **`docs/design.md`** — the authority: decisions **D-1 … D-32**, and House-rule
   exceptions HR-1 (zero dependencies), HR-2 (Studio web surface, discharged 2026-08-13)
-  and HR-3 (binary reference art)
+  and HR-3 (binary process screenshots, rewritten 2026-09-04 by D-32)
 - **`docs/superpowers/specs/2026-08-02-asto-studio-design.md`** — the approved design
 - **`docs/backlog.md`** — known gaps, openly. Several are about this pipeline's
   evaluators, and the report above is partly an answer to them.
 
-Zero dependencies, Node ≥22, `node:test`. `npm test` **as of 2026-08-31: 1671 passing,
-0 failing.** The total drifts as boards are added, because `board-integrity.test.js` globs
-`puzzles/*.json` and regates every board on every run; the zero is the part that matters.
+Zero dependencies, Node ≥22, `node:test`. `npm test` **as of 2026-09-04: 1615 passing,
+0 failing** — down from 1671, because D-32 cut the art line and its 56 tests. The total
+drifts as boards are added, because `board-integrity.test.js` globs `puzzles/*.json` and
+regates every board on every run; the zero is the part that matters.
 
 ---
 
-**This page is current as of 2026-08-31.** Sections dated earlier than that are dated on
+**This page is current as of 2026-09-04.** Sections dated earlier than that are dated on
 purpose — the measurements below are a snapshot of the corpus at the time they were taken,
 and re-stamping them without re-running them would be a lie. Cost figures across the whole
 corpus are in [`../docs/audit-2026-08-31.md`](../docs/audit-2026-08-31.md).

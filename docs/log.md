@@ -2,6 +2,92 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-04 — The art line is cut
+
+Max, mid-session and unprompted: *"we're gonna drop all the cat stuff. i'm
+deciding the game does not need any illustrations or animations."* That ends the
+line opened by the illustrations ticket on 2026-08-19 — Mochi, the 375×60 scene
+band, and the automated art pipeline — which had been **TABLED** since 2026-08-26.
+**Tabled became cut.** Recorded as **D-32**, superseding D-30, D-30's amendment
+and D-31. **The game did not change**, because the game never depended on any of
+this: `src/`, `styles/` and `index.html` contained zero references to it.
+
+- **What came out — 39 files, 4,154 deletions, 154 insertions.** Seven studio
+  modules (`art-pipeline`, `art-run`, `art-stage-registry`, `png.js`,
+  `render-transport`, `storage/art-store`, `agents/scene-prompter`); six test
+  files (**56 tests**); `docs/art/` entirely (**1.9MB** — seven Mochi reference
+  sheets, three trial renders, Max's two authored prompts, the composition
+  README); four experiments (`cat-designs`, `cat-states`, `scene-spike`,
+  `scene-style-vector`); two specs; `npm run studio:art`; and the `art/pending/`
+  gitignore rule.
+- **The only coupling to live code was two lines.** `scene-prompter`'s import and
+  map entry in `studio/agents/index.js` — the agent registry is back to
+  **eleven** (9 pipeline stages + subject-scout + revision-proposer), and
+  `agent-kit.js`'s header comment was corrected with it. That the art line's
+  entire reach into the running system was two lines is the boundary law paying
+  out: it was built additively, so it came out cleanly.
+- **The `register` schema amendment is WITHDRAWN.** D-30 had loosened locked
+  schema v1.0 with an optional `register` field. It was only ever *recorded* —
+  no validator knew it, no board carried it — so nothing migrates and D-30's
+  planned one-time backfill of 51 boards never happens. **v1.0 is now locked
+  exactly as `CLAUDE.md` §4 states it.** Not to be confused with D-15's
+  **subject register rotation**, which is live and untouched; the naming
+  collision is flagged in D-32 so a future grep does not conflate them.
+- **HR-3 was rewritten, not retired — and its original premise was wrong.** Its
+  stated subject (`docs/art/reference/`) is gone, but the repo still carries
+  **ten binary PNGs** in `docs/presentation/assets/`, and those landed
+  **2026-08-05**, three weeks *before* HR-3 was written claiming ASTO "had, until
+  now, shipped no binary assets at all." Retiring the exception would have left
+  the process-deck screenshots undocumented — swapping one drift for another. It
+  now covers what the repo actually holds, with the false premise corrected in
+  place.
+- **The decision ticket is closed, not deleted** (`status: closed (2026-09-04)`,
+  Resolution filled), per the decisions README: rejected paths and their
+  reasoning matter later. Its *"What the trial run taught"* section is the useful
+  inheritance if scene art ever returns — start from an API transport with
+  reference-image conditioning, never the manual loop, and settle the art before
+  automating its production.
+- **The brand-rollout backlog item was rewritten rather than left to rot.** It
+  was going to use the two Mochi logo variants, which no longer exist. The
+  rollout is still real (wordmark, About, favicon, itch listing) but is now a
+  typographic question starting from `styles/tokens.css`.
+- **Verified:** `npm test` **1615/0** — exactly 1671 − 56, which is the number
+  that matters: a surprise there would have meant something else imported the
+  removed modules · `tools/check-board.js` **51 boards clean** · `check-schedule`
+  16 days covered, last 2026-09-19, unchanged · `npm run check-deploy` **the live
+  site matches this tree** · `npm run itch` builds clean, proving the itch path
+  never bundled `docs/art/` · a dangling-reference grep across every `.js`,
+  `.json`, `.html` and `.css` in the repo comes back **empty** · the registry
+  loads and reports 11 agents.
+- **And the load-bearing one — `from-farm-to-market` played to a clean win in
+  the preview browser at mobile viewport:** *"Puzzle solved! All four sets, no
+  beans used."* All four tier reveals correct (GREEN/YELLOW/RED/BLACK) with
+  labels and explanations, share, the D-21 survey, About. **Zero console errors,
+  every network request 200, nothing reaching for a deleted asset.** Nothing
+  about the play experience changed, because nothing about it ever depended on
+  the art line.
+- **Also carried in:** `90005af` (the Brain rename, committed 2026-09-01 but
+  never pushed) reaches `origin` with this merge. Until now a fresh clone granted
+  `.claude/settings.json` access to a directory that no longer exists.
+- **Phase status:** post-Phase-5 housekeeping, **not a phase gate**. The gate was
+  automated + Claude-verifiable and **passed in full** — every item above is
+  something Claude ran and inspected directly. The judgement call was Max's and
+  he already made it; executing it needed no acceptance from him.
+- **Next:** **the capstone, due Sept 8 — four days out and the most time-boxed
+  item on the list.** Class 14's stated requirements: a click-and-play itch.io
+  link (**exists**, D-26), a how-to-play README (**waived if the game explains
+  itself in-game** — a judgement call worth making deliberately), *some*
+  improvement between the Sept 1 and Sept 8 submissions (**`npm run itch` +
+  re-upload so the build finally carries D-27's sound is exactly that, and is
+  already owed**), and **a 2–3 minute gameplay video, which does not exist** —
+  the one artifact on the whole list Claude cannot produce alone. Then: a **fresh
+  board batch** before the calendar runs dry **2026-09-19** (15 queued); the
+  **GDD version bump** (six items, Max's); and `docs/backlog.md`, where 08's
+  falling agreement and the cost-report tool are the two live entries. **Open
+  question the repo cannot answer: was Assignment 10 actually submitted before
+  Sept 1?** The 2026-08-31 entry ends "Submitting it is his," and there is no
+  record either way.
+
 ## 2026-08-31 — Assignment 10: the account, compiled from the record
 
 MAIGD Assignment 10 (due Sept 1) is the shipping assignment — playable link,

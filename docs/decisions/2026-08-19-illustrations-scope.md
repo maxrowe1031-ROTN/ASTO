@@ -1,6 +1,30 @@
-# Open: illustrations in the play screen — scope settled, execution open
+# Closed: illustrations in the play screen — cut, no illustrations ship
 
-**Status: TABLED by Max (2026-08-26)** — after the pipeline ran end to end and
+status: closed (2026-09-04)
+
+**Resolution:** **cut.** Max, 2026-09-04: *"we're gonna drop all the cat stuff.
+i'm deciding the game does not need any illustrations or animations."* ASTO
+ships with no illustrations and no animations; the character, the scene band,
+and the automated art pipeline are all removed from the tree. Recorded in
+`docs/design.md` as **D-32**, which supersedes D-30, D-30's amendment and D-31,
+and withdraws the optional `register` schema field so v1.0 is locked as
+`CLAUDE.md` §4 states it. `HR-3` was rewritten rather than retired — the
+process-deck screenshots still need it.
+
+Everything below is kept per `docs/decisions/README.md`: rejected paths and
+their reasoning matter later, and the trial-run findings in *"What the trial
+run taught"* are the useful inheritance if scene art is ever revisited — start
+from an API transport with reference-image conditioning, and settle the art
+before automating its production. Deleted files are recoverable from git
+history; the sheets were Max's own generations and are reproducible outside the
+repo. **None of what follows is live.**
+
+---
+
+## The record, as it stood when the ticket closed
+
+
+**Status at tabling: TABLED by Max (2026-08-26)** — after the pipeline ran end to end and
 he saw the result: *"this is terrible. this flow will not work."* The work is
 not lost: the character, the reference art, and a tested pipeline are all
 committed. What is parked is the decision to ship any of it. See **"What the

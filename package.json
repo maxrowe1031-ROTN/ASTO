@@ -14,7 +14,6 @@
     "studio": "node studio/run.js",
     "studio:review": "node studio/review/server.js",
     "studio:subjects": "node studio/sample-subjects.js",
-    "studio:art": "node studio/art-run.js",
     "ratings": "node tools/ratings-report.js",
     "check-schedule": "node tools/check-schedule.js"
   },
