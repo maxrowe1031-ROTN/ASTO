@@ -119,7 +119,13 @@
   }
   .receipt button:hover { color: var(--ink); }
 
-  .survey-comment { display: flex; align-items: center; gap: 4px; margin-top: 12px; }
+  .comment-slot { overflow: hidden; margin-top: 12px; }
+  .survey-comment { display: flex; align-items: center; gap: 4px; }
+  /* The note's receipt: same grammar as a row's, but the note itself is the content,
+     so it is allowed to wrap rather than being squeezed onto one line. */
+  .note-receipt { align-items: flex-start; padding: 4px 0; }
+  .note-receipt .note-text { font-style: italic; }
+  .all-set { text-align: center; font-size: 14px; font-weight: 700; color: var(--ink); padding: 8px 0; }
   .survey-input {
     flex: 1;
     min-height: var(--tap-target);
@@ -195,7 +201,7 @@
     <div class="panel controls">
       <fieldset>
         <legend>Variant</legend>
-        <label class="opt"><input type="radio" name="variant" value="A" checked>
+        <label class="opt"><input type="radio" name="variant" value="A">
           <b>A — Slide out, close the gap</b>
           <span>The literal idea. Row slides right, fades, and its height collapses so
           the rows below move up. Strongest "that's done" signal; no undo.</span></label>
@@ -203,8 +209,8 @@
           <b>B — Slide out, hold the space</b>
           <span>Same exit, but the gap stays until all three are answered. Nothing below
           it jumps while you are still tapping. No undo.</span></label>
-        <label class="opt"><input type="radio" name="variant" value="C">
-          <b>C — Slide out, receipt slides in</b>
+        <label class="opt"><input type="radio" name="variant" value="C" checked>
+          <b>C — Slide out, receipt slides in &nbsp;· CHOSEN</b>
           <span>Row leaves right, a one-line receipt arrives from the left in its place:
           <em>Difficulty 3 ✓</em>, with a change link. Keeps the answer visible and
           fixable.</span></label>
@@ -215,10 +221,33 @@
       </fieldset>
 
       <fieldset>
+        <legend>Comment box — the same language, applied to the note</legend>
+        <label class="opt"><input type="radio" name="comment" value="none" checked>
+          <b>1 — Nothing (today's behaviour)</b>
+          <span>The box greys out in place. No motion; kept here as the thing to
+          beat.</span></label>
+        <label class="opt"><input type="radio" name="comment" value="receipt">
+          <b>2 — Receipt, no undo</b>
+          <span>Box slides right, a receipt arrives from the left:
+          <em>✓ "the black set landed"</em>. Matches C's motion; the note is already
+          filed and cannot be unsent.</span></label>
+        <label class="opt"><input type="radio" name="comment" value="receipt-edit">
+          <b>3 — Receipt with a change link</b>
+          <span>Exactly C: the receipt carries <em>change</em>, which brings the box
+          back pre-filled. Consistent with the rows — but a revision files a SECOND
+          comment row, it does not replace the first.</span></label>
+        <label class="opt"><input type="radio" name="comment" value="close">
+          <b>4 — Receipt, then the survey closes</b>
+          <span>The note gets its receipt, then the whole survey folds to one line:
+          <em>Thanks — all set.</em> A definite ending rather than four leftover
+          receipts.</span></label>
+      </fieldset>
+
+      <fieldset>
         <legend>Speed</legend>
         <div class="dial">
-          <input type="range" id="speed" min="80" max="600" step="10" value="187">
-          <span id="speedOut">187ms</span>
+          <input type="range" id="speed" min="80" max="600" step="10" value="300">
+          <span id="speedOut">300ms</span>
         </div>
         <p style="margin:6px 0 0">
           ASTO's dials are <code>--motion-fast: 187ms</code> and
@@ -240,9 +269,11 @@
       <div class="phone">
         <p class="survey-lede">How was this one?</p>
         <div class="rows" id="rows"></div>
-        <div class="survey-comment">
-          <input class="survey-input" type="text" placeholder="Anything else?">
-          <button class="pill" id="send">Send</button>
+        <div class="comment-slot" id="commentSlot">
+          <div class="survey-comment">
+            <input class="survey-input" type="text" placeholder="Anything else?">
+            <button class="pill" id="send">Send</button>
+          </div>
         </div>
         <p class="survey-feedback" id="feedback" role="status" aria-live="polite"></p>
       </div>
@@ -314,6 +345,18 @@ function build() {
         </div>
       </div>
     </div>`).join('');
+
+  // Variants replace or remove the comment slot and the lede, so a reset rebuilds both.
+  const phone = document.querySelector('.phone');
+  phone.querySelector('.all-set')?.remove();
+  if (!phone.querySelector('.survey-lede')) {
+    phone.insertAdjacentHTML('afterbegin', '<p class="survey-lede">How was this one?</p>');
+  }
+  if (!phone.contains(rowsEl)) phone.querySelector('.survey-lede').after(rowsEl);
+  slotEl.style.opacity = '';
+  rowsEl.style.opacity = '';
+  slotEl.replaceChildren(commentRow());
+  if (!phone.contains(slotEl)) feedbackEl.before(slotEl);
 }
 
 /** Collapse a row's height to nothing, so what is below it rises. */
@@ -422,12 +465,96 @@ rowsEl.addEventListener('click', async (event) => {
   }
 });
 
-document.getElementById('send').addEventListener('click', () => {
+const commentStyle = () => document.querySelector('input[name=comment]:checked').value;
+const slotEl = document.getElementById('commentSlot');
+
+/** Truncated for the receipt — a 280-character note must not become the whole screen. */
+const short = (note) => (note.length > 48 ? `${note.slice(0, 48).trimEnd()}…` : note);
+
+/** Fold the whole survey down to one line — comment variant 4's ending. */
+async function closeSurvey() {
+  const phone = slotEl.parentElement;
+  const doomed = [rowsEl, slotEl, ...phone.querySelectorAll('.survey-lede')];
+  if (!reduced()) {
+    await Promise.all(doomed.map((el) => settled(
+      el.animate([{ opacity: 1 }, { opacity: 0 }],
+        { duration: ms(), easing: EASE, fill: 'forwards' }), ms())));
+  }
+  doomed.forEach((el) => el.remove());
+  feedbackEl.insertAdjacentHTML('beforebegin', '<p class="all-set">Thanks — all set.</p>');
+  feedbackEl.textContent = '';
+}
+
+/** The note's own receipt, arriving from the left exactly as a row's does. */
+function noteReceipt(note, withChange) {
+  const receipt = document.createElement('div');
+  receipt.className = 'receipt note-receipt';
+  receipt.innerHTML = `<span class="tick">✓</span>
+    <span class="note-text">"${short(note)}"</span>
+    ${withChange ? '<button type="button">change</button>' : ''}`;
+  if (withChange) {
+    receipt.querySelector('button').addEventListener('click', () => {
+      slotEl.replaceChildren(commentRow(note));
+      feedbackEl.textContent = 'Edit it and send again — this files a second note.';
+    });
+  }
+  slotEl.replaceChildren(receipt);
+  if (!reduced()) {
+    receipt.animate(
+      [{ transform: 'translateX(-24px)', opacity: 0 }, { transform: 'translateX(0)', opacity: 1 }],
+      { duration: ms(), easing: EASE }
+    );
+  }
+}
+
+/** A fresh comment row, optionally pre-filled (variant 3's change link). */
+function commentRow(value = '') {
+  const wrap = document.createElement('div');
+  wrap.className = 'survey-comment';
+  wrap.innerHTML = `<input class="survey-input" type="text" placeholder="Anything else?">
+                    <button class="pill">Send</button>`;
+  wrap.querySelector('input').value = value;
+  wrap.querySelector('button').addEventListener('click', onSend);
+  return wrap;
+}
+
+async function onSend() {
+  const input = slotEl.querySelector('.survey-input');
+  const note = input.value.trim();
   const n = answers.size;
-  feedbackEl.textContent = n === 0
-    ? 'Tap a number above, or add a note.'
-    : n === 1 ? 'Thanks — your rating is in.' : 'Thanks — your ratings are in.';
-});
+
+  if (note.length === 0) {
+    // Nothing to file, so nothing leaves. The box must not vanish on an empty press.
+    feedbackEl.textContent = n === 0
+      ? 'Tap a number above, or add a note.'
+      : n === 1 ? 'Thanks — your rating is in.' : 'Thanks — your ratings are in.';
+    return;
+  }
+
+  feedbackEl.textContent = 'Thanks for the note.';
+  const style = commentStyle();
+
+  if (style === 'none') {
+    input.disabled = true;
+    slotEl.querySelector('.pill').disabled = true;
+    return;
+  }
+
+  const row = slotEl.querySelector('.survey-comment');
+  if (!reduced()) await slideOut(row);
+
+  if (style === 'close') {
+    noteReceipt(note, false);
+    await closeSurvey();
+  } else {
+    noteReceipt(note, style === 'receipt-edit');
+  }
+}
+
+document.getElementById('send').addEventListener('click', onSend);
+for (const input of document.querySelectorAll('input[name=comment]')) {
+  input.addEventListener('change', build);
+}
 
 document.getElementById('replay').addEventListener('click', build);
 for (const input of document.querySelectorAll('input[name=variant]')) {
