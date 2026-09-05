@@ -2138,6 +2138,45 @@ stranger's board rating and comment landed within hours of the survey going live
 Player data *informs* Max in the Studio; whether it ever *drives* generation is a
 separate decision with its own D-number when the data exists to argue from.
 
+### D-21 addendum — Send is never dead, and a tap says so (2026-09-05)
+
+**What happened:** playtest feedback reaching Max — *"it doesn't look like it's
+sending when we press send. It only says thanks after you write something."*
+The players were right about what they saw and wrong about what it meant: their
+ratings **had** been captured, one `ratings` row per tap, exactly as this
+decision specifies. The UI simply never said so.
+
+**Two causes, and the second is the real one.**
+
+1. `survey-view.js` returned silently when Send was pressed on an empty comment
+   box — a literally dead button.
+2. Three rating rows above one **Send** button read as *a form you submit*. Under
+   that model, a player taps 1–4 three times, presses Send, sees nothing, and
+   concludes the whole survey was discarded. The fire-and-forget-per-tap model
+   this decision chose is right, but it was invisible, and an invisible send is
+   indistinguishable from no send.
+
+**The fix — feedback, not architecture.** The tap-log model is deliberately
+kept: sending on tap captures the majority who rate and then leave without
+pressing anything, and holding answers until a Send press would lose them. What
+changed is that every interaction now answers on the status line — a tap
+confirms (`Thanks — got it.`), Send with a note confirms the note, Send on an
+empty box reports that the ratings are already in, and Send with nothing done at
+all says so honestly rather than thanking the player for nothing. The decision
+of what to say is a pure function, `acknowledge()`, tested headlessly beside the
+confetti pattern; the DOM half was verified in the browser across all four paths
+with the Supabase POST intercepted so no test rows reached the live table.
+
+**The rejected option, recorded because it is the obvious one:** make it a real
+form — hold the ratings and submit on Send. It matches the player's mental model
+exactly, and it was declined because it trades away real data (every rating from
+every player who does not press Send) for a tidier story. Max chose the feedback
+fix.
+
+**Reconsider-when:** ratings volume per board falls noticeably against the
+comment rate, suggesting players now believe a Send press is required and are
+withholding taps — the opposite failure, and one `npm run ratings` would show.
+
 ### D-22 — B2 hand-editing: the fix-in-place editor (2026-08-13)
 
 **Max's call, after D-21 closed:** build B2. The appetite was on the record —
