@@ -319,6 +319,12 @@ const reducedEl = document.getElementById('reduced');
 
 const answers = new Map();
 
+// Bumped by every build(). Handlers capture it before their first await and bail if it
+// has moved: an exit animation is async, so a tap (or a Send) that is still mid-flight
+// when Reset is pressed would otherwise finish into the FRESH survey and blank a row or
+// the comment box that had just been rebuilt.
+let generation = 0;
+
 const variant = () => document.querySelector('input[name=variant]:checked').value;
 const ms = () => Number(speedEl.value);
 const reduced = () => reducedEl.checked;
@@ -332,6 +338,21 @@ function ratingAck({ label, value, answered, total }) {
 }
 
 function build() {
+  // Cancel every animation still attached under the mock screen FIRST.
+  //
+  // Removing an element does not cancel its animations, and these are `fill: 'forwards'`
+  // — so the closing variant's fade stayed attached to #rows and #commentSlot, and
+  // re-inserting them handed back elements still pinned at opacity 0. Reset looked
+  // dead: the survey was rebuilt correctly and painted invisible. A fill-forwards
+  // animation also outranks inline style, so clearing style.opacity could not save it.
+  // #rows and #commentSlot are cancelled BY REFERENCE, not through the phone's subtree:
+  // the closing variant detaches them, and a detached element is not in anyone's
+  // subtree — so a subtree sweep misses exactly the two elements that need it most.
+  for (const el of [rowsEl, slotEl, document.querySelector('.phone')]) {
+    el?.getAnimations({ subtree: true }).forEach((animation) => animation.cancel());
+  }
+
+  generation += 1;
   answers.clear();
   feedbackEl.textContent = '';
   rowsEl.innerHTML = QUESTIONS.map(({ key, label }) => `
@@ -353,8 +374,6 @@ function build() {
     phone.insertAdjacentHTML('afterbegin', '<p class="survey-lede">How was this one?</p>');
   }
   if (!phone.contains(rowsEl)) phone.querySelector('.survey-lede').after(rowsEl);
-  slotEl.style.opacity = '';
-  rowsEl.style.opacity = '';
   slotEl.replaceChildren(commentRow());
   if (!phone.contains(slotEl)) feedbackEl.before(slotEl);
 }
@@ -436,6 +455,7 @@ rowsEl.addEventListener('click', async (event) => {
   });
 
   const v = variant();
+  const gen = generation;
 
   if (reduced()) {
     // No slide. Reduced motion still gets the outcome, just not the journey.
@@ -448,13 +468,17 @@ rowsEl.addEventListener('click', async (event) => {
 
   if (v === 'A') {
     await slideOut(inner);
+    if (gen !== generation) return;
     await collapse(row);
+    if (gen !== generation) return;
     row.remove();
   } else if (v === 'B') {
     await slideOut(inner);
+    if (gen !== generation) return;
     inner.style.visibility = 'hidden';
   } else if (v === 'C') {
     await slideOut(inner);
+    if (gen !== generation) return;
     receiptFor(row, label, value);
   } else {
     // D — the chosen dot flies alone; its neighbours fade out under it.
@@ -476,9 +500,15 @@ async function closeSurvey() {
   const phone = slotEl.parentElement;
   const doomed = [rowsEl, slotEl, ...phone.querySelectorAll('.survey-lede')];
   if (!reduced()) {
-    await Promise.all(doomed.map((el) => settled(
-      el.animate([{ opacity: 1 }, { opacity: 0 }],
-        { duration: ms(), easing: EASE, fill: 'forwards' }), ms())));
+    const fades = doomed.map((el) => el.animate([{ opacity: 1 }, { opacity: 0 }],
+      { duration: ms(), easing: EASE, fill: 'forwards' }));
+    await Promise.all(fades.map((fade) => settled(fade, ms())));
+    // Cancel WHILE STILL ATTACHED. A fill-forwards animation outlives removal and would
+    // pin #rows and #commentSlot at opacity 0 when Reset puts them back — and once
+    // detached they no longer answer getAnimations(), so this is the last moment they
+    // can be reached. This is the bug Max hit: Reset rebuilt the survey invisibly.
+    // Removal happens in the same task, so no frame paints at the restored opacity.
+    fades.forEach((fade) => fade.cancel());
   }
   doomed.forEach((el) => el.remove());
   feedbackEl.insertAdjacentHTML('beforebegin', '<p class="all-set">Thanks — all set.</p>');
@@ -541,7 +571,9 @@ async function onSend() {
   }
 
   const row = slotEl.querySelector('.survey-comment');
+  const gen = generation;
   if (!reduced()) await slideOut(row);
+  if (gen !== generation) return;
 
   if (style === 'close') {
     noteReceipt(note, false);

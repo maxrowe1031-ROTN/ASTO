@@ -80,10 +80,31 @@ how it feels to be stuck with it.
 With C chosen this is answered for the rows — the change link is the escape hatch. It
 reopens for the comment box in option 3 above, where the undo exists but is not free.
 
-## One finding already banked
+## Two findings already banked
 
-The first draft of this page `await`ed `Animation.finished` directly, and every variant
-hung mid-exit — no row ever left. That is not a quirk of this page: **an animation
+Both are about `element.animate()`, and both would have bitten the production write-up.
+
+### Reset came back invisible (found by Max, 2026-09-05)
+
+The closing variant faded `#rows` and `#commentSlot` with `fill: 'forwards'` and then
+removed them. **Removing an element does not cancel its animations** — so pressing Reset
+rebuilt the survey correctly and painted it at `opacity: 0`. Worse, a fill-forwards
+animation outranks inline style, so clearing `style.opacity` could not undo it, and once
+an element is detached it no longer answers `getAnimations()`, so a later sweep cannot
+reach it either. **The cancel has to happen while the element is still attached**, right
+before removal.
+
+A second, subtler version of the same class: an exit animation is async, so a tap still
+in flight when Reset is pressed used to finish into the *fresh* survey and blank a row
+that had just been rebuilt. Handlers now capture a generation counter before their first
+await and bail if it has moved.
+
+### Awaiting `finished` hangs when the page is not painted
+
+
+
+The first draft `await`ed `Animation.finished` directly, and every variant hung mid-exit
+— no row ever left. That is not a quirk of this page: **an animation
 timeline pauses whenever the page is not being painted** (a backgrounded tab, a hidden
 preview pane), and `finished` then never settles. `src/view/motion.js` already guards
 against exactly this with a `Promise.race` against a timer, and its comment says why.
