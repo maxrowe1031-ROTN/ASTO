@@ -48,6 +48,35 @@ UI never said so. Fixed as **D-21 addendum**.
 - **Verified:** `npm test` **1621/0** (1615 + 6 new) · zero console errors ·
   `test/survey-view.test.js` added, pinning that no branch of `acknowledge()`
   can return silence.
+- **Second pass, same day — Max: the message has to CHANGE.** *"the first time
+  you press a button it says 'thanks - got it' but if you press another button,
+  because it doesn't change it's hard to tell it was recorded."* Right, and it
+  is the same failure one layer in: **a fixed acknowledgement repainted
+  identically on the second tap**, so the line looked frozen and the tap looked
+  ignored. Silence and an unchanging message read the same to a player. The line
+  now **names the answer** — `Difficulty 3 — got it.` then `Delight 4 — got
+  it.` — which changes on every tap that changes an answer, including a player
+  correcting a row they already answered (where the count does not move, so only
+  the label and value carry the difference). The third answer earns `That's all
+  three.` Send is now count-aware: singular for one rating, plural for more.
+  Rejected: rotating phrasings, which would also change but carry no
+  information; naming the answer doubles as a receipt. Recorded as **D-21
+  addendum, second pass**.
+- **Verified in the browser, the exact sequence Max described** — five taps on
+  `harvest-almanac`, **five distinct messages, five rows posted**: `Difficulty 3
+  — got it.` · `Delight 4 — got it.` · `Fairness 2 — got it. That's all three.`
+  · then two mind-changes on already-answered rows, `Difficulty 1 …` and
+  `Delight 1 …`, both of which still moved the line. Send at three ratings →
+  plural; a note → `Thanks for the note.`, input retires. On a fresh board
+  reached in-session (`river-systems`, same `SurveyView` instance): blank line,
+  dots cleared, input revived, Send → `Tap a number above`, one tap → `Fairness
+  4 — got it.` with **no** completion beat, Send → **singular** `your rating is
+  in.` Suite **1627/0** (12 survey tests), zero console errors, Supabase POST
+  intercepted throughout so no test rows reached the live table.
+- **The copy is guarded by test, not by care:** no two of the twelve possible
+  answers (3 questions × 4 values) may produce the same string, and
+  `QUESTIONS.length === 3` is asserted — so the "all three" line fails a test
+  before it can become a lie.
 - **Drift check at wrapup, covering both of this session's units — clean.** The
   GDD was read against **D-32** specifically, since cutting a feature is exactly
   where a doc and the code drift apart: it mentions **no** illustrations,

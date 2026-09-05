@@ -2177,6 +2177,39 @@ fix.
 comment rate, suggesting players now believe a Send press is required and are
 withholding taps — the opposite failure, and one `npm run ratings` would show.
 
+### D-21 addendum, second pass — a tap names what it recorded (2026-09-05)
+
+**What happened:** Max, on the first pass the same day: *"the first time you
+press a button on the survey, it says 'thanks - got it' but if you press another
+button, because it doesn't change it's hard to tell it was recorded."* Correct,
+and it is the **same failure the first pass fixed, one layer in** — a fixed
+acknowledgement repaints an identical string on the second tap, so the line
+looks frozen and the tap looks ignored. Silence and an unchanging message are
+the same thing to a player.
+
+**The fix:** the line now **names the answer** rather than thanking generically
+— `Difficulty 3 — got it.`, then `Delight 4 — got it.` It changes on every tap
+that changes an answer, including a player correcting a row they already
+answered (where the *count* does not move, so only the label and value can carry
+the difference). The last of the three earns a completion beat, `That's all
+three.`, so the player knows there is nothing left to tap. Send's reply is now
+count-aware: singular for one rating, plural for more.
+
+**Why naming rather than rotating phrasings:** a rotating "Thanks!" / "Got it!"
+/ "Noted!" would also change every time, and would carry no information. Naming
+the answer doubles as a receipt — the player can see that the thing recorded is
+the thing they meant.
+
+**Guarded by test, not by care:** `test/survey-view.test.js` asserts that no two
+of the twelve possible answers (3 questions × 4 values) produce the same string,
+that consecutive taps on different questions differ, that re-tapping one row
+with a new value differs, and that `QUESTIONS.length === 3` — so the "all three"
+copy fails a test before it can become a lie.
+
+**Reconsider-when:** the survey grows or loses a question (the completion copy
+and its guard both need revisiting), or the named-answer line proves too
+chatty in Max's own play.
+
 ### D-22 — B2 hand-editing: the fix-in-place editor (2026-08-13)
 
 **Max's call, after D-21 closed:** build B2. The appetite was on the record —

@@ -20,8 +20,20 @@ export const QUESTIONS = [
 
 const SCALE = [1, 2, 3, 4];
 
-/** A tapped dot has already been filed by the time the dot fills. Say so. */
-export const RATING_ACK = 'Thanks — got it.';
+/**
+ * What a tapped dot puts on the status line. Pure, so it is tested without a DOM.
+ *
+ * It NAMES the answer rather than thanking generically (2026-09-05, second pass). A
+ * fixed "Thanks — got it." repainted identically on the second tap, so the line looked
+ * frozen and the tap looked ignored — the same invisibility the first pass fixed, one
+ * layer in. Saying "Delight 4" after "Difficulty 3" changes on every tap that changes
+ * an answer, and it also tells the player exactly what was filed.
+ */
+export function ratingAck({ label, value, answered, total }) {
+  const said = `${label} ${value} — got it.`;
+  // A completion beat, so the player knows there is nothing left to tap.
+  return answered >= total ? `${said} That's all three.` : said;
+}
 
 /**
  * What Send puts on the status line. Pure, so it is tested without a DOM.
@@ -30,9 +42,10 @@ export const RATING_ACK = 'Thanks — got it.';
  * there is not, but the ratings already went as they were tapped — so the line reports
  * whichever of those is true instead of staying quiet.
  */
-export function acknowledge({ hasNote, hasRating }) {
+export function acknowledge({ hasNote, ratingCount }) {
   if (hasNote) return 'Thanks for the note.';
-  if (hasRating) return 'Thanks — your ratings are in.';
+  if (ratingCount === 1) return 'Thanks — your rating is in.';
+  if (ratingCount > 1) return 'Thanks — your ratings are in.';
   return 'Tap a number above, or add a note.';
 }
 
@@ -61,9 +74,12 @@ export class SurveyView {
       </div>
       <p class="survey-feedback" role="status" aria-live="polite"></p>`;
 
-    // Whether this board has had any dot tapped, so Send can tell "your ratings are in"
-    // from "nothing has been captured yet" — the difference the player is asking about.
-    this.rated = false;
+    // The answers given for THIS board, question -> value. Held so the status line can
+    // name what just landed and count how far along the player is; Send reads its size
+    // to tell "your ratings are in" from "nothing has been captured yet". Cleared by
+    // reset(). The authoritative record is still the Supabase rows, not this map.
+    this.answers = new Map();
+    this.labels = new Map(QUESTIONS.map(({ key, label }) => [key, label]));
 
     this.inputEl = root.querySelector('.survey-input');
     this.sendEl = root.querySelector('[data-action="send-comment"]');
@@ -72,16 +88,23 @@ export class SurveyView {
     root.addEventListener('click', (event) => {
       const dot = event.target.closest('.survey-dot');
       if (!dot) return;
+      const question = dot.dataset.question;
+      const value = Number(dot.dataset.value);
       this.select(dot);
-      this.rated = true;
-      this.feedbackEl.textContent = RATING_ACK;
-      onRate(dot.dataset.question, Number(dot.dataset.value));
+      this.answers.set(question, value);
+      this.feedbackEl.textContent = ratingAck({
+        label: this.labels.get(question),
+        value,
+        answered: this.answers.size,
+        total: QUESTIONS.length
+      });
+      onRate(question, value);
     });
 
     const send = () => {
       const note = this.inputEl.value.trim();
       const hasNote = note.length > 0;
-      this.feedbackEl.textContent = acknowledge({ hasNote, hasRating: this.rated });
+      this.feedbackEl.textContent = acknowledge({ hasNote, ratingCount: this.answers.size });
       // An empty box files nothing, but the button still answered — and the input stays
       // live, because pressing Send early is not a reason to lock someone out of typing.
       if (!hasNote) return;
@@ -110,7 +133,7 @@ export class SurveyView {
     for (const dot of this.root.querySelectorAll('.survey-dot')) {
       dot.setAttribute('aria-pressed', 'false');
     }
-    this.rated = false;
+    this.answers.clear();
     this.inputEl.value = '';
     this.inputEl.disabled = false;
     this.sendEl.disabled = false;
