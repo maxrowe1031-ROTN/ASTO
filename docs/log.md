@@ -83,10 +83,10 @@ this: `src/`, `styles/` and `index.html` contained zero references to it.
   the one artifact on the whole list Claude cannot produce alone. Then: a **fresh
   board batch** before the calendar runs dry **2026-09-19** (15 queued); the
   **GDD version bump** (six items, Max's); and `docs/backlog.md`, where 08's
-  falling agreement and the cost-report tool are the two live entries. **Open
-  question the repo cannot answer: was Assignment 10 actually submitted before
-  Sept 1?** The 2026-08-31 entry ends "Submitting it is his," and there is no
-  record either way.
+  falling agreement and the cost-report tool are the two live entries. **Assignment
+  10 was submitted** — confirmed by Max on 2026-09-04, closing the one question the
+  repo could not answer for itself. The 2026-08-31 entry ends "Submitting it is
+  his"; he did.
 
 ## 2026-08-31 — Assignment 10: the account, compiled from the record
 
