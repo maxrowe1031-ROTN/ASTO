@@ -5,6 +5,12 @@
 // The selections it repaints are view-local ephemera, like the share feedback line —
 // they exist only so a tapped dot LOOKS tapped. The record of answers lives in Supabase
 // rows and the ratedBoards slug set, neither of which this module knows about.
+//
+// The status line is load-bearing, not decoration (2026-09-05). Ratings post the instant
+// a dot is tapped, so there is no form to submit — but three rows and a Send button read
+// like one, and Send used to return silently on an empty box. Players concluded nothing
+// had been captured. Every interaction now answers: a tap confirms, and Send is never
+// dead.
 
 export const QUESTIONS = [
   { key: 'difficulty', label: 'Difficulty' },
@@ -13,6 +19,22 @@ export const QUESTIONS = [
 ];
 
 const SCALE = [1, 2, 3, 4];
+
+/** A tapped dot has already been filed by the time the dot fills. Say so. */
+export const RATING_ACK = 'Thanks — got it.';
+
+/**
+ * What Send puts on the status line. Pure, so it is tested without a DOM.
+ *
+ * Send never does nothing. With a note there is something to file; with an empty box
+ * there is not, but the ratings already went as they were tapped — so the line reports
+ * whichever of those is true instead of staying quiet.
+ */
+export function acknowledge({ hasNote, hasRating }) {
+  if (hasNote) return 'Thanks for the note.';
+  if (hasRating) return 'Thanks — your ratings are in.';
+  return 'Tap a number above, or add a note.';
+}
 
 export class SurveyView {
   constructor(root, { onRate, onComment }) {
@@ -39,6 +61,10 @@ export class SurveyView {
       </div>
       <p class="survey-feedback" role="status" aria-live="polite"></p>`;
 
+    // Whether this board has had any dot tapped, so Send can tell "your ratings are in"
+    // from "nothing has been captured yet" — the difference the player is asking about.
+    this.rated = false;
+
     this.inputEl = root.querySelector('.survey-input');
     this.sendEl = root.querySelector('[data-action="send-comment"]');
     this.feedbackEl = root.querySelector('.survey-feedback');
@@ -47,17 +73,22 @@ export class SurveyView {
       const dot = event.target.closest('.survey-dot');
       if (!dot) return;
       this.select(dot);
+      this.rated = true;
+      this.feedbackEl.textContent = RATING_ACK;
       onRate(dot.dataset.question, Number(dot.dataset.value));
     });
 
     const send = () => {
       const note = this.inputEl.value.trim();
-      if (note.length === 0) return;
+      const hasNote = note.length > 0;
+      this.feedbackEl.textContent = acknowledge({ hasNote, hasRating: this.rated });
+      // An empty box files nothing, but the button still answered — and the input stays
+      // live, because pressing Send early is not a reason to lock someone out of typing.
+      if (!hasNote) return;
       onComment(note);
       // One line, sent once — the input retires for this board. reset() revives it.
       this.inputEl.disabled = true;
       this.sendEl.disabled = true;
-      this.feedbackEl.textContent = 'Thanks.';
     };
     this.sendEl.addEventListener('click', send);
     this.inputEl.addEventListener('keydown', (event) => {
@@ -79,6 +110,7 @@ export class SurveyView {
     for (const dot of this.root.querySelectorAll('.survey-dot')) {
       dot.setAttribute('aria-pressed', 'false');
     }
+    this.rated = false;
     this.inputEl.value = '';
     this.inputEl.disabled = false;
     this.sendEl.disabled = false;

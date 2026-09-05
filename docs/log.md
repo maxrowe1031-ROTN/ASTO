@@ -2,6 +2,64 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-05 — The survey says what it captured
+
+Playtest feedback via Max: *"it doesn't look like it's sending when we press
+send. It only says thanks after you write something."* The players were right
+about what they saw and wrong about what it meant — **their ratings had been
+captured all along**, one `ratings` row per tap, exactly as D-21 specifies. The
+UI never said so. Fixed as **D-21 addendum**.
+
+- **Two causes, and the second is the real one.** (1) `survey-view.js` returned
+  **silently** when Send was pressed on an empty comment box — a literally dead
+  button, one `if (note.length === 0) return;`. (2) Three rating rows above one
+  **Send** button read as *a form you submit*: tap 1–4 three times, press Send,
+  see nothing, conclude the whole survey was thrown away. The fire-and-forget
+  tap-log is the right model, but it was invisible, and **an invisible send is
+  indistinguishable from no send**.
+- **The fix is feedback, not architecture.** Sending on tap is deliberately
+  kept — it captures the majority who rate and then leave without pressing
+  anything. Every interaction now answers on the existing `role="status"` line:
+  a tap confirms (`Thanks — got it.`), Send with a note confirms the note, Send
+  on an empty box reports the ratings are already in, and Send with nothing done
+  at all **says so honestly** rather than thanking the player for nothing.
+- **The obvious alternative was declined and recorded.** Making it a real form —
+  hold the ratings, submit on Send — matches the mental model exactly, and
+  trades away every rating from every player who never presses Send. Max chose
+  the feedback fix.
+- **Shape of the change:** the decision of what to say is a pure exported
+  `acknowledge({ hasNote, hasRating })`, which follows the confetti pattern —
+  the testable half is pure, the DOM half is verified in the browser. `reset()`
+  now also clears the rated flag, so a fresh board cannot inherit the previous
+  board's confirmation. No CSS change: `.survey-feedback` already reserves
+  `min-height: 18px`, so nothing shifts.
+- **Verified — all four paths driven in the browser at 375×812**, with the
+  Supabase POST **intercepted so no test rows reached the live table**:
+  Send with nothing done → *"Tap a number above, or add a note."* · tap
+  Difficulty 3 → *"Thanks — got it."*, dot filled, **1 row posted** · rate all
+  three then Send empty (**the reported complaint**) → *"Thanks — your ratings
+  are in."*, input still usable, **3 rows posted** · type a note and Send →
+  *"Thanks for the note."*, input retires, **4 rows posted**. Payloads confirmed
+  as three `ratings` rows and one `comments` row.
+- **And the reset path, exercised in-session** (same `SurveyView` instance, via
+  the Puzzles list rather than a reload, across three boards): a fresh board
+  arrives with a blank line, no dots filled, input live, and Send answers *"Tap
+  a number above"* rather than falsely claiming the previous board's ratings.
+- **Verified:** `npm test` **1621/0** (1615 + 6 new) · zero console errors ·
+  `test/survey-view.test.js` added, pinning that no branch of `acknowledge()`
+  can return silence.
+- **Phase status:** post-Phase-5 bug fix, **not a phase gate**. Automated +
+  Claude-verifiable, **both passed**. Max acceptance is open only in the sense
+  that the copy is taste — the wording is his to overrule.
+- **Next:** unchanged and now urgent — **the capstone, due Sept 8**. The 2–3
+  minute gameplay video still does not exist; `npm run itch` + re-upload so the
+  build carries D-27's sound is owed and doubles as the required improvement
+  between submissions; the how-to-play README is waived only if the game
+  explains itself in-game, which is a call worth making deliberately. This
+  survey fix is itself a legitimate "improvement between Sept 1 and Sept 8".
+  Then: a **fresh board batch** before the calendar runs dry **2026-09-19**;
+  the **GDD version bump**; and `docs/backlog.md`.
+
 ## 2026-09-04 — The art line is cut
 
 Max, mid-session and unprompted: *"we're gonna drop all the cat stuff. i'm
