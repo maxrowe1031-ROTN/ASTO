@@ -48,6 +48,16 @@ UI never said so. Fixed as **D-21 addendum**.
 - **Verified:** `npm test` **1621/0** (1615 + 6 new) · zero console errors ·
   `test/survey-view.test.js` added, pinning that no branch of `acknowledge()`
   can return silence.
+- **Drift check at wrapup, covering both of this session's units — clean.** The
+  GDD was read against **D-32** specifically, since cutting a feature is exactly
+  where a doc and the code drift apart: it mentions **no** illustrations,
+  character art, mascot or scene band anywhere, and its **no-list already parks
+  a "Large animation system" under Not for MVP.** Its many "animation" hits are
+  UI motion that ships (the shake, the solved-set reorder, transitions) plus
+  bundled library noise. **D-32 moved the code toward the GDD, not away from
+  it.** `CLAUDE.md`, `docs/recovery.md` and `docs/governance.md` carry no art
+  references either; `studio/README.md` and `docs/backlog.md` were corrected
+  when the cut landed.
 - **Phase status:** post-Phase-5 bug fix, **not a phase gate**. Automated +
   Claude-verifiable, **both passed**. Max acceptance is open only in the sense
   that the copy is taste — the wording is his to overrule.
