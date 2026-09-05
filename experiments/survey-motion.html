@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASTO survey motion audition (disposable)</title>
+
+<!-- The real design tokens, not a copy — same reason as the sound audition. A motion
+     beat judged on a page that is not ASTO's cream is a different beat. -->
+<link rel="stylesheet" href="../styles/tokens.css">
+
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-body);
+    padding: 20px 16px 80px;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 15px; margin: 0 0 8px; }
+  p, li { font-size: 14px; line-height: 1.5; color: var(--soft-ink); }
+  .lede { margin: 0 0 16px; }
+  .caution {
+    border-left: 3px solid var(--tier-red-deep);
+    padding: 10px 14px;
+    margin: 0 0 20px;
+    background: var(--milk);
+    border-radius: 0 8px 8px 0;
+  }
+  .caution strong { color: var(--ink); }
+
+  .cols { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+  .panel {
+    background: var(--milk);
+    border: 1px solid var(--taupe);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .controls { flex: 1 1 320px; }
+  .stage-col { flex: 0 0 375px; }
+
+  fieldset { border: 0; padding: 0; margin: 0 0 16px; }
+  legend { font-size: 13px; font-weight: 800; color: var(--ink); padding: 0 0 6px; }
+
+  label.opt {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  label.opt:hover { background: var(--oat); }
+  label.opt input { margin-right: 8px; }
+  label.opt b { color: var(--ink); font-size: 14px; }
+  label.opt span { display: block; margin-left: 22px; font-size: 13px; color: var(--soft-ink); }
+  label.opt:has(input:checked) { border-color: var(--ink); background: var(--oat); }
+
+  .dial { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .dial input[type=range] { flex: 1; }
+  .toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-top: 10px; }
+
+  /* --- the mock end screen, at ASTO's own mobile width --- */
+  .phone {
+    width: 375px;
+    background: var(--milk);
+    border: 1px solid var(--taupe);
+    border-radius: 18px;
+    padding: 18px 16px 22px;
+  }
+  .survey-lede { text-align: center; font-size: 14px; font-weight: 700; color: var(--soft-ink); margin: 0 0 12px; }
+
+  .rows { display: flex; flex-direction: column; gap: 10px; }
+
+  /* The row is the thing that leaves. overflow:hidden lets its height collapse. */
+  .survey-row { overflow: hidden; }
+  .row-inner { display: flex; align-items: center; gap: 10px; }
+  .survey-label { flex: 0 0 84px; font-size: 14px; font-weight: 700; color: var(--ink); }
+  .survey-dots { display: flex; flex: 1; gap: 6px; }
+  .survey-dot {
+    flex: 1;
+    min-height: var(--tap-target);
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background var(--motion-fast) var(--ease), color var(--motion-fast) var(--ease);
+  }
+  .survey-dot:hover:not([aria-pressed='true']) { background: var(--oat); }
+  .survey-dot[aria-pressed='true'] { background: var(--ink); color: var(--milk); }
+
+  /* Variant C's receipt — what replaces a row that has left. */
+  .receipt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--tap-target);
+    font-size: 14px;
+    color: var(--soft-ink);
+  }
+  .receipt b { color: var(--ink); }
+  .receipt .tick { color: var(--tier-green-deep); font-weight: 800; }
+  .receipt button {
+    margin-left: auto;
+    border: 0;
+    background: none;
+    color: var(--soft-ink);
+    text-decoration: underline;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    min-height: var(--tap-target);
+  }
+  .receipt button:hover { color: var(--ink); }
+
+  .survey-comment { display: flex; align-items: center; gap: 4px; margin-top: 12px; }
+  .survey-input {
+    flex: 1;
+    min-height: var(--tap-target);
+    padding: 0 14px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--taupe);
+    background: var(--cream);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .pill {
+    min-height: var(--tap-target);
+    padding: 0 16px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .survey-feedback {
+    text-align: center;
+    min-height: 18px;
+    font-size: 14px;
+    color: var(--soft-ink);
+    margin: 10px 0 0;
+  }
+
+  .replay {
+    margin-top: 14px;
+    width: 100%;
+    min-height: var(--tap-target);
+    border-radius: var(--radius-pill);
+    border: 1.5px dashed var(--taupe);
+    background: transparent;
+    color: var(--soft-ink);
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .replay:hover { border-color: var(--ink); color: var(--ink); }
+
+  .verdict { margin-top: 18px; }
+  .verdict td { font-size: 13px; padding: 4px 10px 4px 0; vertical-align: top; color: var(--soft-ink); }
+  .verdict td:first-child { color: var(--ink); font-weight: 700; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Survey motion audition — DISPOSABLE</h1>
+  <p class="lede">
+    Max's idea (2026-09-05): after you tap a rating, <strong>the whole row slides out to
+    the right and disappears</strong> — motion doing what the text alone could not, which
+    is prove the tap landed. This page exists to pick one variant by eye. It is never
+    promoted; when a variant wins, <code>survey-view.js</code> gets it written properly
+    against <code>src/view/motion.js</code> and this file can be deleted.
+  </p>
+
+  <div class="caution">
+    <strong>The thing to watch for while judging:</strong> a row that leaves takes the
+    <em>undo</em> with it. Today a mis-tap is fixable — tap the row again and the answer
+    changes. Variants <b>A</b> and <b>B</b> remove that. <b>C</b> and <b>D</b> keep it.
+    A survey nobody can correct will quietly collect wrong answers, so this is a real
+    trade and not just taste. Tap a wrong number on purpose in each variant and see how
+    it feels to be stuck with it.
+  </div>
+
+  <div class="cols">
+    <div class="panel controls">
+      <fieldset>
+        <legend>Variant</legend>
+        <label class="opt"><input type="radio" name="variant" value="A" checked>
+          <b>A — Slide out, close the gap</b>
+          <span>The literal idea. Row slides right, fades, and its height collapses so
+          the rows below move up. Strongest "that's done" signal; no undo.</span></label>
+        <label class="opt"><input type="radio" name="variant" value="B">
+          <b>B — Slide out, hold the space</b>
+          <span>Same exit, but the gap stays until all three are answered. Nothing below
+          it jumps while you are still tapping. No undo.</span></label>
+        <label class="opt"><input type="radio" name="variant" value="C">
+          <b>C — Slide out, receipt slides in</b>
+          <span>Row leaves right, a one-line receipt arrives from the left in its place:
+          <em>Difficulty 3 ✓</em>, with a change link. Keeps the answer visible and
+          fixable.</span></label>
+        <label class="opt"><input type="radio" name="variant" value="D">
+          <b>D — Only the chosen number flies</b>
+          <span>Lightest touch: the tapped dot flies out right, the other three fade
+          away, the label stays. Row remains, so re-tapping still works.</span></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Speed</legend>
+        <div class="dial">
+          <input type="range" id="speed" min="80" max="600" step="10" value="187">
+          <span id="speedOut">187ms</span>
+        </div>
+        <p style="margin:6px 0 0">
+          ASTO's dials are <code>--motion-fast: 187ms</code> and
+          <code>--motion-slow: 281ms</code>. Appendix E says ease-out everywhere.
+        </p>
+        <label class="toggle"><input type="checkbox" id="reduced">
+          Simulate <code>prefers-reduced-motion</code> (no slide — the row just goes)</label>
+      </fieldset>
+
+      <table class="verdict">
+        <tr><td>Keeps undo</td><td>C, D</td></tr>
+        <tr><td>Loudest confirmation</td><td>A</td></tr>
+        <tr><td>Calmest layout</td><td>B, D</td></tr>
+        <tr><td>Still shows your answers</td><td>C, D</td></tr>
+      </table>
+    </div>
+
+    <div class="stage-col">
+      <div class="phone">
+        <p class="survey-lede">How was this one?</p>
+        <div class="rows" id="rows"></div>
+        <div class="survey-comment">
+          <input class="survey-input" type="text" placeholder="Anything else?">
+          <button class="pill" id="send">Send</button>
+        </div>
+        <p class="survey-feedback" id="feedback" role="status" aria-live="polite"></p>
+      </div>
+      <button class="replay" id="replay">Reset the survey</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// Disposable experiment — the smallness exemption applies. The production write-up
+// would use src/view/motion.js's helpers rather than these inline animations; here the
+// animations are inline ON PURPOSE so four variants can differ in one readable file.
+
+const QUESTIONS = [
+  { key: 'difficulty', label: 'Difficulty' },
+  { key: 'delight', label: 'Delight' },
+  { key: 'fairness', label: 'Fairness' }
+];
+const EASE = 'cubic-bezier(0, 0, 0.2, 1)';
+
+/**
+ * Wait for an animation, but never longer than it should take — lifted from
+ * src/view/motion.js, which is where the production version already lives.
+ *
+ * This is not defensive padding. `Animation.finished` genuinely never settles while the
+ * page is not being painted (a backgrounded tab, a hidden preview pane), and the first
+ * draft of this page awaited it directly: every variant hung mid-exit and no row ever
+ * left. Motion must never be able to hold the UI hostage; the worst case here is that a
+ * beat is skipped.
+ */
+function settled(animation, expectedMs) {
+  return Promise.race([
+    animation.finished.catch(() => {}),
+    new Promise((resolve) => setTimeout(resolve, expectedMs + 80))
+  ]);
+}
+
+const rowsEl = document.getElementById('rows');
+const feedbackEl = document.getElementById('feedback');
+const speedEl = document.getElementById('speed');
+const speedOut = document.getElementById('speedOut');
+const reducedEl = document.getElementById('reduced');
+
+const answers = new Map();
+
+const variant = () => document.querySelector('input[name=variant]:checked').value;
+const ms = () => Number(speedEl.value);
+const reduced = () => reducedEl.checked;
+
+speedEl.addEventListener('input', () => { speedOut.textContent = `${ms()}ms`; });
+
+/** The same message rule that shipped, so the text half is not re-litigated here. */
+function ratingAck({ label, value, answered, total }) {
+  const said = `${label} ${value} — got it.`;
+  return answered >= total ? `${said} That's all three.` : said;
+}
+
+function build() {
+  answers.clear();
+  feedbackEl.textContent = '';
+  rowsEl.innerHTML = QUESTIONS.map(({ key, label }) => `
+    <div class="survey-row" data-question="${key}">
+      <div class="row-inner">
+        <span class="survey-label">${label}</span>
+        <div class="survey-dots">
+          ${[1, 2, 3, 4].map((v) => `
+            <button class="survey-dot" data-value="${v}" aria-pressed="false"
+                    aria-label="${label} ${v} of 4">${v}</button>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/** Collapse a row's height to nothing, so what is below it rises. */
+function collapse(row) {
+  const height = row.getBoundingClientRect().height;
+  const gap = 10; // .rows gap
+  return settled(row.animate(
+    [
+      { height: `${height}px`, marginBottom: '0px', opacity: 1 },
+      { height: '0px', marginBottom: `-${gap}px`, opacity: 1 }
+    ],
+    { duration: ms(), easing: EASE, fill: 'forwards' }
+  ), ms());
+}
+
+/** The exit itself: content leaves to the right. */
+function slideOut(el) {
+  return settled(el.animate(
+    [
+      { transform: 'translateX(0)', opacity: 1 },
+      { transform: 'translateX(44px)', opacity: 0 }
+    ],
+    { duration: ms(), easing: EASE, fill: 'forwards' }
+  ), ms());
+}
+
+/** Variant C's replacement, arriving from the left. */
+function receiptFor(row, label, value) {
+  const receipt = document.createElement('div');
+  receipt.className = 'receipt';
+  receipt.innerHTML = `<span class="tick">✓</span><span><b>${label}</b> ${value}</span>
+                       <button type="button">change</button>`;
+  receipt.querySelector('button').addEventListener('click', () => restore(row, label));
+  row.replaceChildren(receipt);
+  if (!reduced()) {
+    receipt.animate(
+      [{ transform: 'translateX(-24px)', opacity: 0 }, { transform: 'translateX(0)', opacity: 1 }],
+      { duration: ms(), easing: EASE }
+    );
+  }
+}
+
+/** Put a row back the way it was — variant C's undo. */
+function restore(row, label) {
+  const key = row.dataset.question;
+  answers.delete(key);
+  row.style.height = '';
+  row.innerHTML = `
+    <div class="row-inner">
+      <span class="survey-label">${label}</span>
+      <div class="survey-dots">
+        ${[1, 2, 3, 4].map((v) => `
+          <button class="survey-dot" data-value="${v}" aria-pressed="false"
+                  aria-label="${label} ${v} of 4">${v}</button>`).join('')}
+      </div>
+    </div>`;
+  feedbackEl.textContent = `${label} — cleared. Pick again.`;
+}
+
+rowsEl.addEventListener('click', async (event) => {
+  const dot = event.target.closest('.survey-dot');
+  if (!dot) return;
+
+  const row = dot.closest('.survey-row');
+  const inner = row.querySelector('.row-inner');
+  const key = row.dataset.question;
+  const label = QUESTIONS.find((q) => q.key === key).label;
+  const value = Number(dot.dataset.value);
+
+  // Fill the dot first — the answer should look chosen before it leaves.
+  for (const other of row.querySelectorAll('.survey-dot')) {
+    other.setAttribute('aria-pressed', String(other === dot));
+  }
+  answers.set(key, value);
+  feedbackEl.textContent = ratingAck({
+    label, value, answered: answers.size, total: QUESTIONS.length
+  });
+
+  const v = variant();
+
+  if (reduced()) {
+    // No slide. Reduced motion still gets the outcome, just not the journey.
+    if (v === 'A') { row.remove(); }
+    else if (v === 'B') { inner.style.visibility = 'hidden'; }
+    else if (v === 'C') { receiptFor(row, label, value); }
+    else { inner.querySelector('.survey-dots').style.visibility = 'hidden'; }
+    return;
+  }
+
+  if (v === 'A') {
+    await slideOut(inner);
+    await collapse(row);
+    row.remove();
+  } else if (v === 'B') {
+    await slideOut(inner);
+    inner.style.visibility = 'hidden';
+  } else if (v === 'C') {
+    await slideOut(inner);
+    receiptFor(row, label, value);
+  } else {
+    // D — the chosen dot flies alone; its neighbours fade out under it.
+    const others = [...row.querySelectorAll('.survey-dot')].filter((b) => b !== dot);
+    others.forEach((b) => b.animate([{ opacity: 1 }, { opacity: 0 }],
+      { duration: ms(), easing: EASE, fill: 'forwards' }));
+    await slideOut(dot);
+  }
+});
+
+document.getElementById('send').addEventListener('click', () => {
+  const n = answers.size;
+  feedbackEl.textContent = n === 0
+    ? 'Tap a number above, or add a note.'
+    : n === 1 ? 'Thanks — your rating is in.' : 'Thanks — your ratings are in.';
+});
+
+document.getElementById('replay').addEventListener('click', build);
+for (const input of document.querySelectorAll('input[name=variant]')) {
+  input.addEventListener('change', build);
+}
+
+build();
+</script>
+</body>
+</html>
