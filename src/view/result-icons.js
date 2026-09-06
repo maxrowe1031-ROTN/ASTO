@@ -54,3 +54,18 @@ export const POT = `
 export const iconFor = (result) =>
   result === null ? POT : result.status === 'won' ? CUP_STEAMING : CUP_SPILLED;
 
+
+// The third mark (D-33). A small closed BOOK beside the cup says Learning Mode
+// definitions were looked up on this board. Static, ink-drawn, and a badge
+// rather than a pose: how the board ended and whether the hint was taken are
+// still the cup's to say. Corner-sized in the calendar grid, beside the cup on
+// the day card — components.css sizes it per host.
+export const BOOK = `
+  <svg class="result-badge" viewBox="0 0 24 24" aria-hidden="true">
+    <path class="book-cover" d="M5 4.5 H17.5 A1.5 1.5 0 0 1 19 6 V18.5 A1.5 1.5 0 0 1 17.5 20 H5 Z"/>
+    <path class="book-spine" d="M5 4.5 H7.6 V20 H5 Z"/>
+    <path class="book-lines" d="M10 8.5 H16 M10 11.5 H16 M10 14.5 H14"/>
+  </svg>`;
+
+/** The badge for a day's result: the book when definitions were used, else nothing. */
+export const badgeFor = (result) => (result?.learning ? BOOK : '');

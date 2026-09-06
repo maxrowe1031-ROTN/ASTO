@@ -15,7 +15,7 @@
 
 import { buildMonth, dayLabel, monthOf, WEEKDAYS } from './calendar-month.js';
 import { settleIn } from './motion.js';
-import { iconFor } from './result-icons.js';
+import { badgeFor, iconFor } from './result-icons.js';
 
 const TIERS = ['green', 'yellow', 'red', 'black'];
 
@@ -177,6 +177,11 @@ export class CalendarView {
     icon.className = 'result-cup-slot';
     if ((day.result?.hintsUsed ?? 0) > 0) icon.classList.add('is-hinted');
     icon.innerHTML = iconFor(day.result);
+    // The third mark (D-33): a book at the cup's corner when definitions were used.
+    if (day.result?.learning) {
+      icon.classList.add('is-learning');
+      icon.insertAdjacentHTML('beforeend', badgeFor(day.result));
+    }
     square.appendChild(icon);
 
     // The visible square is a number and maybe a cup; a screen reader gets the
@@ -213,7 +218,7 @@ export class CalendarView {
         </div>
         <button class="pill primary" data-action="play-day"></button>
       </div>
-      <span class="day-card-icon${hinted ? ' is-hinted' : ''}" aria-hidden="true">${iconFor(day.result)}</span>`;
+      <span class="day-card-icon${hinted ? ' is-hinted' : ''}${day.result?.learning ? ' is-learning' : ''}" aria-hidden="true">${iconFor(day.result)}${badgeFor(day.result)}</span>`;
 
     // textContent for the two strings that come from data, so a title is text,
     // never markup.
@@ -241,9 +246,10 @@ function dots(solvedCount) {
 function spokenResult(result) {
   if (!result) return 'Not played yet.';
   const hinted = (result.hintsUsed ?? 0) > 0 ? ' A hint was used.' : '';
-  if (result.status !== 'won') return `Lost, ${result.solvedCount} of 4 sets solved.${hinted}`;
+  const learning = result.learning ? ' Definitions were used.' : '';
+  if (result.status !== 'won') return `Lost, ${result.solvedCount} of 4 sets solved.${hinted}${learning}`;
   const base = result.mistakes === 0
     ? 'Solved with no mistakes.'
     : `Solved with ${result.mistakes} mistake${result.mistakes === 1 ? '' : 's'}.`;
-  return `${base}${hinted}`;
+  return `${base}${hinted}${learning}`;
 }

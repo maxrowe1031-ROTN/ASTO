@@ -876,6 +876,7 @@ button.pours-day:active {
 /* The state, writ large — the empty right side of the card was doing nothing
    (Max's circle on the review screenshot). Same SVGs as the grid; size is CSS. */
 .day-card-icon {
+  position: relative; /* the book badge (D-33) anchors beside the cup */
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -927,6 +928,7 @@ button.pours-day:active {
 /* How the board went, as a coffee cup — steaming on a solve, spilled on a loss. Coffee is
    already the game's vocabulary for this: mistakes are beans, a loss is "Out of beans". */
 .result-cup-slot {
+  position: relative; /* the book badge (D-33) anchors to the cup's corner */
   display: flex;
   align-items: center;
 }
@@ -990,6 +992,39 @@ button.pours-day:active {
   stroke: var(--faint-ink);
   stroke-width: 0.7;
   opacity: 0.9;
+}
+
+/* The book badge (D-33): a corner mark on the grid cell, a companion on the card. */
+.result-badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 11px;
+  height: 11px;
+}
+
+.day-card-icon .result-badge {
+  right: 2px;
+  bottom: 2px;
+  width: 24px;
+  height: 24px;
+}
+
+.book-cover {
+  fill: var(--milk);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+
+.book-spine {
+  fill: var(--ink);
+}
+
+.book-lines {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  stroke-linecap: round;
 }
 
 .is-hinted .cup-spill {
