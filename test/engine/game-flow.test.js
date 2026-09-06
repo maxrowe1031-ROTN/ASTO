@@ -7,7 +7,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { clearSelection, hint, initGame, select, shuffle, submit } from '../../src/engine/engine.js';
+import { clearSelection, defineWord, hint, initGame, revealVocab, select, shuffle, submit } from '../../src/engine/engine.js';
 import { mulberry32 } from '../../src/engine/rng.js';
 import { board, distinctMisses, MISS } from '../fixtures/board.js';
 
@@ -139,4 +139,33 @@ test('maxMistakes: Infinity counts mistakes but can never lose — the tutorial 
   }
   assert.equal(state.status, 'won');
   assert.equal(state.mistakes, 10);
+});
+
+// The view-off proof for Learning Mode (D-33): arm, define, play on, win.
+test('headless learning-mode playthrough: defining never selects, and the game still wins', () => {
+  const puzzle = {
+    ...board,
+    definitions: board.sets.flatMap((set) => set.pairs.flat()).map((word) => ({
+      word,
+      definition: `what ${word.toLowerCase()} means`
+    }))
+  };
+  let state = shuffle(initGame(puzzle, { learningMode: true }), mulberry32(7));
+
+  state = revealVocab(state).state; // arm
+  state = defineWord(state, 'Seed').state; // look one up
+  assert.deepEqual(state.vocabRevealed, ['Seed']);
+  assert.deepEqual(state.selectedTerms, []);
+
+  for (const terms of [
+    ['Seed', 'Tree', 'Spark', 'Fire'],
+    ['Brush', 'Painter', 'Chisel', 'Sculptor'],
+    ['Nest', 'Bird', 'Den', 'Bear'],
+    ['Dough', 'Bread', 'Clay', 'Pottery']
+  ]) {
+    state = play(state, terms).state;
+  }
+  assert.equal(state.status, 'won');
+  assert.equal(state.mistakes, 0);
+  assert.equal(revealVocab(state).outcome, null, 'nothing arms after the game');
 });
