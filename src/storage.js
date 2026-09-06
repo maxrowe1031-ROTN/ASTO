@@ -17,6 +17,7 @@ export const RATED_BOARDS_KEY = 'asto.ratedBoards';
 export const HISTORY_KEY = 'asto.history';
 export const MUTED_KEY = 'asto.muted';
 export const VOLUME_KEY = 'asto.volume';
+export const LEARNING_MODE_KEY = 'asto.learningMode';
 
 const SEEN = 'true';
 
@@ -64,6 +65,22 @@ export class Storage {
   setVolume(volume) {
     const clamped = Math.min(100, Math.max(0, Math.round(Number(volume) || 0)));
     this.write(VOLUME_KEY, String(clamped));
+  }
+
+  // --- Learning Mode (D-33) ---
+  //
+  // Same doctrine as the sound keys: when the store cannot be read, the answer
+  // is the shipping default — off. A lost preference must never switch a
+  // player into an easier game they did not ask for. A preference, so clear()
+  // leaves it alone, exactly as it leaves the sound keys.
+
+  /** False whenever we cannot know. */
+  isLearningMode() {
+    return this.read(LEARNING_MODE_KEY) === 'true';
+  }
+
+  setLearningMode(on) {
+    this.write(LEARNING_MODE_KEY, String(Boolean(on)));
   }
 
   // --- per-puzzle results, keyed by slug ---
