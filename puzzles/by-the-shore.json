@@ -89,5 +89,71 @@
       "definition": "a soft-bodied small creature, often with a hard outer covering, usually found near water"
     }
   ],
-  "date": "2026-08-30"
+  "date": "2026-08-30",
+  "definitions": [
+    {
+      "word": "seabird",
+      "definition": "a bird that lives near the ocean and often swoops around beaches looking for food"
+    },
+    {
+      "word": "seagull",
+      "definition": "a noisy white and gray bird that hangs around beaches, often stealing snacks"
+    },
+    {
+      "word": "mollusk",
+      "definition": "a soft-bodied small creature, often with a hard outer covering, usually found near water"
+    },
+    {
+      "word": "clam",
+      "definition": "a small shelled creature that burrows in sand and squirts water when disturbed"
+    },
+    {
+      "word": "summer",
+      "definition": "the hot season when days are long and everyone heads outside"
+    },
+    {
+      "word": "swimming",
+      "definition": "moving through water using your arms and legs, just for fun or exercise"
+    },
+    {
+      "word": "evening",
+      "definition": "the part of the day when the sun goes down and things start to cool off"
+    },
+    {
+      "word": "bonfire",
+      "definition": "a big outdoor fire people gather around to talk, roast food, or stay warm"
+    },
+    {
+      "word": "lifeguard",
+      "definition": "someone who watches the water and keeps people safe from drowning"
+    },
+    {
+      "word": "swimmer",
+      "definition": "a person who's in the water, paddling or gliding along"
+    },
+    {
+      "word": "surfer",
+      "definition": "someone who rides ocean swells standing on a board"
+    },
+    {
+      "word": "wave",
+      "definition": "a rolling ridge of water that rises and breaks along the shore"
+    },
+    {
+      "word": "leash",
+      "definition": "a cord that keeps something tethered close so it doesn't drift away"
+    },
+    {
+      "word": "surfboard",
+      "definition": "a long flat board you stand on to ride waves"
+    },
+    {
+      "word": "hermit crab",
+      "definition": "a small crab that doesn't grow its own hard covering, so it moves into empty ones"
+    },
+    {
+      "word": "shell",
+      "definition": "a hard protective covering that some small creatures carry or live inside"
+    }
+  ]
 }

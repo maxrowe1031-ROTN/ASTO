@@ -89,5 +89,71 @@
       "definition": "A forked, human-shaped root once believed to hold magical powers."
     }
   ],
-  "date": "2026-08-04"
+  "date": "2026-08-04",
+  "definitions": [
+    {
+      "word": "apothecary",
+      "definition": "Someone who mixes and sells medicines, like an old-time pharmacist."
+    },
+    {
+      "word": "pestle",
+      "definition": "A club-shaped tool for grinding things up in a bowl."
+    },
+    {
+      "word": "herbalist",
+      "definition": "Someone who works with plants to make remedies and treatments."
+    },
+    {
+      "word": "sickle",
+      "definition": "A curved blade for cutting stalks and plants close to the ground."
+    },
+    {
+      "word": "narcotic",
+      "definition": "A substance that dulls pain and makes you drowsy or sleepy."
+    },
+    {
+      "word": "opium",
+      "definition": "A thick juice from poppies, used to ease pain or bring sleep."
+    },
+    {
+      "word": "purgative",
+      "definition": "Something that clears out your gut, used to treat constipation."
+    },
+    {
+      "word": "senna",
+      "definition": "A plant whose leaves and pods are used to get things moving in your gut."
+    },
+    {
+      "word": "drop",
+      "definition": "A tiny bit of liquid, the smallest amount you'd measure out."
+    },
+    {
+      "word": "dose",
+      "definition": "The right amount of medicine to take at one time."
+    },
+    {
+      "word": "splash",
+      "definition": "A small, quick pour of liquid, more than a drop but still modest."
+    },
+    {
+      "word": "draught",
+      "definition": "A full drink or portion of liquid, swallowed in one big gulp."
+    },
+    {
+      "word": "midsummer",
+      "definition": "The longest day of the year, right in the heart of summer."
+    },
+    {
+      "word": "St John's wort",
+      "definition": "A yellow-flowered plant used to lift the mood and heal wounds."
+    },
+    {
+      "word": "full moon",
+      "definition": "The night when the moon looks completely round and bright."
+    },
+    {
+      "word": "mandrake",
+      "definition": "A forked, human-shaped root once believed to hold magical powers."
+    }
+  ]
 }

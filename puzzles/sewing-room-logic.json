@@ -87,5 +87,71 @@
       "definition": "An old-fashioned little tool with a hooked end, used long ago for pulling small fasteners through tight openings on clothing."
     }
   ],
-  "date": "2026-08-13"
+  "date": "2026-08-13",
+  "definitions": [
+    {
+      "word": "jar",
+      "definition": "A little glass or plastic container with a lid, good for keeping small odds and ends together."
+    },
+    {
+      "word": "button",
+      "definition": "A small round fastener sewn onto fabric that slots through a hole to hold clothes closed."
+    },
+    {
+      "word": "spool",
+      "definition": "A small cylinder that thread gets wound around so it stays neat and doesn't tangle."
+    },
+    {
+      "word": "thread",
+      "definition": "A thin strand of twisted fiber used with a needle to sew fabric together."
+    },
+    {
+      "word": "thimble",
+      "definition": "A small hard cap worn on the fingertip to protect it while pushing a needle through cloth."
+    },
+    {
+      "word": "needle",
+      "definition": "A thin, sharp metal tool with a hole at one end, used to pull thread through fabric."
+    },
+    {
+      "word": "buttonhook",
+      "definition": "An old-fashioned little tool with a hooked end, used long ago for pulling small fasteners through tight openings on clothing."
+    },
+    {
+      "word": "boot",
+      "definition": "A sturdy shoe that covers the ankle or more, often laced or fastened for a snug fit."
+    },
+    {
+      "word": "loose",
+      "definition": "Not fastened tightly — able to wiggle, slip, or fall off with a little effort."
+    },
+    {
+      "word": "missing",
+      "definition": "Gone entirely — nowhere to be found when you look for it."
+    },
+    {
+      "word": "new",
+      "definition": "Fresh and unused, in its original good condition."
+    },
+    {
+      "word": "outgrown",
+      "definition": "Too small now because you've grown past the size it was made for."
+    },
+    {
+      "word": "snap",
+      "definition": "A two-part fastener that clicks shut when you press its pieces together."
+    },
+    {
+      "word": "buttonhole",
+      "definition": "A small slit in fabric made just for a button to pass through and hold things closed."
+    },
+    {
+      "word": "zipper",
+      "definition": "A sliding fastener with interlocking teeth that zips shut or open along a track."
+    },
+    {
+      "word": "shank",
+      "definition": "The little stem or loop on the back of a button used to sew it onto fabric."
+    }
+  ]
 }

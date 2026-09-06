@@ -89,5 +89,71 @@
       "definition": "A theater specialist who researches and advises on a play's history, structure, and meaning."
     }
   ],
-  "date": "2026-08-27"
+  "date": "2026-08-27",
+  "definitions": [
+    {
+      "word": "tragedy",
+      "definition": "A serious story where things end badly for the main character, often through fate or flaws."
+    },
+    {
+      "word": "Hamlet",
+      "definition": "A famous play about a prince wrestling with revenge, grief, and doubt."
+    },
+    {
+      "word": "musical",
+      "definition": "A show where the story is told partly through songs and dance."
+    },
+    {
+      "word": "Cats",
+      "definition": "A long-running show about a tribe of cats who sing and dance through the night."
+    },
+    {
+      "word": "costume designer",
+      "definition": "The person who creates and plans what every performer wears on stage."
+    },
+    {
+      "word": "wardrobe",
+      "definition": "All the clothes and costumes used in a production."
+    },
+    {
+      "word": "dramaturg",
+      "definition": "A theater specialist who researches and advises on a play's history, structure, and meaning."
+    },
+    {
+      "word": "script",
+      "definition": "The written text of a play, with all the lines and stage directions."
+    },
+    {
+      "word": "blackout",
+      "definition": "A moment when all the stage lights go completely dark."
+    },
+    {
+      "word": "scene change",
+      "definition": "The shift from one setting or scene to another during a show."
+    },
+    {
+      "word": "harness",
+      "definition": "A strapped rig worn by a performer to keep them safe while suspended or moved."
+    },
+    {
+      "word": "flying effect",
+      "definition": "A stage illusion that makes a performer appear to soar or float through the air."
+    },
+    {
+      "word": "casting",
+      "definition": "The process of choosing which actors will play which roles."
+    },
+    {
+      "word": "strike",
+      "definition": "The final teardown of a set once a show has finished its run."
+    },
+    {
+      "word": "overture",
+      "definition": "The instrumental music played before a show officially begins."
+    },
+    {
+      "word": "encore",
+      "definition": "An extra bit of performance given after the show ends, by audience demand."
+    }
+  ]
 }

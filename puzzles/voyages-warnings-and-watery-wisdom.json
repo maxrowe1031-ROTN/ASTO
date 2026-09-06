@@ -89,5 +89,71 @@
       "definition": "A written note left with someone describing where you're headed and when you'll be back."
     }
   ],
-  "date": "2026-09-14"
+  "date": "2026-09-14",
+  "definitions": [
+    {
+      "word": "pod",
+      "definition": "A small group of dolphins or whales swimming together."
+    },
+    {
+      "word": "dolphin",
+      "definition": "A sleek, playful sea mammal known for its clicks and leaping."
+    },
+    {
+      "word": "shoal",
+      "definition": "A big cluster of fish swimming close together in the water."
+    },
+    {
+      "word": "fish",
+      "definition": "A cold-blooded animal that lives in water and breathes through gills."
+    },
+    {
+      "word": "breakwater",
+      "definition": "A sturdy wall built out in the water to calm waves before they hit shore."
+    },
+    {
+      "word": "erosion",
+      "definition": "The slow wearing away of land or coastline by wind and water."
+    },
+    {
+      "word": "life jacket",
+      "definition": "A vest you wear to keep you floating if you fall in the water."
+    },
+    {
+      "word": "drowning",
+      "definition": "When someone can't breathe because they're stuck under water."
+    },
+    {
+      "word": "embark",
+      "definition": "To step aboard and start a trip by boat or ship."
+    },
+    {
+      "word": "disembark",
+      "definition": "To get off a boat or ship once you've arrived."
+    },
+    {
+      "word": "cast off",
+      "definition": "To untie the ropes and push away from the dock to start sailing."
+    },
+    {
+      "word": "dock",
+      "definition": "A platform by the water where boats tie up and unload."
+    },
+    {
+      "word": "tide table",
+      "definition": "A chart showing when the tide will be high or low each day."
+    },
+    {
+      "word": "tide",
+      "definition": "The rise and fall of the sea's level, caused by the moon's pull."
+    },
+    {
+      "word": "float plan",
+      "definition": "A written note left with someone describing where you're headed and when you'll be back."
+    },
+    {
+      "word": "voyage",
+      "definition": "A long trip taken by sea."
+    }
+  ]
 }

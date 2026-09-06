@@ -89,5 +89,71 @@
       "definition": "A style with steep sides that slope down on all faces, often with small windows poking out near the top."
     }
   ],
-  "date": "2026-08-21"
+  "date": "2026-08-21",
+  "definitions": [
+    {
+      "word": "mason",
+      "definition": "A skilled worker who builds things out of brick or stone, laying each piece by hand."
+    },
+    {
+      "word": "wall",
+      "definition": "A solid upright structure that divides space or holds a building up."
+    },
+    {
+      "word": "electrician",
+      "definition": "Someone trained to safely install and fix the electrical systems in a building."
+    },
+    {
+      "word": "wiring",
+      "definition": "The network of electrical cables running through a building, carrying power to outlets and lights."
+    },
+    {
+      "word": "doorbell",
+      "definition": "A little button-and-chime setup that lets someone at the door let you know they're there."
+    },
+    {
+      "word": "visitor",
+      "definition": "A person who's come to see you or stop by your place."
+    },
+    {
+      "word": "smoke alarm",
+      "definition": "A small device on the ceiling that shrieks when it senses smoke, warning you of danger."
+    },
+    {
+      "word": "fire",
+      "definition": "Flames and heat from something burning, either useful for warmth or dangerous when out of control."
+    },
+    {
+      "word": "dwelling",
+      "definition": "Any place where someone lives, from a tiny cabin to a big house."
+    },
+    {
+      "word": "bungalow",
+      "definition": "A cozy, low house usually all on one floor."
+    },
+    {
+      "word": "roof",
+      "definition": "The covering on top of a building that keeps rain, sun, and snow out."
+    },
+    {
+      "word": "mansard",
+      "definition": "A style with steep sides that slope down on all faces, often with small windows poking out near the top."
+    },
+    {
+      "word": "groundbreaking",
+      "definition": "The ceremonial first dig that marks the start of building something new."
+    },
+    {
+      "word": "demolition",
+      "definition": "The tearing down of a building, often on purpose and sometimes with a big crash."
+    },
+    {
+      "word": "closing",
+      "definition": "The final meeting where paperwork gets signed and a property officially changes hands."
+    },
+    {
+      "word": "payoff",
+      "definition": "The moment you make the last payment and finally clear a debt completely."
+    }
+  ]
 }

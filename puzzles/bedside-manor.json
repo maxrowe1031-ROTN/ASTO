@@ -86,5 +86,71 @@
       "definition": "someone trained to draw blood from people, usually for tests or donations"
     }
   ],
-  "date": "2026-09-05"
+  "date": "2026-09-05",
+  "definitions": [
+    {
+      "word": "surgeon",
+      "definition": "a doctor trained to operate on the body to fix or remove what's wrong"
+    },
+    {
+      "word": "scalpel",
+      "definition": "a small, very sharp blade used for precise cuts during an operation"
+    },
+    {
+      "word": "phlebotomist",
+      "definition": "someone trained to draw blood from people, usually for tests or donations"
+    },
+    {
+      "word": "needle",
+      "definition": "a thin, sharp point used to pierce skin for shots, stitches, or drawing blood"
+    },
+    {
+      "word": "onset",
+      "definition": "the moment a symptom or illness first starts showing up"
+    },
+    {
+      "word": "remission",
+      "definition": "a stretch of time when a disease fades or stops causing trouble"
+    },
+    {
+      "word": "admission",
+      "definition": "the moment someone officially checks into a hospital for care"
+    },
+    {
+      "word": "discharge",
+      "definition": "the moment someone's cleared to leave the hospital and go home"
+    },
+    {
+      "word": "bandage",
+      "definition": "a strip of material wrapped over an injury to protect and cover it"
+    },
+    {
+      "word": "wound",
+      "definition": "a break in the skin or tissue caused by injury"
+    },
+    {
+      "word": "cast",
+      "definition": "a hard shell wrapped around a limb to hold a broken bone still while it heals"
+    },
+    {
+      "word": "fracture",
+      "definition": "a crack or break in a bone"
+    },
+    {
+      "word": "stent",
+      "definition": "a tiny tube placed inside a vessel to keep it open and working"
+    },
+    {
+      "word": "blood flow",
+      "definition": "the movement of blood through the body's vessels"
+    },
+    {
+      "word": "pacemaker",
+      "definition": "a small device implanted to keep a heart beating at a steady rhythm"
+    },
+    {
+      "word": "heartbeat",
+      "definition": "the rhythmic pumping motion of the heart"
+    }
+  ]
 }

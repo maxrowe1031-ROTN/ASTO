@@ -89,5 +89,71 @@
       "definition": "Setting a small clay or metal cup holding oil and a wick alight, letting it burn as a gentle open flame."
     }
   ],
-  "date": "2026-08-07"
+  "date": "2026-08-07",
+  "definitions": [
+    {
+      "word": "lantern shade",
+      "definition": "The outer covering that wraps around a lantern's flame, letting soft light glow through."
+    },
+    {
+      "word": "rice paper",
+      "definition": "A thin, translucent paper made from plant fibers, often used to cover and diffuse light."
+    },
+    {
+      "word": "tassel",
+      "definition": "A dangling bunch of threads or cords used as a decorative hanging touch."
+    },
+    {
+      "word": "silk thread",
+      "definition": "A fine, smooth strand spun from silk fibers, often used for delicate decorations."
+    },
+    {
+      "word": "Mid-Autumn Festival",
+      "definition": "A traditional harvest-time celebration marked by full moons, mooncakes, and lantern displays."
+    },
+    {
+      "word": "sky lantern release",
+      "definition": "Sending a paper lantern with a small flame floating up into the night sky."
+    },
+    {
+      "word": "Diwali",
+      "definition": "A festival of lights celebrating the triumph of light over darkness, marked with lamps and fireworks."
+    },
+    {
+      "word": "diya lighting",
+      "definition": "Setting a small clay or metal cup holding oil and a wick alight, letting it burn as a gentle open flame."
+    },
+    {
+      "word": "glass chimney",
+      "definition": "A clear glass tube surrounding a flame to shield it from wind and keep it steady."
+    },
+    {
+      "word": "flameout",
+      "definition": "The sudden failure of a flame going out unexpectedly."
+    },
+    {
+      "word": "bamboo frame",
+      "definition": "A lightweight skeleton made of bamboo strips that holds an object's shape."
+    },
+    {
+      "word": "collapse",
+      "definition": "The sudden loss of shape or structure, causing something to fall in on itself."
+    },
+    {
+      "word": "light",
+      "definition": "The act of setting something aflame or turning on illumination."
+    },
+    {
+      "word": "extinguish",
+      "definition": "To put out a flame or fire, stopping it from burning."
+    },
+    {
+      "word": "assemble",
+      "definition": "To put pieces together to build something whole."
+    },
+    {
+      "word": "disassemble",
+      "definition": "To take something apart, breaking it back down into its separate pieces."
+    }
+  ]
 }

@@ -91,5 +91,71 @@
       "definition": "a small pointed hand tool used for piercing holes in tough materials like leather or thick paper"
     }
   ],
-  "date": "2026-09-17"
+  "date": "2026-09-17",
+  "definitions": [
+    {
+      "word": "epic",
+      "definition": "a long grand story about heroes and big adventures, usually told in verse"
+    },
+    {
+      "word": "Iliad",
+      "definition": "an ancient poem about the Trojan War and the warriors who fought in it"
+    },
+    {
+      "word": "tragedy",
+      "definition": "a serious story where things go badly wrong for the main character, often ending in ruin"
+    },
+    {
+      "word": "Hamlet",
+      "definition": "a famous play about a prince who broods over betrayal and revenge"
+    },
+    {
+      "word": "bookbinder",
+      "definition": "someone who sews and glues pages together to make a finished book"
+    },
+    {
+      "word": "awl",
+      "definition": "a small pointed hand tool used for piercing holes in tough materials like leather or thick paper"
+    },
+    {
+      "word": "calligrapher",
+      "definition": "someone who writes letters in beautiful, careful strokes as an art form"
+    },
+    {
+      "word": "quill",
+      "definition": "a feather trimmed to a point and used for writing with ink"
+    },
+    {
+      "word": "book",
+      "definition": "pages bound together between covers, meant for reading"
+    },
+    {
+      "word": "spine",
+      "definition": "the sturdy edge of a book where the pages are held together and the title often sits"
+    },
+    {
+      "word": "scroll",
+      "definition": "a long sheet of paper or parchment that rolls up instead of folding into pages"
+    },
+    {
+      "word": "rod",
+      "definition": "a slim stick that a rolled-up sheet winds around to keep its shape"
+    },
+    {
+      "word": "checkout",
+      "definition": "the moment you take something out on loan, like borrowing a library book"
+    },
+    {
+      "word": "return",
+      "definition": "bringing something back after you're done borrowing it"
+    },
+    {
+      "word": "opening",
+      "definition": "the start of an event, when things officially begin"
+    },
+    {
+      "word": "closing",
+      "definition": "the end of an event, when things officially wrap up"
+    }
+  ]
 }

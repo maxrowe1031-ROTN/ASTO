@@ -89,5 +89,71 @@
       "definition": "A waxy structure made of small six-sided cells, often golden in color."
     }
   ],
-  "date": "2026-08-18"
+  "date": "2026-08-18",
+  "definitions": [
+    {
+      "word": "bee",
+      "definition": "A buzzing little insect that flies from flower to flower gathering sweet stuff."
+    },
+    {
+      "word": "honeycomb",
+      "definition": "A waxy structure made of small six-sided cells, often golden in color."
+    },
+    {
+      "word": "hen",
+      "definition": "A feathered farm bird that clucks around the yard and sits in a coop."
+    },
+    {
+      "word": "egg",
+      "definition": "A smooth oval thing you crack open to cook breakfast."
+    },
+    {
+      "word": "milk",
+      "definition": "A white liquid poured from a jug, great in cereal or coffee."
+    },
+    {
+      "word": "cheese",
+      "definition": "A firm or soft food that comes in wheels or blocks, often sliced onto sandwiches."
+    },
+    {
+      "word": "cucumber",
+      "definition": "A long green vegetable that's crisp and cool, great in salads."
+    },
+    {
+      "word": "pickle",
+      "definition": "A tangy, crunchy snack soaked in brine or vinegar."
+    },
+    {
+      "word": "florist",
+      "definition": "Someone who arranges and sells flowers for a living."
+    },
+    {
+      "word": "shears",
+      "definition": "A big pair of scissors used for trimming and cutting stems or hedges."
+    },
+    {
+      "word": "farmer",
+      "definition": "Someone who grows crops and raises animals for a living."
+    },
+    {
+      "word": "wheelbarrow",
+      "definition": "A one-wheeled cart you push by hand to haul dirt, produce, or tools."
+    },
+    {
+      "word": "unload",
+      "definition": "To take everything off a vehicle or cart and set it down."
+    },
+    {
+      "word": "pack up",
+      "definition": "To gather everything together and put it away when you're done."
+    },
+    {
+      "word": "picked",
+      "definition": "Gathered by hand, like fruit plucked straight off the plant."
+    },
+    {
+      "word": "sold",
+      "definition": "Given to a buyer in exchange for money."
+    }
+  ]
 }

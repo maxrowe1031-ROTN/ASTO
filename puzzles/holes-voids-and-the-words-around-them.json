@@ -81,5 +81,71 @@
       "definition": "a deep natural pool of water surrounded by rock, formed where ground collapses to reveal groundwater below"
     }
   ],
-  "date": "2026-09-18"
+  "date": "2026-09-18",
+  "definitions": [
+    {
+      "word": "diver",
+      "definition": "someone who swims deep underwater, often exploring caves, wrecks, or reefs"
+    },
+    {
+      "word": "flashlight",
+      "definition": "a handheld light you switch on to see in the dark"
+    },
+    {
+      "word": "climber",
+      "definition": "someone who scales cliffs, mountains, or rock faces"
+    },
+    {
+      "word": "rope",
+      "definition": "a strong cord used to hold weight, tie things, or catch a fall"
+    },
+    {
+      "word": "pit",
+      "definition": "a deep hole dug or worn into the ground"
+    },
+    {
+      "word": "rim",
+      "definition": "the edge running around the top of something hollow"
+    },
+    {
+      "word": "basin",
+      "definition": "a low, bowl-shaped dip in the land that can collect water"
+    },
+    {
+      "word": "floor",
+      "definition": "the flat bottom surface of a space"
+    },
+    {
+      "word": "collapse",
+      "definition": "when something suddenly caves in or gives way"
+    },
+    {
+      "word": "rubble",
+      "definition": "broken bits of rock or debris left after something falls apart"
+    },
+    {
+      "word": "dissolution",
+      "definition": "the slow process of something being dissolved away, like rock by water"
+    },
+    {
+      "word": "channel",
+      "definition": "a narrow passage worn out by flowing water"
+    },
+    {
+      "word": "sinkhole",
+      "definition": "a hole that opens up suddenly when the ground beneath collapses"
+    },
+    {
+      "word": "cenote",
+      "definition": "a deep natural pool of water surrounded by rock, formed where ground collapses to reveal groundwater below"
+    },
+    {
+      "word": "cave",
+      "definition": "a natural hollow space underground or into a hillside"
+    },
+    {
+      "word": "grotto",
+      "definition": "a small, often picturesque cave, sometimes man-made or decorative"
+    }
+  ]
 }

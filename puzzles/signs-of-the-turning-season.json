@@ -89,5 +89,71 @@
       "definition": "A light, late snowfall that surprises everyone after the weather has already turned mild in spring."
     }
   ],
-  "date": "2026-08-05"
+  "date": "2026-08-05",
+  "definitions": [
+    {
+      "word": "sugarmaker",
+      "definition": "Someone who taps trees and boils the sap down into syrup each spring."
+    },
+    {
+      "word": "evaporator",
+      "definition": "A big flat pan set over heat that boils sap down until it turns into syrup."
+    },
+    {
+      "word": "gardener",
+      "definition": "Someone who grows plants and vegetables, tending them from seed to harvest."
+    },
+    {
+      "word": "cold frame",
+      "definition": "A low box with a clear top that shelters young plants and warms the soil early in the season."
+    },
+    {
+      "word": "row cover",
+      "definition": "A lightweight fabric laid over plants to shield them from cold nights."
+    },
+    {
+      "word": "frost",
+      "definition": "A thin icy coating that forms on cold nights and can damage tender plants."
+    },
+    {
+      "word": "windbreak",
+      "definition": "A line of trees or a fence built to slow the wind and protect what's behind it."
+    },
+    {
+      "word": "snowdrift",
+      "definition": "A mound of snow piled up by the wind against something in its path."
+    },
+    {
+      "word": "flurry",
+      "definition": "A brief, light burst of snow that comes and goes quickly."
+    },
+    {
+      "word": "onion snow",
+      "definition": "A light, late snowfall that surprises everyone after the weather has already turned mild in spring."
+    },
+    {
+      "word": "shower",
+      "definition": "A short spell of rain that passes through and then clears up."
+    },
+    {
+      "word": "robin snow",
+      "definition": "A light spring snowfall that comes right around the time robins return."
+    },
+    {
+      "word": "skunk cabbage",
+      "definition": "An early spring plant with a strong smell that pushes up through half-frozen ground."
+    },
+    {
+      "word": "mud season",
+      "definition": "The messy, thawing stretch between winter and spring when the ground turns soft and wet."
+    },
+    {
+      "word": "pussy willow",
+      "definition": "A shrub with soft, fuzzy buds that appear in very early spring."
+    },
+    {
+      "word": "sap run",
+      "definition": "The stretch of days when sap flows freely up through maple trees, ready for tapping."
+    }
+  ]
 }

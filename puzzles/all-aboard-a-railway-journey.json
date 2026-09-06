@@ -93,5 +93,71 @@
       "definition": "A list of items or goods, written out in detail."
     }
   ],
-  "date": "2026-08-11"
+  "date": "2026-08-11",
+  "definitions": [
+    {
+      "word": "locomotive",
+      "definition": "The engine up front that pulls the whole train along the tracks."
+    },
+    {
+      "word": "coal",
+      "definition": "A dark, hard rock that burns hot — old-fashioned fuel for engines and fires."
+    },
+    {
+      "word": "lantern",
+      "definition": "A small portable light with a flame or bulb inside, carried by a handle."
+    },
+    {
+      "word": "oil",
+      "definition": "A slick liquid burned for light or heat, or used to keep machines running smooth."
+    },
+    {
+      "word": "journey",
+      "definition": "A trip from one place to another, especially a longer one."
+    },
+    {
+      "word": "timetable",
+      "definition": "A printed schedule showing when trains or buses come and go."
+    },
+    {
+      "word": "cargo",
+      "definition": "Goods being hauled from one place to another by ship, train, or truck."
+    },
+    {
+      "word": "manifest",
+      "definition": "A list of items or goods, written out in detail."
+    },
+    {
+      "word": "boarding",
+      "definition": "Stepping onto a train, plane, or ship at the start of a trip."
+    },
+    {
+      "word": "disembarking",
+      "definition": "Getting off a train, plane, or ship once you've arrived."
+    },
+    {
+      "word": "dusk",
+      "definition": "The dim, fading light just after sunset."
+    },
+    {
+      "word": "dawn",
+      "definition": "The first light of day, just before sunrise breaks fully."
+    },
+    {
+      "word": "night",
+      "definition": "The dark hours between sunset and sunrise."
+    },
+    {
+      "word": "sunlight",
+      "definition": "The bright light that comes straight from the sun."
+    },
+    {
+      "word": "tunnel",
+      "definition": "A long passage dug through rock or earth, usually for a road or railway."
+    },
+    {
+      "word": "sky",
+      "definition": "The open space above the ground, full of air, clouds, and stars."
+    }
+  ]
 }

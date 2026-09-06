@@ -89,5 +89,71 @@
       "definition": "the act of cutting something down so it falls to the ground"
     }
   ],
-  "date": "2026-09-04"
+  "date": "2026-09-04",
+  "definitions": [
+    {
+      "word": "wood",
+      "definition": "the solid material that trees are made of, used for building and burning."
+    },
+    {
+      "word": "hardwood",
+      "definition": "a dense, sturdy kind of wood that comes from slow-growing trees like oak."
+    },
+    {
+      "word": "root",
+      "definition": "the part of a plant that grows underground and pulls in water and nutrients."
+    },
+    {
+      "word": "taproot",
+      "definition": "a thick, single main root that digs straight down deep into the soil."
+    },
+    {
+      "word": "carpenter",
+      "definition": "someone skilled at building and shaping things out of wood."
+    },
+    {
+      "word": "furniture",
+      "definition": "things like tables and chairs that you use to sit, eat, or store stuff."
+    },
+    {
+      "word": "papermaker",
+      "definition": "someone whose job is turning pulp into sheets of paper."
+    },
+    {
+      "word": "paper",
+      "definition": "the thin material you write, print, or draw on."
+    },
+    {
+      "word": "trunk",
+      "definition": "the thick woody stem of a tree that holds it upright."
+    },
+    {
+      "word": "rings",
+      "definition": "circular lines inside a tree trunk that show its age, one per year."
+    },
+    {
+      "word": "leaf",
+      "definition": "the flat green part of a plant that catches sunlight to make food."
+    },
+    {
+      "word": "vein",
+      "definition": "a thin line running through a leaf that carries water and nutrients."
+    },
+    {
+      "word": "planting",
+      "definition": "putting a seed or seedling into the ground so it can start growing."
+    },
+    {
+      "word": "felling",
+      "definition": "the act of cutting something down so it falls to the ground."
+    },
+    {
+      "word": "budding",
+      "definition": "the moment new growth starts pushing out on a plant, like tiny buds appearing."
+    },
+    {
+      "word": "withering",
+      "definition": "drying up and shrinking as a plant loses its life and freshness."
+    }
+  ]
 }

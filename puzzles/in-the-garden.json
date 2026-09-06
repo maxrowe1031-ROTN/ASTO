@@ -89,5 +89,71 @@
       "definition": "A plant's root and lower stem system, chosen for its hardiness and strong growth underground."
     }
   ],
-  "date": "2026-08-26"
+  "date": "2026-08-26",
+  "definitions": [
+    {
+      "word": "gardener",
+      "definition": "Someone who tends plants, digging, planting, and keeping a garden alive and thriving."
+    },
+    {
+      "word": "trowel",
+      "definition": "A small hand shovel for digging holes, scooping soil, or lifting little plants."
+    },
+    {
+      "word": "arborist",
+      "definition": "A professional who cares for trees, trimming, treating, and sometimes felling them safely."
+    },
+    {
+      "word": "chainsaw",
+      "definition": "A powered saw with a spinning chain of blades, used to cut through thick wood fast."
+    },
+    {
+      "word": "nightshade",
+      "definition": "A plant family that includes many common vegetables, some of which have poisonous relatives."
+    },
+    {
+      "word": "tomato",
+      "definition": "A juicy red fruit often used as a vegetable, popular in salads and sauces."
+    },
+    {
+      "word": "legume",
+      "definition": "A plant family known for producing pods full of seeds, often rich in protein."
+    },
+    {
+      "word": "pea",
+      "definition": "A small round green seed that grows in pods, sweet and popular as a vegetable."
+    },
+    {
+      "word": "sowing",
+      "definition": "The act of planting seeds in the ground so they can grow."
+    },
+    {
+      "word": "harvest",
+      "definition": "The time or act of gathering ripe crops from the field or garden."
+    },
+    {
+      "word": "frost",
+      "definition": "A thin icy coating that forms on cold surfaces, often marking the start of winter chill."
+    },
+    {
+      "word": "thaw",
+      "definition": "The melting away of ice or frost as things warm up again."
+    },
+    {
+      "word": "rootstock",
+      "definition": "A plant's root and lower stem system, chosen for its hardiness and strong growth underground."
+    },
+    {
+      "word": "scion",
+      "definition": "A young shoot or cutting from a plant, grafted onto another to grow together."
+    },
+    {
+      "word": "trellis",
+      "definition": "A framework of wood or wire that gives climbing plants something to grow up on."
+    },
+    {
+      "word": "climber",
+      "definition": "A plant that grows upward by twining or clinging onto something for support."
+    }
+  ]
 }

@@ -89,5 +89,71 @@
       "definition": "An old style opening mechanism worked by a notched metal piece that must slip past internal obstacles shaped just so."
     }
   ],
-  "date": "2026-09-08"
+  "date": "2026-09-08",
+  "definitions": [
+    {
+      "word": "locksmith shop",
+      "definition": "A little storefront where someone makes keys and fixes locks for a living."
+    },
+    {
+      "word": "key cutting",
+      "definition": "Grinding a blank piece of metal into the exact shape needed to work a particular lock."
+    },
+    {
+      "word": "vault",
+      "definition": "A heavy, reinforced room or box built to keep valuables locked away and untouched."
+    },
+    {
+      "word": "safekeeping",
+      "definition": "Holding onto something carefully so nothing happens to it while it's in your care."
+    },
+    {
+      "word": "lock",
+      "definition": "A device that keeps something shut until the right key or code opens it."
+    },
+    {
+      "word": "deadbolt",
+      "definition": "A sturdy lock bolt that slides straight into the frame for extra security on a door."
+    },
+    {
+      "word": "key",
+      "definition": "A small shaped piece of metal made to open one particular lock."
+    },
+    {
+      "word": "skeleton key",
+      "definition": "A simplified key filed down so it can open many different old-style locks."
+    },
+    {
+      "word": "apprentice",
+      "definition": "Someone learning a trade by working under and watching a skilled person."
+    },
+    {
+      "word": "master",
+      "definition": "Someone who's fully learned a trade and can do it expertly on their own."
+    },
+    {
+      "word": "install",
+      "definition": "Putting something new in place and getting it set up to work."
+    },
+    {
+      "word": "replace",
+      "definition": "Taking out something worn or broken and putting a fresh one in its place."
+    },
+    {
+      "word": "plug",
+      "definition": "The rotating core inside a lock that turns when the right key is inserted."
+    },
+    {
+      "word": "pin",
+      "definition": "A tiny spring-loaded piece inside a lock that has to line up just right to let it turn."
+    },
+    {
+      "word": "warded lock",
+      "definition": "An old style opening mechanism worked by a notched metal piece that must slip past internal obstacles shaped just so."
+    },
+    {
+      "word": "ward",
+      "definition": "A fixed obstruction inside an old lock that blocks any key that isn't cut to match it."
+    }
+  ]
 }

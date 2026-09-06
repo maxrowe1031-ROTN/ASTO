@@ -89,5 +89,71 @@
       "definition": "a thin paper strip once printed with scrolling rows of numbers and letters"
     }
   ],
-  "date": "2026-09-15"
+  "date": "2026-09-15",
+  "definitions": [
+    {
+      "word": "vault",
+      "definition": "a heavy locked room built to keep valuables safe from theft or fire."
+    },
+    {
+      "word": "gold",
+      "definition": "a shiny precious metal people have prized and saved for thousands of years."
+    },
+    {
+      "word": "wallet",
+      "definition": "a small folding case you carry in your pocket to hold money and cards."
+    },
+    {
+      "word": "cash",
+      "definition": "physical money — coins and bills you can hand someone directly."
+    },
+    {
+      "word": "auctioneer",
+      "definition": "the person who calls out rising bids and decides who wins an item for sale."
+    },
+    {
+      "word": "gavel",
+      "definition": "a small wooden hammer banged down to signal a decision or sale is final."
+    },
+    {
+      "word": "trader",
+      "definition": "someone who buys and sells stocks or goods for a living, often fast-paced."
+    },
+    {
+      "word": "ticker tape",
+      "definition": "a thin paper strip once printed with scrolling rows of numbers and letters."
+    },
+    {
+      "word": "default",
+      "definition": "failing to pay back a loan or debt as you promised to."
+    },
+    {
+      "word": "foreclosure",
+      "definition": "when a lender takes back a home because the owner stopped paying the mortgage."
+    },
+    {
+      "word": "bounced check",
+      "definition": "a check that fails to go through because there wasn't enough money to cover it."
+    },
+    {
+      "word": "overdraft fee",
+      "definition": "a charge your bank slaps on you for spending more than what's in your account."
+    },
+    {
+      "word": "flea market",
+      "definition": "an outdoor gathering of stalls selling secondhand and cheap odds and ends."
+    },
+    {
+      "word": "shopping mall",
+      "definition": "a big indoor building packed with lots of separate stores under one roof."
+    },
+    {
+      "word": "farmers market",
+      "definition": "an outdoor market where local growers sell fresh produce directly to shoppers."
+    },
+    {
+      "word": "stock exchange",
+      "definition": "a huge organized marketplace where shares of companies are bought and sold."
+    }
+  ]
 }

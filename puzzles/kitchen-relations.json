@@ -89,5 +89,71 @@
       "definition": "A short recessed strip of trim near the floor, set back so you can stand close without stubbing your toes."
     }
   ],
-  "date": "2026-08-02"
+  "date": "2026-08-02",
+  "definitions": [
+    {
+      "word": "whisk",
+      "definition": "A wire loop tool you swirl through eggs or cream to mix in air and smooth out lumps."
+    },
+    {
+      "word": "beat",
+      "definition": "To stir something fast and hard, usually to mix ingredients or add fluffiness."
+    },
+    {
+      "word": "grater",
+      "definition": "A tool with sharp little holes you rub food across to turn it into fine bits."
+    },
+    {
+      "word": "shred",
+      "definition": "To tear or grind something into thin strips or small pieces."
+    },
+    {
+      "word": "fridge",
+      "definition": "The everyday name for the cold box in your kitchen that keeps food from spoiling."
+    },
+    {
+      "word": "refrigerator",
+      "definition": "The full, proper name for the appliance that chills your food to keep it fresh."
+    },
+    {
+      "word": "freezer",
+      "definition": "The icy-cold compartment or unit where you store food to keep it frozen solid."
+    },
+    {
+      "word": "deep freezer",
+      "definition": "A standalone freezing unit, bigger and colder than a regular one, for long-term storage."
+    },
+    {
+      "word": "backsplash",
+      "definition": "The panel behind your stove or sink that keeps splashes and grease off the wall."
+    },
+    {
+      "word": "wall",
+      "definition": "The flat vertical surface that makes up the sides of a room."
+    },
+    {
+      "word": "toe-kick",
+      "definition": "A short recessed strip of trim near the floor, set back so you can stand close without stubbing your toes."
+    },
+    {
+      "word": "cabinet base",
+      "definition": "The bottom part of a cabinet that sits on the floor and holds everything up."
+    },
+    {
+      "word": "saucepan",
+      "definition": "A small deep pot with a handle, good for sauces, soups, or boiling small batches."
+    },
+    {
+      "word": "stockpot",
+      "definition": "A big tall pot for making stock, soup, or boiling large amounts of food at once."
+    },
+    {
+      "word": "ramekin",
+      "definition": "A small individual dish for baking or serving single portions like custard."
+    },
+    {
+      "word": "roasting pan",
+      "definition": "A large sturdy pan for roasting big cuts of meat or whole dishes in the oven."
+    }
+  ]
 }

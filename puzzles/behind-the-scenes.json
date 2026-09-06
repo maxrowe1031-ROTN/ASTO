@@ -86,5 +86,71 @@
       "definition": "A financial guarantee that pays back backers if money runs out before a job is finished."
     }
   ],
-  "date": "2026-09-03"
+  "date": "2026-09-03",
+  "definitions": [
+    {
+      "word": "camera",
+      "definition": "The device that captures the moving images you end up watching."
+    },
+    {
+      "word": "lens",
+      "definition": "The curved glass piece that focuses light so you get a sharp picture."
+    },
+    {
+      "word": "projector",
+      "definition": "A machine that throws a bright picture up onto a big screen."
+    },
+    {
+      "word": "lamp",
+      "definition": "The bright bulb inside that makes the picture on screen glow."
+    },
+    {
+      "word": "opening credits",
+      "definition": "The names and titles that roll at the very start of a show."
+    },
+    {
+      "word": "closing credits",
+      "definition": "The scrolling list of names that plays after the story ends."
+    },
+    {
+      "word": "greenlight",
+      "definition": "The official go-ahead that lets a project start being made."
+    },
+    {
+      "word": "wrap",
+      "definition": "The moment when filming is officially declared finished."
+    },
+    {
+      "word": "film",
+      "definition": "A movie — the finished story you watch from start to end."
+    },
+    {
+      "word": "poster",
+      "definition": "A big printed image made to advertise something and pull people in."
+    },
+    {
+      "word": "star",
+      "definition": "The famous lead performer everyone's excited to see."
+    },
+    {
+      "word": "headshot",
+      "definition": "A close-up photo of someone's face used to show who they are."
+    },
+    {
+      "word": "stunt double",
+      "definition": "A skilled performer who steps in for the risky physical action."
+    },
+    {
+      "word": "injury",
+      "definition": "Physical harm someone might suffer, especially during dangerous work."
+    },
+    {
+      "word": "completion bond",
+      "definition": "A financial guarantee that pays back backers if money runs out before a job is finished."
+    },
+    {
+      "word": "shutdown",
+      "definition": "A sudden stop that halts a whole operation before it's done."
+    }
+  ]
 }

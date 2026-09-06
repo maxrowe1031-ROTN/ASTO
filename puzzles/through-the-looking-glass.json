@@ -85,5 +85,71 @@
       "definition": "A mirror that curves outward like the outside of a ball, bulging toward you in the middle."
     }
   ],
-  "date": "2026-09-01"
+  "date": "2026-09-01",
+  "definitions": [
+    {
+      "word": "mirror maze",
+      "definition": "A twisty walk-through attraction full of reflective walls that make you lose track of which way is out."
+    },
+    {
+      "word": "fun house mirror",
+      "definition": "A warped mirror that stretches or squishes your reflection into a funny shape."
+    },
+    {
+      "word": "disco ball",
+      "definition": "A spinning sphere covered in tiny reflective squares that throws sparkling light around a room."
+    },
+    {
+      "word": "mirror tile",
+      "definition": "A small flat piece of reflective glass used to cover a surface in shiny squares."
+    },
+    {
+      "word": "one-way mirror",
+      "definition": "A mirror that looks reflective from one side but lets someone see through it from the other."
+    },
+    {
+      "word": "surveillance",
+      "definition": "Watching over a place or person closely, often without them noticing."
+    },
+    {
+      "word": "convex mirror",
+      "definition": "A mirror that curves outward like the outside of a ball, bulging toward you in the middle."
+    },
+    {
+      "word": "wide-angle view",
+      "definition": "A broad sightline that takes in much more space than a normal straight-on look."
+    },
+    {
+      "word": "cracked mirror",
+      "definition": "A mirror with a split or fracture running through its glass surface."
+    },
+    {
+      "word": "misfortune",
+      "definition": "Bad luck or an unlucky turn of events that seems to happen out of nowhere."
+    },
+    {
+      "word": "tarnished mirror",
+      "definition": "An old mirror whose silvery backing has dulled and darkened over time."
+    },
+    {
+      "word": "age",
+      "definition": "How old something is, or the wear and history that time leaves behind."
+    },
+    {
+      "word": "installation",
+      "definition": "The act of putting something in place and setting it up to be used."
+    },
+    {
+      "word": "shattering",
+      "definition": "Breaking suddenly into many small pieces, often with a loud crash."
+    },
+    {
+      "word": "casting",
+      "definition": "Pouring molten or liquid material into a mold to shape it into something solid."
+    },
+    {
+      "word": "cracking",
+      "definition": "Developing a split or fracture, the first sign that something solid is failing."
+    }
+  ]
 }

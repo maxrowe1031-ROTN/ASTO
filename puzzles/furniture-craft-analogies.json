@@ -85,5 +85,71 @@
       "definition": "A thickly padded, cushioned stool for resting your feet or sitting on low to the ground."
     }
   ],
-  "date": "2026-09-09"
+  "date": "2026-09-09",
+  "definitions": [
+    {
+      "word": "chisel",
+      "definition": "A sharp-edged hand tool you push or tap with a mallet to cut into wood or stone."
+    },
+    {
+      "word": "carve",
+      "definition": "To shape something by cutting away bits of material, usually wood."
+    },
+    {
+      "word": "lathe",
+      "definition": "A machine that spins material around so a tool can shape it evenly."
+    },
+    {
+      "word": "turn",
+      "definition": "To shape something by spinning it while cutting, giving it a smooth round form."
+    },
+    {
+      "word": "coaster",
+      "definition": "A small mat you set a cup on to protect the surface underneath."
+    },
+    {
+      "word": "stain",
+      "definition": "A discolored mark left behind, often from spilled liquid."
+    },
+    {
+      "word": "felt pad",
+      "definition": "A soft little sticker you put on furniture legs to protect the floor."
+    },
+    {
+      "word": "scratch",
+      "definition": "A thin mark or groove left when something scrapes across a surface."
+    },
+    {
+      "word": "veneer",
+      "definition": "A thin decorative layer of nice wood glued over a cheaper surface."
+    },
+    {
+      "word": "particleboard",
+      "definition": "A cheap board made of pressed wood chips and glue, often hidden under nicer material."
+    },
+    {
+      "word": "upholstery",
+      "definition": "The fabric or padding covering that makes furniture soft and finished-looking."
+    },
+    {
+      "word": "frame",
+      "definition": "The sturdy skeleton structure that gives a piece of furniture its shape."
+    },
+    {
+      "word": "davenport",
+      "definition": "An old-fashioned word people used to use for a couch."
+    },
+    {
+      "word": "sofa",
+      "definition": "A long cushioned seat meant for more than one person to sit or lounge on."
+    },
+    {
+      "word": "hassock",
+      "definition": "A thickly padded, cushioned stool for resting your feet or sitting on low to the ground."
+    },
+    {
+      "word": "ottoman",
+      "definition": "A low cushioned footstool you can rest your feet on or use as extra seating."
+    }
+  ]
 }

@@ -90,5 +90,71 @@
       "definition": "A precision instrument on a tripod with a small telescope, used for measuring angles between points."
     }
   ],
-  "date": "2026-08-28"
+  "date": "2026-08-28",
+  "definitions": [
+    {
+      "word": "north",
+      "definition": "The direction that points toward the top of most maps, away from the equator toward the pole."
+    },
+    {
+      "word": "south",
+      "definition": "The direction opposite north, toward the bottom of most maps."
+    },
+    {
+      "word": "east",
+      "definition": "The direction the sun rises from, to the right when you're facing north."
+    },
+    {
+      "word": "west",
+      "definition": "The direction the sun sets in, to the left when you're facing north."
+    },
+    {
+      "word": "strait",
+      "definition": "A narrow strip of water connecting two larger seas or bodies of water."
+    },
+    {
+      "word": "Gibraltar",
+      "definition": "A famous narrow passage of water linking the Atlantic Ocean to the Mediterranean Sea."
+    },
+    {
+      "word": "peninsula",
+      "definition": "A piece of land almost surrounded by water, connected to the mainland on one side."
+    },
+    {
+      "word": "Florida",
+      "definition": "A well-known strip of land in the southeastern US that juts out into the ocean."
+    },
+    {
+      "word": "surveyor",
+      "definition": "Someone who measures land carefully to map boundaries, elevations, and distances."
+    },
+    {
+      "word": "theodolite",
+      "definition": "A precision instrument on a tripod with a small telescope, used for measuring angles between points."
+    },
+    {
+      "word": "navigator",
+      "definition": "Someone who figures out a route or position, especially at sea or in the air."
+    },
+    {
+      "word": "sextant",
+      "definition": "A handheld tool that measures the angle between the horizon and a star or the sun to find your position."
+    },
+    {
+      "word": "needle",
+      "definition": "The thin pointer that swings to show which way is which inside a directional tool."
+    },
+    {
+      "word": "compass",
+      "definition": "A small device with a pointer that always settles toward magnetic north."
+    },
+    {
+      "word": "satellite",
+      "definition": "An object orbiting Earth that sends signals down for communication or positioning."
+    },
+    {
+      "word": "GPS",
+      "definition": "A system that tells you exactly where you are on Earth using signals from space."
+    }
+  ]
 }

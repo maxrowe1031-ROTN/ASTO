@@ -93,5 +93,71 @@
       "definition": "A famous outfielder known for chasing and breaking a long-standing single-season home run record in 1961."
     }
   ],
-  "date": "2026-09-06"
+  "date": "2026-09-06",
+  "definitions": [
+    {
+      "word": "Bullpen",
+      "definition": "The area where relief pitchers get ready before they're called into the game."
+    },
+    {
+      "word": "warm-up",
+      "definition": "The light exercise and throwing players do to get their bodies ready before playing."
+    },
+    {
+      "word": "Batting cage",
+      "definition": "An enclosed space where hitters can safely take swings at pitched balls."
+    },
+    {
+      "word": "practice swings",
+      "definition": "The rehearsal swings a batter takes to get their timing and form right."
+    },
+    {
+      "word": "Opening Day",
+      "definition": "The very first game of the baseball season, full of fresh hope and ceremony."
+    },
+    {
+      "word": "World Series",
+      "definition": "The championship series that crowns baseball's champion at the end of the season."
+    },
+    {
+      "word": "Rookie season",
+      "definition": "A player's very first year competing at the top level of the sport."
+    },
+    {
+      "word": "retirement",
+      "definition": "The point when a player steps away from the game for good, ending their career."
+    },
+    {
+      "word": "Jersey",
+      "definition": "The shirt a player wears with the team's name and number on it."
+    },
+    {
+      "word": "pinstripes",
+      "definition": "The thin vertical lines on a uniform that make it instantly recognizable."
+    },
+    {
+      "word": "Cap",
+      "definition": "The brimmed hat that's part of a player's uniform, showing off the team logo."
+    },
+    {
+      "word": "interlocking NY",
+      "definition": "The overlapping letters that mark a cap or jersey as belonging to this iconic team."
+    },
+    {
+      "word": "Ruth",
+      "definition": "A legendary slugger whose powerful home runs made him one of the sport's greatest icons."
+    },
+    {
+      "word": "Gehrig",
+      "definition": "A beloved first baseman known for his incredible durability and quiet strength."
+    },
+    {
+      "word": "Mantle",
+      "definition": "A switch-hitting center fielder famous for his blend of power and speed."
+    },
+    {
+      "word": "Maris",
+      "definition": "A famous outfielder known for chasing and breaking a long-standing single-season home run record in 1961."
+    }
+  ]
 }

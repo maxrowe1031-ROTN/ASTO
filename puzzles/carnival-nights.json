@@ -89,5 +89,71 @@
       "definition": "a laborer who does general physical work, often setting up or tearing down at a traveling show"
     }
   ],
-  "date": "2026-08-16"
+  "date": "2026-08-16",
+  "definitions": [
+    {
+      "word": "snack",
+      "definition": "a small bite of food you grab between meals, just enough to satisfy you"
+    },
+    {
+      "word": "cotton candy",
+      "definition": "spun sugar fluff that melts on your tongue, sold at fairs on a paper cone"
+    },
+    {
+      "word": "ride",
+      "definition": "an attraction you climb into or onto for a thrill or a scenic spin"
+    },
+    {
+      "word": "roller coaster",
+      "definition": "a track with steep drops and loops that whips you around at high speed"
+    },
+    {
+      "word": "sputter",
+      "definition": "a choppy, uneven sound like something trying to run but not quite making it"
+    },
+    {
+      "word": "hum",
+      "definition": "a smooth, steady low sound that keeps going without a hitch"
+    },
+    {
+      "word": "flicker",
+      "definition": "a light that wavers, blinking on and off instead of staying lit"
+    },
+    {
+      "word": "glow",
+      "definition": "a steady, soft light that stays warm and constant"
+    },
+    {
+      "word": "curfew",
+      "definition": "a set time by which everything has to stop or everyone has to be off the streets"
+    },
+    {
+      "word": "encore",
+      "definition": "an extra performance the crowd begs for after the show seems done"
+    },
+    {
+      "word": "washout",
+      "definition": "a total ruin of plans, usually from heavy rain flooding everything out"
+    },
+    {
+      "word": "parade",
+      "definition": "a procession of people, floats, and music moving together down a street"
+    },
+    {
+      "word": "roustabout",
+      "definition": "a general laborer who does the heavy lifting to set up or take down a show"
+    },
+    {
+      "word": "mallet",
+      "definition": "a heavy-headed hammer used for pounding stakes or driving things into place"
+    },
+    {
+      "word": "rigger",
+      "definition": "someone who sets up ropes, cables, and structures so things hang or stand safely"
+    },
+    {
+      "word": "wrench",
+      "definition": "a hand tool used to grip and turn nuts and bolts tight or loose"
+    }
+  ]
 }

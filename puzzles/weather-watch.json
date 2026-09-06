@@ -89,5 +89,71 @@
       "definition": "A low, sinking, rotating patch of cloud that hangs down from a bigger storm cloud."
     }
   ],
-  "date": "2026-08-31"
+  "date": "2026-08-31",
+  "definitions": [
+    {
+      "word": "sunrise",
+      "definition": "The moment the sun first climbs over the horizon and morning begins."
+    },
+    {
+      "word": "sunset",
+      "definition": "The moment the sun dips below the horizon and evening takes over."
+    },
+    {
+      "word": "freeze",
+      "definition": "When temperatures drop enough that water turns hard and solid as ice."
+    },
+    {
+      "word": "thaw",
+      "definition": "When ice or frozen ground softens and turns back to liquid as it warms up."
+    },
+    {
+      "word": "hurricane",
+      "definition": "A huge, spinning tropical storm with fierce winds and heavy rain."
+    },
+    {
+      "word": "eye",
+      "definition": "The calm, clear patch right in the center of a spinning storm."
+    },
+    {
+      "word": "thunderstorm",
+      "definition": "A storm with dark clouds, rain, and booming, crackling energy overhead."
+    },
+    {
+      "word": "anvil",
+      "definition": "The flat, spread-out top of a big storm cloud, shaped like a blacksmith's tool."
+    },
+    {
+      "word": "air pressure",
+      "definition": "The weight of the air pressing down around you, always shifting place to place."
+    },
+    {
+      "word": "wind",
+      "definition": "Air on the move, rushing from one place to another."
+    },
+    {
+      "word": "lightning",
+      "definition": "A sudden, bright flash of electricity that jumps between clouds or down to the ground."
+    },
+    {
+      "word": "thunder",
+      "definition": "The loud rumbling boom you hear after a flash lights up the sky."
+    },
+    {
+      "word": "wall cloud",
+      "definition": "A low, sinking, rotating patch of cloud that hangs down from a bigger storm cloud."
+    },
+    {
+      "word": "tornado",
+      "definition": "A violent, spinning funnel of wind that reaches down from a storm to the ground."
+    },
+    {
+      "word": "green sky",
+      "definition": "An eerie greenish tint the sky can take on during a nasty, dangerous storm."
+    },
+    {
+      "word": "hail",
+      "definition": "Hard little balls of ice that fall from a storm cloud instead of rain."
+    }
+  ]
 }

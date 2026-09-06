@@ -87,5 +87,71 @@
       "definition": "A famous winding mountain road in the Italian Alps, known for its many hairpin turns."
     }
   ],
-  "date": "2026-09-07"
+  "date": "2026-09-07",
+  "definitions": [
+    {
+      "word": "steel",
+      "definition": "A strong metal made from iron, tough enough to hold shape under stress."
+    },
+    {
+      "word": "frame",
+      "definition": "The sturdy skeleton of a bike that everything else attaches to."
+    },
+    {
+      "word": "rubber",
+      "definition": "A stretchy, bouncy material that grips and cushions."
+    },
+    {
+      "word": "tire",
+      "definition": "The round rubber ring on a wheel that grips the road."
+    },
+    {
+      "word": "start",
+      "definition": "The moment something gets going."
+    },
+    {
+      "word": "finish",
+      "definition": "The moment something wraps up."
+    },
+    {
+      "word": "departure",
+      "definition": "The moment you leave a place to go somewhere else."
+    },
+    {
+      "word": "arrival",
+      "definition": "The moment you reach where you were headed."
+    },
+    {
+      "word": "pass",
+      "definition": "A route that lets you cross over a mountain range."
+    },
+    {
+      "word": "Stelvio",
+      "definition": "A famous winding mountain road in the Italian Alps, known for its many hairpin turns."
+    },
+    {
+      "word": "trail",
+      "definition": "A path made for walking, hiking, or riding through nature."
+    },
+    {
+      "word": "Camino de Santiago",
+      "definition": "A famous long pilgrimage route across Spain ending at Santiago de Compostela."
+    },
+    {
+      "word": "leader",
+      "definition": "The person out in front, ahead of everyone else in the standings."
+    },
+    {
+      "word": "yellow jersey",
+      "definition": "The special shirt worn by whoever's winning overall."
+    },
+    {
+      "word": "climber",
+      "definition": "A rider who's especially good at powering up steep hills."
+    },
+    {
+      "word": "polka dot jersey",
+      "definition": "The spotted shirt worn by whoever's best at conquering the climbs."
+    }
+  ]
 }
