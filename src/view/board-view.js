@@ -52,6 +52,10 @@ export class BoardView {
     const selected = new Set(state.selectedTerms);
     const over = state.status !== 'playing';
 
+    // Learning Mode's armed state is a stylesheet state on the board, so every
+    // tile shows it at once and no bookkeeping lives here (D-33).
+    this.root.classList.toggle('defining', Boolean(state.vocabArmed) && !over);
+
     // A hinted set's tiles carry its tier colour until solved — the sanctioned early
     // tier reveal (2026-08-11). Derived from state every pass, so the tint survives
     // shuffles and re-renders without any bookkeeping here.

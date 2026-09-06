@@ -12,7 +12,9 @@ const FEEDBACK = {
   miss: { text: 'Not quite.', strong: false },
   'already-tried': { text: 'Already tried that one.', strong: false },
   hint: { text: 'These four make one analogy — the order is yours to find.', strong: true },
-  vocab: { text: 'A little vocabulary — on the house.', strong: false }
+  vocab: { text: 'A little vocabulary — on the house.', strong: false },
+  // Learning Mode (D-33): the armed board asks for a tile.
+  'vocab-armed': { text: 'Tap a tile to see what it means.', strong: false }
 };
 
 export class StatusView {
@@ -25,6 +27,9 @@ export class StatusView {
       this.show('Puzzle solved!', true);
     } else if (state.status === 'lost') {
       this.show('Out of beans — better luck next brew.', true);
+    } else if (outcome?.type === 'vocab-disarmed') {
+      // The ask is withdrawn; leaving "Tap a tile" up would be a lie.
+      this.clear();
     } else if (outcome && FEEDBACK[outcome.type]) {
       const { text, strong } = FEEDBACK[outcome.type];
       this.show(text, strong);

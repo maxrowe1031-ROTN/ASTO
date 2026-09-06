@@ -11,21 +11,26 @@ export class VocabView {
   }
 
   update(state) {
-    const entry = (state.puzzle.glossary ?? []).find(
-      (candidate) =>
-        state.vocabRevealed.includes(candidate.word) && state.boardTerms.includes(candidate.word)
-    );
+    // The LATEST revealed word still on the board. In one-word mode that is the
+    // gloss; in Learning Mode it is whichever tile was tapped last (D-33).
+    const word = [...state.vocabRevealed].reverse().find((term) => state.boardTerms.includes(term));
 
-    if (!entry) {
+    if (!word) {
       this.root.hidden = true;
       this.root.textContent = '';
       return;
     }
 
+    // The leak-checked gloss outranks the Learning Mode definition for the same
+    // word — it is the better-edited sentence.
+    const entry =
+      (state.puzzle.glossary ?? []).find((candidate) => candidate.word === word) ??
+      (state.puzzle.definitions ?? []).find((candidate) => candidate.word === word);
+
     this.root.hidden = false;
     this.root.innerHTML = '';
-    const word = document.createElement('strong');
-    word.textContent = entry.word;
-    this.root.append(word, ` — ${entry.definition}`);
+    const strong = document.createElement('strong');
+    strong.textContent = word;
+    this.root.append(strong, ` — ${entry ? entry.definition : 'No definition for this one.'}`);
   }
 }

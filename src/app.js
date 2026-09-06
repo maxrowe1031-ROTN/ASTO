@@ -111,6 +111,13 @@ async function main() {
    * results recorder saves under and what the URL carries, so it is set BEFORE the
    * controller can finish a game.
    */
+  /**
+   * Learning Mode (D-33) is a per-player setting, so it rides every board's
+   * rules — the tutorial's included: the tutorial is a configuration of the
+   * game, not a fork of it.
+   */
+  const withLearning = (rules) => ({ ...rules, learningMode: storage.isLearningMode() });
+
   const startGame = async (slug, rules, coaching) => {
     const puzzle = await loadBoard(slug === null ? TUTORIAL_PATH : pathFor(slug));
     currentSlug = slug;
@@ -130,9 +137,9 @@ async function main() {
       return;
     }
 
-    if (controller) controller.loadPuzzle(puzzle, rules);
+    if (controller) controller.loadPuzzle(puzzle, withLearning(rules));
     else {
-      controller = new GameController(puzzle, views, { rules });
+      controller = new GameController(puzzle, views, { rules: withLearning(rules) });
       controller.start();
     }
   };
@@ -197,7 +204,11 @@ async function main() {
    * sound.js, not in game state, so the screen asks for it fresh each time.
    */
   const paintSettings = () =>
-    settingsView.render({ muted: sound.isMuted(), volume: sound.getVolume() });
+    settingsView.render({
+      muted: sound.isMuted(),
+      volume: sound.getVolume(),
+      learningMode: storage.isLearningMode()
+    });
 
   const showSettings = () => {
     paintSettings();
@@ -233,6 +244,13 @@ async function main() {
     onVolume: (volume) => {
       sound.setVolume(volume);
       sound.buttonTap();
+      paintSettings();
+    },
+    onLearning: () => {
+      storage.setLearningMode(!storage.isLearningMode());
+      // Reaches the board the player is already on; a setting that only applies
+      // to the NEXT board reads as broken.
+      controller?.rulesChanged({ learningMode: storage.isLearningMode() });
       paintSettings();
     }
   });

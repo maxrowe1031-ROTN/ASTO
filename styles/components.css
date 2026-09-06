@@ -217,6 +217,18 @@
   color: var(--milk);
 }
 
+/* Learning Mode (D-33): an armed board asks for a tile, and every tile says so at
+   once — a soft dashed ring, no motion. Selection still outranks it. */
+.board.defining .tile:not(.selected) {
+  outline: 2px dashed var(--taupe);
+  outline-offset: -3px;
+}
+
+.pill.armed {
+  background: var(--oat);
+  border-color: var(--ink);
+}
+
 /* ---------- Controls ---------- */
 
 .controls {
@@ -1283,8 +1295,15 @@ button.pours-day:active {
   flex: none;
 }
 
-.settings-mute {
+.settings-mute,
+.settings-learning {
   min-width: 96px;
+}
+
+.settings-note {
+  margin: 4px 0 0;
+  color: var(--soft-ink);
+  font-size: 13px;
 }
 
 /* min-width:0 so the range can shrink inside the flex row at 375px. */
