@@ -40,12 +40,17 @@ export class ResultsRecorder {
     const slug = this.currentSlug();
     if (!slug) return;
 
+    // Learning Mode (D-33): marked only when help was actually USED — the mode
+    // being on says nothing about how the board was played. Omitted rather
+    // than false, so older blobs and this one have the same shape.
+    const learning = Boolean(state.rules?.learningMode) && (state.vocabRevealed?.length ?? 0) > 0;
     const result = {
       status: state.status,
       mistakes: state.mistakes,
       solvedCount: state.solvedSetIds.length,
       // ?? 0: a state from before hints existed still records a truthful zero.
-      hintsUsed: state.hintsUsed ?? 0
+      hintsUsed: state.hintsUsed ?? 0,
+      ...(learning ? { learning: true } : {})
     };
     this.storage.recordResult(slug, result);
     // The best-result write above keeps the cups honest; this row keeps the

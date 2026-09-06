@@ -192,3 +192,39 @@ test('the tutorial leaves no history row, same as it leaves no result', () => {
 
   assert.deepEqual(storage.history, []);
 });
+
+// --- Learning Mode (D-33): marked lightly, and only when help was actually used ---
+
+test('a learning-mode game that looked a word up records learning: true', () => {
+  const storage = fakeStorage();
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
+  recorder.update(state('won', {
+    solvedSetIds: ['a', 'b', 'c', 'd'],
+    rules: { learningMode: true },
+    vocabRevealed: ['Seed']
+  }));
+  assert.equal(storage.calls[0].result.learning, true);
+  assert.equal(storage.history[0].learning, true);
+});
+
+test('learning mode on but never used records no mark at all', () => {
+  const storage = fakeStorage();
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
+  recorder.update(state('won', {
+    solvedSetIds: ['a', 'b', 'c', 'd'],
+    rules: { learningMode: true },
+    vocabRevealed: []
+  }));
+  assert.equal('learning' in storage.calls[0].result, false);
+});
+
+test('the one-word gloss in normal mode is not a mark (D-18 kept its deferral)', () => {
+  const storage = fakeStorage();
+  const recorder = new ResultsRecorder(storage, on('first-light'), TODAY);
+  recorder.update(state('won', {
+    solvedSetIds: ['a', 'b', 'c', 'd'],
+    rules: { learningMode: false },
+    vocabRevealed: ['Chisel']
+  }));
+  assert.equal('learning' in storage.calls[0].result, false);
+});
