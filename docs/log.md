@@ -2,6 +2,35 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-05 (late) — Settings pills become switches
+
+Max, on the fresh Settings screen: *"it is kind of hard to tell when on is on
+or off."* Right — "Mute" and "Turn on" said what pressing would DO, so the row
+read as a button and hid its state. Recorded as a **D-27 addendum**.
+
+- **Both on/off settings are now real switches:** `role="switch"` with
+  `aria-checked`, a knob that slides right on an ink track when on and rests
+  left on an oat track when off, and an **On / Off word beside it** (Max's
+  pick over knob-and-colour alone) — the state readable three ways. Labels say
+  the state, never the action: the row is "Sounds", on when sound plays, so it
+  never inverts its label the way "Mute" did.
+- **Shape:** markup and `render` in `settings-view.js` (one `paintSwitch`
+  helper), `.switch` styles in `components.css` riding `--motion-slow` for the
+  slide and still under reduced motion; `app.js` untouched — the intents were
+  already toggles.
+- **Verified in the browser at 375×812:** both switches paint the stored state
+  on arrival (Sounds on, Learning mode on); one tap each flips `aria-checked`,
+  the `is-on` class, the word and the store keys (`asto.muted` → true,
+  `asto.learningMode` → false); the volume slider disables with Sounds off;
+  the knob rests at the left when off and 22px right when on. Screenshots
+  taken in both states. `npm test` **1704/0**. Zero console errors.
+- **Phase status:** post-Phase-5 polish, **not a phase gate**. Automated and
+  Claude-verifiable passed. Max's eye on the real thing is the only open item.
+- **Next:** unchanged — **the capstone, due Sept 8** (video; itch re-upload
+  paused by Max's call); then a **fresh board batch** before **2026-09-19**;
+  the **GDD version bump** (Settings screen, Learning Mode, the Help section);
+  `docs/backlog.md`.
+
 ## 2026-09-05 (evening) — Learning Mode: the Vocab button defines any tile
 
 Max's idea, brainstormed, specced, planned and built in one session: *"what if

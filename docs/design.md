@@ -2831,6 +2831,15 @@ only the Sound section after the next two shipped features, the recommendation
 was right and the page was premature — nothing needs undoing, but the next
 setting should be pulled forward or the door demoted.
 
+**D-27 addendum — switches, not pills (2026-09-05).** With Learning Mode (D-33)
+the page holds two on/off settings, and Max found both unreadable as pills:
+"Mute" and "Turn on" name the ACTION, so a row never said which way it was set.
+Both are now real switches — `role="switch"`, a sliding knob on an ink-or-oat
+track, and an On / Off word beside it (his pick over knob-and-colour alone).
+Labels say the state: the row is "Sounds", on when sound plays. The D-27
+reconsider-when is answered the good way — the second setting arrived and the
+page earned its door.
+
 **Two accepted trade-offs, named:** taps are `click` events and renders are
 queue-serialized, so a tap landing during an in-flight solve animation sounds
 late (reconsider if it bothers Max in play); and the iOS autoplay unlock is
