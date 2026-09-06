@@ -9,6 +9,7 @@
 
 import {
   clearSelection,
+  defineWord,
   deselect,
   hint,
   initGame,
@@ -16,7 +17,8 @@ import {
   revealVocab,
   select,
   shuffle,
-  submit
+  submit,
+  withRules
 } from '../engine/engine.js';
 
 export class GameController {
@@ -66,11 +68,30 @@ export class GameController {
   // --- intents (wired to view callbacks) ---
 
   tileTapped(term) {
+    // Learning Mode (D-33): an armed board turns the next tap into a look-up.
+    // Routing only — the engine decides whether the tap counts.
+    if (this.state.vocabArmed) {
+      const { state, outcome } = defineWord(this.state, term);
+      this.state = state;
+      this.render(outcome);
+      return;
+    }
     // A tap on a selected tile means "take it back"; otherwise it's a select. The
     // engine ignores anything invalid (5th tap, off-board term, game over).
     this.state = this.state.selectedTerms.includes(term)
       ? deselect(this.state, term)
       : select(this.state, term);
+    this.render();
+  }
+
+  /**
+   * A setting changed under a live game. Kept in `this.rules` too, so a
+   * restart() or the next loadPuzzle() merge starts from the changed rule
+   * rather than the one the board was loaded with.
+   */
+  rulesChanged(changes) {
+    this.rules = { ...this.rules, ...changes };
+    this.state = withRules(this.state, changes);
     this.render();
   }
 
