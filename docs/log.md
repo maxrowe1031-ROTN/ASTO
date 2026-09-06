@@ -2,6 +2,38 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-05 (night) — The warm-up shows Learning Mode, and says where it lives
+
+Max: *"include a little more detail in the tutorial about learning mode…
+'learning mode is currently on… will default to off when you start playing.
+You can turn it back on in the settings.'"* His wording implied something the
+build had not done: the warm-up should RUN with Learning Mode on, whatever the
+player's setting, or a first-timer (setting off) would never see the armed
+board or hear the line. Recorded as a **D-33 addendum**.
+
+- **`TUTORIAL_RULES.learningMode: true`**, and `app.js` no longer merges the
+  stored flag over the tutorial's rules — every real board still gets the
+  player's choice. The tutorial stays a configuration of the game, not a fork.
+- **Copy, inside the coach card's 135/60 limits:** on the Vocab press,
+  *"Learning Mode is on here: press Vocab, then tap any tile to read what it
+  means. In the real puzzles it starts off."* with the note *"Turn it on any
+  time in Settings — the gear on the calendar."*; on the tap, *"…Press Vocab
+  and tap another tile whenever you like — or play on."*; the first-solve
+  note now reads *"Learning Mode starts off in play; Settings turns it on."*
+  "Starts off" is true whichever way the player's own switch is set, so the
+  pure script never has to know the setting.
+- **Verified in the browser at 375×812 with the stored setting OFF:** How to
+  play → Vocab arms the board (dashed ring) and the card shows the new line
+  and note · a tile tap shows a real definition and the look-up line · Skip
+  tutorial → a real board runs one-word mode: Vocab reveals the gloss, no
+  arming, `aria-pressed` absent, setting still off. Screenshots of both
+  card states. `npm test` **1705/0**. Zero console errors.
+- **Phase status:** post-Phase-5 polish, **not a phase gate**. Automated and
+  Claude-verifiable passed; Max's read of the copy is the open item.
+- **Next:** unchanged — **the capstone, due Sept 8** (video; itch re-upload
+  paused); a **fresh board batch** before **2026-09-19**; the **GDD version
+  bump** (Settings, Learning Mode, the warm-up's on-by-default); `docs/backlog.md`.
+
 ## 2026-09-05 (late) — Settings pills become switches
 
 Max, on the fresh Settings screen: *"it is kind of hard to tell when on is on

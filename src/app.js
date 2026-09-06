@@ -113,10 +113,13 @@ async function main() {
    */
   /**
    * Learning Mode (D-33) is a per-player setting, so it rides every board's
-   * rules — the tutorial's included: the tutorial is a configuration of the
-   * game, not a fork of it.
+   * rules — except the tutorial's, which runs with it ON regardless so the
+   * armed board can be shown and its copy can say the real puzzles start off
+   * (Max, 2026-09-05). TUTORIAL_RULES carries that; only real boards merge
+   * the stored choice.
    */
-  const withLearning = (rules) => ({ ...rules, learningMode: storage.isLearningMode() });
+  const withLearning = (rules, slug) =>
+    slug === null ? rules : { ...rules, learningMode: storage.isLearningMode() };
 
   const startGame = async (slug, rules, coaching) => {
     const puzzle = await loadBoard(slug === null ? TUTORIAL_PATH : pathFor(slug));
@@ -137,9 +140,9 @@ async function main() {
       return;
     }
 
-    if (controller) controller.loadPuzzle(puzzle, withLearning(rules));
+    if (controller) controller.loadPuzzle(puzzle, withLearning(rules, slug));
     else {
-      controller = new GameController(puzzle, views, { rules: withLearning(rules) });
+      controller = new GameController(puzzle, views, { rules: withLearning(rules, slug) });
       controller.start();
     }
   };

@@ -487,7 +487,8 @@ test('spending the hint draws an explanation of what the tint means', () => {
 test('revealing the vocab word draws an explanation that it stays on screen', () => {
   const glossed = initGame(
     { ...board, glossary: [{ word: 'Chisel', definition: 'a carving blade' }] },
-    TUTORIAL_RULES
+    // One-word mode: the warm-up itself runs with Learning Mode on (D-33).
+    { ...TUTORIAL_RULES, learningMode: false }
   );
   const step = tutorialStep(glossed, { type: 'vocab' });
   assert.equal(step.id, 'vocab');
@@ -543,8 +544,12 @@ test('it is pure — the same state twice gives the same step, and state is unto
 
 const glossedBoard = { ...board, glossary: [{ word: 'Chisel', definition: 'a carving blade' }] };
 
+test('the warm-up runs with Learning Mode on, whatever the player chose', () => {
+  assert.equal(TUTORIAL_RULES.learningMode, true);
+});
+
 test('the vocab step tells the player where Learning Mode lives when it is off', () => {
-  const step = tutorialStep(initGame(glossedBoard, TUTORIAL_RULES), { type: 'vocab' });
+  const step = tutorialStep(initGame(glossedBoard, { ...TUTORIAL_RULES, learningMode: false }), { type: 'vocab' });
   assert.equal(step.id, 'vocab');
   assert.match(step.body, /Learning Mode/);
   assert.match(step.body, /Settings/);
@@ -558,11 +563,14 @@ test('with Learning Mode on, a define is narrated as a look-up you can repeat', 
   assert.match(step.body, /another tile/i);
 });
 
-test('arming the board is narrated', () => {
-  const on = initGame(glossedBoard, { ...TUTORIAL_RULES, learningMode: true });
+test('arming the board explains the mode, that play starts with it off, and where it lives', () => {
+  const on = initGame(glossedBoard, TUTORIAL_RULES);
   const step = tutorialStep(on, { type: 'vocab-armed' });
   assert.equal(step.id, 'vocab-armed');
+  assert.match(step.body, /Learning Mode is on/);
   assert.match(step.body, /tap any tile/i);
+  assert.match(step.body, /starts off/);
+  assert.match(step.note, /Settings/);
 });
 
 test('the first solve carries a note about Learning Mode; later solves do not repeat it', () => {
@@ -580,7 +588,8 @@ test('the first solve carries a note about Learning Mode; later solves do not re
 test('the Learning Mode copy leaks nothing', () => {
   const on = initGame(glossedBoard, { ...TUTORIAL_RULES, learningMode: true });
   const texts = [
-    tutorialStep(initGame(glossedBoard, TUTORIAL_RULES), { type: 'vocab' }).body,
+    tutorialStep(initGame(glossedBoard, { ...TUTORIAL_RULES, learningMode: false }), { type: 'vocab' }).body,
+    tutorialStep(on, { type: 'vocab-armed' }).note,
     tutorialStep(on, { type: 'vocab' }).body,
     tutorialStep(on, { type: 'vocab-armed' }).body,
     attempt(['Seed', 'Tree', 'Spark', 'Fire']).step.note
@@ -593,7 +602,7 @@ test('the Learning Mode copy leaks nothing', () => {
 test('the Learning Mode steps obey the same length limits as every other step', () => {
   const on = initGame(glossedBoard, { ...TUTORIAL_RULES, learningMode: true });
   const steps = [
-    tutorialStep(initGame(glossedBoard, TUTORIAL_RULES), { type: 'vocab' }),
+    tutorialStep(initGame(glossedBoard, { ...TUTORIAL_RULES, learningMode: false }), { type: 'vocab' }),
     tutorialStep(on, { type: 'vocab' }),
     tutorialStep(on, { type: 'vocab-armed' }),
     attempt(['Seed', 'Tree', 'Spark', 'Fire']).step
