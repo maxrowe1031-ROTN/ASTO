@@ -538,3 +538,68 @@ test('it is pure — the same state twice gives the same step, and state is unto
   assert.deepEqual(tutorialStep(state), tutorialStep(state));
   assert.equal(JSON.stringify(state.selectedTerms), before);
 });
+
+// ---------- Learning Mode is taught (D-33) ----------
+
+const glossedBoard = { ...board, glossary: [{ word: 'Chisel', definition: 'a carving blade' }] };
+
+test('the vocab step tells the player where Learning Mode lives when it is off', () => {
+  const step = tutorialStep(initGame(glossedBoard, TUTORIAL_RULES), { type: 'vocab' });
+  assert.equal(step.id, 'vocab');
+  assert.match(step.body, /Learning Mode/);
+  assert.match(step.body, /Settings/);
+});
+
+test('with Learning Mode on, a define is narrated as a look-up you can repeat', () => {
+  const on = initGame(glossedBoard, { ...TUTORIAL_RULES, learningMode: true });
+  const step = tutorialStep(on, { type: 'vocab' });
+  assert.equal(step.id, 'vocab-learning');
+  assert.doesNotMatch(step.body, /Settings/);
+  assert.match(step.body, /another tile/i);
+});
+
+test('arming the board is narrated', () => {
+  const on = initGame(glossedBoard, { ...TUTORIAL_RULES, learningMode: true });
+  const step = tutorialStep(on, { type: 'vocab-armed' });
+  assert.equal(step.id, 'vocab-armed');
+  assert.match(step.body, /tap any tile/i);
+});
+
+test('the first solve carries a note about Learning Mode; later solves do not repeat it', () => {
+  const first = attempt(['Seed', 'Tree', 'Spark', 'Fire']);
+  assert.equal(first.step.id, 'done');
+  assert.match(first.step.note, /Learning Mode/);
+
+  const order = ['Brush', 'Painter', 'Chisel', 'Sculptor'];
+  const second = submit(pick(first.state, ...order), order);
+  const step = tutorialStep(second.state, second.outcome);
+  assert.equal(step.id, 'done');
+  assert.equal(step.note, undefined);
+});
+
+test('the Learning Mode copy leaks nothing', () => {
+  const on = initGame(glossedBoard, { ...TUTORIAL_RULES, learningMode: true });
+  const texts = [
+    tutorialStep(initGame(glossedBoard, TUTORIAL_RULES), { type: 'vocab' }).body,
+    tutorialStep(on, { type: 'vocab' }).body,
+    tutorialStep(on, { type: 'vocab-armed' }).body,
+    attempt(['Seed', 'Tree', 'Spark', 'Fire']).step.note
+  ];
+  for (const text of texts) {
+    for (const leak of FORBIDDEN) assert.ok(!names(text, leak), `leaked "${leak}": ${text}`);
+  }
+});
+
+test('the Learning Mode steps obey the same length limits as every other step', () => {
+  const on = initGame(glossedBoard, { ...TUTORIAL_RULES, learningMode: true });
+  const steps = [
+    tutorialStep(initGame(glossedBoard, TUTORIAL_RULES), { type: 'vocab' }),
+    tutorialStep(on, { type: 'vocab' }),
+    tutorialStep(on, { type: 'vocab-armed' }),
+    attempt(['Seed', 'Tree', 'Spark', 'Fire']).step
+  ];
+  for (const step of steps) {
+    assert.ok(step.body.length <= 135, `${step.id} is ${step.body.length} chars: ${step.body}`);
+    if (step.note) assert.ok(step.note.length <= 60, `${step.id} note is ${step.note.length}`);
+  }
+});

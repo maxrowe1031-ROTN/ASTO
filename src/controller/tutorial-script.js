@@ -46,6 +46,10 @@ export const TUTORIAL_RULES = Object.freeze({
 
 const REASSURANCE = 'Nothing lost — the warm-up costs no beans.';
 
+// Said once, on the first solve, so a player who never presses Vocab still hears
+// that Learning Mode exists and where it lives (D-33).
+const LEARNING_NOTE = 'Learning Mode, in Settings, lets Vocab define any tile.';
+
 const STEPS = Object.freeze({
   relationship: {
     id: 'relationship',
@@ -91,7 +95,16 @@ const STEPS = Object.freeze({
   },
   vocab: {
     id: 'vocab',
-    body: "That's the trickiest word on the board, defined. It stays on screen, so read it whenever you like."
+    body: "That's the trickiest word, defined — it stays on screen. For every word, turn on Learning Mode in Settings, under the gear."
+  },
+  // Learning Mode (D-33), narrated when it is already on: the arm, then the look-up.
+  'vocab-armed': {
+    id: 'vocab-armed',
+    body: 'Learning Mode is on — tap any tile to see what it means.'
+  },
+  'vocab-learning': {
+    id: 'vocab-learning',
+    body: "That's what that word means. Press Vocab and tap another tile whenever you like."
   }
 });
 
@@ -185,12 +198,19 @@ export function tutorialStep(state, outcome) {
 
 /** What the coach has to say about the board as it stands. */
 function coaching(state, outcome) {
-  if (outcome?.type === 'solved') return STEPS.done;
+  if (outcome?.type === 'solved') {
+    // The first solve carries the Learning Mode note; repeating it would be noise.
+    return state.solvedSetIds.length === 1 ? { ...STEPS.done, note: LEARNING_NOTE } : STEPS.done;
+  }
 
   // The help pills, narrated at the moment of use. Neither competes with the branches
-  // below: a hint or vocab press is never also a submission or a tile pick.
+  // below: a hint or vocab press is never also a submission or a tile pick. A
+  // `vocab-disarmed` deliberately falls through to the board-state coaching.
   if (outcome?.type === 'hint') return STEPS.hint;
-  if (outcome?.type === 'vocab') return STEPS.vocab;
+  if (outcome?.type === 'vocab-armed') return STEPS['vocab-armed'];
+  if (outcome?.type === 'vocab') {
+    return state.rules.learningMode ? STEPS['vocab-learning'] : STEPS.vocab;
+  }
 
   // A repeat carries no new information about the board, so its rung is driven by how
   // much has gone wrong overall rather than by the shape of the guess.
