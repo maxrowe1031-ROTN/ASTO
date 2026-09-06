@@ -2210,6 +2210,71 @@ copy fails a test before it can become a lie.
 and its guard both need revisiting), or the named-answer line proves too
 chatty in Max's own play.
 
+### D-21 addendum, third pass — the row leaves, and a receipt takes its place (2026-09-05)
+
+**What happened:** Max, after the two text passes: *"What if after a button tap, the
+entire line disappeared, that would really show it's been recorded. So when you press a
+number in the difficulty line, it slides out to the right and disappears. Maybe make a
+demo studio of it first."* Built as an audition
+(`experiments/survey-motion.html`, disposable, dressed in the real `tokens.css`), four
+row variants plus a speed dial. **Max chose C at 300ms**, then asked for the same
+language on the comment box and chose **option 3** there.
+
+**What ships:** a tapped rating row **slides out to the right and is replaced, from the
+left, by a receipt** — `✓ Difficulty 3 · change`. Sending a note does the same to the
+comment box: `✓ "the black set was the good kind of hard" · change`. The status line's
+named acknowledgement from the second pass stays; the motion is added to it, not
+instead of it.
+
+**The change link is the reason this is safe.** A vanishing row otherwise takes the
+*undo* with it, and the shipped survey has always let a mis-tap be corrected by tapping
+again. Variants A and B (row simply gone) were rejected for that: these ratings feed
+board decisions, and a survey nobody can correct quietly collects wrong answers. The
+receipt keeps the answer **visible** and **fixable**, and reopening a row restores it
+with the current answer still marked.
+
+**`--motion-exit: 300ms` is a new token, and a second dial.** `motion.js` has always
+described `--motion-slow` as THE dial, deliberately. Max picked 300ms by eye against
+187ms and 281ms, and widening `--motion-slow` to suit the survey would have retuned the
+board's FLIP, shake and solve beats along with it. So the exit beat gets its own named
+token rather than a magic number or a collateral retune. `exitRight()` / `enterLeft()`
+live in `motion.js` beside the rest.
+
+**The append-only consequence, accepted knowingly.** `comments` is append-only like
+`ratings`, so **a revised note files a second row rather than replacing the first**, and
+`npm run ratings` will show both. Max was told this before choosing option 3 and chose
+it anyway. Mitigated only for the pointless case: re-pressing Send on *unchanged* text
+files nothing. A genuine revision still files a second row, which is what append-only
+means.
+
+**Three ways `element.animate()` bites, all found while building this, all now handled
+once in `motion.js`:**
+
+1. **`Animation.finished` never settles while the page is not painted** (backgrounded
+   tab, hidden pane). `settled()` already raced a timer for this; the audition hung
+   until it borrowed that.
+2. **A `fill: 'forwards'` animation outlives removal** — an element put back later comes
+   back pinned at the last keyframe, it outranks inline style, and once detached it no
+   longer answers `getAnimations()`. This is the bug Max hit as *"the reset button isn't
+   working"*: the survey was rebuilt correctly and painted invisible. `exitRight()`
+   cancels while still attached.
+3. **An exit animation outlives the tap that started it.** A `reset()` landing
+   mid-flight would be undone by the tap finishing into the freshly built survey.
+   Handlers capture a generation counter before their first await and bail if it moved.
+
+**Accessibility:** activating a dot destroys the control that had focus, so focus is
+moved deliberately to the receipt's change link (and to the first dot when a row
+reopens) rather than being dropped to `<body>`. Under `prefers-reduced-motion` the swap
+is instant — the outcome without the journey — which `motion.js`'s helpers give for
+free. Player text is escaped before it reaches receipt markup, since the note is written
+through `innerHTML`.
+
+**Reconsider-when:** the ratings-to-comments ratio shifts in a way that suggests players
+think a Send press is required; duplicate revised comments become a real nuisance in
+`npm run ratings` (then notes need a supersede mechanism, which is a schema decision);
+or the survey gains or loses a question, which the completion copy and its test guard
+both assume is three.
+
 ### D-22 — B2 hand-editing: the fix-in-place editor (2026-08-13)
 
 **Max's call, after D-21 closed:** build B2. The appetite was on the record —

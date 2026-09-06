@@ -47,6 +47,10 @@
      (2026-08-01), so these run ~56% longer than the GDD states. */
   --motion-fast: 187ms;
   --motion-slow: 281ms;
+  /* The survey's exit beat — a rating row leaving and its receipt arriving (D-21
+     addendum, third pass). Its own dial because Max picked 300ms by eye against the
+     other two, and because widening --motion-slow to suit it would retune the board. */
+  --motion-exit: 300ms;
   --ease: cubic-bezier(0, 0, 0.2, 1);
 
   /* Shape */
