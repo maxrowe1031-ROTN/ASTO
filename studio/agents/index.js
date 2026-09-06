@@ -1,4 +1,4 @@
-// The agent registry — the one place the eleven modules are named.
+// The agent registry — the one place the twelve modules are named.
 //
 // pipeline.js resolves agents through here rather than importing them
 // individually, so adding or renaming an agent is a change in exactly two
@@ -13,6 +13,7 @@ import * as adversarialSolver from './adversarial-solver.js';
 import * as testPlayer from './test-player.js';
 import * as styleGuide from './style-guide.js';
 import * as glossaryAuthor from './glossary-author.js';
+import * as definitionsAuthor from './definitions-author.js';
 // Not a pipeline stage — it runs at review time, when Max rejects a board —
 // but it is an agent by every other measure, so it is registered here and
 // held to the same contract as the nine pipeline stages.
@@ -31,6 +32,7 @@ export const AGENTS = Object.freeze({
   'test-player': testPlayer,
   'style-guide': styleGuide,
   'glossary-author': glossaryAuthor,
+  'definitions-author': definitionsAuthor,
   'revision-proposer': revisionProposer,
   'subject-scout': subjectScout,
 });

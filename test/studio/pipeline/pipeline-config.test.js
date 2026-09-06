@@ -104,7 +104,7 @@ test('the effort profile changes whenever the effort map does', () => {
   // sharing one label would silently merge the two populations being compared,
   // so the assertion is pinned deliberately: changing the map above without
   // changing the string fails here.
-  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-08-11-glossary');
+  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-09-05-learning-mode');
 });
 
 test('every stage has small explicit retry limits for both failure classes', () => {

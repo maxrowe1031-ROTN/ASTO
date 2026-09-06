@@ -43,6 +43,7 @@ publishes on its own. Every run ends at Max.
                               05 validator · 06 adversarial solver · 07 test player · 08 style guide
                                                                 │
                                                   09 glossary author  ← writes one definition, or declines
+                                               10 definitions author  ← sixteen plain definitions for Learning Mode (D-33)
                                                                 │
                                         ┌───────────────────────┤
                        auto-revise (D-14)│                       │
@@ -100,6 +101,7 @@ than judges:
 | Stage | Job | Model / effort |
 |---|---|---|
 | 09 glossary-author | Writes the ONE definition the in-game Vocabulary button reveals — or **declines**, when the board needs no gloss (D-18) | Sonnet / low |
+| 10 definitions-author | Writes one plain definition per board word for **Learning Mode** (D-33) — leak rule relaxed by design; the validator holds completeness | Sonnet / low |
 
 **The generator–evaluator contract holds structurally.** Class 8: *do not let the agent
 that produced the work evaluate the work.* Every evaluator runs as a separate request

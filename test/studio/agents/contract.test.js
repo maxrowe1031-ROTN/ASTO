@@ -37,10 +37,11 @@ const someInput = {
     board: { id: 'b', title: 'B', sets: [] },
     knowledgeGated: [{ word: 'W1', note: 'craft vocabulary' }],
   },
+  'definitions-author': { board: { id: 'b', title: 'B', sets: [] } },
 };
 
 test('every agent stage in the registry has a module', () => {
-  assert.equal(AGENT_IDS.length, 9);
+  assert.equal(AGENT_IDS.length, 10);
   for (const id of AGENT_IDS) {
     assert.ok(AGENTS[id], `no module registered for agent "${id}"`);
   }

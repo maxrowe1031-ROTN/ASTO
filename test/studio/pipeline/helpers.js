@@ -55,10 +55,28 @@ export function seedRun(store, { slug = 'lantern', theme = null, brief = { count
 export function fixturesWith(overrides) {
   const dir = mkdtempSync(join(tmpdir(), 'asto-studio-fixtures-'));
   cpSync(fixturesDir, dir, { recursive: true });
-  for (const [stageId, entry] of Object.entries(overrides)) {
+  const entries = { ...overrides };
+  // A test that swaps the board must swap stage 10's reply too — its validator
+  // (D-33) refuses a definition list that does not cover THIS board's sixteen
+  // words. Derived here from the swapped builder reply so no suite has to
+  // remember, the way the solver reply already had to be board-specific.
+  if (entries['04-board-builder'] && !entries['10-definitions-author']) {
+    const first = [].concat(entries['04-board-builder'])[0];
+    const board = typeof first?.text === 'string' ? JSON.parse(first.text).board : null;
+    if (board?.sets) entries['10-definitions-author'] = definitionsReply(board);
+  }
+  for (const [stageId, entry] of Object.entries(entries)) {
     writeFileSync(join(dir, `${stageId}.json`), JSON.stringify(entry, null, 2));
   }
   return { dir, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
+}
+
+/** A 10-definitions-author reply that defines every word of THIS board (D-33). */
+export function definitionsReply(board) {
+  const definitions = board.sets
+    .flatMap((set) => set.pairs.flat())
+    .map((word) => ({ word, definition: `test fixture — what ${word} means` }));
+  return { text: JSON.stringify({ definitions }) };
 }
 
 /** The board the committed board-builder fixture returns, as a plain object. */
