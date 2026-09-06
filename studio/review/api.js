@@ -33,7 +33,7 @@ import { autoRevisionFile } from '../auto-revise.js';
 // own validator and integrity sweep gate every save, exactly as they gate
 // every publish — an invalid board is refused before anything is written.
 import { diffBoards, editedBoardFile, handEditEvents } from '../edits.js';
-import { mergeGlossary } from '../gloss.js';
+import { mergeDefinitions, mergeGlossary } from '../gloss.js';
 import { validatePuzzle } from '../../src/source/validate-puzzle.js';
 import { checkBoard } from '../../src/engine/board-integrity.js';
 import { defaultTransport } from './runner.js';
@@ -146,6 +146,16 @@ export function createApi({
     }
   };
 
+  /** Stage 10's definitions for an attempt, or null — Learning Mode (D-33). */
+  const definitionsOf = (runId, attemptId) => {
+    try {
+      const output = store.readStageArtifact(runId, attemptId, '10-definitions-author', 'output.json');
+      return Array.isArray(output?.definitions) && output.definitions.length > 0 ? output.definitions : null;
+    } catch {
+      return null; // pre-D-33 runs have no definitions stage
+    }
+  };
+
   // --- reads ---
 
   /** The newest attempt that finished, or null — read lazily, only for failed runs. */
@@ -241,6 +251,8 @@ export function createApi({
     ['08-style-guide', 'output.json'],
     // The proposed gloss (D-18) — shown beside its set so a leak is catchable.
     ['09-glossary-author', 'output.json'],
+    // Learning Mode definitions (D-33) — folded under the board on the card.
+    ['10-definitions-author', 'output.json'],
   ];
 
   function readAttempt(runId, attemptId) {
@@ -671,7 +683,10 @@ export function createApi({
 
     // Advisory, not a refusal: the definition's word left the board, and Max
     // should learn that now rather than from the publish record.
-    const dropped = mergeGlossary(board, glossaryOf(runId, attemptId)).dropped;
+    const dropped = [
+      ...mergeGlossary(board, glossaryOf(runId, attemptId)).dropped,
+      ...mergeDefinitions(board, definitionsOf(runId, attemptId)).dropped,
+    ];
 
     return ok({
       changed: diff.length,
@@ -715,6 +730,13 @@ export function createApi({
       glossaryOf(runId, manifest.currentAttemptId),
     );
     board = withGloss;
+
+    // Learning Mode definitions ride the same door (D-33), same drop rule.
+    const { board: withDefinitions, dropped: droppedDefinitions } = mergeDefinitions(
+      board,
+      definitionsOf(runId, manifest.currentAttemptId),
+    );
+    board = withDefinitions;
 
     // Refused once, then allowed on the retry that carries the acknowledgement.
     // Deliberately not a hard block: the board is often right to publish as-is
@@ -781,6 +803,7 @@ export function createApi({
       // locked): this is the record that what shipped carried Max's hand.
       ...(editedEnvelope ? { handEdited: true, editedAt: editedEnvelope.at } : {}),
       ...(droppedGloss.length > 0 ? { droppedGloss } : {}),
+      ...(droppedDefinitions.length > 0 ? { droppedDefinitions } : {}),
       at: clock(),
     });
 

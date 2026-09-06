@@ -16,19 +16,29 @@
 const wordsOf = (board) =>
   new Set(board.sets.flatMap((set) => set.pairs.flat()).map((word) => word.toLowerCase()));
 
+/** One rule for both word-keyed fields: keep what is on the board, report the rest. */
+function mergeField(board, entries, field) {
+  const list = Array.isArray(entries) ? entries : [];
+  const words = wordsOf(board);
+  const kept = list.filter((entry) => words.has(entry.word.toLowerCase()));
+  const dropped = list.filter((entry) => !words.has(entry.word.toLowerCase()));
+
+  const { [field]: _previous, ...bare } = board;
+  return {
+    board: kept.length > 0 ? { ...bare, [field]: kept } : bare,
+    dropped
+  };
+}
+
 /**
  * @returns {{ board, dropped }} — `board` carries `glossary` only when at
  * least one entry survives; `dropped` lists the entries whose word left.
  */
 export function mergeGlossary(board, glossary) {
-  const entries = Array.isArray(glossary) ? glossary : [];
-  const words = wordsOf(board);
-  const kept = entries.filter((entry) => words.has(entry.word.toLowerCase()));
-  const dropped = entries.filter((entry) => !words.has(entry.word.toLowerCase()));
+  return mergeField(board, glossary, 'glossary');
+}
 
-  const { glossary: _previous, ...bare } = board;
-  return {
-    board: kept.length > 0 ? { ...bare, glossary: kept } : bare,
-    dropped
-  };
+/** Learning Mode definitions (D-33): the same rule, the other field. */
+export function mergeDefinitions(board, definitions) {
+  return mergeField(board, definitions, 'definitions');
 }

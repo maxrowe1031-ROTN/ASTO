@@ -57,7 +57,7 @@ const BOARD = {
 };
 
 /** A run parked in awaiting-review with a board — the state Max reviews. */
-function seedReviewable(store, { slug = 'lantern', theme = 'Lantern light', glossary = null } = {}) {
+function seedReviewable(store, { slug = 'lantern', theme = 'Lantern light', glossary = null, definitions = null } = {}) {
   const { runId } = store.createRun({ slug, theme, brief: { count: 8 } });
   const attemptId = store.createAttempt(runId);
   store.updateStatus(runId, 'running');
@@ -72,6 +72,9 @@ function seedReviewable(store, { slug = 'lantern', theme = 'Lantern light', glos
   // Before completeAttempt on purpose — a completed attempt is immutable.
   if (glossary) {
     store.writeStageArtifact(runId, attemptId, '09-glossary-author', 'output.json', { glossary });
+  }
+  if (definitions) {
+    store.writeStageArtifact(runId, attemptId, '10-definitions-author', 'output.json', { definitions });
   }
   store.completeAttempt(runId, attemptId, { status: 'complete' });
   store.updateStatus(runId, 'awaiting-review');
@@ -643,6 +646,44 @@ test('a glossary on the attempt rides the published puzzle', async () => {
     assert.deepEqual(published.glossary, [
       { word: 'Chisel', definition: 'a bladed hand tool for shaping hard material' },
     ]);
+  } finally {
+    cleanup();
+  }
+});
+
+test('stage 10 definitions ride the published puzzle, a departed word dropped and recorded', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store, {
+      definitions: [
+        { word: 'Seed', definition: 'a plant starts from one' },
+        { word: 'Loom', definition: 'no longer on the board' },
+      ],
+    });
+    await approve(api, runId);
+
+    const { status } = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    assert.equal(status, 200);
+
+    const published = JSON.parse(readFileSync(join(puzzlesDir, 'lantern.json'), 'utf8'));
+    assert.deepEqual(published.definitions, [{ word: 'Seed', definition: 'a plant starts from one' }]);
+    assert.equal('glossary' in published, false, 'no glossary stage on this attempt');
+
+    const publishEvent = store.readDecisions(runId).find((event) => event.type === 'publish');
+    assert.deepEqual(publishEvent.droppedDefinitions, [{ word: 'Loom', definition: 'no longer on the board' }]);
+  } finally {
+    cleanup();
+  }
+});
+
+test('an attempt without a definitions stage publishes exactly as before', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId } = seedReviewable(store);
+    await approve(api, runId);
+    await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    const published = JSON.parse(readFileSync(join(puzzlesDir, 'lantern.json'), 'utf8'));
+    assert.equal('definitions' in published, false);
   } finally {
     cleanup();
   }

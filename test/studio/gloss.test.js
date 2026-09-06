@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { mergeGlossary } from '../../studio/gloss.js';
+import { mergeDefinitions, mergeGlossary } from '../../studio/gloss.js';
 
 const board = {
   id: 'b',
@@ -48,4 +48,20 @@ test('the input board is never mutated', () => {
   const frozen = structuredClone(board);
   mergeGlossary(board, [{ word: 'Chisel', definition: 'd' }]);
   assert.deepEqual(board, frozen);
+});
+
+// Learning Mode definitions (D-33) follow the gloss's drop rule exactly.
+test('definitions whose word is on the board ride along; a departed word is dropped and reported', () => {
+  const { board: merged, dropped } = mergeDefinitions(board, [
+    { word: 'chisel', definition: 'Stays, case aside.' },
+    { word: 'Loom', definition: 'Edited away.' }
+  ]);
+  assert.deepEqual(merged.definitions, [{ word: 'chisel', definition: 'Stays, case aside.' }]);
+  assert.deepEqual(dropped, [{ word: 'Loom', definition: 'Edited away.' }]);
+  assert.equal('glossary' in merged, false, 'the other field is untouched');
+});
+
+test('no definitions, or none surviving, leaves the board without the field', () => {
+  assert.equal('definitions' in mergeDefinitions(board, undefined).board, false);
+  assert.equal('definitions' in mergeDefinitions(board, [{ word: 'Loom', definition: 'x' }]).board, false);
 });
