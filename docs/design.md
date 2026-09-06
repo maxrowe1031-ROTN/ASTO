@@ -3244,6 +3244,16 @@ definition may not name its partner word) rather than a stricter prompt; **or**
 the statistics page's silence on assisted plays starts to mislead — the field
 is already recorded, the column is a taste call.
 
+**D-33 addendum — the warm-up runs with Learning Mode on (2026-09-05).** Max
+asked the tutorial to say more: *"learning mode is currently on… will default to
+off when you start playing. You can turn it back on in the settings."* That only
+works if the warm-up HAS it on, so `TUTORIAL_RULES.learningMode` is true and
+`app.js` leaves the tutorial's rules alone while every real board merges the
+player's stored choice. The armed step now explains the mode, says the real
+puzzles start off — true whichever way the player's switch is set — and its
+note names Settings. Verified: with the setting off, the warm-up arms and a
+board entered after Skip runs one-word mode.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

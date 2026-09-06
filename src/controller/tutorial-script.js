@@ -41,14 +41,19 @@ export const TUTORIAL_RULES = Object.freeze({
   // Same allowance as the real game, on purpose: the tutorial is where the Hint and
   // Vocab pills get introduced, and a button the player cannot press cannot be taught
   // (D-20 second addendum — this was 0 until Max asked for the pills to be coached).
-  hintsAllowed: 1
+  hintsAllowed: 1,
+  // Learning Mode (D-33) is ON in the warm-up whatever the player's setting, so
+  // the armed board can be shown and its copy can say that the real puzzles
+  // start with it off (Max, 2026-09-05). app.js does not merge the stored flag
+  // over this one; every other board gets the player's choice.
+  learningMode: true
 });
 
 const REASSURANCE = 'Nothing lost — the warm-up costs no beans.';
 
 // Said once, on the first solve, so a player who never presses Vocab still hears
 // that Learning Mode exists and where it lives (D-33).
-const LEARNING_NOTE = 'Learning Mode, in Settings, lets Vocab define any tile.';
+const LEARNING_NOTE = 'Learning Mode starts off in play; Settings turns it on.';
 
 const STEPS = Object.freeze({
   relationship: {
@@ -97,14 +102,17 @@ const STEPS = Object.freeze({
     id: 'vocab',
     body: "That's the trickiest word, defined — it stays on screen. For every word, turn on Learning Mode in Settings, under the gear."
   },
-  // Learning Mode (D-33), narrated when it is already on: the arm, then the look-up.
+  // Learning Mode (D-33) is on in the warm-up: the arm explains the mode and
+  // where it lives, the look-up invites another. "Starts off" is true whatever
+  // the player's own setting is, so the copy never has to know it.
   'vocab-armed': {
     id: 'vocab-armed',
-    body: 'Learning Mode is on — tap any tile to see what it means.'
+    body: 'Learning Mode is on here: press Vocab, then tap any tile to read what it means. In the real puzzles it starts off.',
+    note: 'Turn it on any time in Settings — the gear on the calendar.'
   },
   'vocab-learning': {
     id: 'vocab-learning',
-    body: "That's what that word means. Press Vocab and tap another tile whenever you like."
+    body: "That's what that word means. Press Vocab and tap another tile whenever you like — or play on."
   }
 });
 
