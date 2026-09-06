@@ -88,5 +88,71 @@
       "definition": "a sweet almond paste, smooth and moldable, often tinted and shaped for decoration"
     }
   ],
-  "date": "2026-08-06"
+  "date": "2026-08-06",
+  "definitions": [
+    {
+      "word": "flour",
+      "definition": "a fine powder milled from grain, the base of most baked goods"
+    },
+    {
+      "word": "dough",
+      "definition": "a thick, workable mix of flour and liquid, ready to be shaped and baked"
+    },
+    {
+      "word": "sugar",
+      "definition": "sweet crystals used to flavor and sweeten almost anything you bake"
+    },
+    {
+      "word": "caramel",
+      "definition": "a golden, sticky substance made by heating sugar until it melts and browns"
+    },
+    {
+      "word": "baker",
+      "definition": "someone who mixes, shapes, and bakes bread and pastries for a living"
+    },
+    {
+      "word": "peel",
+      "definition": "a long-handled flat paddle used to slide bread or pizza in and out of an oven"
+    },
+    {
+      "word": "decorator",
+      "definition": "someone skilled in dressing up cakes with icing, piping, and fine details"
+    },
+    {
+      "word": "piping bag",
+      "definition": "a cone-shaped bag used to squeeze out icing in neat lines and swirls"
+    },
+    {
+      "word": "fondant",
+      "definition": "a smooth, sweet paste rolled thin to give cakes a flawless, polished finish"
+    },
+    {
+      "word": "wedding cake",
+      "definition": "a large, elaborately decorated cake made to be the centerpiece of a wedding"
+    },
+    {
+      "word": "marzipan",
+      "definition": "a sweet almond paste, smooth and moldable, often tinted and shaped for decoration"
+    },
+    {
+      "word": "fruitcake",
+      "definition": "a dense cake packed with dried fruit and spices, often kept for special occasions"
+    },
+    {
+      "word": "mixing",
+      "definition": "the step where ingredients get combined and worked into a batter or dough"
+    },
+    {
+      "word": "cooling",
+      "definition": "the resting period after baking when a finished item settles and firms up"
+    },
+    {
+      "word": "apprentice",
+      "definition": "someone learning a trade hands-on under a more experienced worker"
+    },
+    {
+      "word": "master",
+      "definition": "someone who has fully mastered a trade and can teach it to others"
+    }
+  ]
 }

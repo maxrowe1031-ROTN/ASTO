@@ -86,8 +86,9 @@ export function editorHtml(board) {
  * collected board holds each tier exactly once by construction. The validator
  * backstops it anyway; the server never trusts this arithmetic.
  *
- * A glossary on the base never survives: edited boards do not store one
- * (stage 09's gloss is merged at play and publish, filtered by gloss.js).
+ * Neither a glossary nor Learning Mode definitions on the base survive: edited
+ * boards store neither (stage 09's gloss and stage 10's definitions are merged
+ * at play and publish, filtered by gloss.js).
  */
 export function collectBoard(root, base) {
   const fieldsets = [...root.querySelectorAll('.edit-set')];
@@ -113,7 +114,7 @@ export function collectBoard(root, base) {
     assigned.set(setId, wanted);
   }
 
-  const { glossary: _dropped, ...bare } = base;
+  const { glossary: _dropped, definitions: _droppedDefinitions, ...bare } = base;
   return {
     ...bare,
     title: root.querySelector('input[data-edit=title]').value,

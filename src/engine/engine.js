@@ -3,7 +3,7 @@
 //
 // State shape:
 //   { puzzle, rules, boardTerms, selectedTerms, solvedSetIds, hintedSetIds, hintsUsed,
-//     vocabRevealed, mistakes, status }
+//     vocabRevealed, vocabArmed, failedAttempts, mistakes, status }
 //
 // `boardTerms` holds unsolved tiles only. Solving removes those four words, so grid
 // shrink, shuffle-unsolved-only, and the can't-resubmit-a-solved-set guard all fall out
@@ -30,7 +30,10 @@ export const DEFAULT_RULES = Object.freeze({
   maxMistakes: MAX_MISTAKES,
   soCloseCostsMistake: true,
   clearSelectionOnFail: true,
-  hintsAllowed: 1
+  hintsAllowed: 1,
+  // Learning Mode (design.md D-33): Vocab arms the board and a tile tap defines
+  // that word. Off by default; the settings screen flips it per player.
+  learningMode: false
 });
 
 /**
@@ -47,6 +50,7 @@ export function initGame(puzzle, rules = {}) {
     hintedSetIds: [],
     hintsUsed: 0,
     vocabRevealed: [],
+    vocabArmed: false,
     failedAttempts: [],
     mistakes: 0,
     status: 'playing'
@@ -133,14 +137,29 @@ export function hint(state, rand) {
 }
 
 /**
- * Reveal the definition of the board's glossed word (design.md D-18). Free and
- * deterministic — the puzzle data names the word, so unlike hint() there is no
- * RNG seam. Reveals the first glossary entry whose word is still on the board;
- * the view renders it persistently from `vocabRevealed` (the hint lesson:
- * transient help is a memory test). No-ops when there is nothing to reveal.
+ * The Vocab button. Two behaviours, one rule apart (design.md D-18 and D-33):
+ *
+ *   learningMode off — reveal the board's one authored gloss, once. Free and
+ *   deterministic: the puzzle data names the word, so unlike hint() there is
+ *   no RNG seam. The view renders it persistently from `vocabRevealed` (the
+ *   hint lesson: transient help is a memory test).
+ *   learningMode on  — ARM the board: the next tile tap defines that word
+ *                      (defineWord). Pressing again disarms. Nothing is
+ *                      revealed here; the outcome only says which way the
+ *                      switch went.
+ *
+ * No-ops when the game is over, or when there is nothing to reveal.
  */
 export function revealVocab(state) {
   if (state.status !== 'playing') return { state, outcome: null };
+
+  if (state.rules.learningMode) {
+    const vocabArmed = !state.vocabArmed;
+    return {
+      state: nextState(state, { vocabArmed }),
+      outcome: { type: vocabArmed ? 'vocab-armed' : 'vocab-disarmed' }
+    };
+  }
 
   const entry = (state.puzzle.glossary ?? []).find(
     (candidate) =>
@@ -152,6 +171,39 @@ export function revealVocab(state) {
     state: nextState(state, { vocabRevealed: [...state.vocabRevealed, entry.word] }),
     outcome: { type: 'vocab' }
   };
+}
+
+/**
+ * Learning Mode's tile tap (design.md D-33). Only while armed, only for a word
+ * on the board. Records the word LAST in `vocabRevealed` — the view shows the
+ * latest — and disarms, so each press of Vocab buys one look-up. Whether a
+ * definition exists is the view's problem: the engine records the ask, and a
+ * tile without one is answered on screen, not refused here.
+ */
+export function defineWord(state, term) {
+  if (state.status !== 'playing') return { state, outcome: null };
+  if (!state.vocabArmed) return { state, outcome: null };
+  if (!state.boardTerms.includes(term)) return { state, outcome: null };
+
+  const vocabRevealed = [...state.vocabRevealed.filter((word) => word !== term), term];
+  return {
+    state: nextState(state, { vocabRevealed, vocabArmed: false }),
+    outcome: { type: 'vocab' }
+  };
+}
+
+/**
+ * Change rules on a live game — how a settings toggle reaches the board the
+ * player is already on. Rules merge; anything the old rules allowed that the
+ * new ones forbid is cleaned up here (an armed board under a mode that no
+ * longer exists). Pure and frozen like every other export.
+ */
+export function withRules(state, changes) {
+  const rules = { ...state.rules, ...changes };
+  return nextState(state, {
+    rules,
+    vocabArmed: rules.learningMode ? state.vocabArmed : false
+  });
 }
 
 /**

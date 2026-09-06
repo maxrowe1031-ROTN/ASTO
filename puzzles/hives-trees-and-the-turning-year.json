@@ -89,5 +89,71 @@
       "definition": "a small hollow spot fringed with hairs on a bee's hind leg, used to carry things back to the nest"
     }
   ],
-  "date": "2026-08-15"
+  "date": "2026-08-15",
+  "definitions": [
+    {
+      "word": "flower",
+      "definition": "the colorful blooming part of a plant, often sweet-smelling and full of nectar"
+    },
+    {
+      "word": "clover",
+      "definition": "a small low-growing plant with three-part leaves, loved by bees and lucky finders alike"
+    },
+    {
+      "word": "tree",
+      "definition": "a tall woody plant with a trunk, branches, and leaves that can live for many years"
+    },
+    {
+      "word": "willow",
+      "definition": "a graceful tree with long drooping branches, often found near water"
+    },
+    {
+      "word": "comb",
+      "definition": "the waxy, six-sided structure bees build to store honey and raise young"
+    },
+    {
+      "word": "extractor",
+      "definition": "a spinning machine that pulls honey out of the wax without destroying it"
+    },
+    {
+      "word": "hive",
+      "definition": "the home where a colony of bees lives, builds comb, and raises its young"
+    },
+    {
+      "word": "smoker",
+      "definition": "a small device that puffs out calming smoke to keep bees settled while beekeepers work"
+    },
+    {
+      "word": "drone",
+      "definition": "a male bee whose main job is to mate with a queen, not to gather food or defend the hive"
+    },
+    {
+      "word": "stinger",
+      "definition": "the sharp defensive part some bees use to protect themselves and their hive"
+    },
+    {
+      "word": "queen",
+      "definition": "the single bee in a colony whose job is to lay all the eggs"
+    },
+    {
+      "word": "pollen basket",
+      "definition": "a small hollow spot fringed with hairs on a bee's hind leg, used to carry things back to the nest"
+    },
+    {
+      "word": "dawn",
+      "definition": "the early moment when the sky lightens and the sun first rises"
+    },
+    {
+      "word": "dusk",
+      "definition": "the soft dim time just after sunset, before full dark sets in"
+    },
+    {
+      "word": "spring",
+      "definition": "the season when the world wakes up, with new growth and warming days"
+    },
+    {
+      "word": "autumn",
+      "definition": "the season when leaves turn color and fall as the air cools"
+    }
+  ]
 }

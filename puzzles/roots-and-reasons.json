@@ -89,5 +89,71 @@
       "definition": "A small hand tool with a scoop-shaped blade, used for digging in tight spaces"
     }
   ],
-  "date": "2026-08-14"
+  "date": "2026-08-14",
+  "definitions": [
+    {
+      "word": "flower",
+      "definition": "The colorful blooming part of a plant, often there to attract pollinators"
+    },
+    {
+      "word": "tulip",
+      "definition": "A cup-shaped spring bloom that grows from a bulb"
+    },
+    {
+      "word": "herb",
+      "definition": "A leafy plant grown for its flavor or scent, often used in cooking"
+    },
+    {
+      "word": "basil",
+      "definition": "A fragrant green leafy plant often used in Italian cooking"
+    },
+    {
+      "word": "pot",
+      "definition": "A small container for growing a single plant"
+    },
+    {
+      "word": "planter",
+      "definition": "A larger container built to hold soil and several plants at once"
+    },
+    {
+      "word": "trowel",
+      "definition": "A small hand tool with a scoop-shaped blade, used for digging in tight spaces"
+    },
+    {
+      "word": "spade",
+      "definition": "A larger, flat-bladed digging tool you push with your foot"
+    },
+    {
+      "word": "stem",
+      "definition": "The main stalk of a plant that holds it up and carries water and nutrients"
+    },
+    {
+      "word": "bud",
+      "definition": "A small swelling on a plant that opens into a leaf or flower"
+    },
+    {
+      "word": "leaf",
+      "definition": "The flat green part of a plant that soaks up sunlight to make food"
+    },
+    {
+      "word": "vein",
+      "definition": "A thin line running through a leaf that carries water and nutrients"
+    },
+    {
+      "word": "blossom",
+      "definition": "The flower a plant produces before it develops into something else"
+    },
+    {
+      "word": "fruit",
+      "definition": "The fleshy, often edible part of a plant that grows to hold its seeds"
+    },
+    {
+      "word": "caterpillar",
+      "definition": "A crawling, worm-like creature that eventually changes into a flying insect"
+    },
+    {
+      "word": "butterfly",
+      "definition": "A winged insect with colorful patterned wings that flits from flower to flower"
+    }
+  ]
 }

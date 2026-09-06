@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { initGame, submit } from '../src/engine/engine.js';
+import { defineWord, initGame, revealVocab, submit } from '../src/engine/engine.js';
 import { deriveWords } from '../src/engine/arrangements.js';
 import { buildShareText } from '../src/share.js';
 import { board, distinctMisses, MISS, MISS_AFTER_TOOLS } from './fixtures/board.js';
@@ -76,4 +76,18 @@ test('buildShareText is pure — the state it is handed is unchanged', () => {
 test('an in-progress game can still be summarised', () => {
   const state = submit(initGame(board), MISS).state;
   assert.equal(buildShareText(state), 'ASTO — Test Board\n0/4 · 1 bean');
+});
+
+test('a learning-mode win that used a definition carries the book marker', () => {
+  const puzzle = { ...board, definitions: [{ word: 'Seed', definition: 'd' }] };
+  let state = initGame(puzzle, { learningMode: true });
+  state = defineWord(revealVocab(state).state, 'Seed').state;
+  for (const id of ['set-growth', 'set-tools', 'set-homes', 'set-material']) state = solve(state, bySetId(id));
+  assert.equal(buildShareText(state), 'ASTO — Test Board\n4/4 · no beans · 📖\n🟩🟨🟥⬛');
+});
+
+test('learning mode on but unused shares exactly as a normal game', () => {
+  let state = initGame(board, { learningMode: true });
+  for (const id of ['set-growth', 'set-tools', 'set-homes', 'set-material']) state = solve(state, bySetId(id));
+  assert.equal(buildShareText(state), 'ASTO — Test Board\n4/4 · no beans\n🟩🟨🟥⬛');
 });

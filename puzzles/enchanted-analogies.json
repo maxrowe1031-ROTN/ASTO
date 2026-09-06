@@ -89,5 +89,71 @@
       "definition": "A wild-haired old woman from Slavic folktales who lives deep in the forest in a hut that stands on chicken legs."
     }
   ],
-  "date": "2026-08-24"
+  "date": "2026-08-24",
+  "definitions": [
+    {
+      "word": "dragon",
+      "definition": "A huge fire-breathing beast with scales and wings, often found sleeping on piles of treasure."
+    },
+    {
+      "word": "hoard",
+      "definition": "A big secret stash of treasure someone's been collecting and guarding for ages."
+    },
+    {
+      "word": "fox",
+      "definition": "A clever, quick little forest animal with a bushy tail, known for sneaking around at night."
+    },
+    {
+      "word": "den",
+      "definition": "A cozy hidden burrow or hideout where a wild animal sleeps and shelters."
+    },
+    {
+      "word": "pumpkin",
+      "definition": "A big round orange vegetable that grows on a vine, often carved or used in autumn cooking."
+    },
+    {
+      "word": "carriage",
+      "definition": "An elegant horse-drawn vehicle used for fancy travel, especially to balls and palaces."
+    },
+    {
+      "word": "frog",
+      "definition": "A small green hopping creature that lives near water and croaks at night."
+    },
+    {
+      "word": "prince",
+      "definition": "A young royal man, next in line to a throne, often the hero in old stories."
+    },
+    {
+      "word": "princess",
+      "definition": "A young royal woman, daughter or wife of royalty, often the star of fairy tales."
+    },
+    {
+      "word": "Cinderella",
+      "definition": "A kind girl forced into servitude by her stepfamily who gets a magical night out at the ball."
+    },
+    {
+      "word": "witch",
+      "definition": "A woman with magical powers, sometimes helpful, sometimes wicked, who casts spells."
+    },
+    {
+      "word": "Baba Yaga",
+      "definition": "A wild-haired old woman from Slavic folktales who lives deep in the forest in a hut that stands on chicken legs."
+    },
+    {
+      "word": "fairy dust",
+      "definition": "A shimmering magical powder that lets things (or people) fly when sprinkled on them."
+    },
+    {
+      "word": "weight",
+      "definition": "How heavy something is — the pull gravity has on it."
+    },
+    {
+      "word": "magic mirror",
+      "definition": "An enchanted looking-glass that can speak and answer questions truthfully."
+    },
+    {
+      "word": "falsehood",
+      "definition": "A statement that isn't true — a lie or something made up to deceive."
+    }
+  ]
 }

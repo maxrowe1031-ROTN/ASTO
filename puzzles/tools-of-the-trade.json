@@ -89,5 +89,71 @@
       "definition": "A slanted edge where a surface is angled instead of square, rather than meeting at a straight right angle."
     }
   ],
-  "date": "2026-08-23"
+  "date": "2026-08-23",
+  "definitions": [
+    {
+      "word": "blacksmith",
+      "definition": "Someone who heats and hammers metal into tools, horseshoes, and other useful things."
+    },
+    {
+      "word": "anvil",
+      "definition": "A heavy iron block you hammer hot metal against to shape it."
+    },
+    {
+      "word": "cobbler",
+      "definition": "Someone who makes or fixes shoes for a living."
+    },
+    {
+      "word": "awl",
+      "definition": "A small pointed tool for poking holes through tough material like leather."
+    },
+    {
+      "word": "hide",
+      "definition": "An animal's skin, still raw before it's been treated into something usable."
+    },
+    {
+      "word": "leather",
+      "definition": "Tough, flexible material made by treating and tanning animal skin."
+    },
+    {
+      "word": "wool",
+      "definition": "The soft, curly fiber sheared from sheep before it's spun into anything."
+    },
+    {
+      "word": "yarn",
+      "definition": "Fiber twisted into a long strand, ready for knitting or weaving."
+    },
+    {
+      "word": "chisel",
+      "definition": "A tool with a sharp edge for cutting or shaping wood, stone, or metal."
+    },
+    {
+      "word": "bevel",
+      "definition": "A slanted edge where a surface is angled instead of square, rather than meeting at a straight right angle."
+    },
+    {
+      "word": "plane",
+      "definition": "A hand tool that shaves thin layers off wood to smooth or flatten it."
+    },
+    {
+      "word": "sole",
+      "definition": "The flat bottom part of something, like the underside of a shoe or a woodworking tool."
+    },
+    {
+      "word": "knit",
+      "definition": "To loop yarn together with needles to make fabric."
+    },
+    {
+      "word": "unravel",
+      "definition": "To pull apart threads or stitches until the whole thing comes undone."
+    },
+    {
+      "word": "weld",
+      "definition": "To join pieces of metal together by melting them at the seam."
+    },
+    {
+      "word": "cut",
+      "definition": "To slice or divide something apart with a sharp edge."
+    }
+  ]
 }

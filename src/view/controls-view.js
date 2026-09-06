@@ -38,14 +38,26 @@ export class ControlsView {
     this.hintEl.hidden = state.rules.hintsAllowed === 0;
     this.hintEl.disabled = !playing || state.hintsUsed >= state.rules.hintsAllowed;
 
-    // Data-driven, not a rule: the pill exists only on a board that ships a glossary
-    // (D-18), and spends itself once the reveal is out.
+    // Data-driven, not a rule: the pill exists only on a board that ships something
+    // to reveal — a gloss (D-18) or Learning Mode definitions (D-33).
     const glossary = state.puzzle.glossary ?? [];
-    const revealable = glossary.some(
-      (entry) =>
-        state.boardTerms.includes(entry.word) && !state.vocabRevealed.includes(entry.word)
-    );
-    this.vocabEl.hidden = glossary.length === 0;
-    this.vocabEl.disabled = !playing || !revealable;
+    const definitions = state.puzzle.definitions ?? [];
+    this.vocabEl.hidden = glossary.length === 0 && definitions.length === 0;
+
+    if (state.rules.learningMode) {
+      // Learning Mode: the pill is a switch that arms the board, never spent.
+      this.vocabEl.disabled = !playing;
+      this.vocabEl.classList.toggle('armed', state.vocabArmed);
+      this.vocabEl.setAttribute('aria-pressed', String(state.vocabArmed));
+    } else {
+      // One-word mode: the pill spends itself once the reveal is out.
+      const revealable = glossary.some(
+        (entry) =>
+          state.boardTerms.includes(entry.word) && !state.vocabRevealed.includes(entry.word)
+      );
+      this.vocabEl.disabled = !playing || !revealable;
+      this.vocabEl.classList.remove('armed');
+      this.vocabEl.removeAttribute('aria-pressed');
+    }
   }
 }

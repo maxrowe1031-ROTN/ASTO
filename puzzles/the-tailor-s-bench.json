@@ -89,5 +89,71 @@
       "definition": "The tightly finished edge along the side of a woven fabric, running parallel to its length."
     }
   ],
-  "date": "2026-08-09"
+  "date": "2026-08-09",
+  "definitions": [
+    {
+      "word": "hook",
+      "definition": "A little curved piece of metal that catches onto something to hold a garment closed."
+    },
+    {
+      "word": "eye",
+      "definition": "A small loop of metal that something else catches onto to keep a garment shut."
+    },
+    {
+      "word": "button",
+      "definition": "A small round fastener sewn onto fabric that slots through cloth to hold things closed."
+    },
+    {
+      "word": "buttonhole",
+      "definition": "A small slit cut into fabric just big enough for a fastener to pass through."
+    },
+    {
+      "word": "let out",
+      "definition": "To make a piece of clothing wider or looser by adjusting its seams."
+    },
+    {
+      "word": "take in",
+      "definition": "To make a piece of clothing narrower or tighter by adjusting its seams."
+    },
+    {
+      "word": "lengthen",
+      "definition": "To make a piece of clothing longer than it currently is."
+    },
+    {
+      "word": "shorten",
+      "definition": "To make a piece of clothing shorter than it currently is."
+    },
+    {
+      "word": "thimble",
+      "definition": "A small hard cap worn on a fingertip to protect it while pushing a needle through cloth."
+    },
+    {
+      "word": "pinprick",
+      "definition": "A tiny sharp poke or puncture, the kind a needle or pin leaves behind."
+    },
+    {
+      "word": "selvage",
+      "definition": "The tightly finished edge along the side of a woven fabric, running parallel to its length."
+    },
+    {
+      "word": "fraying",
+      "definition": "The unraveling of threads at a cut or worn edge of fabric."
+    },
+    {
+      "word": "pattern",
+      "definition": "A paper template with shapes and markings used to cut fabric pieces for a garment."
+    },
+    {
+      "word": "jacket",
+      "definition": "An outer garment with sleeves that covers the upper body, often worn open at the front."
+    },
+    {
+      "word": "measurements",
+      "definition": "The exact numbers describing someone's body size, used to fit clothing precisely."
+    },
+    {
+      "word": "bespoke suit",
+      "definition": "A suit made completely from scratch to fit one specific person's body and taste."
+    }
+  ]
 }

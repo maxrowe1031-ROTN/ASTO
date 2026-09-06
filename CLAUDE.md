@@ -95,7 +95,8 @@ must remain fully operable without Brain access.
 - **Canonical puzzle schema v1.0** — camelCase; `pairs` is the single source of truth
   (the 16 words are *derived*, there is no `words[]`); `explanation` + per-set `id`
   required; **no `tier` field** (derived from `difficulty` 1–4 → Green/Yellow/Red/Black);
-  `date`/`baitTags` optional. Exactly 4 sets, one per difficulty.
+  `date`/`baitTags` optional; `glossary` (D-18) and `definitions` (D-33) optional and
+  additive. Exactly 4 sets, one per difficulty.
 - **Zero dependencies.** Vanilla HTML/CSS/JS ES modules, no build step, no framework.
   Tests use node's built-in `node:test`. Adding a dependency is a decision, not a detail.
   (This is stricter than the house default — see HR-1 in `docs/design.md`.)
@@ -183,6 +184,10 @@ makes the Studio double as proof the architecture is clean.
   explanations*.
 - Tiers are **revealed on solve**, never shown on the board — with one sanctioned
   exception: the hint tints its set's tiles in their tier colour early (D-16).
+- **Learning Mode (D-33)** is a rule, off by default. When on, Vocab **arms** the board and
+  the next tile tap **defines that word, never selects it**; the engine decides, the
+  controller only routes. A game is marked (`learning: true`, `📖`, the book badge) only
+  when a definition was actually looked up.
 
 ## 8. Sessions and verification
 

@@ -43,6 +43,7 @@ publishes on its own. Every run ends at Max.
                               05 validator · 06 adversarial solver · 07 test player · 08 style guide
                                                                 │
                                                   09 glossary author  ← writes one definition, or declines
+                                               10 definitions author  ← sixteen plain definitions for Learning Mode (D-33)
                                                                 │
                                         ┌───────────────────────┤
                        auto-revise (D-14)│                       │
@@ -100,6 +101,7 @@ than judges:
 | Stage | Job | Model / effort |
 |---|---|---|
 | 09 glossary-author | Writes the ONE definition the in-game Vocabulary button reveals — or **declines**, when the board needs no gloss (D-18) | Sonnet / low |
+| 10 definitions-author | Writes one plain definition per board word for **Learning Mode** (D-33) — leak rule relaxed by design; the validator holds completeness | Sonnet / low |
 
 **The generator–evaluator contract holds structurally.** Class 8: *do not let the agent
 that produced the work evaluate the work.* Every evaluator runs as a separate request
@@ -389,9 +391,9 @@ judgement were already on disk, just never joined.
 - **`docs/backlog.md`** — known gaps, openly. Several are about this pipeline's
   evaluators, and the report above is partly an answer to them.
 
-Zero dependencies, Node ≥22, `node:test`. `npm test` **as of 2026-09-05: 1633 passing,
+Zero dependencies, Node ≥22, `node:test`. `npm test` **as of 2026-09-05: 1704 passing,
 0 failing** — 1671 before D-32 cut the art line and its 56 tests, then back up as the
-survey's three passes brought their own. The total
+survey's three passes and Learning Mode (D-33, 71 tests) brought their own. The total
 drifts as boards are added, because `board-integrity.test.js` globs `puzzles/*.json` and
 regates every board on every run; the zero is the part that matters.
 

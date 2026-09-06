@@ -111,6 +111,9 @@ export const STAGE_INPUTS = {
     board: boardOf(board),
     knowledgeGated: board.get('07-test-player')?.knowledgeGated ?? [],
   }),
+  // The definitions author writes one plain definition per board word for
+  // Learning Mode (D-33). It only needs the board.
+  '10-definitions-author': (board) => ({ board: boardOf(board) }),
   '08-style-guide': (board, { manifest }) => {
     const puzzle = boardOf(board);
     return {

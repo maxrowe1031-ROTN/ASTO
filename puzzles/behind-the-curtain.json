@@ -93,5 +93,71 @@
       "definition": "The framework of beams high above a stage ceiling, used to hang lights and scenery from up top."
     }
   ],
-  "date": "2026-08-03"
+  "date": "2026-08-03",
+  "definitions": [
+    {
+      "word": "microphone",
+      "definition": "A handheld or clipped-on device that picks up your voice so the whole room can hear it."
+    },
+    {
+      "word": "amplify",
+      "definition": "To make a sound bigger and louder so it carries further."
+    },
+    {
+      "word": "fog machine",
+      "definition": "A machine that puffs out mist to give the stage atmosphere or hide something from view."
+    },
+    {
+      "word": "obscure",
+      "definition": "To hide or blur something so it's hard to see clearly."
+    },
+    {
+      "word": "prop",
+      "definition": "Any object an actor carries or uses on stage, from a teacup to a sword."
+    },
+    {
+      "word": "skull",
+      "definition": "A stage object shaped like a human head bone, often used for dramatic effect."
+    },
+    {
+      "word": "role",
+      "definition": "A character an actor plays in a show."
+    },
+    {
+      "word": "ingenue",
+      "definition": "A young, innocent female character type often cast in plays."
+    },
+    {
+      "word": "black box theater",
+      "definition": "A small, bare, flexible performance space with movable seating and no fixed stage."
+    },
+    {
+      "word": "Broadway house",
+      "definition": "A big, grand commercial theater built for large professional productions."
+    },
+    {
+      "word": "one-act",
+      "definition": "A short play performed in a single continuous piece without intermission."
+    },
+    {
+      "word": "full-length",
+      "definition": "A full evening's play, usually broken into acts with an intermission."
+    },
+    {
+      "word": "green room",
+      "definition": "The lounge where performers relax and wait before or after going on stage."
+    },
+    {
+      "word": "backstage",
+      "definition": "The area behind and around the stage where performers and crew work out of audience view."
+    },
+    {
+      "word": "catwalk",
+      "definition": "A narrow walkway high above the stage used to reach lights and rigging."
+    },
+    {
+      "word": "grid",
+      "definition": "The framework of beams high above a stage ceiling, used to hang lights and scenery from up top."
+    }
+  ]
 }

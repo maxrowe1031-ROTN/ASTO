@@ -89,5 +89,71 @@
       "definition": "a perch or spot where a flying creature settles to rest"
     }
   ],
-  "date": "2026-08-12"
+  "date": "2026-08-12",
+  "definitions": [
+    {
+      "word": "gas",
+      "definition": "a fuel that burns to make heat or light, often stored as liquid but used as vapor"
+    },
+    {
+      "word": "lantern",
+      "definition": "a portable case with a light inside, built to carry a flame safely"
+    },
+    {
+      "word": "battery",
+      "definition": "a small stored charge of power you can carry around to run things"
+    },
+    {
+      "word": "flashlight",
+      "definition": "a handheld gadget that throws a beam of light where you point it"
+    },
+    {
+      "word": "candle",
+      "definition": "a stick of wax with a wick that burns to give off a soft glow"
+    },
+    {
+      "word": "illuminate",
+      "definition": "to light something up so it can be seen clearly"
+    },
+    {
+      "word": "broom",
+      "definition": "a handled brush used for clearing dust and dirt off floors"
+    },
+    {
+      "word": "sweep",
+      "definition": "to push dirt or debris away using long swishing strokes"
+    },
+    {
+      "word": "bat",
+      "definition": "a flying nighttime creature that navigates by sound"
+    },
+    {
+      "word": "roost",
+      "definition": "a perch or spot where a flying creature settles to rest"
+    },
+    {
+      "word": "mouse",
+      "definition": "a small scurrying rodent that likes to hide in tight little spaces"
+    },
+    {
+      "word": "nest",
+      "definition": "a cozy built shelter where a small creature sleeps or raises its young"
+    },
+    {
+      "word": "lit",
+      "definition": "burning or glowing, giving off active light"
+    },
+    {
+      "word": "extinguished",
+      "definition": "put out, no longer burning or glowing"
+    },
+    {
+      "word": "taken",
+      "definition": "captured in the moment, as a picture just snapped"
+    },
+    {
+      "word": "faded",
+      "definition": "worn dim or pale over time, losing its original vividness"
+    }
+  ]
 }

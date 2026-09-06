@@ -87,5 +87,71 @@
       "definition": "A buzzing tool with electromagnetic coils that snap a needle bar up and down, the older-style build many old-school shops still swear by."
     }
   ],
-  "date": "2026-08-08"
+  "date": "2026-08-08",
+  "definitions": [
+    {
+      "word": "coil machine",
+      "definition": "A buzzing tool with electromagnetic coils that snap a needle bar up and down, the older-style build many old-school shops still swear by."
+    },
+    {
+      "word": "rotary machine",
+      "definition": "A quieter tool with a spinning motor that drives the needle smoothly, favored for a gentler, more consistent feel."
+    },
+    {
+      "word": "blackwork",
+      "definition": "A style done entirely in black ink, leaning on bold lines and shading instead of color."
+    },
+    {
+      "word": "color work",
+      "definition": "A style built from vivid inks layered together to bring shading, depth, and mood through hue."
+    },
+    {
+      "word": "antiseptic",
+      "definition": "A cleaning liquid used on skin to kill germs before and after the needle touches it."
+    },
+    {
+      "word": "infection",
+      "definition": "An unwanted invasion of bacteria in a wound, the thing every clean studio works hard to keep out."
+    },
+    {
+      "word": "barrier film",
+      "definition": "A clear plastic wrap covering surfaces and equipment so nothing dirty touches the next client."
+    },
+    {
+      "word": "cross-contamination",
+      "definition": "When germs or fluids sneak from one surface, person, or tool onto another they shouldn't touch."
+    },
+    {
+      "word": "tattoo artist",
+      "definition": "The skilled person who designs and inks the artwork permanently into someone's skin."
+    },
+    {
+      "word": "tube",
+      "definition": "The handheld grip that holds the needle bar steady so the artist can guide it precisely."
+    },
+    {
+      "word": "apprentice",
+      "definition": "Someone still learning the craft, training under an experienced artist before working on real clients."
+    },
+    {
+      "word": "practice skin",
+      "definition": "A fake, skin-like sheet used for training strokes and shading before ever touching a real person."
+    },
+    {
+      "word": "stencil",
+      "definition": "A transferred outline placed on skin to guide exactly where the ink will go."
+    },
+    {
+      "word": "tattoo",
+      "definition": "The finished piece of permanent ink art living on someone's skin."
+    },
+    {
+      "word": "cap",
+      "definition": "A small, contained tattoo piece, often meant to cover a spot or start a bigger idea."
+    },
+    {
+      "word": "sleeve",
+      "definition": "A large tattoo design that wraps around the whole arm, often built from many smaller pieces."
+    }
+  ]
 }

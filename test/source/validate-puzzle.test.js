@@ -177,3 +177,50 @@ test('validation never throws, whatever it is handed', () => {
     assert.ok(result.errors.length > 0);
   }
 });
+
+// Learning Mode definitions (design.md D-33): optional, one entry per board
+// word at most. PARTIAL lists are valid in the game — a hand-edit can drop a
+// word's entry and the board must still load; the pipeline demands sixteen.
+test('definitions is optional, and an empty list is allowed', () => {
+  assert.equal(broken((p) => { delete p.definitions; }).ok, true);
+  assert.equal(broken((p) => { p.definitions = []; }).ok, true);
+});
+
+test('a partial definitions list passes', () => {
+  const result = broken((p) => {
+    p.definitions = [
+      { word: 'Seed', definition: 'a plant starts from one' },
+      { word: 'Chisel', definition: 'a carving blade' }
+    ];
+  });
+  assert.equal(result.ok, true, messages(result));
+});
+
+test('a definitions word must be one of the sixteen board words', () => {
+  failsAt(
+    broken((p) => { p.definitions = [{ word: 'Cordwainer', definition: 'a shoemaker' }]; }),
+    'definitions[0].word'
+  );
+});
+
+test('a word may not be defined twice, whatever its case', () => {
+  failsAt(
+    broken((p) => {
+      p.definitions = [
+        { word: 'Seed', definition: 'one' },
+        { word: 'seed', definition: 'two' }
+      ];
+    }),
+    'definitions[1].word'
+  );
+});
+
+test('a definition must be a non-empty string', () => {
+  failsAt(broken((p) => { p.definitions = [{ word: 'Seed', definition: '  ' }]; }), 'definitions[0].definition');
+  failsAt(broken((p) => { p.definitions = [{ word: 'Seed' }]; }), 'definitions[0].definition');
+});
+
+test('definitions must be an array of objects when present', () => {
+  failsAt(broken((p) => { p.definitions = 'Seed: a thing'; }), 'definitions');
+  failsAt(broken((p) => { p.definitions = ['Seed']; }), 'definitions[0]');
+});

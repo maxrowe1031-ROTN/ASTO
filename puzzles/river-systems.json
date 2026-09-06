@@ -89,5 +89,71 @@
       "definition": "loose soil, sand, and silt left behind by moving water"
     }
   ],
-  "date": "2026-09-02"
+  "date": "2026-09-02",
+  "definitions": [
+    {
+      "word": "gorge",
+      "definition": "a deep, narrow valley with steep rocky walls, usually carved out by a river"
+    },
+    {
+      "word": "Grand Canyon",
+      "definition": "a massive rocky chasm in Arizona, cut by a river over millions of years"
+    },
+    {
+      "word": "waterfall",
+      "definition": "a spot where water drops suddenly over a cliff or steep ledge"
+    },
+    {
+      "word": "Niagara",
+      "definition": "a huge, thundering waterfall on the border of the US and Canada"
+    },
+    {
+      "word": "erode",
+      "definition": "to slowly wear away land through the action of water, wind, or ice"
+    },
+    {
+      "word": "deposit",
+      "definition": "to drop off carried sediment somewhere new, building up land"
+    },
+    {
+      "word": "flood",
+      "definition": "when water rises and spreads out over land that's usually dry"
+    },
+    {
+      "word": "recede",
+      "definition": "to pull back and shrink away, like water going down after rising"
+    },
+    {
+      "word": "alluvium",
+      "definition": "loose soil, sand, and silt left behind by moving water"
+    },
+    {
+      "word": "floodplain",
+      "definition": "the flat land beside a river that gets covered when water rises"
+    },
+    {
+      "word": "meander",
+      "definition": "a lazy, looping bend in a river's path"
+    },
+    {
+      "word": "oxbow lake",
+      "definition": "a curved, cut-off lake left behind when a river straightens its course"
+    },
+    {
+      "word": "white water",
+      "definition": "choppy, foamy water churned up as it rushes over rocks"
+    },
+    {
+      "word": "rapids",
+      "definition": "a fast, rough stretch of river where the water crashes over rocks"
+    },
+    {
+      "word": "high-water mark",
+      "definition": "a line left behind showing how high floodwater once reached"
+    },
+    {
+      "word": "deluge",
+      "definition": "a huge, overwhelming rush of water, like a massive flood"
+    }
+  ]
 }

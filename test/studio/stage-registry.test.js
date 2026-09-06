@@ -15,9 +15,9 @@ import {
   isValidStageId,
 } from '../../studio/stage-registry.js';
 
-test('there are ten stages: nine agents plus the integrity gate', () => {
-  assert.equal(STAGES.length, 10);
-  assert.equal(STAGES.filter((s) => s.kind === 'agent').length, 9);
+test('there are eleven stages: ten agents plus the integrity gate', () => {
+  assert.equal(STAGES.length, 11);
+  assert.equal(STAGES.filter((s) => s.kind === 'agent').length, 10);
   assert.equal(STAGES.filter((s) => s.kind === 'gate').length, 1);
 });
 
@@ -35,6 +35,7 @@ test('the stages run in the GDD §12.3 order with the gate after board-builder',
       '07-test-player',
       '08-style-guide',
       '09-glossary-author',
+      '10-definitions-author',
     ],
   );
 });
@@ -58,7 +59,8 @@ test('stageAfter walks the order and returns null at the end', () => {
   assert.equal(stageAfter('04-board-builder').id, '04a-integrity');
   assert.equal(stageAfter('04a-integrity').id, '05-analogy-validator');
   assert.equal(stageAfter('08-style-guide').id, '09-glossary-author');
-  assert.equal(stageAfter('09-glossary-author'), null);
+  assert.equal(stageAfter('09-glossary-author').id, '10-definitions-author');
+  assert.equal(stageAfter('10-definitions-author'), null);
 });
 
 test('stagesFrom returns the tail of the pipeline for revision re-entry', () => {
@@ -71,6 +73,7 @@ test('stagesFrom returns the tail of the pipeline for revision re-entry', () => 
     '07-test-player',
     '08-style-guide',
     '09-glossary-author',
+    '10-definitions-author',
   ]);
 });
 

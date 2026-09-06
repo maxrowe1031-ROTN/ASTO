@@ -19,7 +19,7 @@ import { slugify } from '../../slug.js';
 import { briefText } from '../brief-text.js';
 // The same gloss filtering publish runs (D-22): the play surface and the
 // published puzzle must carry one derivation of "which definitions ride".
-import { mergeGlossary } from '../../gloss.js';
+import { mergeDefinitions, mergeGlossary } from '../../gloss.js';
 
 const view = document.getElementById('view');
 const POLL_MS = 2500;
@@ -344,6 +344,7 @@ async function renderRun(runId) {
       }
       ${worldCapLine(manifest, attempt)}
       ${glossLine(attempt)}
+      ${definitionsFold(attempt)}
     </section>
 
     ${autoRevisionPanel(attempt, detail.decisions, attemptId)}
@@ -428,7 +429,10 @@ async function renderRun(runId) {
   // definition whose word was edited away is dropped here too.
   wirePlay(
     effectiveBoard
-      ? mergeGlossary(effectiveBoard, attempt.reports?.['09-glossary-author']?.glossary).board
+      ? mergeDefinitions(
+          mergeGlossary(effectiveBoard, attempt.reports?.['09-glossary-author']?.glossary).board,
+          attempt.reports?.['10-definitions-author']?.definitions,
+        ).board
       : effectiveBoard,
   );
   if (editable) wireEdit(runId, attemptId, effectiveBoard, attempt.board);
@@ -594,6 +598,19 @@ function glossLine(attempt) {
         `<strong>${escape(entry.word)}</strong> — ${escape(entry.definition)}</p>`,
     )
     .join('');
+}
+
+/**
+ * Learning Mode definitions (D-33), folded shut: sixteen lines Max did not ask
+ * to read on every card, one click away when a tapped tile reads oddly.
+ */
+function definitionsFold(attempt) {
+  const definitions = attempt.reports?.['10-definitions-author']?.definitions ?? [];
+  if (definitions.length === 0) return '';
+  return `<details class="panel report"><summary>Learning Mode definitions (${definitions.length})</summary>
+    <ul class="studio-muted">${definitions
+      .map((entry) => `<li><strong>${escape(entry.word)}</strong> — ${escape(entry.definition)}</li>`)
+      .join('')}</ul></details>`;
 }
 
 function unappliedPrompt(unapplied = []) {

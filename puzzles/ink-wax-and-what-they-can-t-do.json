@@ -89,5 +89,71 @@
       "definition": "a soft absorbent pad used to soak up wet ink"
     }
   ],
-  "date": "2026-08-17"
+  "date": "2026-08-17",
+  "definitions": [
+    {
+      "word": "candle",
+      "definition": "a stick you burn for light, with a wick running through it"
+    },
+    {
+      "word": "wax",
+      "definition": "the soft stuff that melts and drips as something burns"
+    },
+    {
+      "word": "envelope",
+      "definition": "a folded pocket you slide a letter into before sending it"
+    },
+    {
+      "word": "paper",
+      "definition": "thin flat sheets you write on or wrap things with"
+    },
+    {
+      "word": "seal",
+      "definition": "a stamped or pressed mark that shows something hasn't been opened"
+    },
+    {
+      "word": "tampering",
+      "definition": "sneaking a change or interference with something that should stay untouched"
+    },
+    {
+      "word": "blotter",
+      "definition": "a soft absorbent pad used to soak up wet ink"
+    },
+    {
+      "word": "smudge",
+      "definition": "a blurry smear left behind when something wet gets rubbed or dragged"
+    },
+    {
+      "word": "final",
+      "definition": "the finished, polished version that's ready to send out"
+    },
+    {
+      "word": "draft",
+      "definition": "an early rough version of something you're still working on"
+    },
+    {
+      "word": "taper",
+      "definition": "a long thin candle used for lighting or decoration"
+    },
+    {
+      "word": "stub",
+      "definition": "the short leftover bit of something once most of it is used up"
+    },
+    {
+      "word": "flame",
+      "definition": "the bright flickering fire sitting on top of something burning"
+    },
+    {
+      "word": "weight",
+      "definition": "how heavy something is"
+    },
+    {
+      "word": "smoke",
+      "definition": "the drifting gray haze that rises off something burning"
+    },
+    {
+      "word": "shape",
+      "definition": "the outline or form something holds"
+    }
+  ]
 }

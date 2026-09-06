@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 
 import {
   DEFAULT_VOLUME, HISTORY_KEY, RATED_BOARDS_KEY, RESULTS_KEY, Storage,
-  TUTORIAL_SEEN_KEY, VOLUME_KEY
+  LEARNING_MODE_KEY, TUTORIAL_SEEN_KEY, VOLUME_KEY
 } from '../src/storage.js';
 
 /** A stand-in for localStorage: same three methods, no browser. */
@@ -330,4 +330,30 @@ test('clear() forgets the sound preferences too', () => {
   storage.clear();
   assert.equal(storage.isMuted(), false);
   assert.equal(storage.volume(), DEFAULT_VOLUME);
+});
+
+// --- Learning Mode (D-33) ---
+
+test('a fresh player has learning mode off', () => {
+  assert.equal(new Storage({ store: fakeStore() }).isLearningMode(), false);
+});
+
+test('learning mode round-trips and survives a reload', () => {
+  const store = fakeStore();
+  new Storage({ store }).setLearningMode(true);
+  assert.equal(new Storage({ store }).isLearningMode(), true);
+  assert.equal(store.data.get(LEARNING_MODE_KEY), 'true');
+  new Storage({ store }).setLearningMode(false);
+  assert.equal(new Storage({ store }).isLearningMode(), false);
+});
+
+test('garbage in the learning key reads as off', () => {
+  const storage = new Storage({ store: fakeStore({ [LEARNING_MODE_KEY]: 'maybe' }) });
+  assert.equal(storage.isLearningMode(), false);
+});
+
+test('a hostile store leaves learning mode off and never throws', () => {
+  const storage = new Storage({ store: hostileStore() });
+  assert.equal(storage.isLearningMode(), false);
+  assert.doesNotThrow(() => storage.setLearningMode(true));
 });

@@ -15,16 +15,21 @@ const SQUARE = {
   black: '⬛'
 };
 
-/** e.g. "ASTO — First Light\n4/4 · 2 beans\n🟩🟨🟥⬛" */
+/**
+ * e.g. "ASTO — First Light\n4/4 · 2 beans\n🟩🟨🟥⬛" — with " · 📖" on the score
+ * line when Learning Mode definitions were looked up (D-33): the light mark,
+ * so a reader knows help was taken without the squares giving anything away.
+ */
 export function buildShareText(state) {
   const solved = state.solvedSetIds.map((id) => {
     const set = state.puzzle.sets.find((s) => s.id === id);
     return SQUARE[difficultyToTier(set.difficulty)];
   });
 
+  const usedDefinitions = Boolean(state.rules?.learningMode) && state.vocabRevealed.length > 0;
   const lines = [
     `ASTO — ${state.puzzle.title}`,
-    `${solved.length}/${state.puzzle.sets.length} · ${beans(state.mistakes)}`
+    `${solved.length}/${state.puzzle.sets.length} · ${beans(state.mistakes)}${usedDefinitions ? ' · 📖' : ''}`
   ];
   if (solved.length > 0) lines.push(solved.join(''));
   return lines.join('\n');

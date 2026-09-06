@@ -22,7 +22,8 @@ will be authored in this repo's schema; the crew gets re-tooled later (out of sc
 2. **Canonical puzzle schema v1.0** — camelCase; pairs as single source of truth
    (16 words derived, no `words[]`); `explanation` + per-set `id` required; **no `tier`
    field** (derived from `difficulty` 1–4 → Green/Yellow/Red/Black); `date`/`baitTags`
-   optional. Exactly 4 sets, one per difficulty. Example:
+   optional; amended additively since — optional `glossary` (D-18) and `definitions`
+   (D-33). Exactly 4 sets, one per difficulty. Example:
    ```json
    {
      "id": "asto-first-light", "title": "First Light", "date": "2026-08-01",
@@ -3134,6 +3135,105 @@ own reconsider-note is the useful inheritance: **start from an API transport
 with reference-image conditioning, never the manual loop**, and settle the art
 before automating its production. The 2026-10-26 "is the band still wanted"
 prompt from D-31 is answered and retired: it is not.
+
+### D-33 — Learning Mode: the Vocab button defines any tile (2026-09-05)
+
+**Max's idea, brainstormed and built the same day.** The Vocab button (D-18)
+reveals one authored definition and stops. Max: what if a setting let a player
+*"keep hitting the vocab button"* for more help? Read against the code, the
+button was never the limit — the engine and schema already allowed a list of
+glosses and revealed the next unrevealed one. What stopped it was **content**
+(every board carries exactly one entry, D-18's editorial choice) and the absence
+of a **mode**. Spec: `docs/superpowers/specs/2026-09-05-learning-mode-design.md`.
+
+**Decisions made with Max, in order:**
+
+1. **Scope: all sixteen words** get a definition, not only knowledge-gated ones.
+   (Claude recommended the gated-only scope as D-18's named deferral; Max chose
+   the full board.)
+2. **The leak rule is relaxed for these definitions** — they may say what a
+   thing does. Claude raised the consequence first: across sixteen words the
+   D-18 rule is often impossible, since a plain word's honest definition *is*
+   its function. Max's call: **Learning Mode is an easy mode by intent.** The
+   one-word `glossary` keeps D-18's full leak check and stays exactly what the
+   default game reveals.
+3. **Marked lightly.** A result records `learning: true` **only when the mode
+   was on and at least one tile was actually defined**; the mode being on says
+   nothing about how the board was played. The share line carries ` · 📖`; the
+   player's record shows a **small book beside the cup** (added by Max at plan
+   review); the statistics page is untouched for now (backlog).
+4. **Press Vocab, then tap a tile** — not cycling, not a list. The footnote
+   shows the most recently defined word while it is on the board.
+5. **Backfill auto-applies** to the whole catalog, no review file.
+6. **Shape: an engine rule plus a separate `definitions` field** (approach A),
+   over a view-only mode (breaks the boundary law and cannot record help) or
+   growing `glossary` to sixteen (makes the leak-checked entry positional).
+7. **Name: Learning Mode**, one on/off toggle, default off (Max renamed it from
+   the proposed two-pill "Vocab button" row).
+8. **The tutorial teaches it** — what it does and where to turn it on (Max,
+   at plan review).
+
+**Schema v1.0 change (locked decision, Max-initiated, additive like D-18):**
+optional `definitions: [ { word, definition } ]` beside `glossary`. The game's
+validator accepts a **partial** list (each word a board word, no word twice) so
+a hand-edit that drops a word never breaks a board; the pipeline's validator
+demands all sixteen. A tile with no entry answers *"No definition for this one."*
+
+**Where it lives.** `rules.learningMode` (default false) joins the tutorial's
+dials; `vocabArmed` is engine state. `revealVocab` toggles the arm under the
+rule and reveals the gloss without it; `defineWord(state, term)` records the
+word last in `vocabRevealed` and disarms, so each press buys one look-up;
+`withRules` lets a settings change reach the live game (turning the mode off
+disarms). The controller only routes: an armed tap goes to `defineWord`, the
+same way it already routes select versus deselect. Views: the Vocab pill reads
+pressed while armed, the board wears a dashed ring (`.board.defining`), the
+status line asks for a tile, the footnote shows the latest word — glossary
+first, then definitions. Settings gains a **Help** group with a "Turn on / Turn
+off" pill, the Mute precedent; `asto.learningMode` is a preference and survives
+`clear()` like the sound keys. The tutorial's vocab step points at Settings
+when the mode is off, narrates the arm and the look-up when it is on, and the
+first solve carries a one-line note so a player who never presses Vocab still
+hears it — all inside the coach card's 135/60-character limits.
+
+**The pipeline:** stage **10-definitions-author** (twelfth agent, effort `low`,
+profile `2026-09-05-learning-mode`) writes sixteen plain definitions with a
+soft steer not to spell out pairings — a steer, not a check, per decision 2.
+`gloss.js` merges `definitions` at save, play and publish by the glossary's
+drop rule; the review card folds them under the board; the hand editor strips
+them from its base like the gloss. `tools/backfill-definitions.js` authored the
+catalog through `puzzle-store` — **51 boards, 51 applied, 0 failed**, every definition matching its tile exactly and none over 160 characters. A content test now requires
+sixteen definitions on every published board.
+
+**A limit worth knowing:** the results blob keeps the player's **best** run
+(strictly fewer mistakes replaces; equal never does), so a clean win with
+definitions does not overwrite an earlier clean win without them — the badge
+marks the mode of the best run, exactly as the hint's brown cup does. Observed
+during verification on bedside-manor; the history row carried the mark, the
+best-result row did not. Not a defect: the same law the hint lives under.
+
+**Verified:** `npm test` green (1633 → 1704) with headless Learning
+Mode playthroughs, controller routing, tutorial copy and leak checks, results,
+share, badge, validator, agent, merge and backfill suites. **In the browser at
+375×812:** default mode identical to before (gloss, spent pill, taps select);
+Settings Help group toggles and persists; on a board the pill arms with
+`aria-pressed`, the dashed ring and "Tap a tile to see what it means."; an
+armed tap on an unselected tile defines it and does **not** select it; the
+glossed word shows its leak-checked gloss; Vocab again disarms and clears the
+line; the mode turned off mid-game disarms the board and restores one-word
+behaviour on the same board; a win with one definition used records
+`learning: true`, shares `4/4 · no beans · 📖`, and shows the book at the cup's
+corner on the calendar cell and beside the cup on the day card with
+"Definitions were used." in the label; a win with the mode on but unused
+records nothing; the tutorial says the right thing in both modes; a backfilled
+board defines a plain tile in the footnote. Zero console errors throughout.
+
+**Reconsider-when:** Learning Mode results come to dominate wins on the
+ratings table or the calendar — the easy mode has become the game and the
+default deserves a look; **or** definitions keep spelling out pairings so
+plainly that a board solves from the footnote — add a mechanical check (a
+definition may not name its partner word) rather than a stricter prompt; **or**
+the statistics page's silence on assisted plays starts to mislead — the field
+is already recorded, the column is a taste call.
 
 ## House-rule exceptions
 

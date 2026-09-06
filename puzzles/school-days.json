@@ -89,5 +89,71 @@
       "definition": "A classroom group students report to at the start of the day for attendance and announcements."
     }
   ],
-  "date": "2026-08-25"
+  "date": "2026-08-25",
+  "definitions": [
+    {
+      "word": "teacher",
+      "definition": "Someone whose job is helping you learn and understand new things."
+    },
+    {
+      "word": "chalkboard",
+      "definition": "A dark board you write on with chalk to show ideas to a class."
+    },
+    {
+      "word": "coach",
+      "definition": "Someone who trains and guides a team or player to do better."
+    },
+    {
+      "word": "whistle",
+      "definition": "A small device you blow to make a sharp sound that signals attention."
+    },
+    {
+      "word": "lecture notes",
+      "definition": "Quick jottings you take during a talk to remember what was said."
+    },
+    {
+      "word": "study guide",
+      "definition": "An organized summary that helps you review and prepare for a test."
+    },
+    {
+      "word": "rough draft",
+      "definition": "An early, unpolished version of something you're writing."
+    },
+    {
+      "word": "polished essay",
+      "definition": "A finished piece of writing that's been revised and cleaned up."
+    },
+    {
+      "word": "fire alarm",
+      "definition": "A loud alert that warns people there might be a fire."
+    },
+    {
+      "word": "evacuation",
+      "definition": "Leaving a building quickly and safely because of danger."
+    },
+    {
+      "word": "tornado siren",
+      "definition": "A loud outdoor alert warning people that a tornado is coming."
+    },
+    {
+      "word": "shelter drill",
+      "definition": "A practice run for taking cover safely during severe weather."
+    },
+    {
+      "word": "homeroom",
+      "definition": "A classroom group students report to at the start of the day for attendance and announcements."
+    },
+    {
+      "word": "dismissal",
+      "definition": "The moment when school lets out and everyone heads home."
+    },
+    {
+      "word": "kindergarten",
+      "definition": "The first year of school for young kids, full of early learning."
+    },
+    {
+      "word": "graduation",
+      "definition": "The ceremony marking that you've finished a level of schooling."
+    }
+  ]
 }

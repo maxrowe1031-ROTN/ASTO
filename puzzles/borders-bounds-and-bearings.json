@@ -89,5 +89,71 @@
       "definition": "A loop-shaped conveyor belt that goes around in a circle."
     }
   ],
-  "date": "2026-08-01"
+  "date": "2026-08-01",
+  "definitions": [
+    {
+      "word": "lodging",
+      "definition": "A place you pay to sleep for the night, like a hotel or inn."
+    },
+    {
+      "word": "hostel",
+      "definition": "A budget-friendly place to stay, often with shared rooms and a communal vibe."
+    },
+    {
+      "word": "transport",
+      "definition": "Any way of getting people or things from one place to another."
+    },
+    {
+      "word": "ferry",
+      "definition": "A boat that carries people and vehicles across water on a regular route."
+    },
+    {
+      "word": "rudder",
+      "definition": "A flat piece at the back of a boat or plane that turns it left or right."
+    },
+    {
+      "word": "steer",
+      "definition": "To guide something's direction, like turning a wheel to go where you want."
+    },
+    {
+      "word": "throttle",
+      "definition": "A lever or pedal that controls how much power an engine gets."
+    },
+    {
+      "word": "accelerate",
+      "definition": "To go faster, picking up speed."
+    },
+    {
+      "word": "carousel",
+      "definition": "A loop-shaped conveyor belt that goes around in a circle."
+    },
+    {
+      "word": "luggage",
+      "definition": "Bags and suitcases you bring along when you travel."
+    },
+    {
+      "word": "overhead bin",
+      "definition": "The storage compartment above your seat on a plane."
+    },
+    {
+      "word": "carry-on",
+      "definition": "A small bag you keep with you instead of checking it in."
+    },
+    {
+      "word": "pitch",
+      "definition": "To set up a tent, getting it standing and ready to use."
+    },
+    {
+      "word": "strike",
+      "definition": "To take down a tent, packing it away after use."
+    },
+    {
+      "word": "inflate",
+      "definition": "To fill something with air until it's firm, like a mattress."
+    },
+    {
+      "word": "deflate",
+      "definition": "To let the air out of something, making it flat again."
+    }
+  ]
 }

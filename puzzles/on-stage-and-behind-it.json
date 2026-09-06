@@ -88,5 +88,71 @@
       "definition": "A thin strip of material, often cane, that flexes to make sound in some wind instruments."
     }
   ],
-  "date": "2026-09-10"
+  "date": "2026-09-10",
+  "definitions": [
+    {
+      "word": "singer",
+      "definition": "Someone who performs music with their own voice."
+    },
+    {
+      "word": "microphone",
+      "definition": "A device that picks up sound so it can be heard louder or recorded."
+    },
+    {
+      "word": "drummer",
+      "definition": "Someone who plays the drums, keeping the beat for a band."
+    },
+    {
+      "word": "drumsticks",
+      "definition": "The pair of sticks used to hit a drum kit."
+    },
+    {
+      "word": "load-in",
+      "definition": "The process of bringing all the gear into a venue before a show."
+    },
+    {
+      "word": "load-out",
+      "definition": "Packing up and hauling all the gear out after a show ends."
+    },
+    {
+      "word": "fade-in",
+      "definition": "When a sound or track starts quiet and slowly gets louder."
+    },
+    {
+      "word": "fade-out",
+      "definition": "When a sound or track gets quieter and quieter until it's gone."
+    },
+    {
+      "word": "reed",
+      "definition": "A thin strip of material, often cane, that flexes to make sound in some wind instruments."
+    },
+    {
+      "word": "mouthpiece",
+      "definition": "The part of an instrument you put to your mouth to play it."
+    },
+    {
+      "word": "bow",
+      "definition": "A stick strung with hair, drawn across strings to make them sound."
+    },
+    {
+      "word": "string",
+      "definition": "A thin stretched wire or cord on an instrument that vibrates to make a note."
+    },
+    {
+      "word": "stage name",
+      "definition": "The made-up name a performer uses in public instead of their own."
+    },
+    {
+      "word": "birth name",
+      "definition": "The name someone was given at birth, before any public persona."
+    },
+    {
+      "word": "Auto-Tune",
+      "definition": "Software that corrects or smooths out a singer's pitch electronically."
+    },
+    {
+      "word": "voice",
+      "definition": "The natural sound a person makes when they speak or sing."
+    }
+  ]
 }

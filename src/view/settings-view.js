@@ -2,9 +2,10 @@
 // intents; it computes nothing and stores nothing. Sound state lives in
 // sound.js and persists through storage.js; this screen is just the controls.
 //
-// Built now at Max's call (2026-08-25, design.md D-27) rather than waiting for
-// a second setting to exist. One section today: Sound — mute, and a volume
-// slider that previews as it moves so a level is chosen by ear, not by number.
+// Built at Max's call (2026-08-25, design.md D-27) before a second setting
+// existed. Two sections now: Sound — mute, and a volume slider that previews
+// as it moves so a level is chosen by ear, not by number — and Help, holding
+// Learning Mode (D-33), the second setting D-27 was waiting for.
 //
 // The door is a gear icon beside the statistics icon in the calendar's header
 // (Max's call, 2026-08-25 — the front door stays two buttons), so Back returns
@@ -12,7 +13,7 @@
 // statistics screen follows. The wordmark still goes home, as everywhere.
 
 export class SettingsView {
-  constructor(root, { onHome, onBack, onMute, onVolume }) {
+  constructor(root, { onHome, onBack, onMute, onVolume, onLearning }) {
     root.innerHTML = `
       <div class="select-head">
         <h1>
@@ -35,16 +36,27 @@ export class SettingsView {
           <span class="settings-volume-value" aria-hidden="true"></span>
         </div>
       </section>
+      <section class="settings-group" aria-labelledby="settings-help-heading">
+        <h3 id="settings-help-heading" class="settings-group-title">Help</h3>
+        <div class="settings-row">
+          <span class="settings-label" id="settings-learning-label">Learning mode</span>
+          <button class="pill settings-learning" data-action="learning"
+                  aria-labelledby="settings-learning-label" aria-pressed="false"></button>
+        </div>
+        <p class="settings-note">Vocab defines any tile you tap.</p>
+      </section>
       <button class="text-action" data-action="back">Back</button>`;
 
     this.muteButton = root.querySelector('[data-action="mute"]');
     this.volumeSlider = root.querySelector('#settings-volume');
     this.volumeValue = root.querySelector('.settings-volume-value');
+    this.learningButton = root.querySelector('[data-action="learning"]');
 
     root.querySelector('[data-action="home"]').addEventListener('click', onHome);
     root.querySelector('[data-action="back"]').addEventListener('click', onBack);
     this.muteButton.addEventListener('click', onMute);
     this.volumeSlider.addEventListener('input', () => onVolume(Number(this.volumeSlider.value)));
+    this.learningButton.addEventListener('click', onLearning);
   }
 
   /**
@@ -54,11 +66,14 @@ export class SettingsView {
    * The button says what pressing it DOES, not what the state is — "Mute" while
    * sound is on — with aria-pressed carrying the on/off for assistive tech.
    */
-  render({ muted, volume }) {
+  render({ muted, volume, learningMode }) {
     this.muteButton.textContent = muted ? 'Unmute' : 'Mute';
     this.muteButton.setAttribute('aria-pressed', String(muted));
     this.volumeSlider.value = String(volume);
     this.volumeSlider.disabled = muted;
     this.volumeValue.textContent = String(volume);
+    // Says what pressing DOES, like Mute; aria-pressed carries the state.
+    this.learningButton.textContent = learningMode ? 'Turn off' : 'Turn on';
+    this.learningButton.setAttribute('aria-pressed', String(learningMode));
   }
 }

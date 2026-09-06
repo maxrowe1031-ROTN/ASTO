@@ -89,5 +89,71 @@
       "definition": "a set of equipment put together and hung up for a specific job, often with wires and frames"
     }
   ],
-  "date": "2026-09-12"
+  "date": "2026-09-12",
+  "definitions": [
+    {
+      "word": "sound engineer",
+      "definition": "The person who makes sure everything you hear comes through clear and balanced, not muddy or blasting."
+    },
+    {
+      "word": "mixing board",
+      "definition": "A panel of sliders and knobs used to blend and control all the different sounds during a show."
+    },
+    {
+      "word": "lighting designer",
+      "definition": "The person who plans and shapes how the stage looks with light, mood, and color."
+    },
+    {
+      "word": "rig",
+      "definition": "A set of equipment put together and hung up for a specific job, often with wires and frames."
+    },
+    {
+      "word": "campground",
+      "definition": "An area set aside where people pitch their tents and stay overnight during the event."
+    },
+    {
+      "word": "tent",
+      "definition": "A portable shelter you set up to sleep in or take cover under."
+    },
+    {
+      "word": "market row",
+      "definition": "A lined-up stretch of stalls where you can wander and browse different vendors."
+    },
+    {
+      "word": "artisan stall",
+      "definition": "A small booth where a maker sells the handmade goods they crafted themselves."
+    },
+    {
+      "word": "taco truck",
+      "definition": "A mobile kitchen on wheels that cooks and serves food right where it parks."
+    },
+    {
+      "word": "street tacos",
+      "definition": "Small, simple tacos meant to be eaten quickly, usually grabbed on the go."
+    },
+    {
+      "word": "brewery tent",
+      "definition": "A covered area set up specifically for pouring and serving beer to festival-goers."
+    },
+    {
+      "word": "craft beer",
+      "definition": "Beer made in small batches, often with unique or bold flavors."
+    },
+    {
+      "word": "opening act",
+      "definition": "The performer or band that plays first, warming up the crowd before the main show."
+    },
+    {
+      "word": "encore",
+      "definition": "An extra performance given at the very end, after the crowd calls for more."
+    },
+    {
+      "word": "hype",
+      "definition": "The buzzing excitement and anticipation that builds up before something happens."
+    },
+    {
+      "word": "exhaustion",
+      "definition": "The worn-out, drained feeling you get after using up all your energy."
+    }
+  ]
 }

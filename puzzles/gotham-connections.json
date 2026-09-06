@@ -89,5 +89,71 @@
       "definition": "A fictional chemical compound from comic lore, sprayed or released to affect a person's mind."
     }
   ],
-  "date": "2026-08-20"
+  "date": "2026-08-20",
+  "definitions": [
+    {
+      "word": "villain",
+      "definition": "Someone who causes trouble on purpose and usually gets in the hero's way."
+    },
+    {
+      "word": "Joker",
+      "definition": "A grinning chaos-lover who loves a twisted prank more than any actual goal."
+    },
+    {
+      "word": "vehicle",
+      "definition": "Anything built to carry you from one place to another."
+    },
+    {
+      "word": "Batmobile",
+      "definition": "A sleek, armored car built for speeding through the city at night."
+    },
+    {
+      "word": "Batman",
+      "definition": "A caped crusader who fights crime from the shadows using brains and gadgets."
+    },
+    {
+      "word": "Batarang",
+      "definition": "A boomerang-shaped throwing weapon used to disarm or trip up enemies."
+    },
+    {
+      "word": "Catwoman",
+      "definition": "A cunning cat-burglar who moves silently and always lands on her feet."
+    },
+    {
+      "word": "whip",
+      "definition": "A long flexible weapon that can lash, snag, or disarm from a distance."
+    },
+    {
+      "word": "Bane's Venom",
+      "definition": "A dangerous drug that pumps the user full of raw physical power."
+    },
+    {
+      "word": "superhuman strength",
+      "definition": "Power far beyond what a normal body could ever produce."
+    },
+    {
+      "word": "Scarecrow toxin",
+      "definition": "A fictional chemical compound from comic lore, sprayed or released to affect a person's mind."
+    },
+    {
+      "word": "fear hallucinations",
+      "definition": "Terrifying visions that make someone see nightmares that aren't really there."
+    },
+    {
+      "word": "night",
+      "definition": "The dark hours after sunset when the world quiets down."
+    },
+    {
+      "word": "patrol",
+      "definition": "Walking or driving a route repeatedly to keep watch over an area."
+    },
+    {
+      "word": "dusk",
+      "definition": "The dim in-between time just as the sun disappears."
+    },
+    {
+      "word": "stakeout",
+      "definition": "Quietly watching a place for a long stretch, waiting for something to happen."
+    }
+  ]
 }

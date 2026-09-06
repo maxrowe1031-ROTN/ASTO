@@ -89,5 +89,71 @@
       "definition": "a soft, powdery white coating that grows naturally on the outside of some cured meats"
     }
   ],
-  "date": "2026-09-19"
+  "date": "2026-09-19",
+  "definitions": [
+    {
+      "word": "charcuterie",
+      "definition": "the whole art of preparing cured and prepared meats like pâtés, sausages, and terrines"
+    },
+    {
+      "word": "terrine",
+      "definition": "a meat mixture packed into a loaf-shaped mold, cooked, and served in slices"
+    },
+    {
+      "word": "sausage",
+      "definition": "ground meat and seasoning stuffed into a casing, cooked or cured for eating"
+    },
+    {
+      "word": "chorizo",
+      "definition": "a spiced, paprika-red sausage popular in Spanish and Mexican cooking"
+    },
+    {
+      "word": "smokehouse",
+      "definition": "a small building or shed used to smoke and preserve meats over slow fire"
+    },
+    {
+      "word": "hook",
+      "definition": "a metal hanger used to suspend meat while it smokes or cures"
+    },
+    {
+      "word": "curing chamber",
+      "definition": "a climate-controlled room where meat cures slowly under set humidity and temperature"
+    },
+    {
+      "word": "rack",
+      "definition": "a frame that holds meat up off surfaces so air can circulate around it"
+    },
+    {
+      "word": "salt",
+      "definition": "a mineral seasoning that also draws out moisture to help preserve meat"
+    },
+    {
+      "word": "spoilage",
+      "definition": "the decay that ruins food when bacteria and time get the upper hand"
+    },
+    {
+      "word": "nitrite",
+      "definition": "a curing salt additive that keeps meat pink and safe from dangerous bacteria"
+    },
+    {
+      "word": "botulism",
+      "definition": "a rare but serious poisoning caused by toxins from improperly preserved food"
+    },
+    {
+      "word": "bark",
+      "definition": "the dark, flavorful crust that forms on the outside of slow-smoked meat"
+    },
+    {
+      "word": "smoke ring",
+      "definition": "the pink band just under the surface of smoked meat, prized by barbecue fans"
+    },
+    {
+      "word": "bloom",
+      "definition": "a soft, powdery white coating that grows naturally on the outside of some cured meats"
+    },
+    {
+      "word": "casing",
+      "definition": "the edible or removable skin that holds sausage meat in its shape"
+    }
+  ]
 }

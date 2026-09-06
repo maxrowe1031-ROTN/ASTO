@@ -89,5 +89,71 @@
       "definition": "A red-nosed comic character with a clumsy, exaggerated style, known for baggy clothes and slapstick blundering."
     }
   ],
-  "date": "2026-09-13"
+  "date": "2026-09-13",
+  "definitions": [
+    {
+      "word": "raise",
+      "definition": "To lift something up higher, like hoisting a net or rope into place."
+    },
+    {
+      "word": "lower",
+      "definition": "To bring something down gently from a higher position."
+    },
+    {
+      "word": "tighten",
+      "definition": "To pull something snug and firm so it doesn't sag or slip."
+    },
+    {
+      "word": "loosen",
+      "definition": "To ease up on something so it's less tight or more slack."
+    },
+    {
+      "word": "ringmaster",
+      "definition": "The commanding host who introduces every act and keeps the whole show moving."
+    },
+    {
+      "word": "top hat",
+      "definition": "A tall, formal hat that adds flair and authority to whoever wears it."
+    },
+    {
+      "word": "escape artist",
+      "definition": "A performer who gets free from ropes, chains, or locks in front of a crowd."
+    },
+    {
+      "word": "straitjacket",
+      "definition": "A restrictive garment with straps used to bind the arms, often for dramatic escapes."
+    },
+    {
+      "word": "clown",
+      "definition": "A funny performer who makes people laugh with jokes, pratfalls, and silly antics."
+    },
+    {
+      "word": "auguste",
+      "definition": "A red-nosed comic character with a clumsy, exaggerated style, known for baggy clothes and slapstick blundering."
+    },
+    {
+      "word": "acrobat",
+      "definition": "A performer skilled in balance, flips, and daring physical feats."
+    },
+    {
+      "word": "tumbler",
+      "definition": "An acrobat who specializes in rolls, flips, and floor-based stunts."
+    },
+    {
+      "word": "drumroll",
+      "definition": "A rapid drumbeat that builds excitement right before something big happens."
+    },
+    {
+      "word": "stunt",
+      "definition": "A daring, carefully practiced feat meant to thrill or amaze an audience."
+    },
+    {
+      "word": "fanfare",
+      "definition": "A short, triumphant burst of brass music announcing something exciting."
+    },
+    {
+      "word": "parade",
+      "definition": "A festive procession of performers and floats moving through a crowd."
+    }
+  ]
 }

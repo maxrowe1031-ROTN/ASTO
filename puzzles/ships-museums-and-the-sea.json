@@ -89,5 +89,71 @@
       "definition": "a large old-fashioned sailing ship with tall masts and multiple decks, once used for trade or war"
     }
   ],
-  "date": "2026-08-19"
+  "date": "2026-08-19",
+  "definitions": [
+    {
+      "word": "vessel",
+      "definition": "a boat or ship, basically anything built to carry people or cargo on water"
+    },
+    {
+      "word": "anchor",
+      "definition": "a heavy hooked weight dropped to hold a boat in place"
+    },
+    {
+      "word": "cabin",
+      "definition": "a small room aboard a ship where people sleep or shelter"
+    },
+    {
+      "word": "porthole",
+      "definition": "a small round window set into the side of a ship"
+    },
+    {
+      "word": "shipwreck",
+      "definition": "the wrecked remains of a ship that sank or broke apart"
+    },
+    {
+      "word": "diorama",
+      "definition": "a miniature 3D scene built to show what a place or event looked like"
+    },
+    {
+      "word": "captain",
+      "definition": "the person in charge of running a ship"
+    },
+    {
+      "word": "portrait",
+      "definition": "a painting or drawing made to show what a particular person looks like"
+    },
+    {
+      "word": "curator",
+      "definition": "the person who chooses and looks after what a museum shows"
+    },
+    {
+      "word": "exhibit",
+      "definition": "a display of items set up for people to look at in a museum"
+    },
+    {
+      "word": "conservator",
+      "definition": "the person who repairs and preserves old objects so they last"
+    },
+    {
+      "word": "artifact",
+      "definition": "an old object kept because it's historically interesting"
+    },
+    {
+      "word": "skiff",
+      "definition": "a small light rowing or sailing boat"
+    },
+    {
+      "word": "galleon",
+      "definition": "a large old-fashioned sailing ship with tall masts and multiple decks, once used for trade or war"
+    },
+    {
+      "word": "cove",
+      "definition": "a small sheltered inlet along a coastline"
+    },
+    {
+      "word": "bay",
+      "definition": "a large body of water partly enclosed by land, bigger than a cove"
+    }
+  ]
 }

@@ -89,5 +89,71 @@
       "definition": "A yearly booklet packed with charts and notes about seasons, stars, and nature's patterns."
     }
   ],
-  "date": "2026-08-10"
+  "date": "2026-08-10",
+  "definitions": [
+    {
+      "word": "sickle",
+      "definition": "A curved blade you swing by hand to cut down stalks of grain."
+    },
+    {
+      "word": "reap",
+      "definition": "To cut and collect crops that are ready, usually at season's end."
+    },
+    {
+      "word": "rake",
+      "definition": "A long-handled tool with prongs for pulling leaves or hay into piles."
+    },
+    {
+      "word": "gather",
+      "definition": "To collect scattered things together into one place."
+    },
+    {
+      "word": "full moon",
+      "definition": "The night the moon looks completely round and glowing in the sky."
+    },
+    {
+      "word": "Harvest Moon",
+      "definition": "The bright full moon closest to the start of autumn."
+    },
+    {
+      "word": "migratory bird",
+      "definition": "A bird that travels long distances between seasons to find better weather or food."
+    },
+    {
+      "word": "Canada goose",
+      "definition": "A large gray-and-black goose known for flying south in a honking V-formation."
+    },
+    {
+      "word": "almanac",
+      "definition": "A yearly booklet packed with charts and notes about seasons, stars, and nature's patterns."
+    },
+    {
+      "word": "yield",
+      "definition": "The amount of crop a field actually produces after all the work is done."
+    },
+    {
+      "word": "weather forecast",
+      "definition": "A prediction of what the sky and temperature will do in the days ahead."
+    },
+    {
+      "word": "rainfall",
+      "definition": "The water that falls from clouds and soaks into the ground."
+    },
+    {
+      "word": "moonlight",
+      "definition": "The soft glow that spills down from the moon at night."
+    },
+    {
+      "word": "warmth",
+      "definition": "The comfortable heat you feel from sunshine, a fire, or a cozy blanket."
+    },
+    {
+      "word": "shadow",
+      "definition": "The dark shape cast on the ground when something blocks the light."
+    },
+    {
+      "word": "weight",
+      "definition": "How heavy something is, measured by how hard gravity pulls on it."
+    }
+  ]
 }

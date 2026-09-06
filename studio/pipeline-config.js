@@ -189,6 +189,9 @@ export const DEFAULT_CONFIG = deepFreeze({
     // stage numbering reaching 09; they are distinct keys and the proposer is
     // not a pipeline stage.)
     '09-glossary-author': 'low',
+    // Sixteen short plain definitions with a relaxed leak rule (D-33) — a
+    // writing task with no search in it. Low, like the glossary author.
+    '10-definitions-author': 'low',
     // Not a pipeline stage: it runs once at review time when Max rejects a
     // board, reading his judgement plus the evaluators' findings. Medium
     // because the thinking it has to do is small — the problem has already
@@ -204,7 +207,7 @@ export const DEFAULT_CONFIG = deepFreeze({
   // The string must change with the map, not just when it feels significant:
   // boards built under two different maps are two populations, and reusing one
   // label would merge them inside the very corpus meant to tell them apart.
-  effortProfile: '2026-08-11-glossary',
+  effortProfile: '2026-09-05-learning-mode',
 
   // Two bounds, because there are two failure classes and they are retried by
   // different owners. `transport` bounds llm.js's own loop (timeouts, 429s,

@@ -128,6 +128,40 @@ export function validatePuzzle(puzzle) {
     }
   }
 
+  // Optional definitions (D-33, Learning Mode): a plain definition for any board
+  // word, revealed by tapping the tile. Partial lists are VALID here — the game
+  // must load a board whose hand-edit removed a word's entry — and the pipeline
+  // is where "all sixteen" is enforced. No word twice, so a tap has one answer.
+  if ('definitions' in puzzle) {
+    if (!Array.isArray(puzzle.definitions)) {
+      fail('definitions', 'Optional, but when present must be an array of { word, definition }.');
+    } else {
+      const onBoard = new Set(words.map((word) => word.toLowerCase()));
+      const defined = new Set();
+      puzzle.definitions.forEach((entry, i) => {
+        if (!isObject(entry)) {
+          fail(`definitions[${i}]`, 'Each definitions entry must be an object { word, definition }.');
+          return;
+        }
+        if (!isText(entry.word)) {
+          fail(`definitions[${i}].word`, 'Required: a non-empty string naming a board word.');
+        } else {
+          const key = entry.word.toLowerCase();
+          if (words.length === 16 && !onBoard.has(key)) {
+            fail(`definitions[${i}].word`, `"${entry.word}" is not one of the sixteen board words.`);
+          }
+          if (defined.has(key)) {
+            fail(`definitions[${i}].word`, `"${entry.word}" is defined twice.`);
+          }
+          defined.add(key);
+        }
+        if (!isText(entry.definition)) {
+          fail(`definitions[${i}].definition`, 'Required: a non-empty definition.');
+        }
+      });
+    }
+  }
+
   return { ok: errors.length === 0, errors };
 }
 

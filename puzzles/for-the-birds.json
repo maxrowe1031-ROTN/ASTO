@@ -89,5 +89,71 @@
       "definition": "A fluffy young water bird, pale gray or white, still too small to fly on its own."
     }
   ],
-  "date": "2026-08-29"
+  "date": "2026-08-29",
+  "definitions": [
+    {
+      "word": "swan",
+      "definition": "A big graceful water bird with a long curved neck, usually white."
+    },
+    {
+      "word": "cygnet",
+      "definition": "A fluffy young water bird, pale gray or white, still too small to fly on its own."
+    },
+    {
+      "word": "goose",
+      "definition": "A honking waterbird, bigger than a duck, often seen waddling in flocks on land."
+    },
+    {
+      "word": "gosling",
+      "definition": "A soft, downy baby goose that follows its parents everywhere."
+    },
+    {
+      "word": "raptor",
+      "definition": "A sharp-taloned bird of prey built for hunting other animals."
+    },
+    {
+      "word": "eagle",
+      "definition": "A huge, powerful hunting bird with sharp eyes and a fierce look."
+    },
+    {
+      "word": "songbird",
+      "definition": "A small bird known for its pretty, musical calls."
+    },
+    {
+      "word": "sparrow",
+      "definition": "A tiny, common brown bird often seen hopping around towns and gardens."
+    },
+    {
+      "word": "courtship",
+      "definition": "The showing-off and wooing a bird does to win a partner."
+    },
+    {
+      "word": "mating",
+      "definition": "The act of pairing up to produce offspring."
+    },
+    {
+      "word": "nest-building",
+      "definition": "Gathering twigs and grass to make a cozy home for eggs."
+    },
+    {
+      "word": "breeding",
+      "definition": "The whole process of raising young, from eggs to chicks."
+    },
+    {
+      "word": "hatch",
+      "definition": "The moment a chick breaks out of its egg."
+    },
+    {
+      "word": "fledge",
+      "definition": "The moment a young bird grows feathers strong enough to fly."
+    },
+    {
+      "word": "depart",
+      "definition": "To leave a place, like birds heading off on a long journey."
+    },
+    {
+      "word": "return",
+      "definition": "To come back home after being away, like birds after migrating."
+    }
+  ]
 }

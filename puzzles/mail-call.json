@@ -86,5 +86,71 @@
       "definition": "A special printed or stamped mark found on a piece of mail."
     }
   ],
-  "date": "2026-08-22"
+  "date": "2026-08-22",
+  "definitions": [
+    {
+      "word": "envelope",
+      "definition": "A paper wrapper you tuck a letter into before it goes on its way."
+    },
+    {
+      "word": "flap",
+      "definition": "The folding bit you lick or seal shut to close something up."
+    },
+    {
+      "word": "stamp",
+      "definition": "The little sticky square that pays for a letter's trip."
+    },
+    {
+      "word": "perforation",
+      "definition": "The row of tiny holes that let you tear something apart neatly."
+    },
+    {
+      "word": "pillar box",
+      "definition": "That red street box where you drop letters for pickup."
+    },
+    {
+      "word": "collection",
+      "definition": "The gathering up of mail from boxes so it can head onward."
+    },
+    {
+      "word": "sorting office",
+      "definition": "The building where mail gets sorted before heading to its destination."
+    },
+    {
+      "word": "distribution",
+      "definition": "The spreading out of mail so it reaches all its different destinations."
+    },
+    {
+      "word": "postmark",
+      "definition": "The ink stamp showing where and when a letter got sent off."
+    },
+    {
+      "word": "dispatch date",
+      "definition": "The exact day something officially got sent out."
+    },
+    {
+      "word": "frank",
+      "definition": "A special printed or stamped mark found on a piece of mail."
+    },
+    {
+      "word": "postage paid",
+      "definition": "The confirmation that the cost of sending something has already been covered."
+    },
+    {
+      "word": "send",
+      "definition": "To set something off toward another person or place."
+    },
+    {
+      "word": "return",
+      "definition": "Sending something right back to where it came from."
+    },
+    {
+      "word": "dispatch",
+      "definition": "To officially send something out on its journey."
+    },
+    {
+      "word": "recall",
+      "definition": "Calling something back after it's already been sent."
+    }
+  ]
 }

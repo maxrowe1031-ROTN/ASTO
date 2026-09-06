@@ -85,5 +85,71 @@
       "definition": "A mountain whose summit rises above 8,000 meters, a rare height only a handful of peaks on Earth reach."
     }
   ],
-  "date": "2026-09-16"
+  "date": "2026-09-16",
+  "definitions": [
+    {
+      "word": "Piton",
+      "definition": "A metal spike hammered into cracks in rock to anchor a rope."
+    },
+    {
+      "word": "Eye",
+      "definition": "The little hole in a piece of hardware where you clip a rope or carabiner."
+    },
+    {
+      "word": "Carabiner",
+      "definition": "A metal loop with a spring-loaded clip, used to connect ropes and gear quickly and safely."
+    },
+    {
+      "word": "Gate",
+      "definition": "The hinged part of a clip that swings open so you can hook things onto it."
+    },
+    {
+      "word": "Eight-thousander",
+      "definition": "A mountain whose summit rises above 8,000 meters, a rare height only a handful of peaks on Earth reach."
+    },
+    {
+      "word": "K2",
+      "definition": "A brutally steep, icy peak in the Karakoram, famous as one of the deadliest mountains to climb."
+    },
+    {
+      "word": "Fourteener",
+      "definition": "A mountain that tops 14,000 feet, a popular benchmark height for hikers and climbers in the US."
+    },
+    {
+      "word": "Rainier",
+      "definition": "A massive glacier-covered volcano in Washington State, a classic goal for mountaineers."
+    },
+    {
+      "word": "Belayer",
+      "definition": "The person managing the rope to catch a climber safely if they fall."
+    },
+    {
+      "word": "Belay device",
+      "definition": "A small metal gadget that lets a rope feed smoothly while adding friction to stop a fall."
+    },
+    {
+      "word": "Lead climber",
+      "definition": "The climber who goes up first, placing protection and clipping the rope as they go."
+    },
+    {
+      "word": "Rack",
+      "definition": "The collection of gear a climber carries to place protection along a climb."
+    },
+    {
+      "word": "Approach",
+      "definition": "The hike or trek you do just to reach the base of the actual climb."
+    },
+    {
+      "word": "Route",
+      "definition": "The specific path up a cliff or mountain that climbers follow to the top."
+    },
+    {
+      "word": "Basecamp",
+      "definition": "The staging area at the bottom of a mountain where climbers gather supplies before heading up."
+    },
+    {
+      "word": "Expedition",
+      "definition": "A long, organized journey to climb a big mountain, often taking weeks and lots of planning."
+    }
+  ]
 }
