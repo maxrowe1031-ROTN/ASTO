@@ -2,6 +2,71 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-05 (later) — The survey row leaves, and a receipt takes its place
+
+Third pass on the same problem, and the one that finishes it. Max: *"What if after
+a button tap, the entire line disappeared... maybe make a demo studio of it
+first."* Built the audition, he picked **C at 300ms** for the rating rows and
+**option 3** for the comment box. Recorded as **D-21 addendum, third pass**.
+
+- **What ships:** a tapped rating row **slides out right and a receipt arrives from
+  the left** — `✓ Difficulty 3 · change`. Sending a note does the same to the
+  comment box. The named status line from the second pass stays; motion is added
+  to it, not instead of it.
+- **The change link is what makes it safe.** A vanishing row otherwise takes the
+  undo with it, and a mis-tap has always been correctable. Variants A and B (row
+  simply gone) were rejected for exactly that — these ratings feed board
+  decisions. Reopening a row restores it with the current answer still marked.
+- **`--motion-exit: 300ms` is a new token and a second dial**, which `motion.js`
+  had deliberately avoided. Max picked 300 by eye against 187 and 281, and
+  widening `--motion-slow` would have retuned the board's FLIP, shake and solve
+  beats too. `exitRight()` / `enterLeft()` live in `motion.js` with the rest.
+- **The append-only consequence, accepted knowingly:** a *revised* note files a
+  second `comments` row rather than replacing the first, and `npm run ratings`
+  shows both. Max was told before choosing option 3. Mitigated only for the
+  pointless case — re-pressing Send on unchanged text files nothing.
+- **Three ways `element.animate()` bites, all found building this, all now handled
+  once in `motion.js`:** `finished` never settles while the page is unpainted;
+  a `fill: 'forwards'` animation **outlives removal** and outranks inline style
+  (this was Max's *"the reset button isn't working"* — the audition was rebuilding
+  correctly and painting invisible); and an exit animation outlives the tap that
+  started it, so a `reset()` mid-flight needs a generation guard.
+- **Accessibility:** activating a dot destroys the focused control, so focus moves
+  deliberately to the receipt's change link (and to the first dot when a row
+  reopens). Reduced motion gets the outcome without the journey. Player text is
+  escaped before reaching receipt markup, since the note goes through `innerHTML`.
+- **Verified in the game at 375×812**, Supabase POST intercepted so no test rows
+  reached the live table: three taps → three receipts, **one post each** · the
+  change link returns the dots with the current answer marked, focus inside the
+  row, and re-answering files a new row · empty Send leaves the box alone ·
+  a note becomes `✓ "the black set was the good kind of hard" · change` ·
+  **re-sending unchanged text files nothing (5 posts → 5)** while a genuine
+  revision files a second (5 → 6) · a fresh board in-session resets to **zero
+  leftover receipts**, no pre-selected dots, empty box, blank line · reduced
+  motion lands the receipt in **152ms**, well inside the 300ms beat · a reset
+  fired mid-animation leaves **zero stray receipts** and a fully working survey.
+- **Layout checked, not assumed:** row height **44px before and after** conversion,
+  so nothing below jumps as the three rows convert; 10px gaps both between rows
+  and before the comment box, after removing a margin that would have doubled the
+  parent's gap. Dead `.survey-input:disabled` rule removed — the input is replaced
+  now, never disabled.
+- **Verified:** `npm test` **1633/0** (6 new: receipt elision, blank handling, and
+  escaping of player text) · `tools/check-board.js` 51 clean · `npm run itch`
+  clean · zero console errors.
+- **The audition page has done its job** and is kept for now rather than deleted —
+  `experiments/survey-motion.html` still documents the four rejected variants and
+  the three animation hazards, and re-auditioning the comment options is cheap
+  while the decision is fresh.
+- **Phase status:** post-Phase-5 polish, **not a phase gate**. Automated +
+  Claude-verifiable, both passed. Open only for Max's eye on the real thing.
+- **Next:** **the capstone, due Sept 8 — three days.** The 2–3 minute gameplay
+  video still does not exist and is the one artifact Claude cannot produce alone;
+  `npm run itch` + re-upload so the build carries D-27's sound is owed; the
+  how-to-play README is waived only if the game explains itself in-game. The
+  Sept-1-to-Sept-8 "improvement" requirement is comfortably met — three survey
+  passes and a cut feature. Then: a **fresh board batch** before the calendar runs
+  dry **2026-09-19**; the **GDD version bump**; and `docs/backlog.md`.
+
 ## 2026-09-05 — The survey says what it captured
 
 Playtest feedback via Max: *"it doesn't look like it's sending when we press

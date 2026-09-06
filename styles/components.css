@@ -440,10 +440,68 @@
    four pills line up as columns across all three rows; the pills flex to swallow the
    remaining width — Max's call (2026-08-13) after two layouts: side-by-side, but no
    dead gulf between the word and the numbers. */
+/* The row is now a SHELL that holds either the dots or the receipt that replaces them
+   (D-21 addendum, third pass). The flex lives on .survey-row-inner so the shell can keep
+   a steady height while its contents swap, and overflow is hidden so the exit slide is
+   clipped at the edge rather than widening the end screen. */
 .survey-row {
+  overflow: hidden;
+}
+
+.survey-row-inner {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.survey-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* What a row or the comment box becomes once its answer is filed. Same height as the
+   thing it replaced, so nothing below it jumps as the three rows convert one by one. */
+.survey-receipt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap-target);
+  font-size: 14px;
+  color: var(--soft-ink);
+}
+
+.survey-tick {
+  color: var(--tier-green-deep);
+  font-weight: 800;
+}
+
+.survey-receipt-text {
+  /* A 280-character note is elided in JS, but a long word still must not push the
+     change link off the edge. */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Quiet on purpose — it is an escape hatch, not an invitation. */
+.survey-change {
+  margin-left: auto;
+  flex: 0 0 auto;
+  min-height: var(--tap-target);
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--soft-ink);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.survey-change:hover {
+  color: var(--ink);
 }
 
 .survey-label {
@@ -483,6 +541,12 @@
   color: var(--milk);
 }
 
+/* The shell for the comment box, matching .survey-row's job above. No margin: .survey
+   is a flex column with its own 10px gap, and adding one here would double it. */
+.survey-slot {
+  overflow: hidden;
+}
+
 .survey-comment {
   display: flex;
   align-items: center;
@@ -506,9 +570,6 @@
   color: var(--faint-ink);
 }
 
-.survey-input:disabled {
-  opacity: 0.5;
-}
 
 .survey-feedback {
   text-align: center;

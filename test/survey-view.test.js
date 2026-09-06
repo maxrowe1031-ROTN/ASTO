@@ -12,7 +12,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { acknowledge, ratingAck, QUESTIONS } from '../src/view/survey-view.js';
+import { acknowledge, ratingAck, receiptNote, escapeText, QUESTIONS } from '../src/view/survey-view.js';
 
 test('the module is import-safe with no DOM', () => {
   assert.equal(typeof acknowledge, 'function');
@@ -102,4 +102,47 @@ test('no branch of either function answers with silence', () => {
       }
     }
   }
+});
+
+// --- the receipt's own pure halves (2026-09-05, third pass) ---
+
+test('a short note is shown whole on the receipt', () => {
+  assert.equal(receiptNote('lovely board'), 'lovely board');
+});
+
+test('a long note is elided rather than allowed to become the screen', () => {
+  const long = 'x'.repeat(280);
+  const shown = receiptNote(long);
+  assert.ok(shown.length < long.length);
+  assert.ok(shown.endsWith('…'));
+  assert.ok(shown.length <= 49, `receipt ran to ${shown.length} characters`);
+});
+
+test('the elision never cuts mid-space, and never leaves a dangling gap', () => {
+  const note = `${'word '.repeat(20)}end`;
+  const shown = receiptNote(note);
+  assert.ok(!/ …$/.test(shown), 'trailing space before the ellipsis');
+});
+
+test('a blank or missing note yields an empty receipt rather than "null"', () => {
+  assert.equal(receiptNote(''), '');
+  assert.equal(receiptNote('   '), '');
+  assert.equal(receiptNote(undefined), '');
+  assert.equal(receiptNote(null), '');
+});
+
+test('player text is escaped before it is written into receipt markup', () => {
+  // The note goes into innerHTML. A player typing markup must not get markup.
+  const nasty = '<img src=x onerror="alert(1)"> & "quoted"';
+  const safe = escapeText(nasty);
+  assert.ok(!safe.includes('<img'), 'raw tag survived escaping');
+  assert.ok(!/<[a-z]/i.test(safe), 'an element could still be opened');
+  assert.ok(safe.includes('&lt;'), 'angle brackets should be entities');
+  assert.ok(safe.includes('&amp;'), 'ampersands should be entities');
+  assert.ok(!safe.includes('"'), 'a raw quote could break out of an attribute');
+});
+
+test('escaping is applied to the elided form too, not just the raw note', () => {
+  const shown = escapeText(receiptNote('<script>'.repeat(20)));
+  assert.ok(!shown.includes('<script'), 'script tag survived the receipt path');
 });

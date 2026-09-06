@@ -11,31 +11,43 @@
 const EASE = 'cubic-bezier(0, 0, 0.2, 1)';
 const SHAKE_PX = 4;
 
-// Used only if the token can't be read (no DOM, stylesheet missing). Tuning happens in
+// Used only if a token can't be read (no DOM, stylesheet missing). Tuning happens in
 // tokens.css, never here.
 const FALLBACK_MS = 281;
+const EXIT_FALLBACK_MS = 300;
 
-let cachedDuration = null;
+const cachedDurations = new Map();
 
 /**
- * The motion duration, read from `--motion-slow` in tokens.css.
+ * A motion duration, read from its custom property in tokens.css.
  *
- * Reading the token keeps ONE dial: JS animations and CSS transitions used to hold the
- * same number in two files, which drifts the moment someone tunes only one of them.
- * Cached after first read — retuning is a code change, not a runtime event.
+ * Reading the token keeps the dial in ONE place: JS animations and CSS transitions used
+ * to hold the same number in two files, which drifts the moment someone tunes only one
+ * of them. Cached after first read — retuning is a code change, not a runtime event.
  */
-function duration() {
-  if (cachedDuration !== null) return cachedDuration;
+function readMs(token, fallback) {
+  if (cachedDurations.has(token)) return cachedDurations.get(token);
 
   const raw = globalThis.getComputedStyle?.(document.documentElement)
-    .getPropertyValue('--motion-slow')
+    .getPropertyValue(token)
     .trim();
   const value = Number.parseFloat(raw);
 
-  cachedDuration = Number.isFinite(value) && value > 0
+  const ms = Number.isFinite(value) && value > 0
     ? (raw.endsWith('ms') ? value : value * 1000) // tolerate `0.28s` as well as `281ms`
-    : FALLBACK_MS;
-  return cachedDuration;
+    : fallback;
+  cachedDurations.set(token, ms);
+  return ms;
+}
+
+/** The main dial — `--motion-slow`. */
+function duration() {
+  return readMs('--motion-slow', FALLBACK_MS);
+}
+
+/** The survey's exit beat — `--motion-exit`, its own dial (D-21 addendum, third pass). */
+export function exitDuration() {
+  return readMs('--motion-exit', EXIT_FALLBACK_MS);
 }
 
 /** Gap between staggered entrances (end-screen cards), proportional to the dial. */
@@ -189,5 +201,49 @@ export async function fadeOut(elements) {
       })
     ),
     duration() * 0.7
+  );
+}
+
+/**
+ * Slide something out to the right and fade it — "recorded, and gone."
+ *
+ * The caller is expected to replace or remove the element immediately after this
+ * resolves, so the animation is cancelled here rather than left filling forwards. That
+ * cancel is not tidiness: **a fill-forwards animation outlives removal**, and an element
+ * put back into the document later comes back still pinned at the last keyframe. It also
+ * outranks inline style, so clearing `style.opacity` cannot rescue it, and once detached
+ * the element no longer answers `getAnimations()` — so this is the last moment it can be
+ * reached. Cancelling and replacing happen in the same task, so no frame paints at the
+ * restored opacity.
+ */
+export async function exitRight(element) {
+  if (prefersReducedMotion()) return;
+
+  const ms = exitDuration();
+  const animation = element.animate(
+    [
+      { transform: 'translateX(0)', opacity: 1 },
+      { transform: 'translateX(44px)', opacity: 0 }
+    ],
+    { duration: ms, easing: EASE, fill: 'forwards' }
+  );
+  await settled(animation, ms);
+  animation.cancel();
+}
+
+/** The other half of the swap: what replaces it arrives from the left. */
+export async function enterLeft(element) {
+  if (prefersReducedMotion()) return;
+
+  const ms = exitDuration();
+  await settled(
+    element.animate(
+      [
+        { transform: 'translateX(-24px)', opacity: 0 },
+        { transform: 'translateX(0)', opacity: 1 }
+      ],
+      { duration: ms, easing: EASE }
+    ),
+    ms
   );
 }
