@@ -59,7 +59,7 @@
 **Interfaces:**
 - Produces: `DEFAULT_RULES.learningMode === false`; state field `vocabArmed: boolean`; `revealVocab(state) → { state, outcome }` where outcome is `{ type: 'vocab' }` (one-word mode), `{ type: 'vocab-armed' }`, `{ type: 'vocab-disarmed' }`, or `null`; `defineWord(state, term) → { state, outcome: { type: 'vocab' } | null }`; `withRules(state, changes) → state`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `test/engine/vocab.test.js` (extend the import line to `import { defineWord, initGame, revealVocab, shuffle, submit, withRules } from '../../src/engine/engine.js';`):
 
@@ -190,12 +190,12 @@ test('headless learning-mode playthrough: defining never selects, and the game s
 });
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `node --test test/engine/vocab.test.js test/engine/game-flow.test.js`
 Expected: FAIL — `defineWord`/`withRules` are not exported; `vocabArmed` is undefined.
 
-- [ ] **Step 3: Implement in `src/engine/engine.js`**
+- [x] **Step 3: Implement in `src/engine/engine.js`**
 
 Update the header comment's state shape to include `vocabArmed`. Then:
 
@@ -284,12 +284,12 @@ export function withRules(state, changes) {
 }
 ```
 
-- [ ] **Step 4: Run the engine suite**
+- [x] **Step 4: Run the engine suite**
 
 Run: `node --test test/engine/`
 Expected: all PASS, including `immutability.test.js` (the new field is a boolean, frozen with the state).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/engine/engine.js test/engine/vocab.test.js test/engine/game-flow.test.js
@@ -310,7 +310,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 - Consumes: `defineWord`, `withRules` from Task 1.
 - Produces: `controller.rulesChanged(changes)`; `tileTapped(term)` defines while `state.vocabArmed`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `test/controller/game-controller.test.js`:
 
@@ -379,12 +379,12 @@ test('turning learning mode off while armed disarms the board', async () => {
 });
 ```
 
-- [ ] **Step 2: Run it to verify it fails**
+- [x] **Step 2: Run it to verify it fails**
 
 Run: `node --test test/controller/game-controller.test.js`
 Expected: FAIL — `rulesChanged is not a function`; the armed tap selects.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `src/controller/game-controller.js`, extend the import with `defineWord` and `withRules` (alphabetical order in the list), then:
 
@@ -418,12 +418,12 @@ In `src/controller/game-controller.js`, extend the import with `defineWord` and 
   }
 ```
 
-- [ ] **Step 4: Run the controller and engine suites**
+- [x] **Step 4: Run the controller and engine suites**
 
 Run: `node --test test/controller/ test/engine/`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/controller/game-controller.js test/controller/game-controller.test.js
@@ -443,7 +443,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Interfaces:**
 - Produces: `validatePuzzle` accepts `definitions: [{ word, definition }]`, partial lists allowed, each word a board word, no word twice; error paths `definitions`, `definitions[i]`, `definitions[i].word`, `definitions[i].definition`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `test/source/validate-puzzle.test.js`:
 
@@ -496,12 +496,12 @@ test('definitions must be an array of objects when present', () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify they fail**
+- [x] **Step 2: Run to verify they fail**
 
 Run: `node --test test/source/validate-puzzle.test.js`
 Expected: the three `failsAt` tests FAIL (a bad `definitions` currently passes).
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `src/source/validate-puzzle.js`, directly after the glossary block and before `return { ok: ... }`:
 
@@ -541,12 +541,12 @@ In `src/source/validate-puzzle.js`, directly after the glossary block and before
   }
 ```
 
-- [ ] **Step 4: Run the source and content suites**
+- [x] **Step 4: Run the source and content suites**
 
 Run: `node --test test/source/ test/content/`
 Expected: PASS (no board carries `definitions` yet; nothing changes for them).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/source/validate-puzzle.js test/source/validate-puzzle.test.js
@@ -566,7 +566,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Interfaces:**
 - Produces: `LEARNING_MODE_KEY = 'asto.learningMode'`; `storage.isLearningMode() → boolean` (false whenever unknowable); `storage.setLearningMode(bool)`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `test/storage.test.js` (extend the import to include `LEARNING_MODE_KEY`):
 
@@ -598,12 +598,12 @@ test('a hostile store leaves learning mode off and never throws', () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify they fail**
+- [x] **Step 2: Run to verify they fail**
 
 Run: `node --test test/storage.test.js`
 Expected: FAIL — `isLearningMode is not a function`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `src/storage.js`, add the key beside the others:
 
@@ -632,12 +632,12 @@ and after `setVolume`:
 
 Leave `clear()` alone: it forgets play state (tutorial flag, results, rated boards, history) and deliberately keeps preferences — the sound keys are not cleared there, and Learning Mode is a preference of the same kind.
 
-- [ ] **Step 4: Run**
+- [x] **Step 4: Run**
 
 Run: `node --test test/storage.test.js`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/storage.js test/storage.test.js
@@ -659,7 +659,7 @@ No unit tests for DOM views (the house rule at zero deps); this task is verified
 - Consumes: `state.vocabArmed`, `state.rules.learningMode`, `puzzle.definitions`, `storage.isLearningMode()`, `controller.rulesChanged`.
 - Produces: `settingsView.render({ muted, volume, learningMode })`; a `SettingsView` constructor option `onLearning`.
 
-- [ ] **Step 1: `src/view/vocab-view.js` — show the latest revealed word, look up both lists**
+- [x] **Step 1: `src/view/vocab-view.js` — show the latest revealed word, look up both lists**
 
 Replace `update`:
 
@@ -689,7 +689,7 @@ Replace `update`:
   }
 ```
 
-- [ ] **Step 2: `src/view/controls-view.js` — the armed pill**
+- [x] **Step 2: `src/view/controls-view.js` — the armed pill**
 
 Replace the vocab section of `update`:
 
@@ -716,7 +716,7 @@ Replace the vocab section of `update`:
     }
 ```
 
-- [ ] **Step 3: `src/view/board-view.js` — the armed board**
+- [x] **Step 3: `src/view/board-view.js` — the armed board**
 
 In `update`, after `const over = state.status !== 'playing';` add:
 
@@ -726,7 +726,7 @@ In `update`, after `const over = state.status !== 'playing';` add:
     this.root.classList.toggle('defining', Boolean(state.vocabArmed) && !over);
 ```
 
-- [ ] **Step 4: `src/view/status-view.js` — say what an armed board wants**
+- [x] **Step 4: `src/view/status-view.js` — say what an armed board wants**
 
 Add to `FEEDBACK`:
 
@@ -741,7 +741,7 @@ and in `update`, before the `else if (outcome && FEEDBACK[outcome.type])` branch
       this.clear();
 ```
 
-- [ ] **Step 5: `src/view/settings-view.js` — the Help group**
+- [x] **Step 5: `src/view/settings-view.js` — the Help group**
 
 Add `onLearning` to the constructor options and this group after the Sound section, before the Back button:
 
@@ -781,7 +781,7 @@ and extend `render`:
 
 Update the file's header comment: two sections now, Sound and Help (D-33).
 
-- [ ] **Step 6: `src/app.js` — merge the flag into every game's rules, wire the toggle**
+- [x] **Step 6: `src/app.js` — merge the flag into every game's rules, wire the toggle**
 
 Add near `startGame`:
 
@@ -819,7 +819,7 @@ Add to the `SettingsView` options:
     }
 ```
 
-- [ ] **Step 7: `styles/components.css`**
+- [x] **Step 7: `styles/components.css`**
 
 After `.tile.selected { ... }`:
 
@@ -851,14 +851,14 @@ After `.settings-mute { ... }`:
 }
 ```
 
-- [ ] **Step 8: Run the full suite and a smoke load**
+- [x] **Step 8: Run the full suite and a smoke load**
 
 Run: `npm test`
 Expected: PASS (views are untested; this catches import breakage in app-adjacent modules).
 
 Run: `node -e "import('./src/view/vocab-view.js').then(() => console.log('ok'))"` — Expected: `ok` (the module imports nothing DOM-only at load).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add src/view/vocab-view.js src/view/controls-view.js src/view/board-view.js src/view/status-view.js src/view/settings-view.js src/app.js styles/components.css
@@ -879,7 +879,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 - Consumes: outcomes `vocab-armed`, `vocab` and `state.rules.learningMode` from Task 1.
 - Produces: steps with ids `vocab`, `vocab-learning`, `vocab-armed`; the `done` step carries `note` on the first solve.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `test/controller/tutorial-script.test.js`:
 
@@ -938,12 +938,12 @@ test('the Learning Mode copy leaks nothing', () => {
 
 (`attempt`, `pick`, `names`, `FORBIDDEN` already exist in this file.)
 
-- [ ] **Step 2: Run to verify they fail**
+- [x] **Step 2: Run to verify they fail**
 
 Run: `node --test test/controller/tutorial-script.test.js`
 Expected: FAIL on the Learning Mode assertions.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `src/controller/tutorial-script.js`, replace the `vocab` step and add two more inside `STEPS`:
 
@@ -988,12 +988,12 @@ In `coaching`, replace the first three outcome lines:
 
 (`vocab-disarmed` deliberately falls through to the board-state coaching.)
 
-- [ ] **Step 4: Run the controller suite**
+- [x] **Step 4: Run the controller suite**
 
 Run: `node --test test/controller/`
 Expected: PASS. If an existing test asserted the `done` step has no note on the first solve, update it: the first solve now carries `LEARNING_NOTE`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/controller/tutorial-script.js test/controller/tutorial-script.test.js
@@ -1013,7 +1013,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Interfaces:**
 - Produces: result/history rows carry `learning: true` only when help was used; `buildShareText` appends ` · 📖` under the same condition.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `test/results-recorder.test.js`:
 
@@ -1073,12 +1073,12 @@ test('learning mode on but unused shares exactly as a normal game', () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify they fail**
+- [x] **Step 2: Run to verify they fail**
 
 Run: `node --test test/results-recorder.test.js test/share.test.js`
 Expected: FAIL on the new assertions.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `src/results-recorder.js`, inside `update` where `result` is built:
 
@@ -1109,12 +1109,12 @@ Expected: FAIL on the new assertions.
 
 Update the file's doc comment example: a learning-mode line reads `4/4 · 2 beans · 📖`.
 
-- [ ] **Step 4: Run**
+- [x] **Step 4: Run**
 
 Run: `node --test test/results-recorder.test.js test/share.test.js test/stats.test.js`
 Expected: PASS (stats ignores the new field).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/results-recorder.js src/share.js test/results-recorder.test.js test/share.test.js
@@ -1134,7 +1134,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Interfaces:**
 - Produces: `BOOK` (SVG string with class `result-badge`); `badgeFor(result) → string` (empty unless `result.learning`).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `test/result-icons.test.js`:
 
@@ -1160,12 +1160,12 @@ test('the book is a hidden-from-AT svg wearing the badge class, and leaves the c
 });
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `node --test test/result-icons.test.js`
 Expected: FAIL — `badgeFor` not exported.
 
-- [ ] **Step 3: Implement `src/view/result-icons.js`**
+- [x] **Step 3: Implement `src/view/result-icons.js`**
 
 Append:
 
@@ -1186,7 +1186,7 @@ export const BOOK = `
 export const badgeFor = (result) => (result?.learning ? BOOK : '');
 ```
 
-- [ ] **Step 4: `src/view/calendar-view.js`**
+- [x] **Step 4: `src/view/calendar-view.js`**
 
 Extend the import: `import { badgeFor, iconFor } from './result-icons.js';`
 
@@ -1213,7 +1213,7 @@ In `spokenResult`, add after the `hinted` line:
 
 and append `${learning}` to both returned strings (`...${hinted}${learning}`).
 
-- [ ] **Step 5: `styles/components.css`**
+- [x] **Step 5: `styles/components.css`**
 
 Change `.result-cup-slot` to include `position: relative;`, and `.day-card-icon` to include `position: relative;`. Then add after `.is-hinted .cup-spill { ... }`:
 
@@ -1252,12 +1252,12 @@ Change `.result-cup-slot` to include `position: relative;`, and `.day-card-icon`
 }
 ```
 
-- [ ] **Step 6: Run**
+- [x] **Step 6: Run**
 
 Run: `node --test test/result-icons.test.js test/calendar-month.test.js`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/view/result-icons.js src/view/calendar-view.js styles/components.css test/result-icons.test.js
@@ -1278,7 +1278,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Interfaces:**
 - Produces: agent id `definitions-author`, stage id `10-definitions-author`; output `{ definitions: [{ word, definition }] }` with exactly sixteen entries; input `{ board }`.
 
-- [ ] **Step 1: Write the failing agent test**
+- [x] **Step 1: Write the failing agent test**
 
 Create `test/studio/agents/definitions-author.test.js`:
 
@@ -1369,12 +1369,12 @@ test('without input it validates shape only', () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `node --test test/studio/agents/definitions-author.test.js`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Create `studio/agents/definitions-author.js`**
+- [x] **Step 3: Create `studio/agents/definitions-author.js`**
 
 ```js
 // Definitions Author (design.md D-33) — one plain definition for EVERY board
@@ -1478,7 +1478,7 @@ export function validateOutput(output, { input = null } = {}) {
 }
 ```
 
-- [ ] **Step 4: Register the stage**
+- [x] **Step 4: Register the stage**
 
 `studio/stage-registry.js`: append `{ id: '10-definitions-author', kind: 'agent', agent: 'definitions-author' },` after the glossary author, and update the header comment to "Ten agents … plus D-33's definitions author".
 
@@ -1510,7 +1510,7 @@ Create `studio/fixtures/responses/10-definitions-author.json` (the mock board's 
 }
 ```
 
-- [ ] **Step 5: Update the pinned tests**
+- [x] **Step 5: Update the pinned tests**
 
 `test/studio/stage-registry.test.js`: eleven stages, ten agents, one gate; append `'10-definitions-author'` to both order lists; `stageAfter('09-glossary-author').id === '10-definitions-author'` and `stageAfter('10-definitions-author') === null`.
 
@@ -1526,12 +1526,12 @@ Create `studio/fixtures/responses/10-definitions-author.json` (the mock board's 
 
 `studio/README.md`: the diagram gains a `10 definitions author ← sixteen plain definitions for Learning Mode` line under 09; the stage table gains `| 10 definitions-author | Writes one plain definition per board word for Learning Mode (D-33); leak rule relaxed by design | Sonnet / low |`; the agent count sentence reads twelve.
 
-- [ ] **Step 6: Run the studio suite**
+- [x] **Step 6: Run the studio suite**
 
 Run: `node --test test/studio/`
 Expected: PASS. `prompt-schema-agreement.test.js` and `no-full-set-examples.test.js` iterate the registry and should pick the new agent up; if either fails, read its assertion and fix the prompt (it must not quote a finished four-word set — it does not).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add studio/agents/definitions-author.js studio/agents/index.js studio/stage-registry.js studio/pipeline.js studio/pipeline-config.js studio/fixtures/responses/10-definitions-author.json studio/README.md test/studio/
@@ -1551,7 +1551,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Interfaces:**
 - Produces: `mergeDefinitions(board, definitions) → { board, dropped }` (same contract as `mergeGlossary`); publish records `droppedDefinitions` when any; `GET` attempt reports include `10-definitions-author`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `test/studio/gloss.test.js` (extend the import: `import { mergeDefinitions, mergeGlossary } from '../../studio/gloss.js';`):
 
@@ -1623,12 +1623,12 @@ test('an attempt without a definitions stage publishes exactly as before', async
 });
 ```
 
-- [ ] **Step 2: Run to verify they fail**
+- [x] **Step 2: Run to verify they fail**
 
 Run: `node --test test/studio/gloss.test.js test/studio/review/api.test.js`
 Expected: FAIL — `mergeDefinitions` not exported; published board lacks `definitions`.
 
-- [ ] **Step 3: Implement `studio/gloss.js`**
+- [x] **Step 3: Implement `studio/gloss.js`**
 
 Refactor to one internal merge with two exports:
 
@@ -1657,7 +1657,7 @@ export function mergeDefinitions(board, definitions) {
 }
 ```
 
-- [ ] **Step 4: `studio/review/api.js`**
+- [x] **Step 4: `studio/review/api.js`**
 
 Import `mergeDefinitions` beside `mergeGlossary`. Add beside `glossaryOf`:
 
@@ -1690,7 +1690,7 @@ In `publishRun`, after `board = withGloss;`:
 
 and on the publish record beside `droppedGloss`: `...(droppedDefinitions.length > 0 ? { droppedDefinitions } : {}),`.
 
-- [ ] **Step 5: `studio/review/ui/review.js` and `edit.js`**
+- [x] **Step 5: `studio/review/ui/review.js` and `edit.js`**
 
 `review.js`: import `mergeDefinitions` too; in the `wirePlay` call, wrap the merged board once more:
 
@@ -1726,12 +1726,12 @@ and render `${definitionsFold(attempt)}` on the line after `${glossLine(attempt)
 
 `edit.js` `collectBoard`: `const { glossary: _dropped, definitions: _droppedDefinitions, ...bare } = base;` and extend the doc comment: neither field survives an edit; both are merged at play and publish.
 
-- [ ] **Step 6: Run the studio suite**
+- [x] **Step 6: Run the studio suite**
 
 Run: `node --test test/studio/`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add studio/gloss.js studio/review/api.js studio/review/ui/review.js studio/review/ui/edit.js test/studio/gloss.test.js test/studio/review/api.test.js
@@ -1752,7 +1752,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 - Consumes: `loadAgent('definitions-author')`, `createLlm`, `effortFor/modelFor/maxTokensFor` (as `glossary-backfill.js` does), `puzzle-store.publish({ board, slug, replace: true })`.
 - Produces: `listBoardsNeedingDefinitions({ puzzles }) → [{ slug, board, missing: number }]`; `authorDefinitions({ entry, transport, config?, context? }) → { ok: true, definitions } | { ok: false, failure }`; `applyDefinitions({ puzzles, slug, definitions })`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `test/studio/definitions-backfill.test.js`:
 
@@ -1896,12 +1896,12 @@ test('once the catalog has definitions, every board defines all sixteen words', 
 });
 ```
 
-- [ ] **Step 2: Run to verify they fail**
+- [x] **Step 2: Run to verify they fail**
 
 Run: `node --test test/studio/definitions-backfill.test.js test/content/definitions.test.js`
 Expected: the backfill test FAILS (module missing); the content test reports skipped.
 
-- [ ] **Step 3: Create `studio/definitions-backfill.js`**
+- [x] **Step 3: Create `studio/definitions-backfill.js`**
 
 ```js
 // definitions-backfill.js — giving every published board its sixteen Learning
@@ -2014,7 +2014,7 @@ export function applyDefinitions({ puzzles, slug, definitions }) {
 
 `createLlm` is imported from `studio/llm.js`; `llm.send(request, { maxAttempts, feedback })` appends `feedback` to the outbound prompt on the retry, which is what the third test reads.
 
-- [ ] **Step 4: Create `tools/backfill-definitions.js`**
+- [x] **Step 4: Create `tools/backfill-definitions.js`**
 
 ```js
 #!/usr/bin/env node
@@ -2077,12 +2077,12 @@ main(process.argv.slice(2)).then(
 
 Check `studio/glossary-backfill.js` for how the tool obtains a transport (`createAnthropicTransport` from `llm.js`) and copy the exact export name if it differs.
 
-- [ ] **Step 5: Run**
+- [x] **Step 5: Run**
 
 Run: `node --test test/studio/definitions-backfill.test.js test/content/definitions.test.js && node tools/backfill-definitions.js --dry-run`
 Expected: tests PASS (content test skipped); dry run prints `52 board(s) short of sixteen definitions` and lists them (51 boards plus the tutorial's board file if it is separate — `puzzles.list()` decides).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add studio/definitions-backfill.js tools/backfill-definitions.js test/studio/definitions-backfill.test.js test/content/definitions.test.js
@@ -2097,39 +2097,39 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 **Files:** none modified unless a defect is found.
 
-- [ ] **Step 1: Start the preview**
+- [x] **Step 1: Start the preview**
 
 Use `preview_start` with the `serve` configuration in `.claude/launch.json` (create it if missing: `{"name":"serve","runtimeExecutable":"npm","runtimeArgs":["run","serve"],"port":<the port npm run serve uses>}`). Resize to 375×812.
 
-- [ ] **Step 2: Default mode is unchanged**
+- [x] **Step 2: Default mode is unchanged**
 
 Open a board (`?puzzle=bedside-manor`). Press Vocab → the phlebotomist footnote appears, pill disables, status reads "A little vocabulary — on the house." Tap tiles → they select. Zero console errors.
 
-- [ ] **Step 3: Turn Learning Mode on**
+- [x] **Step 3: Turn Learning Mode on**
 
 Title → Play → gear icon → Settings. The Help group shows "Learning mode" and a "Turn on" pill; press it → reads "Turn off", `aria-pressed="true"`. Back → board. The Vocab pill is enabled and unpressed.
 
-- [ ] **Step 4: Arm, define, disarm**
+- [x] **Step 4: Arm, define, disarm**
 
 Press Vocab → status "Tap a tile to see what it means.", every unselected tile has the dashed outline, pill `aria-pressed="true"`. Tap a tile → footnote `word — definition` (with no backfill yet the footnote reads "No definition for this one." for every tile except the glossed word; that is the expected pre-backfill state), outline clears, tile is NOT selected. Press Vocab, tap the glossed word → its leak-checked gloss. Press Vocab twice → armed then disarmed, status clears.
 
-- [ ] **Step 5: Live rule change**
+- [x] **Step 5: Live rule change**
 
 Arm the board, go to Settings, turn Learning Mode off, come back → board is disarmed, Vocab behaves as one-word mode.
 
-- [ ] **Step 6: The mark**
+- [x] **Step 6: The mark**
 
 With Learning Mode on, define one word, win the board (use `localStorage`-free approach: play it). End screen → Share → clipboard/share text carries `· 📖`. Calendar: the day's cell shows the book at the cup's corner; the day card shows the book beside the cup; `spokenResult` label contains "Definitions were used." Replay with Learning Mode on but never define → no marker anywhere.
 
-- [ ] **Step 7: Tutorial**
+- [x] **Step 7: Tutorial**
 
 Title → How to play. Press Vocab → coach mentions Learning Mode and Settings. Solve one set → the done step shows the Learning Mode note. With Learning Mode on, replay: press Vocab → "Learning Mode is on — tap any tile…"; tap a tile → the look-up line.
 
-- [ ] **Step 8: Evidence**
+- [x] **Step 8: Evidence**
 
 Screenshot the armed board, the Settings Help group, the footnote, and the calendar badge at both sizes. Run `read_console_messages` with `onlyErrors: true` → empty.
 
-- [ ] **Step 9: Commit any fix**
+- [x] **Step 9: Commit any fix**
 
 ```bash
 git add -A src styles
@@ -2142,15 +2142,15 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 ### Task 13: Run the backfill and gate the content
 
-- [ ] **Step 1: Dry run** — `node tools/backfill-definitions.js --dry-run` lists every board.
+- [x] **Step 1: Dry run** — `node tools/backfill-definitions.js --dry-run` lists every board.
 
-- [ ] **Step 2: Live run** — `node tools/backfill-definitions.js`. Expected: `applied: N · failed: 0`. Re-run for any failures.
+- [x] **Step 2: Live run** — `node tools/backfill-definitions.js`. Expected: `applied: N · failed: 0`. Re-run for any failures.
 
-- [ ] **Step 3: Gate** — `npm test` (the content test now runs and must pass) and `node tools/check-board.js puzzles/*.json` clean. `npm run manifest` is run by `publish` already; confirm `git diff --stat puzzles/index.json` shows no ordering change.
+- [x] **Step 3: Gate** — `npm test` (the content test now runs and must pass) and `node tools/check-board.js puzzles/*.json` clean. `npm run manifest` is run by `publish` already; confirm `git diff --stat puzzles/index.json` shows no ordering change.
 
-- [ ] **Step 4: Spot-check** — read three boards' `definitions` by eye (`node -e` printing `bedside-manor`, `ascent`, `first-light`) and confirm in the browser (Task 12 Step 4 again) that a tapped tile now shows a real definition.
+- [x] **Step 4: Spot-check** — read three boards' `definitions` by eye (`node -e` printing `bedside-manor`, `ascent`, `first-light`) and confirm in the browser (Task 12 Step 4 again) that a tapped tile now shows a real definition.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add puzzles/
@@ -2163,12 +2163,12 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 ### Task 14: Docs — D-33, CLAUDE.md, log; then /wrapup
 
-- [ ] **Step 1: `docs/design.md`** — add `### D-33 — Learning Mode: the Vocab button defines any tile (2026-09-05)` after D-32 (before `## House-rule exceptions`), covering: Max's idea; the seven decisions in order; the schema amendment (optional `definitions`, additive, Max-initiated); the relaxed leak rule and why the gloss keeps its check; the light mark and the book badge; the tutorial copy; the new stage and backfill; verification evidence from Tasks 12–13; the reconsider-when from the spec. Also update the schema example near line 25 to note `definitions` optional.
+- [x] **Step 1: `docs/design.md`** — add `### D-33 — Learning Mode: the Vocab button defines any tile (2026-09-05)` after D-32 (before `## House-rule exceptions`), covering: Max's idea; the seven decisions in order; the schema amendment (optional `definitions`, additive, Max-initiated); the relaxed leak rule and why the gloss keeps its check; the light mark and the book badge; the tutorial copy; the new stage and backfill; verification evidence from Tasks 12–13; the reconsider-when from the spec. Also update the schema example near line 25 to note `definitions` optional.
 
-- [ ] **Step 2: `CLAUDE.md` §4** — `date`/`baitTags`/`glossary`/`definitions` optional. §7 gains: "Learning Mode (D-33) arms the board on Vocab; a tile tap while armed defines, never selects."
+- [x] **Step 2: `CLAUDE.md` §4** — `date`/`baitTags`/`glossary`/`definitions` optional. §7 gains: "Learning Mode (D-33) arms the board on Vocab; a tile tap while armed defines, never selects."
 
-- [ ] **Step 3: `docs/log.md`** — new entry at the top for 2026-09-05 (latest), ending with `- **Next:**` (the capstone items carried forward; the GDD bump now also owes a Learning Mode line).
+- [x] **Step 3: `docs/log.md`** — new entry at the top for 2026-09-05 (latest), ending with `- **Next:**` (the capstone items carried forward; the GDD bump now also owes a Learning Mode line).
 
-- [ ] **Step 4: `docs/backlog.md`** — one line: "Stats page could count assisted plays (`learning: true` is recorded, D-33) — unbuilt."
+- [x] **Step 4: `docs/backlog.md`** — one line: "Stats page could count assisted plays (`learning: true` is recorded, D-33) — unbuilt."
 
-- [ ] **Step 5** — invoke `/wrapup`: full gate, drift check, merge `work/learning-mode` into `main`, push, `npm run check-deploy`.
+- [x] **Step 5** — invoke `/wrapup`: full gate, drift check, merge `work/learning-mode` into `main`, push, `npm run check-deploy`.

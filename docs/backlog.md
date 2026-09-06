@@ -4,6 +4,15 @@
 > work only when Max pulls them into `design.md`'s plan. Mid-session ideas
 > land here so the session stays on task.
 
+- **The statistics page could count assisted plays (2026-09-05).** D-33 records
+  `learning: true` on a result only when a Learning Mode definition was actually looked
+  up, and the calendar shows the book badge; the statistics page still buckets by
+  won/lost × hinted and ignores the field. Unbuilt on purpose — a fifth outcome column
+  is a taste call for Max once a few assisted plays exist.
+- **The Settings label "Learning mode" wraps to two lines at 375px (2026-09-05).**
+  `.settings-label` is 72px wide so the Sound rows align with the slider; the longer
+  label folds. Reads fine, but a wider label column or a shorter word is a one-line
+  polish whenever someone is next in the settings CSS.
 - **08's agreement with Max is FALLING, and it has drifted strict (2026-08-31).**
   Re-running `tools/evaluator-report.js` over 126 judged attempts (up from 66) put
   08's board-verdict agreement at **65 of 126 (52%)**, down from **58%** — and the

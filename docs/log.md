@@ -2,6 +2,86 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-05 (evening) — Learning Mode: the Vocab button defines any tile
+
+Max's idea, brainstormed, specced, planned and built in one session: *"what if
+we created a setting parameter where you could keep hitting the vocab button
+and keep getting different answers."* Recorded as **D-33** with eight decisions
+made in order (all sixteen words · leak rule relaxed by intent · marked lightly
+· press Vocab then tap a tile · backfill auto-applied · engine rule plus a
+separate `definitions` field · named **Learning Mode**, on/off, default off ·
+the tutorial teaches it). Spec and plan under `docs/superpowers/`.
+
+- **What ships in the game:** a **Help** group in Settings with a Learning
+  mode pill (Turn on / Turn off, the Mute precedent). When on, **Vocab arms the
+  board** — dashed ring on every tile, pill pressed, status line *"Tap a tile
+  to see what it means."* — and the **next tile tap defines that word instead
+  of selecting it**; the footnote shows the latest word, glossary first (the
+  leak-checked sentence wins) then definitions. The setting reaches the board
+  you are already on. Off, nothing changed: one gloss, spent pill.
+- **The engine decides, the controller routes.** `rules.learningMode`,
+  `vocabArmed`, `defineWord`, `withRules` in the engine; `tileTapped` routes
+  to `defineWord` while armed, exactly as it already routes select versus
+  deselect. A headless Learning Mode playthrough proves it with the view off.
+- **Marked lightly, only when help was used:** `learning: true` on the result
+  and history row, ` · 📖` on the share line, a **small book beside the cup**
+  on the calendar cell and the day card (Max's add at plan review), and
+  *"Definitions were used."* in the spoken label. Mode on but unused records
+  nothing. The stats page is untouched — backlog.
+- **The tutorial teaches it** inside its 135/60-character limits: the vocab
+  step points at Settings when the mode is off, the arm and the look-up are
+  narrated when it is on, and the first solve carries a one-line note.
+- **Schema v1.0 amended additively** (Max-initiated, like D-18): optional
+  `definitions: [{ word, definition }]`. Partial lists are valid in the game so
+  a hand-edit can never break a board; the pipeline demands sixteen.
+- **Pipeline:** stage **10-definitions-author** (twelfth agent, low effort,
+  profile `2026-09-05-learning-mode`); `gloss.js` merges definitions at save,
+  play and publish by the glossary's drop rule; the review card folds them;
+  the hand editor strips them from its base. **Backfill:**
+  `tools/backfill-definitions.js` authored the catalog through `puzzle-store`
+  — **51 applied, 0 failed**, every definition matching its tile exactly, none
+  over 160 characters. A content test now requires sixteen on every board.
+- **One thing learned building it:** the pipeline test helper now derives a
+  stage-10 reply from any board a suite swaps in, since the new validator
+  refuses a reply for the wrong sixteen words — the same board-specific trap
+  the solver reply already had. And the schema checker reads shape, not
+  length, so the agent enforces its own 160-character cap.
+- **A limit recorded, not a defect:** the results blob keeps the player's
+  best run (strictly fewer mistakes replaces; equal never does), so a clean
+  win with definitions does not overwrite an earlier clean win without — the
+  badge marks the mode of the best run, the same law the hint's brown cup
+  lives under. Seen on bedside-manor: history row marked, best row not.
+- **Verified:** `npm test` **1704/0** (1633 + 71, content gate live) ·
+  `tools/check-board.js` **51 clean** · manifest unchanged by the republish ·
+  **in the browser at 375×812**, every path of the spec driven and read back
+  from the DOM: default mode identical; Settings toggles and persists; arm →
+  dashed ring + `aria-pressed` + status line; an armed tap on an unselected
+  tile defines and does **not** select; the glossed word shows its gloss;
+  Vocab again disarms and clears the line; mode off mid-game disarms the same
+  board and restores one-word behaviour; a win with one look-up records
+  `learning: true`, shares `4/4 · no beans · 📖`, and shows the book on the
+  cell and the card; a win with the mode on but unused records nothing; the
+  tutorial says the right thing in both modes; a backfilled board defines a
+  plain tile (*needle — a thin, sharp point…*). Screenshots of Settings, the
+  armed board, the calendar badge and the footnote taken. **Zero console
+  errors** throughout.
+- **Also:** `CLAUDE.md` §4 and §7 carry the amendment and the arming rule;
+  `studio/README.md` gained stage 10 and the new test count; two backlog
+  lines filed (assisted-play stats; the Settings label wraps at 375px).
+- **Phase status:** post-Phase-5 feature, **not a phase gate**. Automated and
+  Claude-verifiable **both passed** with the evidence above. **Max acceptance
+  open:** the feel of Learning Mode in play, the definitions' voice (leak rule
+  relaxed by his call — a few may read as broad hints, which is the intent),
+  and the wrapped Settings label.
+- **Next:** **the capstone, due Sept 8 — three days.** The 2–3 minute gameplay
+  video still does not exist; Max said this session he is not re-uploading to
+  itch for now, so the how-to-play README question stands and Learning Mode
+  is a strong "improvement between submissions" to show. Then: a **fresh board
+  batch** before the calendar runs dry **2026-09-19** (14 queued); the **GDD
+  version bump** (now also owing a Learning Mode line and the Help section);
+  and `docs/backlog.md`. `npm run check-deploy` after this push confirms the
+  live site carries it.
+
 ## 2026-09-05 (later) — The survey row leaves, and a receipt takes its place
 
 Third pass on the same problem, and the one that finishes it. Max: *"What if after
