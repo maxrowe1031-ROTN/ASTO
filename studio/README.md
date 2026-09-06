@@ -389,14 +389,15 @@ judgement were already on disk, just never joined.
 - **`docs/backlog.md`** — known gaps, openly. Several are about this pipeline's
   evaluators, and the report above is partly an answer to them.
 
-Zero dependencies, Node ≥22, `node:test`. `npm test` **as of 2026-09-04: 1615 passing,
-0 failing** — down from 1671, because D-32 cut the art line and its 56 tests. The total
+Zero dependencies, Node ≥22, `node:test`. `npm test` **as of 2026-09-05: 1633 passing,
+0 failing** — 1671 before D-32 cut the art line and its 56 tests, then back up as the
+survey's three passes brought their own. The total
 drifts as boards are added, because `board-integrity.test.js` globs `puzzles/*.json` and
 regates every board on every run; the zero is the part that matters.
 
 ---
 
-**This page is current as of 2026-09-04.** Sections dated earlier than that are dated on
+**This page is current as of 2026-09-05.** Sections dated earlier than that are dated on
 purpose — the measurements below are a snapshot of the corpus at the time they were taken,
 and re-stamping them without re-running them would be a lie. Cost figures across the whole
 corpus are in [`../docs/audit-2026-08-31.md`](../docs/audit-2026-08-31.md).
