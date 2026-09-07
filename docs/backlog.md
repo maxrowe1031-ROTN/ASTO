@@ -4,7 +4,14 @@
 > work only when Max pulls them into `design.md`'s plan. Mid-session ideas
 > land here so the session stays on task.
 
-- **Long words break mid-tile at 375px (2026-09-07).** Seen on the capstone rehearsal:
+- ~~**Long words break mid-tile at 375px (2026-09-07).**~~ **Fixed the same day, before the
+  capstone recording** — `src/view/fit-text.js`: a term steps its font size down to fit one
+  line (tile floor 10px, slot 9px), and past the floor the stylesheet hyphenates. Every long
+  word in the catalogue verified one-line in the browser; the three past the floor
+  (`cross-contamination`, `groundbreaking`, `Eight-thousander`) hyphenate cleanly. What
+  remains from the original entry: nothing governs token length at authoring, so a 15-letter
+  word would still land at the floor. The original entry:
+  **Long words break mid-tile at 375px (2026-09-07).** Seen on the capstone rehearsal:
   `phlebotomist` renders as "phlebotom / ist" on its Bedside Manor tile and clips in the frame
   slot. Measured on a real tile in the browser, **21 words across 19 published boards** do the
   same (refrigerator, measurements, disembarking, extinguished, kindergarten, thunderstorm,
