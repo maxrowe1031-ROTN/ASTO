@@ -39,20 +39,18 @@ people, usually for tests or donations"). Learning Mode definition used in the r
 Mode is off (the Settings flip on camera is then real), and the calendar carries no history.
 Rehearsed and verified: the deep link lands straight on the board, no title screen.
 
-**Two things the rehearsal found that shape the order:**
+**What the rehearsal found that shapes the order:**
 
 - **Vocab must come before the green solve.** The gloss belongs to *phlebotomist*; once
   that set is solved the Vocab pill greys out. So the cold open is: two tiles, Vocab, two
   more tiles, Confirm.
-- **"phlebotomist" breaks mid-word on its tile at 375px** ("phlebotom / ist") and clips in
-  the frame slot. It is on screen for the first fifteen seconds. Not a one-off: measured on a
-  real tile, **21 words across 19 published boards break the same way** (refrigerator,
-  measurements, kindergarten, thunderstorm, particleboard…). Filed in `docs/backlog.md`; a
-  hyphenation or auto-shrink rule is a small CSS change, but it is game code the day before
-  the deadline, so it is Max's call: live with it, or swap boards (below — every word on
-  the alternative fits its tile).
+- **Long words now fit their tiles** (fixed 2026-09-07, before recording): a term steps
+  its font size down only as far as it must — *phlebotomist* sits on one line at 11px on
+  its tile and 10px in the frame slot — and only past the floor does a word hyphenate
+  onto a second line. Verified on every long word in the catalogue. No wrap to worry
+  about on camera.
 
-**Alternative board** if the wrap bothers you: *Borders, Bounds, and Bearings*
+**Alternative board**, in case you prefer it: *Borders, Bounds, and Bearings*
 (`?puzzle=borders-bounds-and-bearings`, 2026-08-01, the oldest). Green `lodging : hostel ::
 transport : ferry` · Yellow `rudder : steer :: throttle : accelerate` · Red `carousel :
 luggage :: overhead bin : carry-on` · Black `pitch : strike :: inflate : deflate`. Gloss:
@@ -93,30 +91,72 @@ gets watched.
 **Cuts if it runs long:** the statistics page (2:06) and the How-to-play glimpse (2:14) are
 the first to go. Don't cut the so-close beat — it is the one thing no other word game does.
 
-## 4. Recording setup
+## 4. Recording — exact steps
 
-Two routes. **A is recommended**: it is the real thing, with touch and the game's own sound.
+Route A is the one to use: it records the real game on the real phone, with touch and the
+game's own sound. Route B is the fallback if the phone will not mirror.
 
-**Route A — your iPhone, mirrored into QuickTime.** Plug the phone in with a cable.
-QuickTime → File → **New Movie Recording** → the arrow beside the record button → pick the
-**iPhone** as camera **and** as microphone (that carries the game audio). Open Safari on the
-phone, **Private tab**, `playasto.com/?puzzle=bedside-manor`. Narrate over it afterwards in
-iMovie, or record the voice live from the Mac's microphone in a second QuickTime window
-(*New Audio Recording*) and lay it under the video.
+**Before either route (five minutes)**
 
-**Route B — the Mac.** Chrome → the device toolbar (⌘⌥I, then the phone icon) set to
-**375 × 812**, an Incognito window. QuickTime → File → **New Screen Recording** →
-drag-select just the phone-shaped region → microphone on. A Retina screen records the
-region at 750 × 1624, which is plenty. Game audio does not reach a screen recording without
-a loopback device; narrating over silent gameplay is fine. Drag-to-reorder works with the
-mouse; the tap-out-tap-in fallback is always there.
+1. Charge the phone; put it on **Do Not Disturb** (Control Center → Focus) so no banner
+   lands in the take.
+2. Read §3 once through and keep it open on the Mac beside the recording window.
+3. Decide what you will say for the first fifteen seconds. Everything after that can be
+   loose.
 
-**Do one throwaway take first** (Class 13: record early so you find out recording itself
-is broken while there is still time). Then one real take, straight through — a two-minute
-video with one flub reads as honest; a cut-together one reads as a trailer.
+**Route A — iPhone mirrored into QuickTime**
 
-**Export:** QuickTime → File → Export As → **1080p**. Upload to the itch page (Edit game →
-the video/trailer field takes a YouTube or Vimeo link) and attach or link in the submission.
+1. Plug the iPhone into the Mac with a cable. On the phone tap **Trust** if asked.
+2. On the Mac open **QuickTime Player** (⌘Space, type QuickTime, Return).
+3. **File → New Movie Recording.** A camera window opens.
+4. Click the small **▾ arrow** beside the red record button. Under **Camera** choose your
+   iPhone. Under **Microphone** choose your iPhone too — that is what carries the game
+   sound into the file. Set **Quality: Maximum**.
+5. The phone's screen now shows in the window. On the phone open **Safari**, tap the
+   **tabs button** (two squares, bottom right), tap **Private**, tap **+**, and type
+   `playasto.com/?puzzle=bedside-manor`. Go. Confirm the board is up and nothing is
+   tapped yet. A Private tab means an unplayed board, a clean calendar, and Learning
+   Mode off, so the Settings flip on camera is real.
+6. Turn the phone's ringer switch **on** and the volume to about half, so the beats have
+   sound.
+7. Click **record** in QuickTime. Count two seconds. Start the §3 route from the top.
+8. When the title screen is back up at the end, count two seconds, click **stop**.
+9. **File → Save** → `asto-capstone-take1.mov` on the Desktop. Watch it once. Then do
+   the real take the same way — the first one is the throwaway that proves recording
+   works.
+10. **Narration:** the phone-as-microphone does not pick up your voice, so add it after.
+    Open **iMovie → Create New → Movie**, drag the .mov in, drag it onto the timeline,
+    put the playhead at the start, click the **microphone icon** under the viewer, press
+    the red button and talk over the playback using the §3 lines. Stop, then **File →
+    Share → File → Resolution 1080p → Next → Save**.
+    If you would rather not narrate, skip iMovie: QuickTime **File → Export As → 1080p**
+    and the game sound carries the video on its own.
+
+**Route B — the Mac, a phone-sized region**
+
+1. Open **Chrome → File → New Incognito Window** (⇧⌘N). Go to
+   `playasto.com/?puzzle=bedside-manor`.
+2. **View → Developer → Developer Tools** (⌥⌘I). Click the **device toolbar** icon at the
+   top left of the DevTools panel (⇧⌘M). In the **Dimensions** dropdown choose
+   **Responsive** and type **375** × **812**. Set the zoom dropdown to **100%** (or 150%
+   for a bigger picture). Press **⌘R** so the page lays out at phone size.
+3. Undock DevTools so the phone frame sits alone: the **⋮** menu at the top right of
+   DevTools → **Dock side → Undock into separate window**. Move that window aside.
+4. **QuickTime → File → New Screen Recording.** In the toolbar that appears choose
+   **Record Selected Portion**, then drag the dotted region to just cover the phone
+   viewport. **Options → Microphone → MacBook Microphone** so you can narrate live.
+5. Click **Record**. Count two seconds. Run the §3 route with the mouse — drag a frame
+   slot to reorder, or tap it out and back in; both work.
+6. Stop with the **⏹ icon in the menu bar**. **Edit → Trim** to cut the ends, **File →
+   Export As → 1080p**, save to the Desktop.
+7. Game audio does not reach a screen recording without a loopback device; your
+   narration is the soundtrack. That is fine.
+
+**After either route**
+
+- Upload to **YouTube** as **Unlisted** (or Vimeo). Copy the link.
+- itch: **Edit game → Details → Video or trailer** → paste the link → Save.
+- Submission form: paste the same link, plus the playable link(s) from §6.
 
 ## 5. How to play — the blurb for the itch page and the form
 

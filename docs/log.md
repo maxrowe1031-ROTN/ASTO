@@ -2,6 +2,46 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-07 (later) — Long words fit their tiles, before the recording
+
+Max, on the capstone handoff: *"fix the mid-tile word wrap before I record."* The wrap
+had been found that morning — `phlebotomist` rendering as "phlebotom / ist" on its tile
+and clipping in the frame slot, with **21 words across 19 boards** measured doing the
+same at 375px. A presentation fix in the views; no engine or schema change.
+
+- **`src/view/fit-text.js`** — a term steps its font size down only as far as it must:
+  `chooseSize` (pure) finds the largest size in [max..min] that fits, `fitTerm` measures
+  the element and writes an inline size only when the stylesheet's own size fails.
+  Tiles fit 14→10px, frame slots 14→9px. Past the floor the stylesheet takes over —
+  `hyphens: auto` on tiles and slots, and slots may now wrap to a second line (44px
+  holds two at 9px) instead of clipping. **`board-view`** fits each tile once it is in
+  the grid (persistent nodes keep their fit) and re-fits when `document.fonts.ready`
+  lands; **`frame-view`** fits on every paint.
+- **Why measure, not count letters:** at the same length `measurements` needs 10px in a
+  78px tile and `kindergarten` fits at 12px. Letters are not widths.
+- **Three things the browser taught, each now a comment and a test:** a `<button>`
+  never reports overflow through `scrollWidth` in Chrome, so the text's own Range
+  rectangle is measured instead · a `1fr` grid column has an `auto` minimum and widens
+  to a `nowrap` word, so the box is read **before** forcing one line (and the board is
+  now `minmax(0, 1fr)`) · `clientWidth` rounds to a whole pixel, so the box is the
+  fractional rect minus borders and padding, with half a pixel of margin.
+- **Verified in the browser at 375×812:** Bedside Manor — all sixteen tiles one line,
+  `phlebotomist` at 11px on the tile and 10px in the slot · a sweep of every long word
+  in the catalogue through a real tile and slot: **none wraps above the floor**; the
+  three past it (`cross-contamination`, `groundbreaking`, `Eight-thousander`)
+  hyphenate at 10px/9px — House Rules shows "groundbreak- / ing" · the green solve's
+  FLIP still runs and the slots clear to their default size. `npm test` **1714/0** (9 new,
+  written first: the chooser, the fitter with a fake measurer, the measurement order).
+- **Docs:** the backlog line closed the same day; `CAPSTONE.md` §2 no longer carries the
+  wrap caveat and §4 is now exact step-by-step recording instructions (iPhone mirrored
+  into QuickTime, or a phone-sized region on the Mac).
+- **Phase status:** post-Phase-5 fix, **not a phase gate**. Automated and
+  Claude-verifiable passed with the evidence above; Max's eye on the real phone is the
+  only open item, and he is about to look at it through a camera.
+- **Next:** unchanged — **record and submit the capstone by Sept 8** (`CAPSTONE.md`
+  §3–§4, itch re-upload or the web link per §6). Then the fresh board batch before
+  **2026-09-19**, the GDD version bump, and `docs/backlog.md`.
+
 ## 2026-09-07 — Capstone prep: the video route, rehearsed and written down
 
 The capstone is due **tomorrow, Sept 8**, and the one artifact only Max can make — the

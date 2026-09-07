@@ -8,14 +8,22 @@
 // decides no rules, it just names the colour a difficulty maps to.
 import { difficultyToTier } from '../engine/tiers.js';
 import { fadeOut, flip, pulse, shake } from './motion.js';
+import { fitTerm } from './fit-text.js';
 
 const SHAKES = new Set(['miss', 'so-close', 'already-tried']);
+// A tile is 78px wide at 375px. Below 10px the stylesheet hyphenates instead.
+const TILE_FIT = { max: 14, min: 10 };
 
 export class BoardView {
   constructor(root, { onTileTap }) {
     this.root = root;
     this.tiles = new Map(); // term → <button>, for the life of the game
     this.onTileTap = onTileTap;
+    // The web font lands after first paint; a term measured against the fallback face
+    // is re-measured once the real one is in, so the fit is to the face players see.
+    globalThis.document?.fonts?.ready?.then(() => {
+      for (const tile of this.tiles.values()) fitTerm(tile, TILE_FIT);
+    });
   }
 
   async update(state, outcome) {
@@ -26,8 +34,12 @@ export class BoardView {
       await shake(chosen);
     }
 
+    const created = [];
     for (const term of state.boardTerms) {
-      if (!this.tiles.has(term)) this.tiles.set(term, this.createTile(term));
+      if (this.tiles.has(term)) continue;
+      const tile = this.createTile(term);
+      this.tiles.set(term, tile);
+      created.push(tile);
     }
 
     // Words whose set was just solved leave the board: fade them, then FLIP the survivors
@@ -48,6 +60,10 @@ export class BoardView {
     } else {
       await flip([...this.tiles.values()], () => this.appendInOrder(state.boardTerms));
     }
+
+    // Fit once the tile is in the grid — measuring needs a laid-out box. Persistent
+    // nodes keep their fit for the life of the game.
+    for (const tile of created) fitTerm(tile, TILE_FIT);
 
     const selected = new Set(state.selectedTerms);
     const over = state.status !== 'playing';

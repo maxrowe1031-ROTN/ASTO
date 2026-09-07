@@ -10,9 +10,13 @@
 // the drop commits through the controller (order decides so-close vs solved).
 
 import { pulse, shake } from './motion.js';
+import { fitTerm } from './fit-text.js';
 
 const DRAG_THRESHOLD_PX = 6;
 const SHAKES = new Set(['miss', 'so-close', 'already-tried']);
+// A slot is 71px wide at 375px; the floor is lower than a tile's because the
+// stylesheet lets a slot hyphenate onto a second line, and 44px holds two lines at 9px.
+const SLOT_FIT = { max: 14, min: 9 };
 
 export class FrameView {
   constructor(root, { onSlotTap, onReorder }) {
@@ -53,6 +57,8 @@ export class FrameView {
       const term = terms[i];
       slot.textContent = term ?? '';
       slot.classList.toggle('filled', term !== undefined);
+      if (term === undefined) slot.style.fontSize = '';
+      else fitTerm(slot, SLOT_FIT);
       slot.classList.toggle('next', status === 'playing' && i === terms.length);
     });
   }

@@ -115,9 +115,13 @@
   font-weight: 700;
   font-size: 14px;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  text-align: center;
+  line-height: 1.1;
   padding: 0 4px;
+  /* A long term shrinks to fit (fit-text.js); past the floor it hyphenates onto a
+     second line rather than clipping — the slot is 44px tall, two lines at 9px fit. */
+  overflow-wrap: anywhere;
+  hyphens: auto;
   transition:
     background var(--motion-fast) var(--ease),
     box-shadow var(--motion-slow) var(--ease),
@@ -152,7 +156,8 @@
 
 .board {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* minmax(0, …): a column never widens to a long word; the word fits itself instead. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--gap);
 }
 
@@ -166,7 +171,10 @@
   font-weight: 700;
   font-size: 14px;
   padding: 4px 2px;
+  /* Long words step the size down to fit on one line (fit-text.js, floor 10px);
+     only past the floor do they wrap, and then with a hyphen, never mid-word bare. */
   overflow-wrap: anywhere;
+  hyphens: auto;
   transition:
     background var(--motion-fast) var(--ease),
     color var(--motion-fast) var(--ease),
