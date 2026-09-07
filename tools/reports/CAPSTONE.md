@@ -93,8 +93,8 @@ the first to go. Don't cut the so-close beat — it is the one thing no other wo
 
 ## 4. Recording — exact steps
 
-Route A is the one to use: it records the real game on the real phone, with touch and the
-game's own sound. Route B is the fallback if the phone will not mirror.
+Route 0 is the one to use: wireless, one device, real touch, and the game's sound and
+your voice land in one file. Routes A and B need the Mac.
 
 **Before either route (five minutes)**
 
@@ -103,6 +103,28 @@ game's own sound. Route B is the fallback if the phone will not mirror.
 2. Read §3 once through and keep it open on the Mac beside the recording window.
 3. Decide what you will say for the first fifteen seconds. Everything after that can be
    loose.
+
+**Route 0 — record on the iPhone itself (wireless, recommended)**
+
+1. Settings → Control Center → add **Screen Recording** if it is not there (the green +).
+2. Do Not Disturb on. Ringer switch on, volume about half.
+3. Safari → tabs button → **Private** → **+** → `playasto.com/?puzzle=bedside-manor`. Tap
+   the **aA** icon in the address bar → **Hide Toolbar**, so only a thin domain strip shows.
+4. Swipe down from the top-right for Control Center. **Long-press** the Screen Recording
+   button (a circle inside a circle). Tap **Microphone** so it is on. Tap **Start
+   Recording**. Three-second countdown; swipe up to close Control Center.
+5. Run the §3 route, narrating as you go.
+6. Stop: tap the red indicator at the top of the screen → **Stop**. The video is in Photos.
+7. Photos → **Edit** → trim the first and last seconds (Control Center, the stop tap).
+8. Share → **AirDrop** to the Mac, or upload from the phone with the YouTube app as
+   **Unlisted**. Portrait is fine for itch and YouTube.
+
+**Wireless alternatives if you want it on the Mac:** the **iPhone Mirroring** app (macOS
+15+, same Apple ID, Bluetooth and Wi‑Fi on) shows the phone in a window — record that
+window with QuickTime as in Route B, narrating live; or turn on **AirPlay Receiver**
+(System Settings → General → AirDrop & Handoff) and use Screen Mirroring from the
+phone's Control Center, then record the same way. Game sound does not reach a Mac screen
+recording without a loopback device; do the throwaway take first either way.
 
 **Route A — iPhone mirrored into QuickTime**
 
