@@ -5,6 +5,23 @@
 A cozy, mobile-first browser word puzzle. A 4×4 board of 16 word tiles hides four analogy
 sets — `A : B :: C : D`. Tap four words **in order**, review the frame, Confirm.
 
+## How to play
+
+Play at **https://www.playasto.com** — one new board a day, every past day in **Past Pours**.
+
+1. The sixteen tiles hide **four analogies** of four words each: `A : B :: C : D`,
+   *this is to that as this is to that*. Find a relationship that repeats, not a category.
+2. **Tap four tiles in order.** They fill the frame as you go; tap a filled slot to take a
+   word back out, or drag to reorder.
+3. **Confirm.** Right words in the right order solves the set. Right words in the wrong
+   order is *"So close!"* — it keeps your four in the frame and costs one bean.
+4. **Four coffee beans, four mistakes.** Lose the fourth and the board reveals the rest.
+   **Hint** tints one whole set; **Vocab** defines a hard word. Both are free.
+5. Solve all four to finish. The colour of each set — green, yellow, red, black — shows
+   how tricky it was, revealed only once you have it.
+
+New here? **How to play** on the title screen runs a coached warm-up board.
+
 **Do not open `index.html` with `file://`** — ES modules and `fetch` both fail from the
 file protocol. Always serve it:
 

@@ -4,6 +4,17 @@
 > work only when Max pulls them into `design.md`'s plan. Mid-session ideas
 > land here so the session stays on task.
 
+- **Long words break mid-tile at 375px (2026-09-07).** Seen on the capstone rehearsal:
+  `phlebotomist` renders as "phlebotom / ist" on its Bedside Manor tile and clips in the frame
+  slot. Measured on a real tile in the browser, **21 words across 19 published boards** do the
+  same (refrigerator, measurements, disembarking, extinguished, kindergarten, thunderstorm,
+  surveillance, particleboard, straitjacket, calligrapher, groundbreaking…); 11-letter words
+  such as caterpillar and accelerate still fit. Nothing governs word length at authoring, and
+  the tile CSS wraps anywhere rather than hyphenating or shrinking. Two small fixes, either
+  needing its own gate: `hyphens: auto` with `overflow-wrap: normal` so the break carries a
+  hyphen, or a font-size step-down for tokens past ~11 letters. A pipeline-side cap on token
+  length is the third option and the only one that stops it recurring. Deferred on the day
+  before the capstone deadline; Max's call.
 - **The statistics page could count assisted plays (2026-09-05).** D-33 records
   `learning: true` on a result only when a Learning Mode definition was actually looked
   up, and the calendar shows the book badge; the statistics page still buckets by

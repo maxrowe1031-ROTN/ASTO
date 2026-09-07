@@ -2,6 +2,58 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-07 — Capstone prep: the video route, rehearsed and written down
+
+The capstone is due **tomorrow, Sept 8**, and the one artifact only Max can make — the
+2–3 minute gameplay video — still did not exist. This session prepared everything
+around it, from the class's own stated bar (Brain: Class 14 requirements, Class 13's
+video advice: start at gameplay, 90s–3min, current build only). **No game code changed.**
+
+- **`tools/reports/CAPSTONE.md`** (beside the Sept 1 `SUBMISSION.md`): a 2:15 shot list
+  and script on **Bedside Manor** with the tap order for all four sets, one deliberate
+  so-close, the Hint, the Vocab gloss, the Settings flip and a Learning Mode look-up;
+  two recording routes (iPhone mirrored into QuickTime — real touch and game sound —
+  or a 375×812 region of a desktop browser); a how-to-play blurb for the itch page;
+  the itch decision; the submission checklist with the one-line "what improved since
+  Sept 1" answer. An alternative board (*Borders, Bounds, and Bearings*) is written
+  up in case the wrap below bothers Max.
+- **`README.md`** opens with a player-facing **How to play**. The class waives the README
+  when the game explains itself in-game (it does — the warm-up), so this is insurance.
+- **`npm run itch`** built `dist/asto-itch-2026-09-07.zip`, verified clean (94 files,
+  481 KB). **Uploading is Max's call:** the itch page still serves the 2026-08-25 build,
+  from before sound, Settings and Learning Mode, so the Sept-1-to-Sept-8 improvement
+  is only visible on playasto.com unless he re-uploads or submits the web link.
+- **Two things the rehearsal taught, both now in the document:** the Vocab pill greys
+  out once its glossed word's set is solved, so the cold open is two tiles → Vocab →
+  two tiles → Confirm (Vocab mid-selection verified: the selection survives, the gloss
+  shows). And **`phlebotomist` breaks mid-word on its tile at 375px** and clips in the
+  frame slot — measured on a real tile, **21 words across 19 published boards** do the
+  same. Filed in `docs/backlog.md` with the CSS options; deferred on the day before
+  the deadline, Max's call.
+- **Verified — the whole route driven in the browser at 375×812 from a cleared
+  profile, a screenshot per beat, every quoted string read from the DOM:** deep link →
+  board · green solve · so-close keeps the frame and spends one bean · slot tap-out
+  compresses the order · reorder → *Correct!* · Hint tints the red set · calendar →
+  Settings → Learning mode On (stored) → the Sept 5 day card resumes the same board ·
+  Vocab arms (dashed rings, `aria-pressed`) · tapping *stent* defines and does not
+  select · red and black solves · win screen, confetti, the cards arriving one by one ·
+  Difficulty 3 → receipt with the Supabase post intercepted (no test row written) ·
+  the calendar cell carries the cup and the book badge · statistics · title · the
+  first coach card · the About copy. **Not verifiable here:** Share showed *Could not
+  share on this device.* (hidden pane, no clipboard); the text is deterministic from
+  `share.js`. `npm test` **1705/0** after the README edit. `npm run check-deploy`
+  matched at session start; nothing served has changed.
+- **Phase status:** post-Phase-5, **not a phase gate**. Automated and
+  Claude-verifiable passed with the evidence above. **Max acceptance open:** reading
+  the shot list, recording the video, submitting — the capstone completes when he does.
+- **Next:** **submit the capstone by Sept 8** — record (route A or B in
+  `CAPSTONE.md`), decide the itch re-upload versus the playasto.com link, submit.
+  Then the standing queue: a **fresh board batch** before the calendar runs dry
+  **2026-09-19** (12 queued as of today); the **GDD version bump** (Settings, Help,
+  Learning Mode, the warm-up's Learning Mode, sound, so-close, confetti); and
+  `docs/backlog.md`, where the **mid-tile word wrap** is the newest entry and worth a
+  small gated CSS session.
+
 ## 2026-09-05 (night) — The warm-up shows Learning Mode, and says where it lives
 
 Max: *"include a little more detail in the tutorial about learning mode…
