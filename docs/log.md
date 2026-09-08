@@ -2,6 +2,36 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-08 — The capstone is submitted
+
+Max: *"submitted. log it and wrap up."* The MAIGD capstone — the course ASTO was built
+for — went in on its due date. The game was the deliverable; this session only shaped
+the video and packaged the submission. **No game code changed today.**
+
+- **The video.** Max recorded it wirelessly on the iPhone (Screen Recording, narration
+  and game sound in one file): **4:31**, 1284×2778, title → the How-to-play warm-up with
+  Learning Mode → the win, survey and Settings under confetti → the calendar → today's
+  board partly played → title. Claude mapped it frame by frame (a contact sheet at one
+  frame per five seconds, plus a silence map) and rendered two cuts with ffmpeg, the
+  original untouched: **light, 3:59** (the iOS share sheet with contacts' names and the
+  keyboard removed, dead air trimmed) and tight, 3:28. Max went with the light cut.
+- **The package.** `dist/asto-capstone-2026-09-08.zip` (23 MB, git-ignored): the light
+  cut, the playable build from `npm run itch` (rebuilt after the wrap fix), and a README
+  with the how-to-play blurb, the play and process links, and the "what changed since
+  Sept 1" paragraph. Whether the itch page was re-uploaded is not recorded here.
+- **Two things the take taught, kept for the next video:** an iOS share sheet puts
+  real contacts on screen — never tap Share on camera; and the take played today's board,
+  so the answers to that day's puzzle are in a public video. Use a Past Pour.
+- **Verified:** `npm test` 1714/0 on the tree as pushed; the zip lists the video, the
+  README and `game/index.html`. The submission itself is Max's act and his word.
+- **Phase status:** post-Phase-5. The **capstone milestone is closed**: submitted
+  2026-09-08. Not a phase gate.
+- **Next:** the standing queue, with the deadline gone — a **fresh board batch** before
+  the calendar runs dry **2026-09-19** (11 days of runway as of today, the most
+  time-boxed item left); the **GDD version bump** (Settings, Help, Learning Mode, the
+  warm-up's Learning Mode, sound, so-close, confetti, and now the tile fit); and
+  `docs/backlog.md`. Then whatever Max wants ASTO to be after the course.
+
 ## 2026-09-07 (later) — Long words fit their tiles, before the recording
 
 Max, on the capstone handoff: *"fix the mid-tile word wrap before I record."* The wrap

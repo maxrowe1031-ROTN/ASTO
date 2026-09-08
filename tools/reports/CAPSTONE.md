@@ -1,5 +1,8 @@
 # MAIGD Capstone — the Sept 8 submission
 
+> **Submitted 2026-09-08.** Package: `dist/asto-capstone-2026-09-08.zip` — the light video
+> cut (3:59), the playable build, and a README. This document is now the record.
+
 **Game:** ASTO — *"Connections, but with analogies."* Live at **https://www.playasto.com**;
 also on itch.io. This document is everything around the one artifact only Max can make:
 the gameplay video. Prepared 2026-09-07, the day before the deadline, from a full
@@ -210,7 +213,7 @@ Either way, submit both links if the form allows it.
 | --- | --- | --- |
 | Click-and-play link | ✅ | https://www.playasto.com — plus the itch page, current only after a re-upload (§6) |
 | How-to-play | ✅ | In-game warm-up; `README.md` §How to play; the blurb in §5 |
-| Gameplay video, 2–3 min | ⬜ Max records | §3 route, §4 setup |
+| Gameplay video, 2–3 min | ✅ recorded on the iPhone; light cut 3:59 in the submission zip | §3 route, §4 setup |
 | "What improved since Sept 1" | ✅ | *A Settings screen with real switches for sound and Learning Mode; Learning Mode itself — Vocab now defines any tile, with sixteen authored definitions on every board; the end-screen survey rows turn into receipts; and the itch build now carries sound.* |
 | Development documents | — | Not required for the final submission (they went in on Sept 1) |
 
