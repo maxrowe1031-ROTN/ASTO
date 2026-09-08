@@ -109,6 +109,9 @@ export function createPuzzleStore({ rootDir = PUZZLES_DIR, today = () => dateKey
   };
 
   const store = {
+    /** The day the next publish will land — read by the Studio's runway panel (D-35). */
+    nextFreeDate,
+
     /**
      * Publishes an approved board as game content.
      *

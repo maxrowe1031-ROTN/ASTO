@@ -135,8 +135,12 @@ test('GET /api/runs summarises every run, newest first', async () => {
     const { status, body } = await api.handle({ method: 'GET', path: '/api/runs' });
     assert.equal(status, 200);
     assert.equal(body.runs.length, 2);
+    // The row the Desk, the Runs table and the batch panel share (D-35). A
+    // change here is a change to three screens — extend deliberately.
     assert.deepEqual(Object.keys(body.runs[0]).sort(), [
-      'attemptCount', 'createdAt', 'currentAttemptId', 'reviewableAttemptId', 'revisionCount', 'runId', 'status', 'theme',
+      'attemptCount', 'autoRevise', 'batch', 'costUsd', 'createdAt', 'currentAttemptId', 'durationMs',
+      'inProcess', 'machine', 'mock', 'published', 'reviewableAttemptId', 'revisionCount', 'runId',
+      'status', 'subjectRegister', 'subjectStyle', 'theme', 'yourRead',
     ]);
     assert.ok(body.runs[0].runId > body.runs[1].runId, 'not newest-first');
   } finally {
@@ -1627,6 +1631,168 @@ test('a run with nothing complete names no reviewable attempt', async () => {
     const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
     const row = body.runs.find((r) => r.runId === runId);
     assert.equal(row.reviewableAttemptId, null);
+  } finally {
+    cleanup();
+  }
+});
+
+
+// --- the list's summary fields (D-35) ---
+
+test('GET /api/runs carries your latest read, the publish, and the machine chips', async () => {
+  const { store, api, puzzlesDir, cleanup } = withPuzzles();
+  try {
+    const { runId, attemptId } = seedReviewable(store);
+    await api.handle({
+      method: 'POST',
+      path: `/api/runs/${runId}/feedback`,
+      body: { events: [feedbackEvent({ id: 'fb-b', attemptId, action: 'revise-board', scope: { type: 'board' }, taste: 'solid', tags: [] })] },
+    });
+    await approve(api, runId);
+    const published = await api.handle({ method: 'POST', path: `/api/runs/${runId}/publish`, body: {} });
+    assert.equal(published.status, 200);
+
+    const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
+    const [row] = body.runs;
+    assert.deepEqual(row.yourRead, { boardVerdict: 'revise-board', taste: 'solid' });
+    assert.equal(row.published.publishedAs, 'lantern.json');
+    assert.equal(row.published.date, published.body.published.date);
+    // seedReviewable writes 03 and 04a only — none of the four chip stages.
+    assert.equal(row.machine, null);
+    assert.equal(row.costUsd, null);
+    assert.deepEqual(row.batch, { id: `date:${row.createdAt.slice(0, 10)}`, label: `Unbatched · ${Number(row.createdAt.slice(8, 10))} Aug` });
+    assert.equal(existsSync(join(puzzlesDir, 'lantern.json')), true);
+  } finally {
+    cleanup();
+  }
+});
+
+test('GET /api/runs reads the chip stages when they exist, and the run\'s cumulative cost', async () => {
+  const { store, api, cleanup } = setup();
+  try {
+    const { runId } = store.createRun({ slug: 'chips', theme: 'chips', brief: { count: 8, mock: true } });
+    const attemptId = store.createAttempt(runId);
+    store.updateStatus(runId, 'running');
+    store.writeAttemptArtifact(runId, attemptId, 'board.json', BOARD);
+    store.writeStageArtifact(runId, attemptId, '05-analogy-validator', 'output.json', {
+      verdicts: [{ setId: 'set-a', pass: true }, { setId: 'set-b', pass: false }],
+    });
+    store.writeStageArtifact(runId, attemptId, '08-style-guide', 'output.json', { unity: { verdict: 'strong', reasoning: 'r' } });
+    store.recordUsage(runId, attemptId, {
+      usage: { stage: {}, attempt: { costUsd: 0.2, ms: 1 }, run: { requests: 3, tokens: 9, costUsd: 0.61, ms: 240000 }, unpricedModels: [] },
+      pricingVersion: 'p', effortProfile: 'e',
+    });
+    store.completeAttempt(runId, attemptId, { status: 'complete' });
+    store.updateStatus(runId, 'awaiting-review');
+
+    const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
+    const [row] = body.runs;
+    assert.deepEqual(row.machine, { validator: { clear: 1, total: 2 }, solver: null, testPlayer: null, unity: 'strong' });
+    assert.equal(row.costUsd, 0.61);
+    assert.equal(row.durationMs, 240000);
+    assert.equal(row.mock, true);
+  } finally {
+    cleanup();
+  }
+});
+
+test('GET /api/runs stays fast over a large corpus', async () => {
+  const { store, api, cleanup } = setup();
+  try {
+    for (let i = 0; i < 150; i += 1) seedReviewable(store, { slug: `run-${i}` });
+    const started = performance.now();
+    const { body } = await api.handle({ method: 'GET', path: '/api/runs' });
+    const elapsed = performance.now() - started;
+    assert.equal(body.runs.length, 150);
+    assert.ok(elapsed < 250, `listRuns took ${elapsed.toFixed(0)}ms over 150 runs`);
+  } finally {
+    cleanup();
+  }
+});
+
+// --- the runway (D-35) ---
+
+test('GET /api/schedule reports the queue the way check-schedule does, plus the next free day', async () => {
+  const puzzlesDir = mkdtempSync(join(tmpdir(), 'asto-api-puzzles-'));
+  const TODAY = '2026-09-08';
+  const puzzles = createPuzzleStore({ rootDir: puzzlesDir, today: () => TODAY });
+  const { api, cleanup } = setup(undefined, { puzzles, clock: () => `${TODAY}T18:00:00.000Z` });
+  try {
+    const { writeFileSync } = await import('node:fs');
+    const board = (slug, date) => ({ id: `asto-${slug}`, title: slug, ...(date ? { date } : {}) });
+    writeFileSync(join(puzzlesDir, 'today.json'), JSON.stringify(board('today', TODAY)));
+    writeFileSync(join(puzzlesDir, 'next.json'), JSON.stringify(board('next', '2026-09-09')));
+    writeFileSync(join(puzzlesDir, 'later.json'), JSON.stringify(board('later', '2026-09-11')));
+    writeFileSync(join(puzzlesDir, 'parked.json'), JSON.stringify(board('parked', null)));
+    writeFileSync(join(puzzlesDir, 'index.json'), JSON.stringify({
+      schemaVersion: 2,
+      puzzles: [
+        { slug: 'today', id: 'asto-today', title: 'today', date: TODAY },
+        { slug: 'next', id: 'asto-next', title: 'next', date: '2026-09-09' },
+        { slug: 'later', id: 'asto-later', title: 'later', date: '2026-09-11' },
+      ],
+    }));
+
+    const { status, body } = await api.handle({ method: 'GET', path: '/api/schedule' });
+    assert.equal(status, 200);
+    assert.equal(body.today.slug, 'today');
+    assert.equal(body.runway, 2);
+    assert.equal(body.queuedAhead, 2);
+    assert.deepEqual(body.gaps, ['2026-09-10']);
+    assert.equal(body.lastScheduled, '2026-09-11');
+    assert.deepEqual(body.datelessSlugs, ['parked']);
+    assert.equal(body.nextFreeDate, '2026-09-12');
+    assert.equal(body.todayKey, TODAY);
+    assert.deepEqual(body.entries.map((e) => e.slug), ['today', 'next', 'later']);
+  } finally {
+    rmSync(puzzlesDir, { recursive: true, force: true });
+    cleanup();
+  }
+});
+
+test('GET /api/schedule with no manifest is an empty queue, not an error', async () => {
+  const { api, cleanup } = withPuzzles();
+  try {
+    const { status, body } = await api.handle({ method: 'GET', path: '/api/schedule' });
+    assert.equal(status, 200);
+    assert.equal(body.today, null);
+    assert.equal(body.runway, 0);
+    assert.deepEqual(body.entries, []);
+    assert.match(body.nextFreeDate, /^\d{4}-\d{2}-\d{2}$/);
+  } finally {
+    cleanup();
+  }
+});
+
+// --- the play counter (D-34), read through the Studio (D-35) ---
+
+test('GET /api/plays is 503 when no reader is wired, like player-ratings', async () => {
+  const { api, cleanup } = setup();
+  try {
+    const { status, body } = await api.handle({ method: 'GET', path: '/api/plays' });
+    assert.equal(status, 503);
+    assert.match(body.error, /not wired/);
+  } finally {
+    cleanup();
+  }
+});
+
+test('GET /api/plays summarises the reader\'s rows around the server\'s today', async () => {
+  const rows = [
+    { created_at: '2026-09-08T15:00:00.000Z', puzzle_slug: 'x', event: 'start', client_id: 'c1' },
+    { created_at: '2026-09-08T15:05:00.000Z', puzzle_slug: 'x', event: 'finish', won: true, client_id: 'c1' },
+  ];
+  const { api, cleanup } = setup(undefined, {
+    playerRatings: { fetchPlays: async () => rows, fetchBoards: async () => [] },
+    clock: () => '2026-09-08T20:00:00.000Z',
+  });
+  try {
+    const { status, body } = await api.handle({ method: 'GET', path: '/api/plays' });
+    assert.equal(status, 200);
+    assert.equal(body.totals.starts, 1);
+    assert.equal(body.totals.finishes, 1);
+    assert.equal(body.days.at(-1).date, '2026-09-08');
+    assert.equal(body.boards[0].slug, 'x');
   } finally {
     cleanup();
   }

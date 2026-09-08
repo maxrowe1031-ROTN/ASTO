@@ -3320,6 +3320,96 @@ board is reloaded onto its end screen; the summary caps completion at 1.
 stops being optional; **or** plays are wanted on the statistics page — the rows exist, the
 column is a taste call; **or** a spam burst lands.
 
+### D-35 — The Review Studio rebuilt for scale: Phase A, the Desk and the Runs table (2026-09-08)
+
+**Max, after the capstone was in:** *"the design of this studio stinks out loud. can we
+try using the /design skill to make this more functional and easier to use at scale?"* At
+145 runs the Studio was a new-run form over one flat list, and a review page that was a
+wall of machine prose above the form. Four mockups were drafted on a design canvas
+(https://claude.ai/code/artifact/119ce4fe-bdb7-4d78-9c01-1f7e9f41b6e2) — the **Desk**,
+**Runs**, **Review**, **Batch in flight** — and Max approved them *"as is"*, to iterate
+once he is in the real thing. The build plan is
+`docs/superpowers/plans/2026-09-08-review-studio-rebuild.md`: three gated phases. **This
+decision records Phase A.** Phases B (the Review page) and C (batches, a queue, stop,
+archive) amend it as they ship.
+
+**Decisions made with Max:** feedback **autosave is a local draft**, never a write — the
+feedback ledger is the corpus the rubric compiles from, and partial events would inflate
+it; Save, Approve, Request revision and Reject write exactly as today (Phase B). Batches
+run **three pipelines at a time** by default, `STUDIO_CONCURRENCY` to change it (Phase C).
+
+**Cross-cutting calls, made here so the phases agree:** a batch is **additive brief data**
+(`brief.batchId`, `brief.batchLabel`; `validateManifest` only requires an object, so the
+schema does not move) and every pre-batch run groups under its creation day in the game's
+timezone, labelled *Unbatched · 19 Aug* — decided server-side so the browser never
+reasons about the fallback. **`GET /api/runs` grew instead of a second route:** one summary
+row serves the Desk, the Runs table and the batch panel. New per-run fields, all
+additive: `costUsd`/`durationMs` (the current attempt's cumulative *run* usage — a revised
+board's cost includes its first attempt), `mock`, `autoRevise`, `subjectRegister`,
+`subjectStyle`, `batch`, `yourRead` (the newest board-scoped feedback event for the
+current attempt: verdict and taste), `published` (the last publish decision; new records
+carry the release `date`), `machine` (validator n/n, solver clear/flag, gated words,
+unity — four stage outputs per finished run), `inProcess` with the inferred
+`currentStage` (the store records a stage only once it ends, so "current" is the first
+stage with no terminal entry). Shaped in the new pure `studio/review/summaries.js`;
+gathered in `api.js` where the store is. **Read cost was measured, not guessed:** a test
+seeds 150 runs and requires the list under 250 ms; it passes uncached, so no cache was
+built. The page **polls only while the process holds a run** — live runner state, not
+the manifest's status, because a manifest can say `running` forever after a crash (one
+does: a surprise-me run from 2026-08-04 has read `revising` for a month with no process
+behind it; Phase C's archive is its exit).
+
+**New routes:** `GET /api/schedule` — the same analysis `npm run check-schedule` prints
+(moved to `studio/schedule.js` so the CLI and the Studio cannot disagree), plus
+`nextFreeDate` (exposed on the puzzle store, the only door into `puzzles/`) and the
+server's `todayKey`, so the browser computes no dates. `GET /api/plays` — the D-34 counter
+summarised server-side; 503 when the reader is not wired, like player-ratings.
+
+**The screens.** The **Desk** is home: four tiles (boards waiting for a read, runs in
+flight, calendar runway with the dry date, spend this week and all time), the queue of
+every board awaiting a read *plus* failed runs holding a reviewable attempt, oldest first,
+each with the machine's chips and Play / Review; a batch launcher (1/3/6/10 boards,
+optional themes one per line, pairs, auto-revise, mock, an estimate **labelled** *≈ from
+the last N real runs* — the pipeline's caps are ceilings, not predictions; Phase A posts
+one run per board in sequence so the subject scout sees each pick, Phase C moves it
+behind `POST /api/batches`); the runway (today, the next queued days, the last scheduled
+day always, the next free slots, dark days named); the players (plays, finished, came
+back; the ratings line). **Runs** keeps every run: status chips with counts (archived only
+when there is one), group by batch / date / status, search, batch header rows with yield
+and spend, published dates joined from the calendar by slug for records older than
+today. The ratings table moved to **Players**. The mockups' typography, tokens and radii
+were already ASTO's, so nothing new entered `tokens.css`; `review.css` gained the Desk and
+Runs chrome. The review page is untouched until Phase B.
+
+**Where the mockups yield to the code's law** (agreed before building, binding on B and
+C): the auto-revision audit is never collapsible (D-14); the publish date comes from the
+server; retitling in the Publish card is a hand-edit through `POST /edits` (D-22); autosave
+is a local draft; a stopped run reads `failed · stopped after <stage>` with Resume, no new
+status; surprise-me batches scout subjects sequentially, so `POST /api/batches` answers
+202 and creates asynchronously.
+
+**Verified:** `npm test` **1794/0** (+52: summaries, schedule, rollups, dom, desk and runs
+builders, api routes including the 150-run timing). In the Browser pane against the
+real corpus: the Desk loads `/api/runs` and `/api/schedule` then `/api/plays` and
+`/api/player-ratings`, all 200; 19 boards waiting (14 awaiting-review + 5 failed with a
+reviewable attempt), runway *12 days · runs dry 19 Sep* equal to `check-schedule`; a quiet
+Desk made one runs call in eight seconds; the Runs chips summed to 144 with the one
+archived run out; 48 of 49 published rows carried a date after the join (the 49th is
+dateless on the calendar, truthfully); a filter click and a search re-rendered with zero
+API calls and kept the caret; a **mock** run started from the launcher posted
+`{theme:null,count:14,mock:true,autoRevise:true}` → 202, landed in the queue as
+awaiting-review with its fixture's machine chips, and polling stopped once it had; a
+computed-style sweep of the Desk found **no red** anywhere; zero console errors. The
+verification run was deleted afterwards (a local, git-ignored artifact).
+
+**Max acceptance:** open — the gate is Max using the Desk and the Runs table for a real
+review; his iterations become Phase B's brief alongside the Review page.
+
+**Reconsider-when:** the 250 ms list budget fails as the corpus grows — build the
+fingerprint cache the plan names; **or** Max finds the Desk's queue hides work the flat
+list showed (it shows strictly more today); **or** the estimate misleads — replace the
+twenty-run mean with the stage-level pricing the audit script used.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

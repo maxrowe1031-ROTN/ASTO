@@ -589,3 +589,105 @@ textarea { width: 100%; resize: vertical; }
   border-radius: 999px;
   padding: 2px 10px;
 }
+
+/* --- D-35: the Desk, the Runs table, the shared chrome --- */
+
+/* The Studio is a desk; the rebuilt screens use the width a desk has. */
+.studio-view.wide,
+.studio-bar.wide { max-width: 1320px; }
+
+.studio-nav { display: flex; gap: 4px; margin-left: 20px; }
+.studio-nav a {
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--soft-ink);
+}
+.studio-nav a[aria-current='page'] { background: var(--oat); color: var(--ink); }
+
+.panel-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.panel-head h2 { margin: 0; }
+.panel-head .text-action,
+.panel-head .server-line { margin-left: auto; font-size: 0.8rem; }
+
+.stat-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+.stat { background: var(--milk); border: 1px solid var(--oat); border-radius: var(--radius-card); padding: 14px 16px; }
+.stat-n { font-family: var(--font-display); font-size: 1.9rem; line-height: 1; }
+.stat-n.small { font-size: 1.4rem; }
+/* Honey, never red: a short runway is "act soon", not an error. */
+.stat-warn { color: var(--tier-yellow-deep); }
+.stat-k { color: var(--soft-ink); font-size: 0.8rem; margin-top: 6px; }
+
+.desk-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.desk-main, .desk-side { display: flex; flex-direction: column; gap: 16px; }
+.desk-main .panel, .desk-side .panel { margin-bottom: 0; }
+
+.queue-row,
+.run-row { display: grid; align-items: center; gap: 12px; padding: 10px 8px; border-bottom: 1px solid var(--oat); }
+.queue-row { grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr) auto; }
+.queue-row:last-child { border-bottom: 0; }
+.queue-title { display: block; font-family: var(--font-display); font-size: 1.05rem; }
+.row-sub { display: block; font-size: 0.75rem; }
+.row-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.row-num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.pill.small { min-height: 34px; padding: 6px 14px; font-size: 0.8rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; }
+.pill.quiet { border-color: transparent; color: var(--soft-ink); }
+
+.chips-inline { display: inline-flex; flex-wrap: wrap; gap: 5px; margin: 0; }
+.chip-good { background: var(--tier-green-tint); border-color: var(--tier-green-main); color: var(--tier-green-deep); }
+.chip-flag { background: var(--tier-yellow-tint); border-color: var(--honey); color: var(--tier-yellow-deep); }
+.chip-note { font-size: 0.75rem; }
+.chip-check { cursor: pointer; }
+.chip-check input { margin: 0; }
+.chip-filter { background: var(--milk); }
+.chip-filter[aria-pressed='true'] { background: var(--honey); border-color: var(--honey); }
+.chip-count { color: var(--faint-ink); font-weight: 700; margin-left: 4px; }
+.filter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.seg { display: inline-flex; border: 1px solid var(--taupe); border-radius: var(--radius-pill); overflow: hidden; }
+.seg button { border: 0; background: transparent; color: var(--soft-ink); font: inherit; font-size: 0.8rem; font-weight: 700; padding: 6px 12px; cursor: pointer; }
+.seg button[aria-pressed='true'] { background: var(--ink); color: var(--milk); }
+
+.launcher { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+.launcher-field { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; color: var(--soft-ink); }
+.launcher-themes { flex: 1; min-width: 260px; }
+.launcher-themes textarea { min-height: 38px; }
+.launcher-go { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+
+.runway .day { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--oat); font-size: 0.9rem; }
+.runway .day-d { color: var(--soft-ink); font-size: 0.75rem; font-weight: 700; }
+.runway .day-tail { font-size: 0.75rem; }
+.runway .day-empty { color: var(--faint-ink); }
+.runway .day-slot { display: block; border: 1px dashed var(--taupe); border-radius: 8px; height: 22px; }
+.runway .day-more { display: block; padding: 6px 0 6px 66px; font-size: 0.8rem; border-bottom: 1px solid var(--oat); }
+.runway-note { font-size: 0.75rem; margin: 10px 0 0; }
+.status-published { background: var(--tier-green-main); color: var(--milk); }
+.status-running, .status-revising { background: var(--tier-yellow-tint); color: var(--tier-yellow-deep); }
+
+.players-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 6px 0 10px; }
+.players-line { font-size: 0.8rem; margin: 0; }
+
+.runs-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.toolbar-gap { flex: 1; }
+.runs-toolbar input[type='search'] { width: 240px; }
+.run-row { grid-template-columns: minmax(0, 2fr) 150px 70px 70px minmax(0, 2fr) 120px 110px; }
+.run-row:hover { background: var(--oat); }
+.run-head { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom-color: var(--taupe); }
+.run-head:hover { background: transparent; }
+.run-group { display: flex; align-items: baseline; gap: 12px; padding: 16px 8px 6px; color: var(--soft-ink); font-size: 0.75rem; }
+.run-group strong { color: var(--ink); font-size: 0.95rem; }
+.run-group .pill { margin-left: auto; }
+
+@media (max-width: 960px) {
+  .stat-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .desk-grid { grid-template-columns: minmax(0, 1fr); }
+  /* A narrow pane stacks a queue row: title, then the machine's read, then the actions. */
+  .queue-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .queue-row .row-actions { justify-content: flex-start; }
+  .launcher-go { margin-left: 0; width: 100%; justify-content: space-between; }
+  .run-row { grid-template-columns: minmax(0, 2fr) 120px 60px 70px minmax(0, 1fr); }
+  .run-row > :nth-child(6), .run-row > :nth-child(7) { display: none; }
+}

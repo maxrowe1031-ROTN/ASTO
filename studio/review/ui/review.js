@@ -20,49 +20,27 @@ import { briefText } from '../brief-text.js';
 // The same gloss filtering publish runs (D-22): the play surface and the
 // published puzzle must carry one derivation of "which definitions ride".
 import { mergeDefinitions, mergeGlossary } from '../../gloss.js';
+// D-35: the shared helpers and the rebuilt screens.
+import { escape } from './dom.js';
+import { api, notify } from './api.js';
+import { createPoller } from './poll.js';
+import { deskHtml, playersPanel, wireDesk } from './desk.js';
+import { runsHtml, wireRuns } from './runs.js';
+import { inFlight } from './rollups.js';
+import { REGISTERS } from '../../corpus/registers.js';
 
 const view = document.getElementById('view');
-const POLL_MS = 2500;
-let pollTimer = null;
 
-const escape = (value) =>
-  String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+// One poller for the page (D-35): a screen arms it while something is in
+// flight and the router cancels it on every navigation.
+const poller = createPoller();
 
-// Inline, never alert(): a modal dialog blocks the page, and this page polls
-// itself. A stuck alert would freeze the run it is trying to report on.
-function notify(message, kind = 'error') {
-  let bar = document.getElementById('notice');
-  if (!bar) {
-    bar = document.createElement('div');
-    bar.id = 'notice';
-    document.body.append(bar);
-  }
-  bar.className = `notice notice-${kind}`;
-  bar.textContent = message;
-  bar.hidden = false;
-  clearTimeout(notify.timer);
-  notify.timer = setTimeout(() => {
-    bar.hidden = true;
-  }, 6000);
-}
+// The Runs screen's local state — filter, grouping, search, collapsed groups —
+// lives for the page's life so coming back to the table finds it as left.
+const runsState = { filter: 'all', groupBy: 'batch', query: '', collapsed: new Set() };
 
-async function api(path, options) {
-  const response = await fetch(`/api${path}`, {
-    ...options,
-    headers: options?.body ? { 'content-type': 'application/json' } : undefined,
-  });
-  const body = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const error = new Error(body.error ?? `${response.status} ${response.statusText}`);
-    // The whole refusal, not just its sentence. A caller that can DO something
-    // about a particular `reason` needs the fields that came with it — see the
-    // unapplied-edits confirm in wirePublish.
-    error.body = body;
-    error.status = response.status;
-    throw error;
-  }
-  return body;
-}
+// A Play press on the Desk queue lands on the run page and opens the board.
+let autoPlayRun = null;
 
 // The effort profile rides alongside the cost on purpose. Across a batch of
 // reviews it is what turns "these boards cost less" into "these boards cost
@@ -83,85 +61,96 @@ const money = (attempt) => {
 // pipeline-config.js in the repo, the fix has not reached this process yet.
 // Same vocabulary as `money()` above, so "effort <profile>" reads the same
 // whether it is describing a past attempt or the next one.
-const serverLine = (config) =>
-  config
-    ? `<p class="studio-muted">server: effort ${escape(config.effortProfile ?? 'none')} · pricing ${escape(config.pricingVersion ?? 'none')}</p>`
-    : '';
 
-async function renderList() {
-  // A failure here must not blank the run list — the settings line is context,
-  // the runs are the page.
-  const [{ runs }, config] = await Promise.all([api('/runs'), api('/config').catch(() => null)]);
-  view.innerHTML = `
-    <section class="panel">
-      <h2>New run</h2>
-      <form id="new-run" class="new-run">
-        <label>Theme <input name="theme" placeholder="leave blank for surprise-me" /></label>
-        <label>Pairs <input name="count" type="number" value="14" min="12" max="16" /></label>
-        <label class="inline"><input name="mock" type="checkbox" /> mock (no API spend)</label>
-        <label class="inline"><input name="autoRevise" type="checkbox" checked /> auto-revise structural findings</label>
-        <button class="pill primary" type="submit">Generate a board</button>
-      </form>
-      ${serverLine(config)}
-    </section>
+/** The Desk (D-35): the four questions, the queue, the launcher, the runway, the players. */
+async function renderDesk() {
+  const [{ runs }, schedule, config] = await Promise.all([
+    api('/runs'),
+    api('/schedule').catch(() => null),
+    api('/config').catch(() => null),
+  ]);
+  const todayKey = schedule?.todayKey ?? new Date().toISOString().slice(0, 10);
+  view.innerHTML = deskHtml({ runs, schedule, todayKey, registers: REGISTERS, config });
+  fillPlayers();
 
-    <section class="panel">
-      <h2>Runs <span class="studio-muted">(${runs.length})</span></h2>
-      ${runs.length === 0 ? '<p class="studio-muted">Nothing yet.</p>' : ''}
-      <ul class="run-list">
-        ${runs
-          .map(
-            (run) => `
-          <li>
-            <a href="#/runs/${encodeURIComponent(run.runId)}">
-              <strong>${escape(run.theme ?? 'surprise-me')}</strong>
-              <span class="status status-${escape(run.status)}">${escape(run.status)}</span>
-              ${
-                // A failed run can still hold a finished board from an earlier
-                // attempt (2026-08-19): three did, and read as plain `failed`
-                // while a reviewable board sat underneath. The run really did
-                // fail, so that badge stays honest — this says what survived.
-                run.reviewableAttemptId
-                  ? `<span class="status status-awaiting-review">attempt ${escape(run.reviewableAttemptId)} is reviewable</span>`
-                  : ''
-              }
-              <span class="studio-muted">${escape(run.runId)}</span>
-              <span class="studio-muted">${run.attemptCount} attempt(s)</span>
-            </a>
-          </li>`,
-          )
-          .join('')}
-      </ul>
-    </section>
+  wireDesk(view, {
+    runs,
+    onPlay: (runId) => {
+      autoPlayRun = runId;
+      location.hash = `#/runs/${encodeURIComponent(runId)}`;
+    },
+    onStart: async (bodies) => {
+      const start = view.querySelector('#launcher-start');
+      start.disabled = true;
+      let started = 0;
+      try {
+        // One POST per board, in order: a surprise-me pick must see the picks
+        // before it (the subject scout reads the used list), so the requests
+        // are sequential on purpose. Phase C moves this behind POST /api/batches.
+        for (const body of bodies) {
+          await api('/runs', { method: 'POST', body: JSON.stringify(body) });
+          started += 1;
+          start.textContent = `Started ${started} of ${bodies.length}…`;
+        }
+        notify(`${started} run${started === 1 ? '' : 's'} started`, 'info');
+      } catch (error) {
+        notify(started > 0 ? `${started} started, then: ${error.message}` : error.message);
+      }
+      route();
+    },
+  });
 
-    <section class="panel" id="player-ratings-panel">
+  // Poll only while something is in flight; a quiet desk costs nothing.
+  if (inFlight(runs).length > 0) {
+    poller.arm(() => {
+      if (isDesk()) route();
+    });
+  }
+}
+
+const isDesk = () => location.hash === '' || location.hash === '#' || location.hash === '#/';
+
+/** The Supabase panels, filled after paint: a slow read costs the panel, never the desk. */
+async function fillPlayers() {
+  const [plays, ratings] = await Promise.all([
+    api('/plays').catch(() => null),
+    api('/player-ratings').then((body) => body.boards).catch(() => null),
+  ]);
+  const body = document.getElementById('players-body');
+  if (body?.isConnected) body.innerHTML = playersPanel(plays, ratings);
+}
+
+/** Every run, filtered, grouped and searched — local state, no refetch on a click. */
+async function renderRuns() {
+  const [{ runs }, schedule] = await Promise.all([api('/runs'), api('/schedule').catch(() => null)]);
+  // Publish records older than D-35 carry no date; the calendar knows it by slug.
+  const dates = new Map((schedule?.entries ?? []).map((entry) => [entry.slug, entry.date]));
+  const paint = ({ keepFocus = false } = {}) => {
+    const focused = keepFocus ? view.querySelector('input[name="query"]') : null;
+    const caret = focused ? focused.selectionStart : null;
+    view.innerHTML = runsHtml(runs, runsState, { dates });
+    if (focused) {
+      const again = view.querySelector('input[name="query"]');
+      again.focus();
+      again.setSelectionRange(caret, caret);
+    }
+  };
+  paint();
+  wireRuns(view, runsState, paint);
+  if (inFlight(runs).length > 0) {
+    poller.arm(() => {
+      if (location.hash === '#/runs') route();
+    });
+  }
+}
+
+/** The survey's readings, board by board (D-21) — moved off the home screen. */
+async function renderPlayers() {
+  view.innerHTML = `<section class="panel" id="player-ratings-panel">
       <h2>Player ratings</h2>
       <p class="studio-muted">Reading…</p>
     </section>`;
-
-  // Filled AFTER the page paints: the numbers live in Supabase, and a slow or failed
-  // read must cost this panel only, never the run list.
   fillPlayerRatings();
-
-  document.getElementById('new-run').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const form = new FormData(event.target);
-    const theme = String(form.get('theme') ?? '').trim();
-    try {
-      const { runId } = await api('/runs', {
-        method: 'POST',
-        body: JSON.stringify({
-          theme: theme.length > 0 ? theme : null,
-          count: Number(form.get('count')),
-          mock: form.get('mock') === 'on',
-          autoRevise: form.get('autoRevise') === 'on',
-        }),
-      });
-      location.hash = `#/runs/${encodeURIComponent(runId)}`;
-    } catch (error) {
-      notify(error.message);
-    }
-  });
 }
 
 // --- player ratings (D-21) ---
@@ -1054,11 +1043,10 @@ async function showProposal(runId, attemptId) {
 }
 
 function schedulePoll(working, runId) {
-  clearTimeout(pollTimer);
   if (!working) return;
-  pollTimer = setTimeout(() => {
+  poller.arm(() => {
     if (location.hash.includes(runId)) route();
-  }, POLL_MS);
+  });
 }
 
 // --- routing ---
@@ -1098,22 +1086,46 @@ const shortTime = (iso) => {
   return Number.isNaN(at.getTime()) ? 'at an unknown time' : `at ${at.toLocaleTimeString()}`;
 };
 
+const NAV = [
+  ['desk', (hash) => hash === '' || hash === '#' || hash === '#/'],
+  ['runs', (hash) => hash === '#/runs' || hash.startsWith('#/runs/')],
+  ['players', (hash) => hash === '#/players'],
+];
+
+function markNav() {
+  for (const [key, matches] of NAV) {
+    const link = document.querySelector(`.studio-nav a[data-nav="${key}"]`);
+    if (!link) continue;
+    if (matches(location.hash)) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  }
+}
+
 async function route() {
-  clearTimeout(pollTimer);
-  const match = /^#\/runs\/(.+)$/.exec(location.hash);
+  poller.cancel();
+  markNav();
+  const run = /^#\/runs\/(.+)$/.exec(location.hash);
   // Deliberately not awaited: a stale check that hung would take the page with
   // it, and the banner is context — the run is the page.
   renderStaleBanner();
   try {
-    if (match) await renderRun(decodeURIComponent(match[1]));
-    else await renderList();
+    if (run) {
+      const runId = decodeURIComponent(run[1]);
+      await renderRun(runId);
+      if (autoPlayRun === runId) {
+        autoPlayRun = null;
+        view.querySelector('[data-act="play"]')?.click();
+      }
+    } else if (location.hash === '#/runs') await renderRuns();
+    else if (location.hash === '#/players') await renderPlayers();
+    else await renderDesk();
   } catch (error) {
     // The stack goes to the console as well as the page: a render failure that
     // only ever says "undefined is not iterable" costs more time to locate than
     // the line costs to write.
     console.error('render failed', error);
     view.innerHTML = `<section class="panel"><p class="failure">${escape(error.message)}</p>
-      <p><a class="text-action" href="#/">Back to all runs</a></p></section>`;
+      <p><a class="text-action" href="#/">Back to the desk</a></p></section>`;
   }
 }
 
