@@ -12,6 +12,7 @@
 
 import { ResultsRecorder } from './results-recorder.js';
 import { Ratings } from './ratings.js';
+import { PlayReporter } from './play-reporter.js';
 import { GameController } from './controller/game-controller.js';
 import { TUTORIAL_RULES } from './controller/tutorial-script.js';
 import { buildShareText, share } from './share.js';
@@ -281,7 +282,7 @@ async function main() {
 
   const endView = new EndView(document.getElementById('screen-end'), {
     onShare: async () => {
-      endView.showShareResult(await share(buildShareText(controller.state)));
+      endView.showShareResult(await share(buildShareText(controller.state, { slug: currentSlug })));
     },
     onPlayAgain: () => controller.restart(),
     onPours: () => (manifest.length > 0 ? showPours() : showDoor('title'))
@@ -373,6 +374,10 @@ async function main() {
     // something that only READS state cannot break the boundary law. Before the end view,
     // so the result is on disk by the time the end screen offers "Next puzzle".
     new ResultsRecorder(storage, () => currentSlug, todayKey),
+    // Also not a view (D-34): counts a start when a board arrives and a finish when it
+    // ends, through the ratings seam. After the recorder, so a finish is only reported
+    // for a game already saved locally.
+    new PlayReporter(ratings, () => currentSlug),
     // The router runs BEFORE the end view so the end screen is already on-screen when its
     // cards settle in — animating a hidden section just throws the motion away.
     router,

@@ -149,3 +149,48 @@ test('a hostile store still yields a working, session-stable client id', async (
   assert.match(calls[0].body.client_id, /^[0-9a-f-]{36}$/);
   assert.equal(calls[0].body.client_id, calls[1].body.client_id);
 });
+
+// --- play rows (D-34) ---
+//
+// The counter rides the same seam as the survey: one anonymous row when a board starts,
+// one when it ends, every failure swallowed, the same client id.
+
+test('a play start posts one row shaped for the plays table', async () => {
+  const { calls, ratings } = make();
+  await ratings.sendPlay({ slug: 'first-light', event: 'start' });
+
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].url, `${SUPABASE_URL}/rest/v1/plays`);
+  assert.equal(calls[0].options.method, 'POST');
+  assert.equal(calls[0].options.headers.apikey, PUBLISHABLE_KEY);
+  assert.equal(calls[0].options.keepalive, true);
+  const { client_id, ...row } = calls[0].body;
+  assert.deepEqual(row, { puzzle_slug: 'first-light', event: 'start' });
+  assert.match(client_id, /^[0-9a-f-]{36}$/);
+});
+
+test('a play finish carries the outcome, and only the fields it was given', async () => {
+  const { calls, ratings } = make();
+  await ratings.sendPlay({
+    slug: 'first-light', event: 'finish', won: true, mistakes: 2, hintsUsed: 1, learning: true
+  });
+
+  const { client_id, ...row } = calls[0].body;
+  assert.deepEqual(row, {
+    puzzle_slug: 'first-light', event: 'finish', won: true, mistakes: 2, hints_used: 1, learning: true
+  });
+});
+
+test('a play with a null slug sends nothing — the tutorial is not a play', async () => {
+  const { calls, ratings } = make();
+  await ratings.sendPlay({ slug: null, event: 'start' });
+  await ratings.sendPlay({ slug: null, event: 'finish', won: true, mistakes: 0 });
+  assert.equal(calls.length, 0);
+});
+
+test('a play post that fails is swallowed like every other post', async () => {
+  const { ratings } = make({ reject: true });
+  await ratings.sendPlay({ slug: 'first-light', event: 'start' });
+  const { ratings: booming } = make({ boom: true });
+  await booming.sendPlay({ slug: 'first-light', event: 'finish', won: false, mistakes: 4 });
+});

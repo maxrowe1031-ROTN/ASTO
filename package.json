@@ -15,6 +15,7 @@
     "studio:review": "node studio/review/server.js",
     "studio:subjects": "node studio/sample-subjects.js",
     "ratings": "node tools/ratings-report.js",
+    "plays": "node tools/plays-report.js",
     "check-schedule": "node tools/check-schedule.js"
   },
   "engines": {

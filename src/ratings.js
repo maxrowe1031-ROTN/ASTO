@@ -1,7 +1,8 @@
 // The game's one OUTBOUND network seam: the end-screen survey's fire-and-forget posts
-// to Supabase. (LocalJsonSource fetches board JSON from our own origin; this is the only
-// module that talks to a third party — the mirror of llm.js owning the Studio's only
-// fetch. Recorded as D-21.)
+// to Supabase (D-21), and since D-34 the play counter's start and finish rows, which ride
+// the same seam and the same contract. (LocalJsonSource fetches board JSON from our own
+// origin; this is the only module that talks to a third party — the mirror of llm.js
+// owning the Studio's only fetch.)
 //
 // The URL and publishable key are committed constants ON PURPOSE: the key maps to the
 // `anon` role, and row-level security gives that role insert-only access to two
@@ -42,6 +43,21 @@ export class Ratings {
     const trimmed = String(note ?? '').trim();
     if (trimmed.length === 0) return;
     await this.post('comments', { puzzle_slug: slug, note: trimmed.slice(0, MAX_COMMENT_LENGTH), won });
+  }
+
+  /**
+   * One play event (D-34): `start` when a board comes on screen, `finish` when it ends.
+   * Only the fields given travel, so a start row is exactly {slug, event}. `slug` is null
+   * for the tutorial, which is not a play.
+   */
+  async sendPlay({ slug, event, won, mistakes, hintsUsed, learning }) {
+    if (slug === null) return;
+    const row = { puzzle_slug: slug, event };
+    if (won !== undefined) row.won = won;
+    if (mistakes !== undefined) row.mistakes = mistakes;
+    if (hintsUsed !== undefined) row.hints_used = hintsUsed;
+    if (learning !== undefined) row.learning = learning;
+    await this.post('plays', row);
   }
 
   // --- the guarded send; nothing above this line touches the network ---

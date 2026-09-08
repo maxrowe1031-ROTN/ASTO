@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 
 import { defineWord, initGame, revealVocab, submit } from '../src/engine/engine.js';
 import { deriveWords } from '../src/engine/arrangements.js';
-import { buildShareText } from '../src/share.js';
+import { buildShareText, shareUrlFor, SITE_URL } from '../src/share.js';
 import { board, distinctMisses, MISS, MISS_AFTER_TOOLS } from './fixtures/board.js';
 
 const solve = (state, set) => submit(state, [...set.pairs[0], ...set.pairs[1]]).state;
@@ -90,4 +90,40 @@ test('learning mode on but unused shares exactly as a normal game', () => {
   let state = initGame(board, { learningMode: true });
   for (const id of ['set-growth', 'set-tools', 'set-homes', 'set-material']) state = solve(state, bySetId(id));
   assert.equal(buildShareText(state), 'ASTO — Test Board\n4/4 · no beans\n🟩🟨🟥⬛');
+});
+
+// --- the deep link home (D-34) ---
+//
+// A shared result should let its reader PLAY the board, from anywhere it was pasted —
+// including the itch build, whose own origin is not ours. So the link is always the home
+// domain, and it is the slug's deep link so the reader lands on the exact board.
+
+test('with a slug, a fourth line carries the deep link to that board', () => {
+  const state = winIn(['set-growth', 'set-tools', 'set-homes', 'set-material']);
+  const lines = buildShareText(state, { slug: 'bedside-manor' }).split('\n');
+  assert.equal(lines.length, 4);
+  assert.equal(lines[3], 'https://www.playasto.com/?puzzle=bedside-manor');
+});
+
+test('the first three lines are unchanged by the link', () => {
+  const state = winIn(['set-growth', 'set-tools', 'set-homes', 'set-material'], 1);
+  const withLink = buildShareText(state, { slug: 'bedside-manor' }).split('\n');
+  const without = buildShareText(state).split('\n');
+  assert.deepEqual(withLink.slice(0, 3), without);
+});
+
+test('no slug means no link — the tutorial has nothing to link to', () => {
+  const state = winIn(['set-growth', 'set-tools', 'set-homes', 'set-material']);
+  assert.equal(buildShareText(state, { slug: null }).split('\n').length, 3);
+  assert.equal(buildShareText(state).split('\n').length, 3);
+});
+
+test('a slug is URL-encoded, so an odd character cannot break the link', () => {
+  assert.equal(shareUrlFor('apothecary-s-shelf'), 'https://www.playasto.com/?puzzle=apothecary-s-shelf');
+  assert.equal(shareUrlFor('a b&c'), 'https://www.playasto.com/?puzzle=a%20b%26c');
+});
+
+test('the link points home even though the game may run on another origin', () => {
+  assert.equal(SITE_URL, 'https://www.playasto.com/');
+  assert.ok(shareUrlFor('x').startsWith(SITE_URL));
 });
