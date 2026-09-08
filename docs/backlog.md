@@ -22,6 +22,17 @@
   hyphen, or a font-size step-down for tokens past ~11 letters. A pipeline-side cap on token
   length is the third option and the only one that stops it recurring. Deferred on the day
   before the capstone deadline; Max's call.
+- **The visibility push, sequenced (2026-09-08, deferred by Max to a later session).**
+  D-34 built the prerequisites; the doors themselves are outward-facing and each needs
+  Max's word: submit to **Playlin** (its "games like Connections" list has no analogy game;
+  the form takes a URL and a name), suggest ASTO on **Room Escape Artist's** daily-puzzle
+  guide, post to **r/WebGames** under the puzzle flair, ask in **Thinky Games'** Discord.
+  Before any of them: a **60–90 second gameplay-first clip** cut from the capstone video
+  (the Brain's `the-ninety-second-demo-video`), which every one of those channels wants.
+  Then watch `npm run plays` to see which door moved anything.
+- **The statistics page could read the play counter (2026-09-08).** `plays` records
+  starts and finishes per browser; the statistics page reads only local results. Cross-
+  device aggregate stats are a different product question; noted, not proposed.
 - **The statistics page could count assisted plays (2026-09-05).** D-33 records
   `learning: true` on a result only when a Learning Mode definition was actually looked
   up, and the calendar shows the book badge; the statistics page still buckets by
@@ -85,7 +96,10 @@
   if the project ever gains a CORS allowlist those posts stop **silently** (the
   failure is swallowed at `ratings.js:62`), so check the network tab rather than
   waiting for rows to appear in `npm run ratings`.
-- **Nothing links the itch build back to playasto.com (2026-08-25).**
+- ~~**Nothing links the itch build back to playasto.com (2026-08-25).**~~ **Closed
+  2026-09-08 — see design.md D-34:** the share text's fourth line is the board's deep link
+  home, from every origin. The original entry:
+  **Nothing links the itch build back to playasto.com (2026-08-25).**
   `buildShareText` emits title, score and tier squares and **no URL at all**, so
   a result shared from itch gives a reader no way to find the game. Harmless
   today and deliberate on the web (where the sharer's own URL travels with the

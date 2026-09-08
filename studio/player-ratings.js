@@ -1,4 +1,5 @@
-// player-ratings.js — the Studio-side reader of the game's survey (D-21).
+// player-ratings.js — the Studio-side reader of the game's survey (D-21) and, since
+// D-34, of its play counter — the same key, the same tables' law, one reader.
 //
 // The SECOND network seam beside llm.js, recorded the same way puzzle-store is a second
 // write seam beside run-store: different law, own module. It owns the only fetch that
@@ -128,6 +129,11 @@ export function createRatingsReader({ fetchFn, env = process.env, url = SUPABASE
         readTable('comments', key)
       ]);
       return aggregate(ratingRows, commentRows);
+    },
+
+    /** The play counter's raw rows (D-34), oldest first. Summarised by plays-summary.js. */
+    async fetchPlays() {
+      return readTable('plays', serviceKey());
     }
   };
 }

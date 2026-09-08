@@ -176,3 +176,27 @@ test('a refusal from Supabase surfaces as an error, not as an empty report', asy
   const reader = createRatingsReader({ fetchFn: fakeSupabase({ status: 401 }).fn, env: ENV });
   await assert.rejects(() => reader.fetchBoards(), /401/);
 });
+
+// --- the play counter's rows (D-34) ---
+
+test('fetchPlays reads the plays table with the service key and returns its rows', async () => {
+  const calls = [];
+  const rows = [{ id: 1, puzzle_slug: 'x', event: 'start', client_id: null, created_at: '2026-09-08T15:00:00Z' }];
+  const reader = createRatingsReader({
+    fetchFn: (url, options) => {
+      calls.push({ url, options });
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(rows) });
+    },
+    env: { SUPABASE_SERVICE_KEY: 'service-key' }
+  });
+  const plays = await reader.fetchPlays();
+  assert.deepEqual(plays, rows);
+  assert.equal(calls.length, 1);
+  assert.match(calls[0].url, /\/rest\/v1\/plays\?select=\*&order=id\.asc$/);
+  assert.equal(calls[0].options.headers.apikey, 'service-key');
+});
+
+test('fetchPlays without the service key names the variable and nothing else', async () => {
+  const reader = createRatingsReader({ fetchFn: () => assert.fail('must not fetch'), env: {} });
+  await assert.rejects(reader.fetchPlays(), /SUPABASE_SERVICE_KEY/);
+});

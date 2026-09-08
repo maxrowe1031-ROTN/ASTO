@@ -2,6 +2,56 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-08 (later) — The share text links home, and a play counter arrives
+
+Max opened the session with a pivot: *"have you seen the new mobile game called
+meowdoku? … I'm wondering if i can somehow copy what they've done in terms of marketing
+or visibility."* Research first, at his word (*"dig deeper first"*), then the build he
+chose from it. **D-34** records both.
+
+- **The research, in one line each.** Meowdoku's visibility was **bought** — Oakever
+  Games, ~$500K/day of user acquisition, ten to fourteen thousand AI-made creatives a
+  month, ad-funded, on a borrowed LinkedIn-Queens mechanic; nothing to copy. The organic
+  dailies (Wordle, Bracket City, Clues by Sam) share a share artifact, one free daily
+  board, and a break that came from a person with an audience playing it — Clues by
+  Sam's Show HN drew 3 points and the game still reached 50K daily players through a
+  six-month relay of bloggers. Free doors found: Playlin's "games like Connections" list
+  (no analogy game on it, a submit form), Room Escape Artist's guide, r/WebGames, Thinky
+  Games' Discord. Sources in D-34 and the spec.
+- **Max's calls:** prerequisites before any door is knocked on; the counter is a
+  **Supabase `plays` table**, not a pageview script; the share link is the **deep link
+  to the board**. Spec: `docs/superpowers/specs/2026-09-08-visibility-prerequisites-design.md`.
+- **Built.** `src/share.js`: `SITE_URL`, `shareUrlFor`, and a fourth line on
+  `buildShareText` when a slug is given — always `www.playasto.com`, never the current
+  origin, never for the tutorial. `src/ratings.js`: `sendPlay` on the one outbound seam.
+  **`src/play-reporter.js`** (new): a non-view beside `ResultsRecorder`, `start` once per
+  game, `finish` once per finished state object, after the recorder. Migration
+  `plays_append_only` on the D-21 project, insert-only for anon, no select.
+  `studio/player-ratings.js#fetchPlays`, **`studio/plays-summary.js`** (pure; days in the
+  game's timezone), **`tools/plays-report.js`** → **`npm run plays`**. `about.html` gained
+  *What this site records*. `npm run itch` → `dist/asto-itch-2026-09-08.zip` (187 KB).
+- **Verified.** `npm test` **1742/0** (+28, all written first). Browser at 375×812,
+  Bedside Manor, driven through the page's own buttons because the pane was hidden:
+  the deep link posted one `start`; a clean win posted one `finish` (`won true,
+  mistakes 0, hints_used 0, learning false`); the Share button's clipboard text was four
+  lines ending `https://www.playasto.com/?puzzle=bedside-manor`; Share's repaint posted
+  nothing; *Play again* posted a fresh `start` (3 posts total, board back with 16
+  tiles); `npm run plays` read all three back; the shipped key's `select` on `plays`
+  returned `[]` with rows present; the three test rows were deleted with the service
+  role, so the table starts empty for real players. Zero console errors.
+- **Docs:** D-34 in `docs/design.md`; `docs/backlog.md` closes the "nothing links itch
+  back" entry and files the sequenced visibility push (Playlin, Room Escape Artist,
+  r/WebGames, Thinky Games, the 60–90s clip); `CLAUDE.md` §1 names the third table.
+- **Phase status:** post-Phase-5 feature, **not a phase gate**. Automated and
+  Claude-verifiable **passed** with the evidence above. **Max acceptance open on two
+  small items:** the About sentence's wording (his copy, D-23) and whether to upload the
+  fresh itch zip. Neither blocks the merge.
+- **Next:** the **visibility push** as its own session — the clip first, then Playlin,
+  Room Escape Artist, r/WebGames, each on Max's word, with `npm run plays` as the
+  scoreboard. The standing queue behind it: a **fresh board batch** before the calendar
+  runs dry **2026-09-19** (11 queued as of today — the hard deadline), the **GDD version
+  bump**, and `docs/backlog.md`.
+
 ## 2026-09-08 — The capstone is submitted
 
 Max: *"submitted. log it and wrap up."* The MAIGD capstone — the course ASTO was built
