@@ -41,8 +41,8 @@ the retired Python crew stay in `../Brain`.
 - No paid hosting, services, or recurring costs are ever adopted without explicit
   discussion with Max (the playasto.com domain, ~$11/yr, is the one approved exception).
   One free hosted service is adopted: **Supabase free tier** ($0, D-21) holds the
-  player-ratings tables; its insert-only publishable key is committed by design, its
-  service key lives only in `.env`.
+  player-ratings tables and the play counter (D-34); its insert-only publishable key is
+  committed by design, its service key lives only in `.env`.
 
 ## 2. Working with Max
 

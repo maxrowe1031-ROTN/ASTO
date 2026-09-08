@@ -3254,6 +3254,72 @@ puzzles start off — true whichever way the player's switch is set — and its
 note names Settings. Verified: with the setting off, the warm-up arms and a
 board entered after Skip runs one-word mode.
 
+### D-34 — The share link home, and the play counter (2026-09-08)
+
+**Where it came from.** Max, the morning the capstone went in: *"have you seen the new
+mobile game called meowdoku? … I'm wondering if i can somehow copy what they've done in
+terms of marketing or visibility."* The research answered no, and then said what to do
+instead. **Meowdoku's visibility was bought:** Oakever Games (Beijing Lexing, 30+ casual
+titles, a billion downloads), roughly $500K a day of user acquisition, ten to fourteen
+thousand AI-made ad creatives a month, ad-funded end to end, on a LinkedIn-Queens
+mechanic that sat unused in Kwalee's portfolio for eighteen months. Nothing about the
+game spread on its own first. **The organic dailies** — Wordle (90 players on Nov 1 2021,
+300K two months later), Bracket City (Jan 2025 → licensed by The Atlantic in April),
+Clues by Sam (May 2025 → 50K daily players by early 2026) — share three things: a share
+artifact that carries the game without a link, one free daily board with no signup, and a
+break that came from **a person with an audience playing it** rather than from the
+creator's posts. Clues by Sam's Show HN launch drew 3 points; the game reached its players
+through a six-month relay of bloggers and journalists. The free doors that exist today:
+Playlin's "games like Connections" list (thirteen games, no analogy game, a submit form),
+Room Escape Artist's daily-puzzle guide (takes suggestions), r/WebGames (143K, welcomes
+puzzle self-promotion), Thinky Games' Discord. Spec:
+`docs/superpowers/specs/2026-09-08-visibility-prerequisites-design.md`.
+
+**Max's decisions, in order:** dig deeper before deciding · then **prerequisites first**,
+listings and the clip in a later session · the counter is a **Supabase `plays` table**,
+not a hosted pageview script · the share link is the **deep link to the board**.
+
+**What shipped.**
+
+- **The share text links home.** `buildShareText(state, { slug })` adds a fourth line,
+  `https://www.playasto.com/?puzzle=<slug>`, so a result pasted anywhere lets its reader
+  play the exact board. `SITE_URL` is a constant, never the current origin: the itch build
+  runs on itch's, and a link there must still point home. The tutorial (slug null) has no
+  line. Closes the 2026-08-25 backlog entry "nothing links the itch build back".
+- **The play counter.** Migration `plays_append_only` on the D-21 project: one anonymous
+  row when a board starts and one when it ends (`event`, `won`, `mistakes`, `hints_used`,
+  `learning`, the D-21 `client_id`), row-level security on, **insert-only for the anon
+  role, no select** — verified after creation: the shipped key's `select` on `plays`
+  returns `[]` while rows exist. `src/ratings.js`, the game's one outbound seam, gained
+  `sendPlay` under the same swallowed-failure contract; the module keeps its name.
+  **`src/play-reporter.js`** is a non-view beside `ResultsRecorder`: it reads state, calls
+  no engine function, sends `start` once per game (a new puzzle object, or `playing` after
+  a finish) and `finish` once per finished state object, and sits after the recorder so a
+  finish is only reported for a game already saved locally. **`npm run plays`**
+  (`tools/plays-report.js` over `studio/plays-summary.js`, pure, days keyed in the game's
+  one timezone) reads starts, finishes, completion rate, distinct browsers and browsers
+  seen on two or more days — the two signals the Brain's `honest-feedback-sources` calls
+  honest for a daily puzzle. The About page gained **"What this site records"**.
+- **The itch build refreshed** (`npm run itch`); uploading is Max's act.
+
+**Verified.** `npm test` **1742/0** (+28: share, seam, reporter, summary, report,
+reader). In the browser at 375×812 on Bedside Manor, driven through the page's own
+buttons (the pane was hidden, so pointer clicks could not run): the deep link posted one
+`start` row; four correct sets posted one `finish` row (`won: true, mistakes: 0,
+hints_used: 0, learning: false`); the Share button's clipboard text read
+`ASTO — Bedside Manor / 4/4 · no beans / 🟩🟨🟥⬛ / https://www.playasto.com/?puzzle=bedside-manor`;
+Share's own repaint of the end screen posted nothing more; *Play again* posted a fresh
+`start`; `npm run plays` read all three back; the test rows were then deleted with the
+service role so the table holds only real plays.
+
+**Accepted risks, stated.** D-21's spam risk now covers a third table with the same
+answer (truncate and rate-limit, not pre-built). A finish can post twice when a finished
+board is reloaded onto its end screen; the summary caps completion at 1.
+
+**Reconsider-when:** the counter shows a month of nobody but Max — then the listings push
+stops being optional; **or** plays are wanted on the statistics page — the rows exist, the
+column is a taste call; **or** a spam burst lands.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO
