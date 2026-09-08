@@ -2,6 +2,52 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-08 (evening) — The Review Studio rebuilt, Phase A: the Desk and the Runs table
+
+Max opened the Studio and said what he saw: *"the design of this studio stinks out loud."*
+Four mockups on a design canvas, approved *"as is"* (*"once i'm in there we can keep
+iterating on it"*), a three-phase plan, and Phase A built and verified. **D-35** records
+the decisions; `docs/superpowers/plans/2026-09-08-review-studio-rebuild.md` the plan.
+
+- **Server.** `GET /api/runs` grew from eight fields to nineteen — cost and duration from the
+  attempt's cumulative run usage, mock/auto-revise, register and style, the batch (additive
+  brief fields, day-grouped fallback), your latest read, the last publish (new records carry
+  the release date), the machine's read in four chips, live in-process state with the
+  inferred current stage — shaped in the new pure `studio/review/summaries.js`. New
+  `GET /api/schedule` (the check-schedule analysis moved to `studio/schedule.js` and shared;
+  `nextFreeDate` exposed on the puzzle store; the server's `todayKey`) and `GET /api/plays`
+  (the D-34 counter, summarised server-side). A test seeds 150 runs and holds the list under
+  250 ms; it passes uncached.
+- **Browser.** `ui/dom.js`, `ui/api.js`, `ui/poll.js`, `ui/rollups.js`, `ui/desk.js`,
+  `ui/runs.js` — string builders first, thin wiring last, the feedback.js pattern. The
+  **Desk** at `#/`: four tiles, the queue oldest first (awaiting-review plus failed runs
+  holding a reviewable attempt), the batch launcher with a labelled estimate, the runway,
+  the players. **Runs** at `#/runs`: status chips with counts, group by batch / date /
+  status, search, batch headers with yield and spend, published dates joined from the
+  calendar by slug. **Players** at `#/players` keeps the ratings table. The page polls only
+  while the process holds a run — live runner state, not the manifest's word, because one
+  run has read `revising` since Aug 4 with nothing behind it (backlog). The run page is
+  untouched until Phase B.
+- **Verified:** `npm test` **1796/0** (+54). In the Browser pane against the real corpus:
+  both Supabase panels 200; 19 boards waiting; runway *12 days · runs dry 19 Sep* equal to
+  `check-schedule`; a quiet Desk made one runs call in eight seconds; chips summed to 144
+  with the archived run out; 48 of 49 published rows dated after the join; filter and search
+  re-rendered with zero API calls, caret kept; a mock run from the launcher posted → 202,
+  landed in the queue with its fixture's chips, polling stopped; a computed-style sweep
+  found no red; zero console errors; desk-width screenshots of both screens match the
+  mockups. The verification run was deleted (local, git-ignored).
+- **Docs:** D-35 in `docs/design.md`; the plan under `docs/superpowers/plans/`; backlog
+  pointers for archive, per-stage progress, and the zombie run; `studio/README.md`'s
+  screens paragraph.
+- **Phase status:** Studio rebuild **Phase A** — automated and Claude-verifiable **passed**
+  with the evidence above; **Max acceptance open**: using the Desk and the Runs table for a
+  real review. Not a game phase gate.
+- **Next:** Max tries the Desk (`npm run studio:review`); his iterations plus **Phase B** —
+  the Review page: board first, machine reports as tabs, the sticky "Your read" rail with
+  a local draft, the Publish card with the server's next free date, the D-14 audit always
+  open. Then Phase C. Behind them: the **fresh board batch** before **2026-09-19** (the Desk
+  now shows the runway; the launcher starts the runs), the visibility push, the GDD bump.
+
 ## 2026-09-08 (later) — The share text links home, and a play counter arrives
 
 Max opened the session with a pivot: *"have you seen the new mobile game called

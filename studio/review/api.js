@@ -39,6 +39,10 @@ import { checkBoard } from '../../src/engine/board-integrity.js';
 import { defaultTransport } from './runner.js';
 import { createPuzzleStore, PublishRefused } from '../storage/puzzle-store.js';
 import { slugify } from '../slug.js';
+import { summarizeRun } from './summaries.js';
+import { analyzeSchedule } from '../schedule.js';
+import { summarizePlays } from '../plays-summary.js';
+import { dateKeyFor } from '../../src/source/release.js';
 
 // The shape createRun builds: an ISO timestamp with ':' replaced by '-',
 // then the slug.
@@ -170,36 +174,84 @@ export function createApi({
     }
   }
 
+  // The four evaluators whose output the list's machine-read chips summarise.
+  const CHIP_STAGES = ['05-analogy-validator', '06-adversarial-solver', '07-test-player', '08-style-guide'];
+
+  /** The four chip outputs that exist for a finished attempt; nothing for one still running. */
+  function chipReports(runId, attempt) {
+    if (!attempt || attempt.status !== 'complete') return undefined;
+    const reports = {};
+    for (const stageId of CHIP_STAGES) {
+      if (store.hasStageArtifact(runId, attempt.attemptId, stageId, 'output.json')) {
+        reports[stageId] = store.readStageArtifact(runId, attempt.attemptId, stageId, 'output.json');
+      }
+    }
+    return reports;
+  }
+
+  /**
+   * One summary row per run (D-35): the manifest plus what the Desk, the Runs
+   * table and the batch panel need beside it — cost, register, your latest
+   * read, the publish, the machine's read, live state. Shaped in summaries.js;
+   * gathered here because this is where the store is.
+   */
   function listRuns() {
     const runs = store
       .listRuns()
       .map((runId) => {
         try {
-          const m = store.readManifest(runId);
-          return {
-            runId: m.runId,
-            status: m.status,
-            theme: m.theme,
-            createdAt: m.createdAt,
-            currentAttemptId: m.currentAttemptId,
-            attemptCount: m.attemptCount,
-            revisionCount: m.revisionCount,
+          const manifest = store.readManifest(runId);
+          const attempt = manifest.currentAttemptId
+            ? store.readAttempt(runId, manifest.currentAttemptId)
+            : null;
+          return summarizeRun({
+            manifest,
+            attempt,
+            feedback: store.readFeedback(runId),
+            decisions: store.readDecisions(runId),
+            reports: chipReports(runId, attempt),
+            inProcess: runner.stateOf(runId),
             // A failed run can still hold a finished board from an earlier
             // attempt — three did across batches five and six (2026-08-19),
             // each reading `failed` in the list with a complete board
             // underneath, so nobody opened them. The run's own status is left
             // alone (it failed, and saying otherwise would be a lie); this
             // names what is nonetheless reviewable.
-            reviewableAttemptId: m.status === 'failed' ? completedAttemptOf(m.runId) : null,
-          };
+            reviewableAttemptId: manifest.status === 'failed' ? completedAttemptOf(manifest.runId) : null,
+          });
         } catch {
-          return null; // a corrupt manifest must not blank the whole list
+          return null; // a corrupt run must not blank the whole list
         }
       })
       .filter(Boolean)
       .sort((a, b) => (a.runId < b.runId ? 1 : -1)); // newest first
     return ok({ runs });
   }
+
+  /**
+   * The publishing queue as the Desk's runway panel reads it (D-35): the same
+   * analysis `npm run check-schedule` prints, plus the day the next publish
+   * lands — decided by the puzzle store, the only door into puzzles/, never
+   * by the browser.
+   */
+  function readSchedule() {
+    const todayKey = dateKeyFor(new Date(clock()));
+    const entries = puzzles.readManifest()?.puzzles ?? [];
+    const dateless = puzzles
+      .list()
+      .filter((entry) => typeof entry.date !== 'string')
+      .map((entry) => entry.slug);
+    return ok({ ...analyzeSchedule(entries, dateless, todayKey), nextFreeDate: puzzles.nextFreeDate(), todayKey });
+  }
+
+  /** The play counter (D-34), summarised server-side; the service key never leaves the reader. */
+  const readPlays = async () => {
+    if (playerRatings === null) {
+      return { status: 503, body: { error: 'player plays are not wired on this server' } };
+    }
+    const rows = await playerRatings.fetchPlays();
+    return ok(summarizePlays(rows, { today: dateKeyFor(new Date(clock())) }));
+  };
 
   // What the running server would actually use, asked of the runner rather
   // than read from disk — see runner.configOf. The values are settings, not
@@ -798,6 +850,9 @@ export function createApi({
       boardId: published.originalId,
       publishedAs: published.filename,
       publishedId: published.id,
+      // The day it lands (D-35) — so the list can say "published · Sep 19"
+      // without joining against the calendar.
+      date: published.date,
       republished: replace,
       // Provenance lives HERE, never in the puzzle file (schema v1.0 is
       // locked): this is the record that what shipped carried Max's hand.
@@ -902,6 +957,8 @@ export function createApi({
   const ROUTES = [
     ['GET', /^\/api\/config$/, () => readConfig()],
     ['GET', /^\/api\/player-ratings$/, () => readPlayerRatings()],
+    ['GET', /^\/api\/plays$/, () => readPlays()],
+    ['GET', /^\/api\/schedule$/, () => readSchedule()],
     ['GET', /^\/api\/runs$/, () => listRuns()],
     ['POST', /^\/api\/runs$/, (_m, { body }) => createRun(body)],
     ['GET', /^\/api\/runs\/([^/]+)$/, (m) => readRun(m[1])],

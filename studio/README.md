@@ -362,6 +362,15 @@ node tools/check-deploy.js                         # did the last push actually 
 
 `--mock` is a **transport swap**, not an `if (mock)` branch — the same code path runs.
 
+**The Review Studio's screens (D-35, current as of 2026-09-08):** the **Desk** at `#/` —
+what is waiting for a read, what is in flight, how much calendar is left, what it cost,
+then the queue, the batch launcher, the runway and the players; **Runs** at `#/runs` —
+every run, filtered by status, grouped by batch with each batch's yield and spend,
+searchable; **Players** at `#/players` — the survey's readings board by board. The run
+page at `#/runs/<id>` is unchanged until Phase B of the rebuild
+(`docs/superpowers/plans/2026-09-08-review-studio-rebuild.md`). The page polls only while
+the process holds a run.
+
 ### A run directory
 
 ```

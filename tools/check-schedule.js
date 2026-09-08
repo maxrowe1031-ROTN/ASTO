@@ -14,41 +14,14 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-import { dateKeyFor, nextDay } from '../src/source/release.js';
+import { dateKeyFor } from '../src/source/release.js';
+import { analyzeSchedule } from '../studio/schedule.js';
 
 const MANIFEST = fileURLToPath(new URL('../puzzles/index.json', import.meta.url));
 
-/**
- * Pure analysis of the schedule. `entries` are manifest entries (dated by
- * construction); `datelessSlugs` are boards on disk with no date.
- */
-export function analyzeSchedule(entries, datelessSlugs, todayKey) {
-  const dates = new Set(entries.map((entry) => entry.date));
-  const sorted = [...entries].sort((a, b) => (a.date < b.date ? -1 : 1));
-  const last = sorted.at(-1)?.date ?? null;
-
-  // The runway: how many consecutive days, starting today, have a board.
-  let runway = 0;
-  for (let day = todayKey; dates.has(day); day = nextDay(day)) runway += 1;
-
-  // Days between today and the last scheduled board with nothing on them —
-  // a queue that resumes after a hole still leaves dark days in between.
-  const gaps = [];
-  if (last !== null && last > todayKey) {
-    for (let day = todayKey; day <= last; day = nextDay(day)) {
-      if (!dates.has(day)) gaps.push(day);
-    }
-  }
-
-  return {
-    today: entries.find((entry) => entry.date === todayKey) ?? null,
-    lastScheduled: last,
-    queuedAhead: entries.filter((entry) => entry.date > todayKey).length,
-    runway,
-    gaps,
-    datelessSlugs,
-  };
-}
+// The analysis lives in studio/schedule.js since D-35, so the Review Studio's
+// runway panel and this report card cannot disagree. Re-exported for callers.
+export { analyzeSchedule };
 
 export function render(report, todayKey) {
   const lines = [];

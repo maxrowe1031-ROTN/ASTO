@@ -22,6 +22,11 @@
   hyphen, or a font-size step-down for tokens past ~11 letters. A pipeline-side cap on token
   length is the third option and the only one that stops it recurring. Deferred on the day
   before the capstone deadline; Max's call.
+- **A run has read `revising` since 2026-08-04 with no process behind it (found
+  2026-09-08 building the Desk).** `2026-08-04T02-01-38.033Z-surprise-me` — a server was
+  killed mid-revision and the manifest never moved. Harmless (the Desk counts in-flight
+  from live runner state, not status), but it is a zombie in every status count. Phase
+  C's archive route is its exit; until then, leave it.
 - **The visibility push, sequenced (2026-09-08, deferred by Max to a later session).**
   D-34 built the prerequisites; the doors themselves are outward-facing and each needs
   Max's word: submit to **Playlin** (its "games like Connections" list has no analogy game;
@@ -263,7 +268,7 @@
   obscurity rejects were uncapped lens boards (~2.3 gated words/board vs world's 0.0 under
   the cap). Deferred pending the Vocabulary button (D-18), which may make some gated
   vocabulary a feature instead of a defect. Revisit after a glossed batch.
-- **Archiving a run has no endpoint or button.** `approved → archived` exists in the
+- **Archiving a run has no endpoint or button.** *(D-35 Phase C builds the route and the button; the Desk renders Archive disabled until then.)* `approved → archived` exists in the
   status machine and `updateStatus` enforces it, but no API route or UI exposes it — the
   childhood archive went through a hand-written script against `run-store`. Fine at n=1;
   if archiving becomes routine (e.g. clearing the awaiting-review backlog), it should be
@@ -378,7 +383,8 @@
   question — should the Pair Author be asked for a hard set in the first place? — is still
   open, and D-1's reconsider-when trigger is where it gets revisited.
 - The Review Studio shows only "running" for the whole of a multi-minute stage. Per-stage
-  progress would make a slow `xhigh` call distinguishable from a wedged one.
+  progress would make a slow `xhigh` call distinguishable from a wedged one. *(D-35: the
+  run list now infers `currentStage`; Phase C's batch panel draws one dot per stage.)*
 - ~~A long-running Review Studio server holds the pipeline config it started with, so a code
   fix does not reach a running server.~~ **Partly done 2026-08-04:** `GET /api/config` reports
   the config the *runner holds* and the run list shows it, so a stale server is visible at a
