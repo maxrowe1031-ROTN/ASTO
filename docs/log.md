@@ -2,6 +2,54 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-09-12 — The visibility deep dive, and the plan to get ASTO in front of players
+
+Max opened the session with a pivot from the Studio queue: *"i want to do a deep dive on
+how and where to get this game out to the public."* Scope, his calls: free channels only;
+the main audience *"word game enthusiasts like people who play wordle and connections"*,
+the educational angle secondary; a research doc plus a ranked plan, nothing posted. **No
+game code changed.** **D-36** records the research and the plan.
+
+- **The baseline.** `npm run plays` read today: **no plays recorded** since the counter went
+  live on 09-08. `check-schedule`: today's board is on, last scheduled **2026-09-19**, 19
+  boards still awaiting Max's read in the Studio (no runs since 08-19).
+- **The research** — `docs/research/2026-09-12-visibility-deep-dive.md`. Two passes in
+  parallel (channels; education), every rules page, submit form and article fetched; Reddit
+  via its public JSON endpoints in Max's own Chrome because reddit.com blocks fetches here;
+  anything not fetched is marked UNVERIFIED in the doc. Brain consulted first: strong on
+  readiness (the ninety-second video, devlogs for players, disclose-never-lead, honest
+  signals), absent on channels — the doc fills that. Findings: seven Tier-1 doors for the
+  word-game crowd with quoted rules and evidence (Playlin, r/NYTConnections, r/WebGames,
+  r/playmygame, Thinky Games, r/wordgames, Room Escape Artist); a long tail of directories;
+  the closed doors and why (r/IndieGaming's GenAI rule, Poki's exclusivity, Kongregate
+  closed); Show HN and Product Hunt as lottery tickets; the growth mechanics ASTO already
+  has. Two readiness gaps found in the repo: **no meta description or Open Graph tags** on
+  either page (a pasted link previews as *"Something went wrong loading the puzzle"*), and
+  **the itch page's URL recorded nowhere**. **dailyanalogy.com** exists — the claim is the
+  mechanic, *"Connections, but you build the analogies."* The educational population is
+  children aged 8–14 on CogAT, SSAT, the 11+ and WordMasters; ASTO's upper tiers are adult
+  vocabulary, so that angle needs a teacher page and a tier filter first.
+- **The plan** — `docs/superpowers/plans/2026-09-12-visibility-push.md`, approved by Max.
+  Week 0 get ready (calendar past 09-19, link previews, one-liner, clip, itch page); Week 1
+  get listed (six forms in one sitting); Week 2 the crowds one community at a time with the
+  counter read after each; Week 4 the readout. A ready-to-edit post per door and a
+  scoreboard table.
+- **Docs:** D-36 in `docs/design.md`; `docs/backlog.md` — the 09-08 visibility entry
+  superseded by a pointer, four new lines (link-preview metadata, the itch URL,
+  dailyanalogy.com, the educational prerequisites).
+- **Verified:** `npm test` **1796/0**, unchanged; the key submission URLs answered 200 by
+  curl today (Playlin, Room Escape Artist, Listdle, Dle Hunt, The Dles, dailyanalogy.com;
+  reddit.com and thinkygames.com 403 to curl but were read in the browser). Nothing was
+  posted, submitted, or sent.
+- **Phase status:** post-Phase-5, docs only, **not a phase gate**. The plan is Max-approved;
+  every door stays open until he opens it.
+- **Next:** **Week 0 of the visibility push** — Max publishes waiting boards so the calendar
+  runs past 09-19 (the hard deadline stands); Claude builds **link-preview metadata** on a
+  work branch (R2, its own gate) and cuts the **clip** from the capstone take (R4); Max
+  picks the one-liner and finds the itch page (R3, R5). Then Week 1's six listings. Behind
+  it, unchanged: Studio rebuild **Phase B**, the GDD version bump, the two stale Aug-8 work
+  branches to merge or delete.
+
 ## 2026-09-08 (evening) — The Review Studio rebuilt, Phase A: the Desk and the Runs table
 
 Max opened the Studio and said what he saw: *"the design of this studio stinks out loud."*

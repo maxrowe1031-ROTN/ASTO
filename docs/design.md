@@ -3410,6 +3410,73 @@ fingerprint cache the plan names; **or** Max finds the Desk's queue hides work t
 list showed (it shows strictly more today); **or** the estimate misleads — replace the
 twenty-run mean with the stage-level pricing the audit script used.
 
+### D-36 — The visibility push: the research and the plan (2026-09-12)
+
+**Max asked** for *"a deep dive on how and where to get this game out to the public"*, and
+set the scope in three calls: **free channels only** (ASTO's zero-cost rule holds; paid is
+not researched); the **main audience is word-game enthusiasts** — *"the main angle should be
+word game enthusiasts like people who play wordle and connections"* — with the educational
+angle secondary; the deliverable a **research doc plus a ranked plan**, nothing posted.
+Creators, press, app stores and PWA were left out of scope. Two research passes fetched
+every rules page, submit form and article cited; Reddit blocks fetches here, so its rules
+and member counts were read from its public JSON endpoints in Max's own Chrome, read-only.
+The doc is `docs/research/2026-09-12-visibility-deep-dive.md`; the plan
+`docs/superpowers/plans/2026-09-12-visibility-push.md`. **Max approved the plan by calling
+the wrap-up.**
+
+**What the research established, beyond D-34.**
+- **The baseline is zero.** The play counter has recorded nothing since it went live on
+  09-08. D-34's reconsider-when ("a month of nobody but Max") is running.
+- **The doors that take a free daily web game and say so:** Playlin's hand-reviewed
+  directory (submit form; links back to the game's home; a weekly chart); r/NYTConnections,
+  whose rule calls posting your own Connections boards *"acceptable and encouraged"*, where
+  Connections-likes have drawn 100–240 upvotes; r/WebGames (143K, direct links, title must
+  begin with the game's name, the `[PZL]` flair); r/playmygame (141K, AI use allowed if
+  stated truthfully, where Clues by Sam launched); Thinky Games' developer submit form and
+  its biweekly free-web-game pick; Room Escape Artist's daily-puzzle guide, which asks for
+  suggestions in the comments and adds them; r/wordgames' live "what daily games do you
+  play" threads; and three long-tail directories (Listdle, Dle Hunt, The Dles).
+- **The doors that are closed and why:** r/IndieGaming bans games that rely on generative
+  AI; r/crossword removes anything without a grid and bans AI content; Poki requires web
+  exclusivity; Kongregate stopped taking games in 2020; the dictionary brands run or buy
+  their own games; Show HN and Product Hunt are free lottery tickets with single-digit
+  expectations (Clues by Sam's Show HN scored 3 points).
+- **The mechanics coverage credits with organic spread — the share grid, one board a day,
+  nothing wanted from the player, a named human — ASTO already has.** What it lacks is a
+  settled one-line hook and **link previews**: neither page carries a meta description or
+  Open Graph tags, so a pasted link shows *"Something went wrong loading the puzzle."*
+- **The itch page's URL is recorded nowhere**, and a search found no published page under
+  the obvious names; its tags and AI-disclosure field could not be inspected.
+- **The educational angle is real but secondary.** The adult analogy tests are gone (SAT
+  2005, GRE 2011, the Miller Analogies Test discontinued November 2023); analogies survive
+  on CogAT, OLSAT, SSAT, HSPT, the UK 11+ and the WordMasters Challenge — a population aged
+  8–14 whose vocabulary sits below ASTO's Red and Black tiers. **dailyanalogy.com exists**,
+  a daily analogy quiz with a classroom mode, so ASTO's claim is the mechanic —
+  *"Connections, but you build the analogies"* — never *"the only daily analogy game."*
+
+**The plan, in three moves.** Week 0, **get ready**: extend the calendar past 09-19 (Max
+reviews the waiting boards), link-preview metadata (the one code change, on its own gated
+branch), the one-liner, the 60–90 s clip from a Past Pour, the itch page found and its
+disclosure set to Text & Dialog. Week 1, **get listed**: the six directories and guides in
+one sitting. Week 2, **the crowds**, one community every two or three days, best fit first,
+`npm run plays` read after each so the signal is attributable. Week 4, the readout and
+Max's next call. The plan carries a ready-to-edit post for every door and a scoreboard.
+
+**Rules bound to every door:** never lead with "AI-made" — disclose where a rule asks and
+in one plain sentence at the end, never in a title; never show today's board; one post per
+community; post from Max's own account; read the counter after each door, not at the end.
+
+**Accepted risks, stated.** Reddit auto-filters new or low-karma accounts — Max's account
+history is his to judge. A post can draw "AI slop" replies even where AI is allowed; the
+answer is the About page's honesty, not argument. The directories may take weeks to list;
+their effect is slow and cumulative, which is why they go first.
+
+**Reconsider-when:** the Week 4 readout shows no door moved starts — then the next scope
+(creators and press, recorded in the research) opens; **or** a door draws real traffic and
+the calendar cannot keep up — then the Studio's batch launcher (D-35) earns its Phase C;
+**or** a teacher or a parent asks for an easier board — then the educational angle's two
+prerequisites (a teacher page, a tier filter) become a proposal.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

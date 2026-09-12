@@ -27,14 +27,31 @@
   killed mid-revision and the manifest never moved. Harmless (the Desk counts in-flight
   from live runner state, not status), but it is a zombie in every status count. Phase
   C's archive route is its exit; until then, leave it.
-- **The visibility push, sequenced (2026-09-08, deferred by Max to a later session).**
-  D-34 built the prerequisites; the doors themselves are outward-facing and each needs
-  Max's word: submit to **Playlin** (its "games like Connections" list has no analogy game;
-  the form takes a URL and a name), suggest ASTO on **Room Escape Artist's** daily-puzzle
-  guide, post to **r/WebGames** under the puzzle flair, ask in **Thinky Games'** Discord.
-  Before any of them: a **60–90 second gameplay-first clip** cut from the capstone video
-  (the Brain's `the-ninety-second-demo-video`), which every one of those channels wants.
-  Then watch `npm run plays` to see which door moved anything.
+- **The visibility push — researched and planned 2026-09-12, awaiting Max's go.** The plan is `docs/superpowers/plans/2026-09-12-visibility-push.md`; the deep dive is
+  `docs/research/2026-09-12-visibility-deep-dive.md`: five readiness items (extend the
+  calendar past 09-19, link-preview metadata, the 60–90 s clip, the one-liner, the itch
+  page's disclosure and tags), seven Tier-1 doors for the word-game crowd (Playlin,
+  r/NYTConnections, r/WebGames, r/playmygame, Thinky Games, r/wordgames, Room Escape
+  Artist), a long tail of directories, the lottery tickets, and the educational angle
+  with its prerequisites. Every door is outward-facing and needs Max's word; `npm run
+  plays` is the scoreboard after each. Supersedes the 2026-09-08 entry.
+- **`index.html` and `about.html` carry no meta description and no Open Graph tags
+  (2026-09-12).** A fetcher without JavaScript — Reddit's link preview, a Discord embed, a
+  directory's crawler — sees only *"Something went wrong loading the puzzle."* Every door in
+  the visibility plan pastes the URL, so this is its first readiness item (R2). A small
+  change to two HTML heads plus a `<noscript>` line; needs its own gate.
+- **The itch.io page's URL is recorded nowhere in the repo (2026-09-12).** D-26 records the
+  upload, not the address, and a search of itch found no published page under the obvious
+  names. Max confirms the URL, it goes into D-26, and the generative-AI disclosure field
+  (Text & Dialog) and tags (`daily`, `word-game`, `connections`) get set.
+- **dailyanalogy.com is a named competitor (2026-09-12).** A daily analogy quiz with three
+  modes, streaks, leagues and a Classroom mode, running since roughly January 2025. ASTO
+  cannot claim "the only daily analogy game"; the mechanic is the claim. Worth a look at
+  its Classroom mode if the educational angle is ever pursued.
+- **The educational angle needs two things ASTO lacks (2026-09-12).** A teacher page
+  (bell-ringer framing, no-login and privacy line, human-review line, tier guidance) and an
+  easier mode or tier filter — the analogy-practice population is grades 3–8 and Black is
+  adult vocabulary. Both are game or site changes with their own gates; neither is proposed.
 - **The statistics page could read the play counter (2026-09-08).** `plays` records
   starts and finishes per browser; the statistics page reads only local results. Cross-
   device aggregate stats are a different product question; noted, not proposed.
