@@ -1,7 +1,7 @@
 {
   "permissions": {
     "additionalDirectories": [
-      "../Brain",
+      "/Users/maxrowe/Documents/GitHub/Brain",
       "../project-template"
     ],
     "deny": [

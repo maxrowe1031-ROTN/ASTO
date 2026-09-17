@@ -5909,3 +5909,10 @@ board was added. Everything here is new `studio/` and `test/studio/`.
      a headless full win and full loss played through engine imports alone; check-board
      passes First Light. No `index.html` yet — that's the point.
   2. Phase 2 (core play screen) only after the Phase 1 gate is met.
+
+
+## 2026-09-17 — Workflow upgrade (ready for review)
+
+Adopted versioned birth/warmup/pause/wrapup procedures with host entry points, explicit project policy and platform verification. Preserved product scope, characters, private records and shipping exceptions. Evidence and untested host/device paths: `system/workflow/VALIDATION.md`. This workflow-only migration does not advance an application phase or declare human acceptance.
+
+Next: review and integrate the migration branch, then validate the lifecycle on the next real task.
