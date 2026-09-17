@@ -5,6 +5,6 @@
   "baseCommit": "df0d596743de7c263479897bed7f709478c882c2",
   "policyPreserved": "phase-local-merge",
   "liveAcceptance": "pending; fixtures do not prove device or host activation",
-  "verification": "29 disposable helper scenarios passed; shared copies checked; live host/device acceptance pending",
-  "sourceCommit": "da67507b4cbd6847848b0071208b195f0c9bdeff"
+  "verification": "30 disposable helper scenarios passed; shared copies checked; live host/device acceptance pending",
+  "sourceCommit": "2c658ecfe0d296c54fb2f18e2eafe491d74ea59a"
 }

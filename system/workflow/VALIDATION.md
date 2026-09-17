@@ -1,6 +1,6 @@
 # Workflow migration verification — 2026-09-17
 
-The shared helpers passed 29 disposable repository/process tests in project-template: ownership and index isolation, macOS canonical paths, command failures/timeouts and retained logs, missing scan inputs, owned preview identity/shutdown with an unrelated server surviving, clean-but-ahead state, committed/offline scaffold provenance, collisions without partial writes, resumability, missing files, actual versus literal fields, recorded approval, and non-main/local-only targets.
+The shared helpers passed 30 disposable repository/process tests in project-template: ownership and index isolation, macOS canonical paths, command failures/timeouts and retained logs, missing scan inputs, owned preview identity/shutdown with an unrelated server surviving, clean-but-ahead state, committed/offline scaffold provenance, collisions without partial writes, resumability, missing files, actual versus literal fields, recorded approval, and non-main/local-only targets.
 
 All 57 new skill entry points passed the skill-creator structural validator. Local procedure links and project orientation/log paths resolve. Shared helpers are byte-identical across all 13 migration branches. Repository diff whitespace checks pass. Brain's existing full lint passed (11 already-stale reviewed pages are informational, not rewritten).
 

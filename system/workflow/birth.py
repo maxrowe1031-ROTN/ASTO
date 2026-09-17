@@ -28,6 +28,7 @@ def root_at(path):
 
 
 def selected(name, profile):
+    if name in {'system/workflow/migration.json', 'system/workflow/VALIDATION.md'}: return False
     if name.split('/')[0] not in INCLUDES: return False
     if profile == 'full': return True
     return name in CORE or name.startswith(('system/workflow/', '.agents/skills/')) or name in {
