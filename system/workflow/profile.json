@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "workflowVersion": "1.0.0",
+  "project": "ASTO",
+  "platform": "web",
+  "brainRoot": "~/Documents/GitHub/Brain",
+  "orientation": [
+    "CLAUDE.md",
+    "docs/design.md"
+  ],
+  "log": "docs/log.md",
+  "checkCommands": [
+    [
+      "npm",
+      "test"
+    ]
+  ],
+  "checkSource": "Read the current approved plan and executable project configuration; empty checkCommands means discover, not no verification.",
+  "shipping": "phase-local-merge",
+  "mergeAuthorization": "project-standing-authorization",
+  "workspace": "branch-first",
+  "docsException": "Existing approved documentation-only direct-default exception, if present in CLAUDE.md; otherwise use a task branch.",
+  "authorship": "Use the actual assistant: Co-Authored-By: Codex <noreply@openai.com> or Claude <noreply@anthropic.com>; do not invent a model version.",
+  "learningMode": "on-request",
+  "provenance": {
+    "migration": "workflow-upgrade-2026-09-17",
+    "policySource": "Pre-migration repository CLAUDE.md and lifecycle commands; user-approved workflow-upgrade-plan.md"
+  }
+}

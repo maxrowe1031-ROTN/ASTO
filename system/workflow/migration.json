@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "date": "2026-09-17",
+  "source": "project-template 0.16.0",
+  "baseCommit": "df0d596743de7c263479897bed7f709478c882c2",
+  "policyPreserved": "phase-local-merge",
+  "liveAcceptance": "pending; fixtures do not prove device or host activation",
+  "verification": "29 disposable helper scenarios passed; shared copies checked; live host/device acceptance pending",
+  "sourceCommit": "da67507b4cbd6847848b0071208b195f0c9bdeff"
+}

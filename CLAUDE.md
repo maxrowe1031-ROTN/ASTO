@@ -72,7 +72,7 @@ that something works.
 
 ## 3. The knowledge loop (Development Brain)
 
-The Brain lives at `../Brain` (access granted in
+The Brain root is configured in `system/workflow/profile.json` (access granted in
 `.claude/settings.json`). The Brain stores **generalizable learning**; this repo stores
 **project truth**. Everything needed to build, test, and recover ASTO lives here — it
 must remain fully operable without Brain access.
@@ -191,7 +191,7 @@ makes the Studio double as proof the architecture is clean.
 
 ## 8. Sessions and verification
 
-Every work session starts with `/warmup`. A verified unit of work ends with `/wrapup`;
+Every work session uses the concise `/warmup` orientation. A verified unit of work ends with `/wrapup`;
 interrupted work ends with `/pause`. The command files own their step-by-step procedures
 — follow them, don't improvise substitutes.
 
@@ -269,3 +269,11 @@ review needs no extra setup.
   `docs/log.md`, drift check, merge the work branch to `main`, push, hand off.
 - `/pause` — interrupted work: truthful checkpoint on the work branch, honest log entry
   including failures, `main` untouched. The gate is explicitly **not** passed.
+
+## Workflow maintenance — 2026-09-17
+
+The versioned procedures in `system/workflow/` and their project profile own
+session mechanics, host fallbacks, authorship and delivery policy. This replaces
+older duplicated command recipes, not product scope or human acceptance.
+Use a short warmup for implementation; retain quizzes in learning mode.
+Existing approved merge exceptions remain project-specific.
