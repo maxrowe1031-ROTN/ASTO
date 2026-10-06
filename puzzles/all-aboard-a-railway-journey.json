@@ -93,7 +93,6 @@
       "definition": "A list of items or goods, written out in detail."
     }
   ],
-  "date": "2026-08-11",
   "definitions": [
     {
       "word": "locomotive",
@@ -159,5 +158,6 @@
       "word": "sky",
       "definition": "The open space above the ground, full of air, clouds, and stars."
     }
-  ]
+  ],
+  "date": "2026-10-11"
 }

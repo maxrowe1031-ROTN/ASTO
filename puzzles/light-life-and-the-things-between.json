@@ -89,7 +89,6 @@
       "definition": "a perch or spot where a flying creature settles to rest"
     }
   ],
-  "date": "2026-08-12",
   "definitions": [
     {
       "word": "gas",
@@ -155,5 +154,6 @@
       "word": "faded",
       "definition": "worn dim or pale over time, losing its original vividness"
     }
-  ]
+  ],
+  "date": "2026-10-12"
 }

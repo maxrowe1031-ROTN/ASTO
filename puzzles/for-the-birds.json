@@ -89,7 +89,6 @@
       "definition": "A fluffy young water bird, pale gray or white, still too small to fly on its own."
     }
   ],
-  "date": "2026-08-29",
   "definitions": [
     {
       "word": "swan",
@@ -155,5 +154,6 @@
       "word": "return",
       "definition": "To come back home after being away, like birds after migrating."
     }
-  ]
+  ],
+  "date": "2026-10-29"
 }

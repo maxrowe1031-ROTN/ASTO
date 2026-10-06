@@ -89,7 +89,6 @@
       "definition": "A yearly booklet packed with charts and notes about seasons, stars, and nature's patterns."
     }
   ],
-  "date": "2026-08-10",
   "definitions": [
     {
       "word": "sickle",
@@ -155,5 +154,6 @@
       "word": "weight",
       "definition": "How heavy something is, measured by how hard gravity pulls on it."
     }
-  ]
+  ],
+  "date": "2026-10-10"
 }

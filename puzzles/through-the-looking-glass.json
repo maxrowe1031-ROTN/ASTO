@@ -85,7 +85,6 @@
       "definition": "A mirror that curves outward like the outside of a ball, bulging toward you in the middle."
     }
   ],
-  "date": "2026-09-01",
   "definitions": [
     {
       "word": "mirror maze",
@@ -151,5 +150,6 @@
       "word": "cracking",
       "definition": "Developing a split or fracture, the first sign that something solid is failing."
     }
-  ]
+  ],
+  "date": "2026-11-01"
 }

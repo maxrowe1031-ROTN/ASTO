@@ -87,7 +87,6 @@
       "definition": "A buzzing tool with electromagnetic coils that snap a needle bar up and down, the older-style build many old-school shops still swear by."
     }
   ],
-  "date": "2026-08-08",
   "definitions": [
     {
       "word": "coil machine",
@@ -153,5 +152,6 @@
       "word": "sleeve",
       "definition": "A large tattoo design that wraps around the whole arm, often built from many smaller pieces."
     }
-  ]
+  ],
+  "date": "2026-10-08"
 }

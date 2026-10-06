@@ -2,6 +2,28 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-10-06 — October calendar restart and morning review routine
+
+- **Max's direction:** restart the calendar in October for a buffer; three fresh
+  candidates daily for review at 9 a.m. Mountain Time, using the paid pipeline.
+- **Changed:** all 50 published boards rescheduled through `puzzle-store` using
+  the existing launch tool, October 1–November 19; none cut. October 6 is
+  "In the Bakery". D-37 records the decision.
+- **Automation:** active Codex heartbeat `asto-morning-puzzle-review`, daily at
+  8 a.m. to target 9 a.m. readiness. Candidates only; date/slot duplicate protection,
+  existing bounded retries, no automatic approval or publication. First scheduled
+  run and Max's actual morning review remain unverified.
+- **Verified:** `npm test` 1796 passed, zero failed. Semantic comparison against
+  starting HEAD confirmed all board content, IDs, slugs and order unchanged except
+  dates. October 6 schedule analysis: 45 days covered, 44 ahead, through November 19.
+  Real browser: Play → October 2026 calendar (days 1–6 available, no earlier month)
+  → today's In the Bakery → all 16 tiles load. Tested isolated worktree on port 8087.
+  No UI code changed; responsive layout and full replay were not repeated.
+- **Review:** local assistant review approved the date-only scope and preserved
+  identities; not an independent/plugin review. Delivery recorded in Git/PR.
+- **Next:** verify the first morning batch, then Max evaluates the three candidates
+  and publishes only those he accepts. Resume link-preview work after the routine works.
+
 ## 2026-09-12 — The visibility deep dive, and the plan to get ASTO in front of players
 
 Max opened the session with a pivot from the Studio queue: *"i want to do a deep dive on

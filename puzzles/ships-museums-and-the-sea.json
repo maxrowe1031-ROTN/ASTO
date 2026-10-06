@@ -89,7 +89,6 @@
       "definition": "a large old-fashioned sailing ship with tall masts and multiple decks, once used for trade or war"
     }
   ],
-  "date": "2026-08-19",
   "definitions": [
     {
       "word": "vessel",
@@ -155,5 +154,6 @@
       "word": "bay",
       "definition": "a large body of water partly enclosed by land, bigger than a cove"
     }
-  ]
+  ],
+  "date": "2026-10-19"
 }

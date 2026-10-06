@@ -89,7 +89,6 @@
       "definition": "A theater specialist who researches and advises on a play's history, structure, and meaning."
     }
   ],
-  "date": "2026-08-27",
   "definitions": [
     {
       "word": "tragedy",
@@ -155,5 +154,6 @@
       "word": "encore",
       "definition": "An extra bit of performance given after the show ends, by audience demand."
     }
-  ]
+  ],
+  "date": "2026-10-27"
 }

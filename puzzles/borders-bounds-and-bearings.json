@@ -89,7 +89,6 @@
       "definition": "A loop-shaped conveyor belt that goes around in a circle."
     }
   ],
-  "date": "2026-08-01",
   "definitions": [
     {
       "word": "lodging",
@@ -155,5 +154,6 @@
       "word": "deflate",
       "definition": "To let the air out of something, making it flat again."
     }
-  ]
+  ],
+  "date": "2026-10-01"
 }

@@ -89,7 +89,6 @@
       "definition": "A low, sinking, rotating patch of cloud that hangs down from a bigger storm cloud."
     }
   ],
-  "date": "2026-08-31",
   "definitions": [
     {
       "word": "sunrise",
@@ -155,5 +154,6 @@
       "word": "hail",
       "definition": "Hard little balls of ice that fall from a storm cloud instead of rain."
     }
-  ]
+  ],
+  "date": "2026-10-31"
 }

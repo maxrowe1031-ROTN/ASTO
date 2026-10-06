@@ -89,7 +89,6 @@
       "definition": "A plant's root and lower stem system, chosen for its hardiness and strong growth underground."
     }
   ],
-  "date": "2026-08-26",
   "definitions": [
     {
       "word": "gardener",
@@ -155,5 +154,6 @@
       "word": "climber",
       "definition": "A plant that grows upward by twining or clinging onto something for support."
     }
-  ]
+  ],
+  "date": "2026-10-26"
 }
