@@ -89,7 +89,6 @@
       "definition": "A classroom group students report to at the start of the day for attendance and announcements."
     }
   ],
-  "date": "2026-08-25",
   "definitions": [
     {
       "word": "teacher",
@@ -155,5 +154,6 @@
       "word": "graduation",
       "definition": "The ceremony marking that you've finished a level of schooling."
     }
-  ]
+  ],
+  "date": "2026-10-25"
 }

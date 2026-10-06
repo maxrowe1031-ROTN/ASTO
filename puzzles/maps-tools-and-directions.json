@@ -90,7 +90,6 @@
       "definition": "A precision instrument on a tripod with a small telescope, used for measuring angles between points."
     }
   ],
-  "date": "2026-08-28",
   "definitions": [
     {
       "word": "north",
@@ -156,5 +155,6 @@
       "word": "GPS",
       "definition": "A system that tells you exactly where you are on Earth using signals from space."
     }
-  ]
+  ],
+  "date": "2026-10-28"
 }

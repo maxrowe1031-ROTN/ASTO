@@ -89,7 +89,6 @@
       "definition": "A red-nosed comic character with a clumsy, exaggerated style, known for baggy clothes and slapstick blundering."
     }
   ],
-  "date": "2026-09-13",
   "definitions": [
     {
       "word": "raise",
@@ -155,5 +154,6 @@
       "word": "parade",
       "definition": "A festive procession of performers and floats moving through a crowd."
     }
-  ]
+  ],
+  "date": "2026-11-13"
 }

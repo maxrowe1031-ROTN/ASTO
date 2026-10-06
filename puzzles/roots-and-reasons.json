@@ -89,7 +89,6 @@
       "definition": "A small hand tool with a scoop-shaped blade, used for digging in tight spaces"
     }
   ],
-  "date": "2026-08-14",
   "definitions": [
     {
       "word": "flower",
@@ -155,5 +154,6 @@
       "word": "butterfly",
       "definition": "A winged insect with colorful patterned wings that flits from flower to flower"
     }
-  ]
+  ],
+  "date": "2026-10-14"
 }

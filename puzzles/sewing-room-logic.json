@@ -87,7 +87,6 @@
       "definition": "An old-fashioned little tool with a hooked end, used long ago for pulling small fasteners through tight openings on clothing."
     }
   ],
-  "date": "2026-08-13",
   "definitions": [
     {
       "word": "jar",
@@ -153,5 +152,6 @@
       "word": "shank",
       "definition": "The little stem or loop on the back of a button used to sew it onto fabric."
     }
-  ]
+  ],
+  "date": "2026-10-13"
 }

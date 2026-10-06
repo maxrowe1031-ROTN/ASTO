@@ -89,7 +89,6 @@
       "definition": "A light, late snowfall that surprises everyone after the weather has already turned mild in spring."
     }
   ],
-  "date": "2026-08-05",
   "definitions": [
     {
       "word": "sugarmaker",
@@ -155,5 +154,6 @@
       "word": "sap run",
       "definition": "The stretch of days when sap flows freely up through maple trees, ready for tapping."
     }
-  ]
+  ],
+  "date": "2026-10-05"
 }

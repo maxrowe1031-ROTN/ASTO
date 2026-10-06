@@ -89,7 +89,6 @@
       "definition": "a thin paper strip once printed with scrolling rows of numbers and letters"
     }
   ],
-  "date": "2026-09-15",
   "definitions": [
     {
       "word": "vault",
@@ -155,5 +154,6 @@
       "word": "stock exchange",
       "definition": "a huge organized marketplace where shares of companies are bought and sold."
     }
-  ]
+  ],
+  "date": "2026-11-15"
 }

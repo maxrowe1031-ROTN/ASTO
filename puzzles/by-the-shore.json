@@ -89,7 +89,6 @@
       "definition": "a soft-bodied small creature, often with a hard outer covering, usually found near water"
     }
   ],
-  "date": "2026-08-30",
   "definitions": [
     {
       "word": "seabird",
@@ -155,5 +154,6 @@
       "word": "shell",
       "definition": "a hard protective covering that some small creatures carry or live inside"
     }
-  ]
+  ],
+  "date": "2026-10-30"
 }

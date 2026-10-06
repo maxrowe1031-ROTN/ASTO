@@ -89,7 +89,6 @@
       "definition": "A fictional chemical compound from comic lore, sprayed or released to affect a person's mind."
     }
   ],
-  "date": "2026-08-20",
   "definitions": [
     {
       "word": "villain",
@@ -155,5 +154,6 @@
       "word": "stakeout",
       "definition": "Quietly watching a place for a long stretch, waiting for something to happen."
     }
-  ]
+  ],
+  "date": "2026-10-20"
 }

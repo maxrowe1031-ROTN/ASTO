@@ -89,7 +89,6 @@
       "definition": "A written note left with someone describing where you're headed and when you'll be back."
     }
   ],
-  "date": "2026-09-14",
   "definitions": [
     {
       "word": "pod",
@@ -155,5 +154,6 @@
       "word": "voyage",
       "definition": "A long trip taken by sea."
     }
-  ]
+  ],
+  "date": "2026-11-14"
 }

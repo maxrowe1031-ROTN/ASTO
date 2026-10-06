@@ -89,7 +89,6 @@
       "definition": "A style with steep sides that slope down on all faces, often with small windows poking out near the top."
     }
   ],
-  "date": "2026-08-21",
   "definitions": [
     {
       "word": "mason",
@@ -155,5 +154,6 @@
       "word": "payoff",
       "definition": "The moment you make the last payment and finally clear a debt completely."
     }
-  ]
+  ],
+  "date": "2026-10-21"
 }

@@ -3477,6 +3477,29 @@ the calendar cannot keep up — then the Studio's batch launcher (D-35) earns it
 **or** a teacher or a parent asks for an easier board — then the educational angle's two
 prerequisites (a teacher page, a tier filter) become a proposal.
 
+### D-37 — Restart the calendar in October; three morning candidates (2026-10-06)
+
+Max requested a calendar restart beginning in October, reusing the published
+puzzles to restore a buffer. The same 50 boards, in their existing order, now
+occupy October 1 through November 19, 2026. Only release dates change; puzzle
+content, slugs and IDs stay intact. Existing links and stored results retain
+their identities; this is a calendar reset, not a reset of player history.
+On October 6 this provides 45 covered days including today.
+
+Max chose three newly generated candidates every day, including weekends,
+ready for his 9 a.m. America/Denver review, using the existing paid AI pipeline.
+The Codex heartbeat `asto-morning-puzzle-review` starts at 8 a.m. to target that
+review time. It uses the real local Studio corpus, fresh subjects, sequential
+runs and the existing bounded revision loop. Date-and-slot slugs prevent duplicate
+batches on a resumed invocation. Failures are reported, not hidden behind extra
+replacement runs. The existing unreviewed queue remains intact.
+
+The automation prepares candidates only. Max retains creative approval and
+publishing authority. Saved automation configuration is not proof of a successful
+scheduled generation run; first-run acceptance remains open. The Mac and Codex
+must be available for this local automation. No website publishing permission is
+conferred on future automation runs.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

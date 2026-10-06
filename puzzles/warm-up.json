@@ -1,7 +1,6 @@
 {
   "id": "asto-warm-up",
   "title": "Warm Up",
-  "date": "2026-09-11",
   "sets": [
     {
       "id": "set-growth",
@@ -152,5 +151,6 @@
       "word": "Dune",
       "definition": "A mound or hill of loose sand piled up in a rounded shape."
     }
-  ]
+  ],
+  "date": "2026-11-11"
 }

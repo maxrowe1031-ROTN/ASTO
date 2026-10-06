@@ -86,7 +86,6 @@
       "definition": "A financial guarantee that pays back backers if money runs out before a job is finished."
     }
   ],
-  "date": "2026-09-03",
   "definitions": [
     {
       "word": "camera",
@@ -152,5 +151,6 @@
       "word": "shutdown",
       "definition": "A sudden stop that halts a whole operation before it's done."
     }
-  ]
+  ],
+  "date": "2026-11-03"
 }
