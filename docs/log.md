@@ -2,6 +2,26 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-10-06 — Private phone access to the Review Studio
+
+- **Direction:** Max accepted phone review access, then completed the Tailscale
+  Serve account approval. Reused his existing Mac/iOS Tailscale setup; no public
+  endpoint or new dependency. Studio stays on loopback, behind private HTTPS.
+- **Found and fixed:** Desk click handling was attached to the persistent view.
+  Navigating Desk → Review → Play this board triggered a stale handler and
+  routed to `/runs/undefined`. Bind only to the replaceable queue and require
+  a run ID; a regression check covers repeated navigation without extra handlers.
+- **Verification:** private HTTPS returned HTTP 200; Serve configuration points
+  only to the local Studio, with no Funnel configuration. At 390×844, reproduced
+  the original failure, then opened candidate play and solved one set (Correct!),
+  with no horizontal document overflow. No real editorial feedback or approval
+  was saved during testing. Full-suite result is recorded in the delivery PR.
+- **Acceptance:** actual phone connection and a saved review remain Max's check.
+  The Mac must remain awake and the Studio process running; no login service
+  was installed. Run details and network hostname stay out of public documentation.
+- **Next:** Max opens the private Studio address with iPhone Tailscale connected,
+  plays a candidate and saves his evaluation. Keep morning links phone-accessible.
+
 ## 2026-10-06 — October calendar restart and morning review routine
 
 - **Max's direction:** restart the calendar in October for a buffer; three fresh

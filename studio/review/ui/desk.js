@@ -223,8 +223,10 @@ export function wireDesk(root, { runs, onStart, onPlay }) {
       }),
     );
   });
-  root.addEventListener('click', (event) => {
-    const play = event.target.closest('[data-act="play"]');
+  // Bind to the replaceable queue, not the persistent view shared by routes.
+  // Otherwise a later review-page Play bubbles into an old Desk handler.
+  root.querySelector('#queue')?.addEventListener('click', (event) => {
+    const play = event.target.closest('[data-act="play"][data-run-id]');
     if (play && onPlay) onPlay(play.dataset.runId);
   });
 }
