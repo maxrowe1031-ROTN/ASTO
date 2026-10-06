@@ -15,10 +15,15 @@ Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`
   only to the local Studio, with no Funnel configuration. At 390×844, reproduced
   the original failure, then opened candidate play and solved one set (Correct!),
   with no horizontal document overflow. No real editorial feedback or approval
-  was saved during testing. Full-suite result is recorded in the delivery PR.
+  was saved during testing. Full suite: 1,797 passed, zero failed; evidence reused
+  at wrapup because the tested code has not changed. Private HTTPS and the
+  loopback listener were checked again at wrapup.
 - **Acceptance:** actual phone connection and a saved review remain Max's check.
   The Mac must remain awake and the Studio process running; no login service
   was installed. Run details and network hostname stay out of public documentation.
+- **Delivery:** technical Play fix locally reviewed and merged in PR #3, exact
+  reviewed head `73c2b2d13fbf38ca080d54b9957d997c4c3acb49`; main updated.
+  Morning automation now uses the private phone-accessible candidate links.
 - **Next:** Max opens the private Studio address with iPhone Tailscale connected,
   plays a candidate and saves his evaluation. Keep morning links phone-accessible.
 
@@ -33,6 +38,11 @@ Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`
   8 a.m. to target 9 a.m. readiness. Candidates only; date/slot duplicate protection,
   existing bounded retries, no automatic approval or publication. First scheduled
   run and Max's actual morning review remain unverified.
+- **Morning delivery added:** daily 9–9:30 a.m. Mountain calendar block starts
+  October 7 with a start-time notification; recurrence re-read at wrapup.
+  Max authorized one morning email containing the Studio/candidate links.
+  Active automation configuration verified, including Gmail Sent duplicate
+  checks and failure reporting. No test email or scheduled batch has run yet.
 - **Verified:** `npm test` 1796 passed, zero failed. Semantic comparison against
   starting HEAD confirmed all board content, IDs, slugs and order unchanged except
   dates. October 6 schedule analysis: 45 days covered, 44 ahead, through November 19.
@@ -40,7 +50,8 @@ Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`
   → today's In the Bakery → all 16 tiles load. Tested isolated worktree on port 8087.
   No UI code changed; responsive layout and full replay were not repeated.
 - **Review:** local assistant review approved the date-only scope and preserved
-  identities; not an independent/plugin review. Delivery recorded in Git/PR.
+  identities; not an independent/plugin review. PR #2 merged exact reviewed head
+  `89c13d33455f62d8b5057a9f4da7871c018d41ac`; live deployment verified.
 - **Next:** verify the first morning batch, then Max evaluates the three candidates
   and publishes only those he accepts. Resume link-preview work after the routine works.
 

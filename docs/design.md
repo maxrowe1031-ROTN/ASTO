@@ -3494,6 +3494,16 @@ runs and the existing bounded revision loop. Date-and-slot slugs prevent duplica
 batches on a resumed invocation. Failures are reported, not hidden behind extra
 replacement runs. The existing unreviewed queue remains intact.
 
+Max subsequently requested a recurring calendar block and daily email delivery.
+The calendar block is daily 9–9:30 a.m. America/Denver, beginning October 7,
+with a notification at the start. Once the batch finishes, the automation sends
+one short email to Max's connected Gmail address with the Studio link and each
+verified candidate's private review link. A dated subject and Sent check prevent
+duplicate emails. Partial batches and failures must be reported honestly; no
+puzzle answers or raw logs go into the email. This is explicit standing approval
+for these daily emails only. First scheduled generation and email delivery remain
+unverified until they actually run.
+
 The automation prepares candidates only. Max retains creative approval and
 publishing authority. Saved automation configuration is not proof of a successful
 scheduled generation run; first-run acceptance remains open. The Mac and Codex
