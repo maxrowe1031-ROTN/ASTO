@@ -412,3 +412,21 @@ regates every board on every run; the zero is the part that matters.
 purpose — the measurements below are a snapshot of the corpus at the time they were taken,
 and re-stamping them without re-running them would be a lie. Cost figures across the whole
 corpus are in [`../docs/audit-2026-08-31.md`](../docs/audit-2026-08-31.md).
+
+### Private phone access
+
+Max approved phone access on 2026-10-06. The Studio continues binding only
+`127.0.0.1:4321`; the existing Tailscale connection provides private HTTPS.
+Start `npm run studio:review` in the main ASTO checkout, connect Tailscale on
+both the Mac and phone, then open the HTTPS address reported by
+`tailscale serve status`. The configured proxy forwards to port 4321.
+Bookmark that address on the phone. Do not enable public Funnel or bind the
+Studio to every Wi-Fi interface: it can start paid runs and publish boards.
+Access follows the existing Tailscale network permissions.
+
+The Mac must be awake with the Studio running. Serve runs in the background,
+but it does not launch the Studio after a reboot. The morning Codex automation
+can start the Studio when it prepares candidates. To disable this private
+proxy: `tailscale serve --https=443 off`. No new app dependency or account was
+introduced. Real iPhone acceptance remains separate from desktop testing at
+phone dimensions.
