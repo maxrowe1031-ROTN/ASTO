@@ -2,6 +2,19 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-10-07 — Morning routine: two candidates a day
+
+- **Max's direction:** make two candidates a day instead of three, for cost.
+- **Changed:** the Codex automation `asto-morning-puzzle-review` (its definition lives
+  outside this repo, in Codex's automations folder): five wording changes, three → two,
+  slots `-1` through `-2`. Schedule, email, phone links and safety rules untouched; a
+  backup of the previous definition was kept. D-37 amended with a reconsider-when.
+- **Verified:** the edited definition still parses and is ACTIVE on the same daily 8 a.m.
+  schedule. **Not verified:** that Codex reads the edited file rather than its own cached
+  copy — the next morning batch shows it (two runs, not three).
+- **Next:** tomorrow's batch — expect exactly two candidates, and Pair Author finishing in
+  one request (slim-down 1). If three appear, change the count inside the Codex app.
+
 ## 2026-10-07 — Pipeline slim-down 1: stop paying for a first try that fails
 
 - **Max's direction:** keep ASTO running with new puzzles, but the pipeline costs too much

@@ -3510,6 +3510,12 @@ scheduled generation run; first-run acceptance remains open. The Mac and Codex
 must be available for this local automation. No website publishing permission is
 conferred on future automation runs.
 
+**Amended 2026-10-07 — two candidates a day, not three (Max).** To lower pipeline cost
+(D-38). The morning automation's instructions now name slots `-1` and `-2` only. One
+published board a day is the need; at a ~50% approval rate two candidates roughly keeps
+pace, and the calendar buffer absorbs a thin day. **Reconsider when** the buffer of
+scheduled boards ahead falls below ~30 days.
+
 ### D-38 — Pipeline slim-down 1: the Pair Author starts at medium (2026-10-07)
 
 **Why now.** Max: he wants to keep running ASTO and adding puzzles, but the pipeline is too
