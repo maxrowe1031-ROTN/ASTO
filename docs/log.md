@@ -18,6 +18,11 @@ Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`
   already answered 99 rescued calls. The first live proof is the next morning batch.
 - **Subscription:** Max 5x includes $100/month API credits per Anthropic's support article;
   the Billing page did not show the section yet (staged rollout). Max links it when it appears.
+- **Delivery:** locally reviewed (not an independent/plugin review) and merged as PR #4,
+  exact reviewed head `c514e1fe186a122fb3ba6d6913b75c723c80451d`; main fast-forwarded and
+  in sync with origin; suite re-run on main, 1,798 passed, 0 failed. Outcome: technically
+  delivered; the live run and quality acceptance below remain open. Studio config only —
+  nothing on the public site changed.
 - **Acceptance:** board quality under the new profile is Max's judgement, read from his
   normal reviews (reconsider-when is in D-38).
 - **Next:** check tomorrow's morning batch — Pair Author should finish in one request, and
