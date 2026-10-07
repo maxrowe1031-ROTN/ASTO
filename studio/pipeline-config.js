@@ -81,6 +81,13 @@ export const DEFAULT_CONFIG = deepFreeze({
     // shares this ceiling with the answer — the exact failure the note above
     // records — and at `low` effort the thinking stays well inside it.
     '00-subject-scout': 2_000,
+    // The Pair Author's answer runs long: across 97 real runs its successful
+    // replies were a median ~11,900 output tokens and a max of 23,113 —
+    // thinking plus fourteen labelled pairs. 16k sat BELOW what the stage
+    // routinely needs, so the default ceiling was itself a cause of the
+    // truncations the slim-down removed (see `effort` below). 24k is the
+    // ceiling the rescue retry was already answering under.
+    '01-pair-author': 24_000,
   },
 
   // How hard each stage thinks. Effort is the lever adaptive thinking left us:
@@ -164,7 +171,25 @@ export const DEFAULT_CONFIG = deepFreeze({
     // spend is ~a cent — but at low effort: it is a short creative pick, not
     // a search.
     '00-subject-scout': 'low',
-    '01-pair-author': 'high',
+    // SLIM-DOWN 1 (2026-10-07, with Max — the pipeline was too expensive to
+    // run for a year). Came down from high on measurement, not on principle.
+    // Across the 97 real runs from 2026-08-06 on, 99 of 132 Pair Author calls
+    // (75%) truncated at high / 16k and were rescued by the retry at medium /
+    // 24k. The truncated first try is billed in full: $25.05 of $100.19 total
+    // spend, a quarter of the bill, bought nothing. Most boards Max has
+    // approved were therefore ALREADY authored at medium — this makes the
+    // first attempt the one that was working, rather than paying to fail
+    // first. Same shape as 02, 04 and 06 before it: high on a stage whose
+    // thinking does not converge.
+    //
+    // The honest caveat, to read against the review corpus: boards where high
+    // DID finish were approved 19/26 (73%) against 30/49 (61%) for the
+    // rescued-at-medium ones. Small samples, and confounded — high finishes
+    // on exactly the subjects that were easy to author — but it is the
+    // number to watch. Reconsider if approval under profile
+    // `2026-10-07-slim-down-1` falls clearly below ~60% over ~20 judged
+    // boards.
+    '01-pair-author': 'medium',
     '02-theme-grouper': 'medium',
     '03-difficulty-rater': 'medium',
     '04-board-builder': 'medium',
@@ -207,7 +232,7 @@ export const DEFAULT_CONFIG = deepFreeze({
   // The string must change with the map, not just when it feels significant:
   // boards built under two different maps are two populations, and reusing one
   // label would merge them inside the very corpus meant to tell them apart.
-  effortProfile: '2026-09-05-learning-mode',
+  effortProfile: '2026-10-07-slim-down-1',
 
   // Two bounds, because there are two failure classes and they are retried by
   // different owners. `transport` bounds llm.js's own loop (timeouts, 429s,

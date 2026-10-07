@@ -10,6 +10,7 @@ import assert from 'node:assert/strict';
 import {
   DEFAULT_CONFIG,
   effortFor,
+  maxTokensFor,
   modelFor,
   retriesFor,
 } from '../../../studio/pipeline-config.js';
@@ -73,12 +74,13 @@ test('the gate stage has no effort — it never calls a model', () => {
 });
 
 test('effort follows what a stage actually has to work out', () => {
-  // The lean-2 numbers were measured against the OLD asks, so the taxonomy
-  // shakedown (2026-08-04, with Max) raised 01: authoring across four stances
-  // inside one theme is the hardest ask it has carried, and judging the new
-  // design at settings tuned for the old job would confound "the design
-  // doesn't work" with "the model had no room to think".
-  assert.equal(effortFor('01-pair-author', DEFAULT_CONFIG), 'high');
+  // 01 was raised to high for the taxonomy shakedown (2026-08-04) and came
+  // back down at slim-down 1 (2026-10-07, with Max): 75% of its calls
+  // truncated at high and were rescued at medium anyway, so the first try was
+  // a quarter of all spend bought for nothing. Its ceiling moved with it —
+  // the stage's real answers run to ~23k tokens, above the 16k default.
+  assert.equal(effortFor('01-pair-author', DEFAULT_CONFIG), 'medium');
+  assert.equal(maxTokensFor('01-pair-author', DEFAULT_CONFIG), 24_000);
   // 04 holds at medium — its job barely hardened; the stance check is
   // mechanical, at the gate.
   assert.equal(effortFor('04-board-builder', DEFAULT_CONFIG), 'medium');
@@ -104,7 +106,7 @@ test('the effort profile changes whenever the effort map does', () => {
   // sharing one label would silently merge the two populations being compared,
   // so the assertion is pinned deliberately: changing the map above without
   // changing the string fails here.
-  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-09-05-learning-mode');
+  assert.equal(DEFAULT_CONFIG.effortProfile, '2026-10-07-slim-down-1');
 });
 
 test('every stage has small explicit retry limits for both failure classes', () => {

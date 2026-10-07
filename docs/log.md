@@ -2,6 +2,29 @@
 
 Append-only build history. Newest first. Written by `/wrapup`, read by `/warmup`.
 
+## 2026-10-07 — Pipeline slim-down 1: stop paying for a first try that fails
+
+- **Max's direction:** keep ASTO running with new puzzles, but the pipeline costs too much
+  for a year. He asked whether his subscription could pay; then "start the slim down".
+- **Measured (run records, no new spend):** 137 real runs, $127.64 total. ~$0.91 a
+  candidate in August, $1.76 today; ~$2.13 per published board. The Pair Author is ~48% of
+  spend, and 75% of its calls truncated at high effort before succeeding on the cheaper
+  retry — $25.05 of the last $100.19 was that failed first try.
+- **Changed (D-38):** Pair Author starts at medium effort with a 24k ceiling; effort profile
+  `2026-10-07-slim-down-1`. Three files: the config and the two tests that pin it.
+- **Verified:** `npm test` 1,797 passed, 0 failed, exit 0 (worktree; the main checkout shows
+  1,798 because of its uncommitted "Down on the Farm" board). **Not verified:** no paid run
+  has been made under the new profile — the evidence is that this exact request shape
+  already answered 99 rescued calls. The first live proof is the next morning batch.
+- **Subscription:** Max 5x includes $100/month API credits per Anthropic's support article;
+  the Billing page did not show the section yet (staged rollout). Max links it when it appears.
+- **Acceptance:** board quality under the new profile is Max's judgement, read from his
+  normal reviews (reconsider-when is in D-38).
+- **Next:** check tomorrow's morning batch — Pair Author should finish in one request, and
+  cost per run should fall by about a quarter. Max re-checks Settings → Billing for API
+  credits (plan renews Oct 19). Then decide the next lever: two candidates a day, Batches
+  API, or a cheaper test-player. "Down on the Farm" is still uncommitted in the main checkout.
+
 ## 2026-10-06 — Private phone access to the Review Studio
 
 - **Direction:** Max accepted phone review access, then completed the Tailscale

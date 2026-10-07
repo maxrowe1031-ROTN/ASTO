@@ -3510,6 +3510,35 @@ scheduled generation run; first-run acceptance remains open. The Mac and Codex
 must be available for this local automation. No website publishing permission is
 conferred on future automation runs.
 
+### D-38 — Pipeline slim-down 1: the Pair Author starts at medium (2026-10-07)
+
+**Why now.** Max: he wants to keep running ASTO and adding puzzles, but the pipeline is too
+expensive to run for a year. Measured from the run records: ~$0.91 a candidate in August,
+$1.76 on 2026-10-07 (one day, three runs), ~$2.13 per *published* board at a ~50% approval
+rate — roughly $1,000–$1,900 a year at three candidates a day (D-37).
+
+**What the records showed.** Across the 97 real runs from 2026-08-06 on, 99 of 132 Pair
+Author calls (75%) truncated on the first try at `high` / 16k and were rescued by the D-12
+retry at `medium` / 24k. The truncated try is billed in full: **$25.05 of $100.19 total
+spend bought nothing.** No other stage wastes meaningfully (07: $1.47).
+
+**Decision.** `01-pair-author` runs at `medium` with a 24k ceiling from the first attempt —
+the request shape that was already producing most approved boards. Profile
+`2026-10-07-slim-down-1`. Expected saving ~25% a run; a projection until judged runs exist.
+This discharges the slim-down trigger in item 7 of the taxonomy-shakedown record for the
+effort map only — **the raised budget caps are unchanged** and still owed a decision.
+
+**Accepted risk.** Boards where `high` did finish were approved 19/26 (73%) against 30/49
+(61%) for those rescued at medium. Small and confounded (high finishes on the easy
+subjects), but real enough to watch. **Reconsider when** approval under this profile is
+clearly below ~60% over ~20 judged boards.
+
+**Funding, recorded not adopted.** Max's Max 5x plan includes $100/month of API credits
+(usable on the Messages and Batches APIs) once linked to the Console organization that owns
+the pipeline's key. On 2026-10-07 the section was not yet on his Billing page — Anthropic
+is rolling it out over several days. Linking is Max's action. Further levers, unapproved:
+two candidates a day instead of three, the Batches API (half price), a cheaper test-player.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

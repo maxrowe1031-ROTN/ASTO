@@ -291,10 +291,10 @@ test('a truncation retry lowers the effort as well as raising the ceiling', asyn
       ),
     );
     assert.equal(request.attempts, 2, 'it took the retry to get there');
-    assert.equal(request.maxTokens, 24_000, 'the ceiling was raised');
-    // 01 is configured high; the rescue answers at medium.
-    assert.equal(effortFor('01-pair-author'), 'high', 'the configured effort, for contrast');
-    assert.equal(request.effort, 'medium', 'the effort the answer actually came back at');
+    assert.equal(request.maxTokens, 36_000, 'the ceiling was raised');
+    // 01 is configured medium (slim-down 1, 2026-10-07); the rescue answers at low.
+    assert.equal(effortFor('01-pair-author'), 'medium', 'the configured effort, for contrast');
+    assert.equal(request.effort, 'low', 'the effort the answer actually came back at');
   } finally {
     cleanup();
   }
