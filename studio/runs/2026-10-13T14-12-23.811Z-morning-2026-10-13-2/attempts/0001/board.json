@@ -1,0 +1,86 @@
+{
+  "id": "board-preservation-analogies",
+  "title": "The Pickling Shed",
+  "sets": [
+    {
+      "id": "set-instrument-action",
+      "relationshipLabel": "tool and the action it exists to perform",
+      "explanation": "A weight stone exists to submerge, just as cheesecloth exists to strain — each tool is defined by the single task it performs.",
+      "pairs": [
+        [
+          "weight stone",
+          "submerge"
+        ],
+        [
+          "cheesecloth",
+          "strain"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "kitchen-objects",
+        "process-tools"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "written form of a thing and the thing itself",
+      "explanation": "A recipe is the written form that becomes kimchi, just as a formula is the written form that becomes brine.",
+      "pairs": [
+        [
+          "recipe",
+          "kimchi"
+        ],
+        [
+          "formula",
+          "brine"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "brine-vs-brining",
+        "written-instructions"
+      ]
+    },
+    {
+      "id": "set-sequence",
+      "relationshipLabel": "early stage and the whole process it belongs to",
+      "explanation": "Brining is the first step on the way to relish, just as fermenting is the first step on the way to sauerkraut.",
+      "pairs": [
+        [
+          "brining",
+          "relish"
+        ],
+        [
+          "fermenting",
+          "sauerkraut"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "brine-vs-brining",
+        "process-vs-product"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "the thing that stops another thing",
+      "explanation": "Salt necessarily halts spoilage, just as vinegar necessarily halts mold — each is a cause that reliably prevents its effect.",
+      "pairs": [
+        [
+          "salt",
+          "spoilage"
+        ],
+        [
+          "vinegar",
+          "mold"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "salt-and-brine",
+        "preservation-ingredients"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "id": "asto-board-01",
+  "title": "Web, Wing, and Season",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "object and the structural feature it has",
+      "explanation": "An orb web's hub and a leaf's vein are both the central, branching feature that gives the object its structure, not something it does or becomes.",
+      "pairs": [
+        [
+          "Orb web",
+          "Hub"
+        ],
+        [
+          "Leaf",
+          "Vein"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "web-anatomy",
+        "plant-part"
+      ]
+    },
+    {
+      "id": "set-instrument-action",
+      "relationshipLabel": "organ and the action it exists to perform",
+      "explanation": "A spinneret exists to spin silk and a fang exists to inject venom — each organ is defined by the single act it was built for.",
+      "pairs": [
+        [
+          "Spinneret",
+          "Spin"
+        ],
+        [
+          "Fang",
+          "Inject"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "spider-anatomy"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "one thing transforming into another through a process",
+      "explanation": "Mist condenses into dew and a grub metamorphoses into a beetle — two very different domains, same shape of transformation.",
+      "pairs": [
+        [
+          "Mist",
+          "Dew"
+        ],
+        [
+          "Grub",
+          "Beetle"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "insect-stage"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "start and end of a span",
+      "explanation": "Sunrise opens a day as sunset closes it, and weaving begins a fabric's life as tearing ends it — the same start-to-finish shape at wildly different scales.",
+      "pairs": [
+        [
+          "Sunrise",
+          "Sunset"
+        ],
+        [
+          "Weave",
+          "Tear"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "silk",
+        "day-cycle"
+      ]
+    }
+  ]
+}

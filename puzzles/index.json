@@ -300,6 +300,54 @@
       "id": "asto-the-curing-room",
       "title": "The Curing Room",
       "date": "2026-11-19"
+    },
+    {
+      "slug": "down-on-the-farm",
+      "id": "asto-down-on-the-farm",
+      "title": "Down on the Farm",
+      "date": "2026-11-20"
+    },
+    {
+      "slug": "gold-rush-camp",
+      "id": "asto-gold-rush-camp",
+      "title": "Gold Rush Camp",
+      "date": "2026-11-21"
+    },
+    {
+      "slug": "web-wing-and-season",
+      "id": "asto-web-wing-and-season",
+      "title": "Web, Wing, and Season",
+      "date": "2026-11-22"
+    },
+    {
+      "slug": "forge-and-treasury",
+      "id": "asto-forge-and-treasury",
+      "title": "Forge and Treasury",
+      "date": "2026-11-23"
+    },
+    {
+      "slug": "mountain-trade-route",
+      "id": "asto-mountain-trade-route",
+      "title": "Mountain Trade Route",
+      "date": "2026-11-24"
+    },
+    {
+      "slug": "orchard-logic",
+      "id": "asto-orchard-logic",
+      "title": "Orchard Logic",
+      "date": "2026-11-25"
+    },
+    {
+      "slug": "roofline-riddles",
+      "id": "asto-roofline-riddles",
+      "title": "Roofline Riddles",
+      "date": "2026-11-26"
+    },
+    {
+      "slug": "tomb-and-trade",
+      "id": "asto-tomb-and-trade",
+      "title": "Tomb and Trade",
+      "date": "2026-11-27"
     }
   ]
 }

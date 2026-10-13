@@ -1,0 +1,157 @@
+{
+  "id": "asto-web-wing-and-season",
+  "title": "Web, Wing, and Season",
+  "sets": [
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "object and the structural feature it has",
+      "explanation": "An orb web's hub and a leaf's vein are both the central, branching feature that gives the object its structure, not something it does or becomes.",
+      "pairs": [
+        [
+          "Orb web",
+          "Hub"
+        ],
+        [
+          "Leaf",
+          "Vein"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "web-anatomy",
+        "plant-part"
+      ]
+    },
+    {
+      "id": "set-instrument-action",
+      "relationshipLabel": "organ and the action it exists to perform",
+      "explanation": "A spinneret exists to spin silk and a fang exists to inject venom — each organ is defined by the single act it was built for.",
+      "pairs": [
+        [
+          "Spinneret",
+          "Spin"
+        ],
+        [
+          "Fang",
+          "Inject"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "spider-anatomy"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "one thing transforming into another through a process",
+      "explanation": "Mist condenses into dew and a grub metamorphoses into a beetle — two very different domains, same shape of transformation.",
+      "pairs": [
+        [
+          "Mist",
+          "Dew"
+        ],
+        [
+          "Grub",
+          "Beetle"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "insect-stage"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "start and end of a span",
+      "explanation": "Sunrise opens a day as sunset closes it, and weaving begins a fabric's life as tearing ends it — the same start-to-finish shape at wildly different scales.",
+      "pairs": [
+        [
+          "Sunrise",
+          "Sunset"
+        ],
+        [
+          "Weave",
+          "Tear"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "silk",
+        "day-cycle"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "word": "Spinneret",
+      "definition": "A small body part near the tail end of a spider that silk comes out of"
+    }
+  ],
+  "definitions": [
+    {
+      "word": "Orb web",
+      "definition": "A round, spiral spiderweb spun between anchor points to catch flying insects."
+    },
+    {
+      "word": "Hub",
+      "definition": "The center point of a web where the threads all meet and the spider often waits."
+    },
+    {
+      "word": "Leaf",
+      "definition": "The flat green part of a plant that catches sunlight to make food."
+    },
+    {
+      "word": "Vein",
+      "definition": "One of the thin branching lines running through a leaf that carry water and nutrients."
+    },
+    {
+      "word": "Spinneret",
+      "definition": "The small organ on a spider's body that silk comes out of."
+    },
+    {
+      "word": "Spin",
+      "definition": "To twist and pull out silk or thread to make a strand."
+    },
+    {
+      "word": "Fang",
+      "definition": "A sharp pointed tooth some animals use to bite and deliver venom."
+    },
+    {
+      "word": "Inject",
+      "definition": "To force a liquid, like venom, into something through a sharp point."
+    },
+    {
+      "word": "Mist",
+      "definition": "A light haze of tiny water droplets floating in the air."
+    },
+    {
+      "word": "Dew",
+      "definition": "Small drops of water that form on cool surfaces overnight."
+    },
+    {
+      "word": "Grub",
+      "definition": "A soft, worm-like young stage of certain insects before they grow up."
+    },
+    {
+      "word": "Beetle",
+      "definition": "A hard-shelled insect with wings tucked under a stiff outer casing."
+    },
+    {
+      "word": "Sunrise",
+      "definition": "The moment the sun comes up and a new day begins."
+    },
+    {
+      "word": "Sunset",
+      "definition": "The moment the sun goes down and the day comes to a close."
+    },
+    {
+      "word": "Weave",
+      "definition": "To cross threads over and under each other to make cloth or a web."
+    },
+    {
+      "word": "Tear",
+      "definition": "To rip something apart by pulling, breaking its threads or fibers."
+    }
+  ],
+  "date": "2026-11-22"
+}

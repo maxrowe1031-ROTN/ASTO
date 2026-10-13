@@ -1,0 +1,87 @@
+{
+  "id": "board-selkie-sea",
+  "title": "Tales of the Selkie Shore",
+  "sets": [
+    {
+      "id": "set-enabling-agent",
+      "relationshipLabel": "the thing that lets the action happen",
+      "explanation": "An oar is what makes rowing possible just as a flipper is what makes swimming possible — each is the enabling part without which the action can't occur.",
+      "pairs": [
+        [
+          "oar",
+          "row"
+        ],
+        [
+          "flipper",
+          "swim"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "tool-action",
+        "body-part"
+      ]
+    },
+    {
+      "id": "set-synonymity",
+      "relationshipLabel": "two names for the same thing",
+      "explanation": "Selkie and seal-folk are two names for the same mythical being, just as pelt and hide are two names for the same animal covering.",
+      "pairs": [
+        [
+          "selkie",
+          "seal-folk"
+        ],
+        [
+          "pelt",
+          "hide"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "folklore-vocab",
+        "skin-words"
+      ]
+    },
+    {
+      "id": "set-directional",
+      "relationshipLabel": "two ends of one spatial axis",
+      "explanation": "Shoreline and horizon mark the two visible ends of the sea's breadth, while surface and seabed mark the two ends of its depth — the same kind of axis, read in two directions.",
+      "pairs": [
+        [
+          "shoreline",
+          "horizon"
+        ],
+        [
+          "surface",
+          "seabed"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "sea-geography",
+        "container-lookalike"
+      ]
+    },
+    {
+      "id": "set-item-location",
+      "relationshipLabel": "a place and the item hidden or stored there",
+      "explanation": "A chest conceals a stolen sealskin and a rafter conceals a hidden net — each pair names the hiding place and the very object the selkie tales turn on.",
+      "pairs": [
+        [
+          "chest",
+          "sealskin"
+        ],
+        [
+          "rafter",
+          "net"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "container",
+        "skin-words",
+        "folklore-imagery"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "id": "asto-gold-rush-camp",
+  "title": "Gold Rush Camp",
+  "sets": [
+    {
+      "id": "set-gear-category",
+      "relationshipLabel": "a category of camp gear and one specific kind of it",
+      "explanation": "A tool and a vehicle are both broad categories, and a pickaxe and a sled are specific items that belong to each.",
+      "pairs": [
+        [
+          "tool",
+          "pickaxe"
+        ],
+        [
+          "vehicle",
+          "sled"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "camp-gear",
+        "category-instance"
+      ]
+    },
+    {
+      "id": "set-tool-motion",
+      "relationshipLabel": "a tool and the motion it exists to perform",
+      "explanation": "A pan exists to sift and a sluice exists to wash — each tool is defined by the single motion it was built to do.",
+      "pairs": [
+        [
+          "pan",
+          "sift"
+        ],
+        [
+          "sluice",
+          "wash"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "mining-tools",
+        "instrument-action"
+      ]
+    },
+    {
+      "id": "set-span-bookends",
+      "relationshipLabel": "the start and end of one continuous span",
+      "explanation": "A freeze ends in a thaw just as a stampede of miners ends in a ghost town — each pair bookends the same rise-and-fall arc at a different scale.",
+      "pairs": [
+        [
+          "freeze",
+          "thaw"
+        ],
+        [
+          "stampede",
+          "ghost town"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "season",
+        "boom-bust"
+      ]
+    },
+    {
+      "id": "set-small-enabler",
+      "relationshipLabel": "the small thing that necessarily enables the larger thing",
+      "explanation": "A match is what makes a campfire possible and a lantern is what makes visibility possible — each small object is the necessary cause of the larger condition.",
+      "pairs": [
+        [
+          "match",
+          "campfire"
+        ],
+        [
+          "lantern",
+          "visibility"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "fire",
+        "light-sources"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "word": "sluice",
+      "definition": "a long angled trough that uses flowing water to separate heavy material from loose dirt and gravel"
+    }
+  ],
+  "definitions": [
+    {
+      "word": "tool",
+      "definition": "Any object made to help you do a job, like digging or building."
+    },
+    {
+      "word": "pickaxe",
+      "definition": "A heavy tool with a pointed head for breaking up rock and hard ground."
+    },
+    {
+      "word": "vehicle",
+      "definition": "Anything used to carry people or goods from one place to another."
+    },
+    {
+      "word": "sled",
+      "definition": "A flat frame on runners for hauling loads or people over snow and ice."
+    },
+    {
+      "word": "pan",
+      "definition": "A shallow metal dish used to shake dirt and gravel while looking for gold."
+    },
+    {
+      "word": "sift",
+      "definition": "To shake something through or around so the finer bits separate from the coarse."
+    },
+    {
+      "word": "sluice",
+      "definition": "A long trough that channels water to separate gold from gravel and sand."
+    },
+    {
+      "word": "wash",
+      "definition": "To rinse or flush material with moving water, carrying away the lighter stuff."
+    },
+    {
+      "word": "freeze",
+      "definition": "A stretch of bitter cold weather that locks up ground and water."
+    },
+    {
+      "word": "thaw",
+      "definition": "The warming spell when ice and frozen ground soften and melt again."
+    },
+    {
+      "word": "stampede",
+      "definition": "A sudden rush of people all chasing the same opportunity at once."
+    },
+    {
+      "word": "ghost town",
+      "definition": "A once-busy town left empty after everyone who came for it has gone."
+    },
+    {
+      "word": "match",
+      "definition": "A small stick that bursts into flame when struck against a rough surface."
+    },
+    {
+      "word": "campfire",
+      "definition": "A controlled fire built outdoors for warmth, cooking, or light."
+    },
+    {
+      "word": "lantern",
+      "definition": "A portable case holding a flame or bulb, carried to light your way."
+    },
+    {
+      "word": "visibility",
+      "definition": "How well you can see things around you in the dark or in bad weather."
+    }
+  ],
+  "date": "2026-11-21"
+}

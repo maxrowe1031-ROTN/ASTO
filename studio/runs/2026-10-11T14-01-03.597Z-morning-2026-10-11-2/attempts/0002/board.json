@@ -1,0 +1,86 @@
+{
+  "id": "asto-egypt-board-1",
+  "title": "Tomb and Trade",
+  "sets": [
+    {
+      "id": "set-always-has",
+      "relationshipLabel": "A funerary object and the covering it always has",
+      "explanation": "A mummy is never without its wrapping, just as a sarcophagus is never without its lid — each object entails its covering by definition.",
+      "pairs": [
+        [
+          "mummy",
+          "wrapping"
+        ],
+        [
+          "sarcophagus",
+          "lid"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "funerary",
+        "object-component"
+      ]
+    },
+    {
+      "id": "set-trade-tool",
+      "relationshipLabel": "A worker and the tool central to their trade",
+      "explanation": "An archaeologist relies on a trowel the way an embalmer relies on natron — each tool defines the daily work of its trade.",
+      "pairs": [
+        [
+          "archaeologist",
+          "trowel"
+        ],
+        [
+          "embalmer",
+          "natron"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "tools",
+        "profession"
+      ]
+    },
+    {
+      "id": "set-likeness",
+      "relationshipLabel": "A person and the crafted image made to stand in for them",
+      "explanation": "A funerary mask stands in for the pharaoh's face in death, just as a ka statue stands in for the deceased's spirit — both are crafted substitutes for the person themselves.",
+      "pairs": [
+        [
+          "pharaoh",
+          "funerary mask"
+        ],
+        [
+          "deceased",
+          "ka statue"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "representation",
+        "likeness"
+      ]
+    },
+    {
+      "id": "set-hidden-span",
+      "relationshipLabel": "An action and the action that undoes it",
+      "explanation": "To break a seal reverses the sealing, just as to unearth reverses the burial — each pair names an action and the opposite act that cancels it, independent of any shared timeline.",
+      "pairs": [
+        [
+          "seal",
+          "break"
+        ],
+        [
+          "bury",
+          "unearth"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "reversal",
+        "dimension"
+      ]
+    }
+  ]
+}

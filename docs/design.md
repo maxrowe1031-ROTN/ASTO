@@ -3545,6 +3545,44 @@ the pipeline's key. On 2026-10-07 the section was not yet on his Billing page �
 is rolling it out over several days. Linking is Max's action. Further levers, unapproved:
 two candidates a day instead of three, the Batches API (half price), a cheaper test-player.
 
+### D-36 — The pipeline's API spend is covered by Max plan credits (2026-10-13)
+
+**What happened.** Max asked whether the monthly API credits that come with Max and
+Team plans could remove the Studio's API bill. They can: the Studio calls the plain
+Messages API with the key in `.env` (`llm.js`, the only fetch), which is exactly what
+the credits cover. Max is on **Max 20x** and linked his Console organization to the
+plan on 2026-10-13. From that cycle on, the organization receives **$200 of API credit a
+month**, spent before any purchased credit. At the audited mean of $0.87 a run that is
+roughly 230 boards a month — more than the pipeline has ever run.
+
+**What does NOT change, and why — Max's question, answered deliberately:**
+
+- **The cost caps in `pipeline-config.js` stay** ($20 an attempt, $60 a run). They were
+  never a budget; they are the circuit breaker against a wedged retry loop, and a
+  runaway loop burns credit exactly as it burned cash. The dollar is still the right
+  unit because the credit is finite and expires monthly.
+- **The Desk launcher's estimate stays** in dollars, labelled *≈ from the last N real
+  runs*. It now reads as "how much of this month's $200 will this batch use", which is
+  the question that matters; renaming the unit would hide the one number that still
+  constrains a batch.
+- **The audit's spend figures stay** (`docs/audit-2026-08-31.md`, $123.02 over 141
+  runs). They are a dated snapshot of what was paid; nothing retroactive applies.
+- **`budget.js` and `usage.costUsd` stay** — list-price accounting is the only way to
+  know when the month's credit is nearly spent.
+
+**Accepted risks:** when the credit runs out mid-month, API requests **stop** rather than
+charge the plan (no auto-reload is set); the Studio reports that as the ordinary
+transport failure it already names in plain words, and the fix is to wait for the
+cycle or enable auto-reload in the Console — Max's call, never automatic. Unused credit
+expires; nothing here tries to spend it down. Credits attach to the organization, not
+the key, so any other project on that organization shares the pool.
+
+**Reconsider-when:** the Studio starts refusing runs near month-end often enough to
+matter — then the Desk's spend tile should read against the credit balance (the
+Console's Billing page shows it; there is no API for it today), or auto-reload becomes
+a discussed cost; **or** Max leaves the Max plan, at which point `.env`'s key bills cash
+again and nothing in the code will say so.
+
 ## House-rule exceptions
 
 *Added 2026-08-02 during the project-template migration. These are places where ASTO

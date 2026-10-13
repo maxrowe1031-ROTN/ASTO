@@ -1,0 +1,87 @@
+{
+  "id": "asto-board-001",
+  "title": "Roofline Riddles",
+  "sets": [
+    {
+      "id": "set-roost",
+      "relationshipLabel": "a creature and the structure built or used as its home",
+      "explanation": "Bats roost in belfries and pigeons nest in coops — each pair names a creature and the structure built for it.",
+      "pairs": [
+        [
+          "bat",
+          "belfry"
+        ],
+        [
+          "pigeon",
+          "coop"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "animal-structure",
+        "home"
+      ]
+    },
+    {
+      "id": "set-rooftop-residue",
+      "relationshipLabel": "one substance turning into another through a rooftop process",
+      "explanation": "Cold turns rainwater to ice and combustion turns smoke to soot — each pair tracks a substance's transformation.",
+      "pairs": [
+        [
+          "rainwater",
+          "ice"
+        ],
+        [
+          "smoke",
+          "soot"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "transformation",
+        "weather-fire"
+      ]
+    },
+    {
+      "id": "set-signal-alarm",
+      "relationshipLabel": "a signal fired or projected to announce an emergency",
+      "explanation": "The Bat-signal announces an emergency and a flare signals distress — both are visual alarms thrown into the sky to summon help.",
+      "pairs": [
+        [
+          "Bat-signal",
+          "emergency"
+        ],
+        [
+          "flare",
+          "distress"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "signal",
+        "alarm",
+        "sky"
+      ]
+    },
+    {
+      "id": "set-stakeout",
+      "relationshipLabel": "a place and the covert activity it exists for",
+      "explanation": "A rooftop is chosen for a stakeout and an alleyway for an ambush — each place is defined by the hidden act it enables.",
+      "pairs": [
+        [
+          "rooftop",
+          "stakeout"
+        ],
+        [
+          "alleyway",
+          "ambush"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "covert",
+        "place-activity"
+      ]
+    }
+  ]
+}

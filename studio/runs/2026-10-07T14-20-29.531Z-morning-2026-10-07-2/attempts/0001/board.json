@@ -1,0 +1,86 @@
+{
+  "id": "board-weather-analogies",
+  "title": "Weather Watch",
+  "sets": [
+    {
+      "id": "set-agent-instrument-weather",
+      "relationshipLabel": "a worker and the defining tool of their trade",
+      "explanation": "A fisherman is known by his net just as a meteorologist is known by radar — each worker paired with the instrument that defines their craft.",
+      "pairs": [
+        [
+          "fisherman",
+          "net"
+        ],
+        [
+          "meteorologist",
+          "radar"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "tool",
+        "trade"
+      ]
+    },
+    {
+      "id": "set-dimensional-intensity",
+      "relationshipLabel": "the same phenomenon, milder then far more intense",
+      "explanation": "Drizzle swells into downpour just as breeze strengthens into gale — each pair sits on the same scale of intensity.",
+      "pairs": [
+        [
+          "drizzle",
+          "downpour"
+        ],
+        [
+          "breeze",
+          "gale"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "intensity",
+        "weather scale"
+      ]
+    },
+    {
+      "id": "set-time-activity-monsoon",
+      "relationshipLabel": "a monsoon phase and the farming activity tied to it",
+      "explanation": "Sowing follows the monsoon's onset and harvest follows its retreat — each weather phase triggers its matching agricultural act.",
+      "pairs": [
+        [
+          "monsoon onset",
+          "sowing"
+        ],
+        [
+          "monsoon retreat",
+          "harvest"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "monsoon",
+        "farming cycle"
+      ]
+    },
+    {
+      "id": "set-distinctive-nonpart-weather",
+      "relationshipLabel": "a thing defined by the one quality it can never have",
+      "explanation": "A mirage is defined by the moisture it only seems to have, and a drought by the rainfall it conspicuously lacks — each phenomenon is named by its missing quality.",
+      "pairs": [
+        [
+          "mirage",
+          "moisture"
+        ],
+        [
+          "drought",
+          "rainfall"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "absence",
+        "defining lack"
+      ]
+    }
+  ]
+}

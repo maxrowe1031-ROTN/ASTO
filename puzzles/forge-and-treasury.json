@@ -1,0 +1,155 @@
+{
+  "id": "asto-forge-and-treasury",
+  "title": "Forge and Treasury",
+  "sets": [
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "A category and a kind of item within it",
+      "explanation": "Jewelry and weapon are broad categories, and a ring and a sword are specific members of each.",
+      "pairs": [
+        [
+          "jewelry",
+          "ring"
+        ],
+        [
+          "weapon",
+          "sword"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "crown could seem like a category member too"
+      ]
+    },
+    {
+      "id": "set-component",
+      "relationshipLabel": "An object and a feature it is built or set with",
+      "explanation": "A crown is set with a jewel and a chest is fitted with a hinge, each naming a defining physical feature of the object.",
+      "pairs": [
+        [
+          "crown",
+          "jewel"
+        ],
+        [
+          "chest",
+          "hinge"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "jewel echoes 'jewelry' from set 1, tempting a false inclusion read"
+      ]
+    },
+    {
+      "id": "set-enabling",
+      "relationshipLabel": "The thing that lets another do what it does",
+      "explanation": "A key is what lets a lock function as a lock, and fire is what lets a forge function as a forge.",
+      "pairs": [
+        [
+          "key",
+          "lock"
+        ],
+        [
+          "fire",
+          "forge"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "fire could be mistaken for a raw material undergoing conversion"
+      ]
+    },
+    {
+      "id": "set-activity-stage",
+      "relationshipLabel": "A process stage and the larger activity it belongs to",
+      "explanation": "Smelting is a stage within metallurgy, and minting is a stage within trade, each a step folded into a wider practice.",
+      "pairs": [
+        [
+          "smelting",
+          "metallurgy"
+        ],
+        [
+          "minting",
+          "trade"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "minting could look like a conversion process rather than a stage of a larger activity"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "word": "smelting",
+      "definition": "heating ore until the metal melts out and separates from the rock around it"
+    }
+  ],
+  "definitions": [
+    {
+      "word": "jewelry",
+      "definition": "Decorative pieces like rings or necklaces worn on the body."
+    },
+    {
+      "word": "ring",
+      "definition": "A small band worn on a finger, often as a symbol or decoration."
+    },
+    {
+      "word": "weapon",
+      "definition": "Something made or used to attack or defend."
+    },
+    {
+      "word": "sword",
+      "definition": "A long bladed weapon swung by hand."
+    },
+    {
+      "word": "crown",
+      "definition": "A royal headpiece worn to show rank or authority."
+    },
+    {
+      "word": "jewel",
+      "definition": "A cut gemstone prized for its sparkle and value."
+    },
+    {
+      "word": "chest",
+      "definition": "A sturdy box with a lid, used for storing things."
+    },
+    {
+      "word": "hinge",
+      "definition": "A joint that lets a lid or door swing open and shut."
+    },
+    {
+      "word": "key",
+      "definition": "A small metal piece shaped to open a specific lock."
+    },
+    {
+      "word": "lock",
+      "definition": "A fastening device that keeps something shut until opened properly."
+    },
+    {
+      "word": "fire",
+      "definition": "Burning heat and flame, hot enough to shape metal."
+    },
+    {
+      "word": "forge",
+      "definition": "A workshop or furnace where metal is heated and shaped."
+    },
+    {
+      "word": "smelting",
+      "definition": "Heating ore to melt out and extract pure metal."
+    },
+    {
+      "word": "metallurgy",
+      "definition": "The craft and science of working with metals."
+    },
+    {
+      "word": "minting",
+      "definition": "Stamping metal into official coins."
+    },
+    {
+      "word": "trade",
+      "definition": "The exchange of goods or money between people."
+    }
+  ],
+  "date": "2026-11-23"
+}

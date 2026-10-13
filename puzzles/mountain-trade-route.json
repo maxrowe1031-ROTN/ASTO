@@ -1,0 +1,159 @@
+{
+  "id": "asto-mountain-trade-route",
+  "title": "Mountain Trade Route",
+  "sets": [
+    {
+      "id": "set-seasons",
+      "relationshipLabel": "the season that brings the pass's state",
+      "explanation": "Winter brings closure and spring brings opening — each season necessarily produces the pass's condition.",
+      "pairs": [
+        [
+          "winter",
+          "closure"
+        ],
+        [
+          "spring",
+          "opening"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "pass",
+        "mountain route"
+      ]
+    },
+    {
+      "id": "set-images",
+      "relationshipLabel": "a made image of the thing",
+      "explanation": "A mural depicts a deity and a map depicts a pass — each second word is a crafted image standing in for the first.",
+      "pairs": [
+        [
+          "deity",
+          "mural"
+        ],
+        [
+          "pass",
+          "map"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "pass",
+        "winter closure"
+      ]
+    },
+    {
+      "id": "set-tools",
+      "relationshipLabel": "a worker's tool of the trade",
+      "explanation": "A drover carries a whip and a trader carries an abacus — each tool is what defines that worker's craft.",
+      "pairs": [
+        [
+          "drover",
+          "whip"
+        ],
+        [
+          "trader",
+          "abacus"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "trader",
+        "grain"
+      ]
+    },
+    {
+      "id": "set-kinds",
+      "relationshipLabel": "a specific kind of the category",
+      "explanation": "Juniper is a kind of incense and barley is a kind of grain — each pair names a broad category and one true example of it.",
+      "pairs": [
+        [
+          "incense",
+          "juniper"
+        ],
+        [
+          "grain",
+          "barley"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "grain",
+        "trader"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "word": "drover",
+      "definition": "someone who walks herds of animals, like cattle or sheep, over long distances"
+    }
+  ],
+  "definitions": [
+    {
+      "word": "winter",
+      "definition": "The cold season when snow piles up and travel gets hard."
+    },
+    {
+      "word": "closure",
+      "definition": "When a road or pass is shut and nobody can get through."
+    },
+    {
+      "word": "spring",
+      "definition": "The season when snow melts and things start opening back up."
+    },
+    {
+      "word": "opening",
+      "definition": "When something shut becomes usable again, like a reopened road."
+    },
+    {
+      "word": "deity",
+      "definition": "A god or goddess worshipped by people."
+    },
+    {
+      "word": "mural",
+      "definition": "A painting made right on a wall, often telling a story or honoring someone."
+    },
+    {
+      "word": "pass",
+      "definition": "A low gap through mountains that travelers use to cross over."
+    },
+    {
+      "word": "map",
+      "definition": "A drawn picture showing where places and routes are."
+    },
+    {
+      "word": "drover",
+      "definition": "Someone who herds animals along a route from place to place."
+    },
+    {
+      "word": "whip",
+      "definition": "A long flexible tool used to urge animals forward."
+    },
+    {
+      "word": "trader",
+      "definition": "Someone who buys and sells goods, often moving them between places."
+    },
+    {
+      "word": "abacus",
+      "definition": "A frame with sliding beads used to count and calculate."
+    },
+    {
+      "word": "incense",
+      "definition": "A substance burned to make fragrant smoke, often for ritual."
+    },
+    {
+      "word": "juniper",
+      "definition": "A fragrant evergreen shrub whose branches are often burned as incense."
+    },
+    {
+      "word": "grain",
+      "definition": "Small hard seeds from cereal plants, used as food."
+    },
+    {
+      "word": "barley",
+      "definition": "A cereal grain used for food, animal feed, and brewing."
+    }
+  ],
+  "date": "2026-11-24"
+}

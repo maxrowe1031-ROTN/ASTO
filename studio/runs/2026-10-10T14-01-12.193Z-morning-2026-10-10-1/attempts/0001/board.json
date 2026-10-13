@@ -1,0 +1,86 @@
+{
+  "id": "asto-board-caravan-trade-route",
+  "title": "Mountain Trade Route",
+  "sets": [
+    {
+      "id": "set-seasons",
+      "relationshipLabel": "the season that brings the pass's state",
+      "explanation": "Winter brings closure and spring brings opening — each season necessarily produces the pass's condition.",
+      "pairs": [
+        [
+          "winter",
+          "closure"
+        ],
+        [
+          "spring",
+          "opening"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "pass",
+        "mountain route"
+      ]
+    },
+    {
+      "id": "set-images",
+      "relationshipLabel": "a made image of the thing",
+      "explanation": "A mural depicts a deity and a map depicts a pass — each second word is a crafted image standing in for the first.",
+      "pairs": [
+        [
+          "deity",
+          "mural"
+        ],
+        [
+          "pass",
+          "map"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "pass",
+        "winter closure"
+      ]
+    },
+    {
+      "id": "set-tools",
+      "relationshipLabel": "a worker's tool of the trade",
+      "explanation": "A drover carries a whip and a trader carries an abacus — each tool is what defines that worker's craft.",
+      "pairs": [
+        [
+          "drover",
+          "whip"
+        ],
+        [
+          "trader",
+          "abacus"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "trader",
+        "grain"
+      ]
+    },
+    {
+      "id": "set-kinds",
+      "relationshipLabel": "a specific kind of the category",
+      "explanation": "Juniper is a kind of incense and barley is a kind of grain — each pair names a broad category and one true example of it.",
+      "pairs": [
+        [
+          "incense",
+          "juniper"
+        ],
+        [
+          "grain",
+          "barley"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "grain",
+        "trader"
+      ]
+    }
+  ]
+}

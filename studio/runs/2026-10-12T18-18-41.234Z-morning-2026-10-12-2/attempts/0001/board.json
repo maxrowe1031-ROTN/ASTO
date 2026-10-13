@@ -1,0 +1,82 @@
+{
+  "id": "asto-winter-board-1",
+  "title": "Winter Infrastructure",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "A lineman reaches for a bucket truck the way an arborist reaches for a chainsaw — each worker is defined by the tool that lets them do the job.",
+      "pairs": [
+        [
+          "lineman",
+          "bucket truck"
+        ],
+        [
+          "arborist",
+          "chainsaw"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "truck appears again in the coordinates set as a near-miss"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "a frozen cover concealing the surface beneath it",
+      "explanation": "Frost hides the windshield and a snowdrift hides the curb — both pairs show winter laying an unbroken layer over something that's still there underneath.",
+      "pairs": [
+        [
+          "frost",
+          "windshield"
+        ],
+        [
+          "snowdrift",
+          "curb"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "frost/snowdrift read like weather terms that could belong with freezing rain/sleet"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "one form of winter precipitation becomes another through a process",
+      "explanation": "Freezing rain hardens into glaze and sleet packs down into slush — each pair tracks the same precipitation changing state rather than just falling.",
+      "pairs": [
+        [
+          "freezing rain",
+          "glaze"
+        ],
+        [
+          "sleet",
+          "slush"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "glaze and slush sound like simple weather vocabulary but hide a cause-effect twist"
+      ]
+    },
+    {
+      "id": "set-coordinates",
+      "relationshipLabel": "two counterpart devices/vehicles relied on side by side",
+      "explanation": "A plow truck and salt truck are deployed as a matched pair to clear roads, just as a generator and space heater are paired to keep a home powered and warm during an outage.",
+      "pairs": [
+        [
+          "plow truck",
+          "salt truck"
+        ],
+        [
+          "generator",
+          "space heater"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "plow truck and salt truck echo bucket truck, tempting a false vehicle-tool grouping"
+      ]
+    }
+  ]
+}

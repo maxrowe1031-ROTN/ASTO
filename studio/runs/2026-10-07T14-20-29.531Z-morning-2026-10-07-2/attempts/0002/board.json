@@ -1,0 +1,86 @@
+{
+  "id": "board-weather-analogies",
+  "title": "Weather Watch",
+  "sets": [
+    {
+      "id": "set-time-activity-weather-gear",
+      "relationshipLabel": "a weather period and the everyday item people reach for during it",
+      "explanation": "A monsoon sends you for an umbrella just as a storm sends you for a raincoat — each weather event paired with the gear it calls for.",
+      "pairs": [
+        [
+          "monsoon",
+          "umbrella"
+        ],
+        [
+          "storm",
+          "raincoat"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "gear",
+        "weather prompt"
+      ]
+    },
+    {
+      "id": "set-cause-effect-storm",
+      "relationshipLabel": "a cause and the effect it necessarily produces",
+      "explanation": "Lightning always brings thunder just as heavy rain always swells a river — each pair a cause paired with its unavoidable consequence.",
+      "pairs": [
+        [
+          "lightning",
+          "thunder"
+        ],
+        [
+          "heavy rain",
+          "river swell"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "cause",
+        "consequence"
+      ]
+    },
+    {
+      "id": "set-synonymity-deluge",
+      "relationshipLabel": "two names for the same sudden onslaught of rain",
+      "explanation": "A cloudburst is just a deluge by another name, and an inundation is simply a flood — each pair two words for one drenching event.",
+      "pairs": [
+        [
+          "cloudburst",
+          "deluge"
+        ],
+        [
+          "inundation",
+          "flood"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "synonym",
+        "rain event"
+      ]
+    },
+    {
+      "id": "set-directional-water-path",
+      "relationshipLabel": "two ends of one path water travels",
+      "explanation": "A river runs from source to mouth just as rain runs from cloud to ground — each pair the start and end of water's journey.",
+      "pairs": [
+        [
+          "source",
+          "mouth"
+        ],
+        [
+          "cloud",
+          "ground"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "path",
+        "water journey"
+      ]
+    }
+  ]
+}

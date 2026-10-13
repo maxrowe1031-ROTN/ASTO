@@ -1,0 +1,85 @@
+{
+  "id": "reef-analogies-01",
+  "title": "Tides, Shells, and Reef Life",
+  "sets": [
+    {
+      "id": "set-component",
+      "relationshipLabel": "a creature and a body part it simply has",
+      "explanation": "An octopus has arms and a crab has claws the same way any creature has its built-in parts — no ambiguity, just anatomy.",
+      "pairs": [
+        [
+          "octopus",
+          "arm"
+        ],
+        [
+          "crab",
+          "claw"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "ink",
+        "capture"
+      ]
+    },
+    {
+      "id": "set-taxonomic",
+      "relationshipLabel": "a broad category of reef creature and a specific kind within it",
+      "explanation": "Clownfish is a kind of fish and clam is a kind of mollusk — each pair moves from the general class to one specific member of it, with no cephalopod overlap to muddy the mollusk slot.",
+      "pairs": [
+        [
+          "fish",
+          "clownfish"
+        ],
+        [
+          "mollusk",
+          "clam"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "crescent",
+        "full"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "the thing that stops a predator's success",
+      "explanation": "Ink blocks capture and camouflage blocks detection — each is a defense whose whole purpose is denying the predator its outcome.",
+      "pairs": [
+        [
+          "ink",
+          "capture"
+        ],
+        [
+          "camouflage",
+          "detection"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "octopus",
+        "clownfish"
+      ]
+    },
+    {
+      "id": "set-phases",
+      "relationshipLabel": "two facing phases across one span",
+      "explanation": "Ebb and flood sit opposite each other in the tidal cycle just as crescent and full sit opposite each other in the lunar cycle.",
+      "pairs": [
+        [
+          "ebb",
+          "flood"
+        ],
+        [
+          "crescent",
+          "full"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "clam"
+      ]
+    }
+  ]
+}

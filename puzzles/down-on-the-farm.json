@@ -1,0 +1,159 @@
+{
+  "id": "asto-down-on-the-farm",
+  "title": "Down on the Farm",
+  "sets": [
+    {
+      "id": "set-item-location",
+      "relationshipLabel": "a container and what it holds",
+      "explanation": "A bin holds grain and a trough holds mash — each pair is a container paired with its typical contents.",
+      "pairs": [
+        [
+          "bin",
+          "grain"
+        ],
+        [
+          "trough",
+          "mash"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "container",
+        "feed"
+      ]
+    },
+    {
+      "id": "set-reverse",
+      "relationshipLabel": "an action and the action that undoes it",
+      "explanation": "Opening a shop is undone by closing it, just as filling a trough is undone by emptying it — each pair is a fixed action paired with the one specific act that reverses it.",
+      "pairs": [
+        [
+          "open",
+          "close"
+        ],
+        [
+          "fill",
+          "empty"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "fill",
+        "bin"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "a raw or planted form becomes a processed or grown thing",
+      "explanation": "Corn is milled into meal and alfalfa is pressed into pellets — each pair turns a raw feed-store crop into its processed form.",
+      "pairs": [
+        [
+          "corn",
+          "meal"
+        ],
+        [
+          "alfalfa",
+          "pellet"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "corn",
+        "pellet"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "earlier and later moment across a span",
+      "explanation": "An egg laid becomes a hatchling, and a chick raised becomes a hen — each pair marks the start and end of the same creature's life span.",
+      "pairs": [
+        [
+          "lay",
+          "hatch"
+        ],
+        [
+          "chick",
+          "hen"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "chick",
+        "hatch"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "word": "mash",
+      "definition": "a soft, wet mix of ground grains fed to animals"
+    }
+  ],
+  "definitions": [
+    {
+      "word": "bin",
+      "definition": "A big box or container for storing stuff like grain."
+    },
+    {
+      "word": "grain",
+      "definition": "Small hard seeds from crops like wheat or corn, often used as food or feed."
+    },
+    {
+      "word": "trough",
+      "definition": "A long open container animals eat or drink from."
+    },
+    {
+      "word": "mash",
+      "definition": "A soft, mushy mix of feed given to farm animals."
+    },
+    {
+      "word": "open",
+      "definition": "To make something unclosed or accessible, like a door or shop."
+    },
+    {
+      "word": "close",
+      "definition": "To shut something so it's no longer open."
+    },
+    {
+      "word": "fill",
+      "definition": "To make something full by putting stuff into it."
+    },
+    {
+      "word": "empty",
+      "definition": "To take everything out of something so nothing's left inside."
+    },
+    {
+      "word": "corn",
+      "definition": "A tall crop with sweet yellow kernels, used as food or feed."
+    },
+    {
+      "word": "meal",
+      "definition": "Coarsely ground grain, often used for baking or animal feed."
+    },
+    {
+      "word": "alfalfa",
+      "definition": "A leafy green plant grown as feed for farm animals."
+    },
+    {
+      "word": "pellet",
+      "definition": "A small compressed piece of feed, often made from plants like alfalfa."
+    },
+    {
+      "word": "lay",
+      "definition": "To produce and deposit an egg."
+    },
+    {
+      "word": "hatch",
+      "definition": "To break out of an egg as a baby animal."
+    },
+    {
+      "word": "chick",
+      "definition": "A baby chicken, newly hatched."
+    },
+    {
+      "word": "hen",
+      "definition": "An adult female chicken."
+    }
+  ],
+  "date": "2026-11-20"
+}

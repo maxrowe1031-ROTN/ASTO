@@ -1,0 +1,83 @@
+{
+  "id": "asto-board-coastal-01",
+  "title": "Lighthouse Keeper's Almanac",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A mariner reaches for a compass to find direction, just as a lighthouse keeper reaches for a logbook to record the night's events — each worker paired with the tool their trade cannot do without.",
+      "pairs": [
+        [
+          "mariner",
+          "compass"
+        ],
+        [
+          "lighthouse keeper",
+          "logbook"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "nautical-vocab"
+      ]
+    },
+    {
+      "id": "set-representation",
+      "relationshipLabel": "a place or structure and its made image",
+      "explanation": "A coastline becomes a painting and a tower becomes a sketch, each place or structure captured in the image an artist makes of it.",
+      "pairs": [
+        [
+          "coastline",
+          "painting"
+        ],
+        [
+          "tower",
+          "sketch"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "coastal-art"
+      ]
+    },
+    {
+      "id": "set-coordinates",
+      "relationshipLabel": "one warns by sight, the other by sound",
+      "explanation": "A beacon warns the eye just as a foghorn warns the ear, and a signal flag warns the eye just as a ship's bell warns the ear — each pair splitting one duty between sight and sound.",
+      "pairs": [
+        [
+          "beacon",
+          "foghorn"
+        ],
+        [
+          "signal flag",
+          "ship's bell"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "warning-signals"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the two edges of one cycle",
+      "explanation": "Dusk and dawn mark the two edges of night, just as ebb and flood mark the two edges of a tide — each a boundary pair rather than a fixed order.",
+      "pairs": [
+        [
+          "dusk",
+          "dawn"
+        ],
+        [
+          "ebb",
+          "flood"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "opposite-states",
+        "cycles"
+      ]
+    }
+  ]
+}

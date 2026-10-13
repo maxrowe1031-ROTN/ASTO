@@ -144,6 +144,19 @@ game code changed.** **D-36** records the research and the plan.
   it, unchanged: Studio rebuild **Phase B**, the GDD version bump, the two stale Aug-8 work
   branches to merge or delete.
 
+## 2026-10-13 — The pipeline's API bill goes to plan credits
+
+Max: *"can we figure out how to eliminate my api costs for making the puzzles"* — the
+Max/Team monthly API credits. They cover the plain Messages API, which is all the Studio
+uses. Max (Max 20x) linked his Console organization: $200 of credit a month, ~230 boards
+at the audited mean. **D-36** records it and what deliberately does not change: the
+`pipeline-config.js` caps (a circuit breaker, not a budget), the Desk's dollar estimate
+(now "how much of this month's $200"), the audit's figures, the list-price accounting.
+Docs only; no code, no tests touched. `CLAUDE.md` §1 carries the one-line note.
+
+- **Next:** unchanged — Max tries the Desk; Phase B of the Studio rebuild; the fresh
+  board batch (the credit makes it free; the calendar still needs it); the visibility push.
+
 ## 2026-09-08 (evening) — The Review Studio rebuilt, Phase A: the Desk and the Runs table
 
 Max opened the Studio and said what he saw: *"the design of this studio stinks out loud."*

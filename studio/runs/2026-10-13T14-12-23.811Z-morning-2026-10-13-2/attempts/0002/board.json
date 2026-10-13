@@ -1,0 +1,86 @@
+{
+  "id": "board-preservation-analogies",
+  "title": "The Pickling Shed",
+  "sets": [
+    {
+      "id": "set-vessel-contents",
+      "relationshipLabel": "a vessel and the kind of thing it is filled with",
+      "explanation": "A crock is the vessel built to hold cucumbers, just as a barrel is the vessel built to hold herring.",
+      "pairs": [
+        [
+          "crock",
+          "cucumber"
+        ],
+        [
+          "barrel",
+          "herring"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "kitchen-objects",
+        "containers"
+      ]
+    },
+    {
+      "id": "set-instrument-action",
+      "relationshipLabel": "tool and the action it exists to perform",
+      "explanation": "A weight stone exists to submerge, just as cheesecloth exists to strain — each tool is defined by the single task it performs.",
+      "pairs": [
+        [
+          "weight stone",
+          "submerge"
+        ],
+        [
+          "cheesecloth",
+          "strain"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "kitchen-objects",
+        "process-tools"
+      ]
+    },
+    {
+      "id": "set-plan",
+      "relationshipLabel": "written form of a thing and the thing itself",
+      "explanation": "A recipe is the written form that becomes kimchi, just as a formula is the written form that becomes brine.",
+      "pairs": [
+        [
+          "recipe",
+          "kimchi"
+        ],
+        [
+          "formula",
+          "brine"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "brine-vs-brining",
+        "written-instructions"
+      ]
+    },
+    {
+      "id": "set-prevention",
+      "relationshipLabel": "the thing that stops another thing",
+      "explanation": "Salt necessarily halts spoilage, just as vinegar's acidity necessarily halts bacteria — each is a cause that reliably prevents its effect.",
+      "pairs": [
+        [
+          "salt",
+          "spoilage"
+        ],
+        [
+          "vinegar",
+          "bacteria"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "salt-and-brine",
+        "preservation-ingredients"
+      ]
+    }
+  ]
+}

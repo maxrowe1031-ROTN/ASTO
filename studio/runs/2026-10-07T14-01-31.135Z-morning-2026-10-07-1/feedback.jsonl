@@ -1,0 +1,5 @@
+{"schemaVersion":"1.0","id":"fb-0002-1-1791386154083","attemptId":"0002","formVersion":5,"source":"review-studio","action":"approve-board","scope":{"type":"board"},"tags":[],"at":"2026-10-07T15:15:54.107Z"}
+{"schemaVersion":"1.0","id":"fb-0002-2-1791386154083","attemptId":"0002","formVersion":5,"source":"review-studio","action":"set-publishable","scope":{"type":"set","setId":"set-item-location"},"tags":[],"at":"2026-10-07T15:15:54.108Z"}
+{"schemaVersion":"1.0","id":"fb-0002-3-1791386154083","attemptId":"0002","formVersion":5,"source":"review-studio","action":"set-publishable","scope":{"type":"set","setId":"set-reverse"},"tags":[],"at":"2026-10-07T15:15:54.109Z"}
+{"schemaVersion":"1.0","id":"fb-0002-4-1791386154083","attemptId":"0002","formVersion":5,"source":"review-studio","action":"set-publishable","scope":{"type":"set","setId":"set-conversion"},"tags":[],"at":"2026-10-07T15:15:54.109Z"}
+{"schemaVersion":"1.0","id":"fb-0002-5-1791386154083","attemptId":"0002","formVersion":5,"source":"review-studio","action":"set-publishable","scope":{"type":"set","setId":"set-before-after"},"tags":[],"at":"2026-10-07T15:15:54.109Z"}

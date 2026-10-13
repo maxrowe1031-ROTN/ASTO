@@ -1,0 +1,86 @@
+{
+  "id": "asto-orchard-board-01",
+  "title": "Orchard Logic",
+  "sets": [
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "one form becomes another through a process",
+      "explanation": "A blossom becomes fruit and an apple becomes cider — each pair names a raw state and the product it's transformed into.",
+      "pairs": [
+        [
+          "blossom",
+          "fruit"
+        ],
+        [
+          "apple",
+          "cider"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "orchard",
+        "transformation"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "a cover and the true thing beneath it",
+      "explanation": "Mulch hides soil and husk hides seed — in both pairs the first word is a protective layer wrapped around the second.",
+      "pairs": [
+        [
+          "mulch",
+          "soil"
+        ],
+        [
+          "husk",
+          "seed"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "plant parts",
+        "layers"
+      ]
+    },
+    {
+      "id": "set-component",
+      "relationshipLabel": "a structure and the feature it simply has",
+      "explanation": "A pear tree has a trunk and an orchard deck has a bulkhead — once you see 'deck' and 'bulkhead' as structural terms, not nautical ones, the possession pairing matches cleanly.",
+      "pairs": [
+        [
+          "pear tree",
+          "trunk"
+        ],
+        [
+          "orchard deck",
+          "bulkhead"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "structure",
+        "vocabulary twist"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "the start and end of a span",
+      "explanation": "Sowing ends in reaping and a launch ends in landing — two very different domains hiding the same start-to-finish arc.",
+      "pairs": [
+        [
+          "sow",
+          "reap"
+        ],
+        [
+          "launch",
+          "landing"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "span",
+        "cross-domain"
+      ]
+    }
+  ]
+}

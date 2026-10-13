@@ -1,0 +1,86 @@
+{
+  "id": "asto-darts-board-01",
+  "title": "On the Oche",
+  "sets": [
+    {
+      "id": "set-class",
+      "relationshipLabel": "category and a named instance of it",
+      "explanation": "A tournament is the category and the World Championship is one real instance of it, just as a venue is the category and Alexandra Palace is a specific example.",
+      "pairs": [
+        [
+          "tournament",
+          "World Championship"
+        ],
+        [
+          "venue",
+          "Alexandra Palace"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "darts-trivia",
+        "named-landmark"
+      ]
+    },
+    {
+      "id": "set-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A thrower's tool is the dart, and in exactly the same way a chalker's tool is the chalk they mark the score with.",
+      "pairs": [
+        [
+          "thrower",
+          "dart"
+        ],
+        [
+          "chalker",
+          "chalk"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "obscure-role",
+        "tool-material"
+      ]
+    },
+    {
+      "id": "set-component",
+      "relationshipLabel": "thing and the feature it has",
+      "explanation": "A dartboard has its wire segments just as a cabinet has its surround, each a built-in part rather than a separate accessory.",
+      "pairs": [
+        [
+          "dartboard",
+          "wire"
+        ],
+        [
+          "cabinet",
+          "surround"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "tool-material",
+        "equipment-jargon"
+      ]
+    },
+    {
+      "id": "set-sign",
+      "relationshipLabel": "signal that announces the thing to come",
+      "explanation": "Walk-on music always precedes and announces a player's entrance, and this board treats raised arms the same way, as the signal that precedes the win being confirmed.",
+      "pairs": [
+        [
+          "walk-on music",
+          "entrance"
+        ],
+        [
+          "raised arms",
+          "victory"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "sequence-lookalike",
+        "near-miss-timing"
+      ]
+    }
+  ]
+}

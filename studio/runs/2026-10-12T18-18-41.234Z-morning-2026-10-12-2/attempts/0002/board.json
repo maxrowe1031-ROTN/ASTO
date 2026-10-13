@@ -1,0 +1,83 @@
+{
+  "id": "asto-winter-board-1",
+  "title": "Winter Infrastructure",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "a worker and the tool of their trade",
+      "explanation": "A lineman reaches for a bucket truck the way an arborist reaches for a chainsaw — each worker is defined by the tool that lets them do the job.",
+      "pairs": [
+        [
+          "lineman",
+          "bucket truck"
+        ],
+        [
+          "arborist",
+          "chainsaw"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "truck appears again in the coordinates set as a near-miss"
+      ]
+    },
+    {
+      "id": "set-concealment",
+      "relationshipLabel": "a frozen cover concealing the surface beneath it",
+      "explanation": "Frost hides the windshield and a snowdrift hides the curb — both pairs show winter laying an unbroken layer over something that's still there underneath.",
+      "pairs": [
+        [
+          "frost",
+          "windshield"
+        ],
+        [
+          "snowdrift",
+          "curb"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "frost/snowdrift read like weather terms that could belong with freezing rain/sleet"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "one form of winter precipitation becomes another through a process",
+      "explanation": "Freezing rain hardens into glaze and sleet packs down into slush — each pair tracks the same precipitation changing state rather than just falling.",
+      "pairs": [
+        [
+          "freezing rain",
+          "glaze"
+        ],
+        [
+          "sleet",
+          "slush"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "glaze and slush sound like simple weather vocabulary but hide a cause-effect twist"
+      ]
+    },
+    {
+      "id": "set-directional",
+      "relationshipLabel": "the source end and the delivery end of one storm-response axis",
+      "explanation": "Power runs from substation to outlet the same way shelter runs from canopy to sidewalk — each pair names a fixed point of origin and the fixed point it serves, so the order can't be swapped.",
+      "pairs": [
+        [
+          "substation",
+          "outlet"
+        ],
+        [
+          "canopy",
+          "sidewalk"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "substation/outlet echoes power infrastructure, tempting a false pairing with lineman/bucket truck",
+        "canopy reads like a tree-care word, tempting a false pairing with arborist/chainsaw"
+      ]
+    }
+  ]
+}

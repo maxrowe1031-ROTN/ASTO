@@ -1,0 +1,84 @@
+{
+  "id": "asto-board-coastal-01",
+  "title": "Lighthouse Keeper's Almanac",
+  "sets": [
+    {
+      "id": "set-agent-instrument",
+      "relationshipLabel": "worker and the tool of their trade",
+      "explanation": "A mariner relies on a compass to find direction just as a navigator relies on a chart to find a route.",
+      "pairs": [
+        [
+          "mariner",
+          "compass"
+        ],
+        [
+          "navigator",
+          "chart"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "nautical-vocab"
+      ]
+    },
+    {
+      "id": "set-object-component",
+      "relationshipLabel": "structure and the part it cannot be without",
+      "explanation": "A lighthouse is not a lighthouse without its lantern room, just as a ship is not a ship without its hull.",
+      "pairs": [
+        [
+          "lighthouse",
+          "lantern room"
+        ],
+        [
+          "ship",
+          "hull"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "coastal-structures"
+      ]
+    },
+    {
+      "id": "set-coordinates",
+      "relationshipLabel": "two counterparts of the same kind, side by side",
+      "explanation": "A principal keeper and assistant keeper share one post just as a beacon and foghorn share one duty, warning ships by sight and by sound.",
+      "pairs": [
+        [
+          "principal keeper",
+          "assistant keeper"
+        ],
+        [
+          "beacon",
+          "foghorn"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "lighthouse-staff",
+        "warning-signals"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "start and end of one span",
+      "explanation": "Dusk gives way to dawn across one night just as ebb gives way to flood across one tide, each pair marking the two ends of its own cycle.",
+      "pairs": [
+        [
+          "dusk",
+          "dawn"
+        ],
+        [
+          "ebb",
+          "flood"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "opposite-states",
+        "cycles"
+      ]
+    }
+  ]
+}

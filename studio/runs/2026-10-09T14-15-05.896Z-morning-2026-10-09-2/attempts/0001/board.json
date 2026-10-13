@@ -1,0 +1,86 @@
+{
+  "id": "board-goldrush-camp",
+  "title": "Gold Rush Camp",
+  "sets": [
+    {
+      "id": "set-gear-category",
+      "relationshipLabel": "a category of camp gear and one specific kind of it",
+      "explanation": "A tool and a vehicle are both broad categories, and a pickaxe and a sled are specific items that belong to each.",
+      "pairs": [
+        [
+          "tool",
+          "pickaxe"
+        ],
+        [
+          "vehicle",
+          "sled"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "camp-gear",
+        "category-instance"
+      ]
+    },
+    {
+      "id": "set-tool-motion",
+      "relationshipLabel": "a tool and the motion it exists to perform",
+      "explanation": "A pan exists to sift and a sluice exists to wash — each tool is defined by the single motion it was built to do.",
+      "pairs": [
+        [
+          "pan",
+          "sift"
+        ],
+        [
+          "sluice",
+          "wash"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "mining-tools",
+        "instrument-action"
+      ]
+    },
+    {
+      "id": "set-span-bookends",
+      "relationshipLabel": "the start and end of one continuous span",
+      "explanation": "A freeze ends in a thaw just as a stampede of miners ends in a ghost town — each pair bookends the same rise-and-fall arc at a different scale.",
+      "pairs": [
+        [
+          "freeze",
+          "thaw"
+        ],
+        [
+          "stampede",
+          "ghost town"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "season",
+        "boom-bust"
+      ]
+    },
+    {
+      "id": "set-small-enabler",
+      "relationshipLabel": "the small thing that necessarily enables the larger thing",
+      "explanation": "A match is what makes a campfire possible and a lantern is what makes visibility possible — each small object is the necessary cause of the larger condition.",
+      "pairs": [
+        [
+          "match",
+          "campfire"
+        ],
+        [
+          "lantern",
+          "visibility"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "fire",
+        "light-sources"
+      ]
+    }
+  ]
+}

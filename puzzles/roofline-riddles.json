@@ -1,0 +1,160 @@
+{
+  "id": "asto-roofline-riddles",
+  "title": "Roofline Riddles",
+  "sets": [
+    {
+      "id": "set-roost",
+      "relationshipLabel": "a creature and the structure built or used as its home",
+      "explanation": "Bats roost in belfries and pigeons nest in coops — each pair names a creature and the structure built for it.",
+      "pairs": [
+        [
+          "bat",
+          "belfry"
+        ],
+        [
+          "pigeon",
+          "coop"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "animal-structure",
+        "home"
+      ]
+    },
+    {
+      "id": "set-rooftop-residue",
+      "relationshipLabel": "one substance turning into another through a rooftop process",
+      "explanation": "Cold turns rainwater to ice and combustion turns smoke to soot — each pair tracks a substance's transformation.",
+      "pairs": [
+        [
+          "rainwater",
+          "ice"
+        ],
+        [
+          "smoke",
+          "soot"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "transformation",
+        "weather-fire"
+      ]
+    },
+    {
+      "id": "set-signal-alarm",
+      "relationshipLabel": "a signal fired or projected to announce an emergency",
+      "explanation": "The Bat-signal announces an emergency and a flare signals distress — both are visual alarms thrown into the sky to summon help.",
+      "pairs": [
+        [
+          "Bat-signal",
+          "emergency"
+        ],
+        [
+          "flare",
+          "distress"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "signal",
+        "alarm",
+        "sky"
+      ]
+    },
+    {
+      "id": "set-stakeout",
+      "relationshipLabel": "a place and the covert activity it exists for",
+      "explanation": "A rooftop is chosen for a stakeout and an alleyway for an ambush — each place is defined by the hidden act it enables.",
+      "pairs": [
+        [
+          "rooftop",
+          "stakeout"
+        ],
+        [
+          "alleyway",
+          "ambush"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "covert",
+        "place-activity"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "word": "belfry",
+      "definition": "a tower or part of a tower, usually on a church, where bells hang"
+    }
+  ],
+  "definitions": [
+    {
+      "word": "bat",
+      "definition": "A flying, furry little mammal that comes out at night and sleeps hanging upside down."
+    },
+    {
+      "word": "belfry",
+      "definition": "The tower room where a bell hangs, often a cozy dark spot for roosting critters."
+    },
+    {
+      "word": "pigeon",
+      "definition": "A plump, common city bird that coos and struts around parks and ledges."
+    },
+    {
+      "word": "coop",
+      "definition": "A small pen or shelter built to keep birds safe and contained."
+    },
+    {
+      "word": "rainwater",
+      "definition": "Water that falls from the sky during a storm, before it soaks in or runs off."
+    },
+    {
+      "word": "ice",
+      "definition": "Water frozen solid by the cold."
+    },
+    {
+      "word": "smoke",
+      "definition": "The gray haze that rises when something burns."
+    },
+    {
+      "word": "soot",
+      "definition": "The black, powdery residue left behind after something burns."
+    },
+    {
+      "word": "Bat-signal",
+      "definition": "A giant spotlight shaped like a bat, beamed into the sky to call for help."
+    },
+    {
+      "word": "emergency",
+      "definition": "A sudden, serious situation that needs help right away."
+    },
+    {
+      "word": "flare",
+      "definition": "A bright burning stick or shot fired into the air to get attention fast."
+    },
+    {
+      "word": "distress",
+      "definition": "A state of danger or trouble where someone urgently needs rescue."
+    },
+    {
+      "word": "rooftop",
+      "definition": "The top surface of a building, often flat and good for looking down from."
+    },
+    {
+      "word": "stakeout",
+      "definition": "A quiet, hidden watch kept on a place to catch someone in the act."
+    },
+    {
+      "word": "alleyway",
+      "definition": "A narrow passage between buildings, often dim and out of sight."
+    },
+    {
+      "word": "ambush",
+      "definition": "A surprise attack launched from a hidden spot."
+    }
+  ],
+  "date": "2026-11-26"
+}

@@ -1,0 +1,159 @@
+{
+  "id": "asto-tomb-and-trade",
+  "title": "Tomb and Trade",
+  "sets": [
+    {
+      "id": "set-always-has",
+      "relationshipLabel": "A funerary object and the covering it always has",
+      "explanation": "A mummy is never without its wrapping, just as a sarcophagus is never without its lid — each object entails its covering by definition.",
+      "pairs": [
+        [
+          "mummy",
+          "wrapping"
+        ],
+        [
+          "sarcophagus",
+          "lid"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "funerary",
+        "object-component"
+      ]
+    },
+    {
+      "id": "set-trade-tool",
+      "relationshipLabel": "A worker and the tool central to their trade",
+      "explanation": "An archaeologist relies on a trowel the way an embalmer relies on natron — each tool defines the daily work of its trade.",
+      "pairs": [
+        [
+          "archaeologist",
+          "trowel"
+        ],
+        [
+          "embalmer",
+          "natron"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "tools",
+        "profession"
+      ]
+    },
+    {
+      "id": "set-likeness",
+      "relationshipLabel": "A person and the crafted image made to stand in for them",
+      "explanation": "A funerary mask stands in for the pharaoh's face in death, just as a ka statue stands in for the deceased's spirit — both are crafted substitutes for the person themselves.",
+      "pairs": [
+        [
+          "pharaoh",
+          "funerary mask"
+        ],
+        [
+          "deceased",
+          "ka statue"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "representation",
+        "likeness"
+      ]
+    },
+    {
+      "id": "set-hidden-span",
+      "relationshipLabel": "An action and the action that undoes it",
+      "explanation": "To break a seal reverses the sealing, just as to unearth reverses the burial — each pair names an action and the opposite act that cancels it, independent of any shared timeline.",
+      "pairs": [
+        [
+          "seal",
+          "break"
+        ],
+        [
+          "bury",
+          "unearth"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "reversal",
+        "dimension"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "word": "natron",
+      "definition": "a naturally occurring salty mineral powder used in ancient times to dry things out"
+    }
+  ],
+  "definitions": [
+    {
+      "word": "mummy",
+      "definition": "A preserved body, carefully dried and treated so it won't decay."
+    },
+    {
+      "word": "wrapping",
+      "definition": "Long strips of linen wound tightly around a body to protect it."
+    },
+    {
+      "word": "sarcophagus",
+      "definition": "A big stone coffin that holds and protects a body for the ages."
+    },
+    {
+      "word": "lid",
+      "definition": "The heavy top piece that closes a container shut."
+    },
+    {
+      "word": "archaeologist",
+      "definition": "Someone who digs up and studies old sites to learn about the past."
+    },
+    {
+      "word": "trowel",
+      "definition": "A small hand tool for carefully scraping away dirt."
+    },
+    {
+      "word": "embalmer",
+      "definition": "Someone trained to preserve a body so it won't decay."
+    },
+    {
+      "word": "natron",
+      "definition": "A salty mineral used to dry out and preserve a body."
+    },
+    {
+      "word": "pharaoh",
+      "definition": "An ancient Egyptian ruler, treated as a god-king."
+    },
+    {
+      "word": "funerary mask",
+      "definition": "A crafted face placed over the dead to represent them forever."
+    },
+    {
+      "word": "deceased",
+      "definition": "A person who has died."
+    },
+    {
+      "word": "ka statue",
+      "definition": "A carved figure made to hold a dead person's spirit."
+    },
+    {
+      "word": "seal",
+      "definition": "To close something up tight, often leaving a mark to prove it's untouched."
+    },
+    {
+      "word": "break",
+      "definition": "To force something open or snap it apart."
+    },
+    {
+      "word": "bury",
+      "definition": "To place something in the ground and cover it over."
+    },
+    {
+      "word": "unearth",
+      "definition": "To dig something up out of the ground."
+    }
+  ],
+  "date": "2026-11-27"
+}

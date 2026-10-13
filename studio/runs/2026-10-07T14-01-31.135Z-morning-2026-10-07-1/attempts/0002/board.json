@@ -1,0 +1,86 @@
+{
+  "id": "board-asto-farm-01",
+  "title": "Down on the Farm",
+  "sets": [
+    {
+      "id": "set-item-location",
+      "relationshipLabel": "a container and what it holds",
+      "explanation": "A bin holds grain and a trough holds mash — each pair is a container paired with its typical contents.",
+      "pairs": [
+        [
+          "bin",
+          "grain"
+        ],
+        [
+          "trough",
+          "mash"
+        ]
+      ],
+      "difficulty": 1,
+      "baitTags": [
+        "container",
+        "feed"
+      ]
+    },
+    {
+      "id": "set-reverse",
+      "relationshipLabel": "an action and the action that undoes it",
+      "explanation": "Opening a shop is undone by closing it, just as filling a trough is undone by emptying it — each pair is a fixed action paired with the one specific act that reverses it.",
+      "pairs": [
+        [
+          "open",
+          "close"
+        ],
+        [
+          "fill",
+          "empty"
+        ]
+      ],
+      "difficulty": 2,
+      "baitTags": [
+        "fill",
+        "bin"
+      ]
+    },
+    {
+      "id": "set-conversion",
+      "relationshipLabel": "a raw or planted form becomes a processed or grown thing",
+      "explanation": "Corn is milled into meal and alfalfa is pressed into pellets — each pair turns a raw feed-store crop into its processed form.",
+      "pairs": [
+        [
+          "corn",
+          "meal"
+        ],
+        [
+          "alfalfa",
+          "pellet"
+        ]
+      ],
+      "difficulty": 3,
+      "baitTags": [
+        "corn",
+        "pellet"
+      ]
+    },
+    {
+      "id": "set-before-after",
+      "relationshipLabel": "earlier and later moment across a span",
+      "explanation": "An egg laid becomes a hatchling, and a chick raised becomes a hen — each pair marks the start and end of the same creature's life span.",
+      "pairs": [
+        [
+          "lay",
+          "hatch"
+        ],
+        [
+          "chick",
+          "hen"
+        ]
+      ],
+      "difficulty": 4,
+      "baitTags": [
+        "chick",
+        "hatch"
+      ]
+    }
+  ]
+}
