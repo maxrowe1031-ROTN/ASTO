@@ -3545,7 +3545,7 @@ the pipeline's key. On 2026-10-07 the section was not yet on his Billing page �
 is rolling it out over several days. Linking is Max's action. Further levers, unapproved:
 two candidates a day instead of three, the Batches API (half price), a cheaper test-player.
 
-### D-36 — The pipeline's API spend is covered by Max plan credits (2026-10-13)
+### D-39 — The pipeline's API spend is covered by Max plan credits (2026-10-13)
 
 **What happened.** Max asked whether the monthly API credits that come with Max and
 Team plans could remove the Studio's API bill. They can: the Studio calls the plain
@@ -3576,6 +3576,11 @@ transport failure it already names in plain words, and the fix is to wait for th
 cycle or enable auto-reload in the Console — Max's call, never automatic. Unused credit
 expires; nothing here tries to spend it down. Credits attach to the organization, not
 the key, so any other project on that organization shares the pool.
+
+**One decision this reopens, for Max, not changed here:** D-37's morning routine was cut
+from three candidates a day to two *for cost* (2026-10-07). With the credit covering ~230
+runs a month, cost no longer argues for two; whether three is wanted is a review-load
+question now.
 
 **Reconsider-when:** the Studio starts refusing runs near month-end often enough to
 matter — then the Desk's spend tile should read against the credit balance (the
